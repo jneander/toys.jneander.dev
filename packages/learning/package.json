@@ -1,0 +1,74 @@
+{
+  "name": "learning",
+  "engines": {
+    "node": ">=6.9.5"
+  },
+  "version": "0.0.0",
+  "description": "A place to exercise various projects together and dogfood their development environments",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config ./config/webpack.development.js --progress",
+    "build:production": "webpack --config ./config/webpack.production.js --progress",
+    "build:stats": "webpack --config ./config/webpack.development.js --profile --json",
+    "build:watch": "webpack --config ./config/webpack.development.js --progress --watch",
+    "clear": "rimraf dist",
+    "deploy": "npm run build-production",
+    "dev": "node scripts/dev-server.js",
+    "nuke": "rimraf node_modules",
+    "spec": "karma start config/karma.conf.js",
+    "spec:watch": "karma start --no-single-run config/karma.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jneander/learning.git"
+  },
+  "author": "Jeremy Neander",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jneander/learning/issues"
+  },
+  "homepage": "https://github.com/jneander/learning#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "chai": "^4.1.2",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.11.2",
+    "html-loader": "^0.5.1",
+    "html-webpack-plugin": "^2.30.1",
+    "imports-loader": "^0.7.1",
+    "instructure-icons": "^4.3.0",
+    "instructure-ui": "^3.4.0",
+    "karma": "^1.7.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-mocha": "^1.3.0",
+    "karma-webpack": "^2.0.4",
+    "mocha": "^3.5.3",
+    "react-hot-loader": "^3.0.0-beta.7",
+    "rimraf": "^2.6.2",
+    "sinon": "^3.3.0",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2",
+    "write-file-webpack-plugin": "^4.1.0"
+  },
+  "dependencies": {
+    "history": "^4.7.2",
+    "normalize.css": "^7.0.0",
+    "qs": "^6.5.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-measure": "^1.4.7",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "url-pattern": "^1.0.3"
+  }
+}

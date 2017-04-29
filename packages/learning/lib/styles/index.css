@@ -1,0 +1,14 @@
+:root {
+  /* Spacing */
+  --spacing-small: 0.25rem;
+  --spacing-medium: 1rem;
+
+  /* Color */
+  --background: #eeeeee;
+  --white: #ffffff;
+}
+
+body {
+  background: var(--background);
+  margin: 0;
+}

@@ -1,7 +1,7 @@
 const apps = {
-  grid: {
-    label: 'Grid',
-    path: '/grid'
+  dataGrid: {
+    label: 'DataGrid',
+    path: '/data-grid'
   },
 
   slickGrid: {

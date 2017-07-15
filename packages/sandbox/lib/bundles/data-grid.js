@@ -1,6 +1,6 @@
 import { bundle } from 'js/bundlers/ReactBundler';
-import Grid from 'js/apps/grid';
+import DataGrid from 'js/apps/data-grid';
 
 bundle({
-  App: Grid
+  App: DataGrid
 });

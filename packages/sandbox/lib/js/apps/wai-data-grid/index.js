@@ -1,13 +1,16 @@
 import React from 'react';
 import Container from 'instructure-ui/lib/components/Container';
+import Link from 'instructure-ui/lib/components/Link';
 import TabList, { TabPanel } from 'instructure-ui/lib/components/TabList';
+import Typography from 'instructure-ui/lib/components/Typography';
 
-import WaiDataGrid1 from './example-1';
-import WaiDataGrid2 from './example-2';
+import Example1 from './example-1';
+import Example2 from './example-2';
 
 const examples = [
-  { label: 'WAI-ARIA Data Grid 1', component: WaiDataGrid1 },
-  { label: 'WAI-ARIA Data Grid 2', component: WaiDataGrid2 }
+  { label: 'Minimal Data Grid', component: Example1 },
+  { label: 'Sortable Data Grid With Editable Cells', component: Example2 }
+  // { label: 'Scrollable Data Grid With Column Hiding', component: Example3 }
 ];
 
 export default class Grid extends React.PureComponent {
@@ -36,6 +39,15 @@ export default class Grid extends React.PureComponent {
             ))
           }
         </TabList>
+
+        <Typography>
+          <p>
+            These are the&nbsp;
+            <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/examples/grid/dataGrids.html">Data Grid Examples</Link>,&nbsp;
+            from the <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/">WAI-ARIA Authoring Practices 1.1</Link>&nbsp;
+            They have been recreated in React as an exercise in understanding how a data grid can be accessible.
+          </p>
+        </Typography>
       </Container>
     );
   }

@@ -37,9 +37,9 @@ class Header extends React.Component {
           <Grid vAlign="middle" colSpacing="small">
             <GridRow>
               <GridCol>
-                <Link href="/">
-                  <Heading level="h1">Sandbox</Heading>
-                </Link>
+                <Heading level="h1">
+                  <Link href="/">Sandbox</Link>
+                </Heading>
               </GridCol>
 
               <GridCol width="auto">

@@ -3,7 +3,30 @@
   border-collapse: collapse;
 }
 
-:local(.GridHeader),
+:local(.SortAscending),
+:local(.SortDescending) {
+  position: relative;
+}
+
+:local(.SortAscending::after),
+:local(.SortDescending::after) {
+  border-left: 0.4em solid transparent;
+  border-right: 0.4em solid transparent;
+  content: " ";
+  position: absolute;
+  right: 1em;
+  top: 0.8em;
+}
+
+:local(.SortAscending::after) {
+  border-bottom: 0.4em solid black;
+}
+
+:local(.SortDescending::after) {
+  border-top: 0.4em solid black;
+}
+
+:local(.ColumnHeader),
 :local(.GridCell) {
   padding: 0.5em 1em;
   position: relative;
@@ -44,6 +67,8 @@
   opacity: 1;
 }
 
+:local(.ColumnHeader:focus),
+:local(.ColumnHeader *:focus),
 :local(.GridCell:focus),
 :local(.GridCell *:focus),
 :local(.Grid:focus) {

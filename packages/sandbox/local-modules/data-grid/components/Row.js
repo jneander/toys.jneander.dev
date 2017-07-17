@@ -1,7 +1,7 @@
 import React from 'react';
 
-import styles from 'js/apps/slick-grid/styles/styles.css';
-import RowCell from 'js/apps/slick-grid/components/RowCell';
+import styles from '../styles/styles.css';
+import RowCell from './RowCell';
 
 class Row extends React.PureComponent {
   render () {

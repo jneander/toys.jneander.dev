@@ -1,7 +1,7 @@
 import React from 'react';
 
-import styles from 'js/apps/slick-grid/styles/styles.css';
-import Row from 'js/apps/slick-grid/components/Row';
+import styles from '../styles/styles.css';
+import Row from './Row';
 
 function getRowClassname (index, rowClassNames = []) {
   if (rowClassNames.length) {

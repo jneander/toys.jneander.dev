@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from 'styles/slick-grid/styles.css';
+import styles from './styles.css';
 
 class RowCell extends React.Component {
   render () {

@@ -1,4 +1,4 @@
-import RowCell from 'js/apps/slick-grid/customization/RowCell';
+import RowCell from './RowCell';
 
 class RowCellComponentFactory {
   getComponent () {

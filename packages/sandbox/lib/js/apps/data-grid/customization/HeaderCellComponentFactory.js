@@ -1,4 +1,4 @@
-import HeaderCell from 'js/apps/slick-grid/customization/HeaderCell';
+import HeaderCell from './HeaderCell';
 
 class HeaderCellComponentFactory {
   getComponent () {

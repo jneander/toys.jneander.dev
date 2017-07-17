@@ -1,9 +1,9 @@
 import React from 'react';
 import Measure from 'react-measure';
 
-import styles from 'js/apps/slick-grid/styles/styles.css';
-import Body from 'js/apps/slick-grid/components/Body';
-import Header from 'js/apps/slick-grid/components/Header';
+import styles from '../styles/styles.css';
+import Body from './Body';
+import Header from './Header';
 
 function range (start, end) {
   const list = []

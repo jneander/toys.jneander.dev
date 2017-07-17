@@ -1,40 +1,79 @@
 import React from 'react';
+
+import ApplyTheme from 'instructure-ui/lib/components/ApplyTheme';
 import Container from 'instructure-ui/lib/components/Container';
-import TabList, { TabPanel } from 'instructure-ui/lib/components/TabList';
+import Heading from 'instructure-ui/lib/components/Heading';
+import canvas from 'instructure-ui/lib/themes/canvas';
 
-import StructureOnly from './examples/StructureOnly';
+import DataGrid from 'data-grid';
 
-const examples = [
-  { label: 'Structure Only', component: StructureOnly }
-];
+import HeaderCellComponentFactory from './customization/HeaderCellComponentFactory';
+import RowCellComponentFactory from './customization/RowCellComponentFactory';
+import styles from './customization/styles.css';
 
-export default class Grid extends React.PureComponent {
+import { keyedData } from './examples/exampleData';
+
+const headerCellFactory = new HeaderCellComponentFactory();
+const rowCellFactory = new RowCellComponentFactory();
+
+const headerHeight = 40;
+const rowHeight = 36;
+const rowClassNames = [styles['Row--even'], styles['Row--odd']];
+
+class DataGridExamples extends React.Component {
   state = {
-    selectedTabIndex: 0
+    debug: {}
   };
 
-  onExampleChange = (tabIndex) => {
-    this.setState({ selectedTabIndex: tabIndex });
+  constructor (props) {
+    super(props);
+
+    this.debug = (debug) => { this.setState({ debug }) };
   }
 
   render () {
-    const Example = examples[this.state.selectedExample];
-
     return (
-      <Container margin="large" display="block">
-        <TabList
-          onChange={this.onExampleChange}
-          selectedIndex={this.state.selectedTabIndex}
-        >
-          {
-            examples.map(example => (
-              <TabPanel key={example.label} title={example.label}>
-                <example.component />
-              </TabPanel>
-            ))
-          }
-        </TabList>
-      </Container>
+      <ApplyTheme theme={canvas}>
+        <Container as="div" padding="large">
+          {/*
+          <Container as="header" margin="0 0 medium 0">
+            <Heading level="h2">SlickGrid Replacement</Heading>
+          </Container>
+          */}
+
+          <main style={{ display: 'flex', flexDirection: 'row' }}>
+            <DataGrid
+              debug={this.debug}
+              className={styles.Grid}
+              columns={keyedData.columns}
+              headerHeight={headerHeight}
+              headerCellFactory={headerCellFactory}
+              rowCellFactory={rowCellFactory}
+              gridHeaderClassName={styles.GridHeader}
+              gridBodyClassName={styles.GridBody}
+              rowClassNames={rowClassNames}
+              rowHeight={rowHeight}
+              rows={keyedData.rows}
+            />
+
+            <div style={{ flex: '0 0 200px' }}>
+              {
+                Object.keys(this.state.debug).length > 0 && (
+                  <ul>
+                    {
+                      Object.keys(this.state.debug).sort().map(key => (
+                        <li key={key}>{ `${key}: ${this.state.debug[key]}` }</li>
+                      ))
+                    }
+                  </ul>
+                )
+              }
+            </div>
+          </main>
+        </Container>
+      </ApplyTheme>
     );
   }
 }
+
+export default DataGridExamples;

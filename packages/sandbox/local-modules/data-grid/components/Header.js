@@ -1,7 +1,7 @@
 import React from 'react';
 
-import styles from 'js/apps/slick-grid/styles/styles.css';
-import HeaderCell from 'js/apps/slick-grid/components/HeaderCell';
+import styles from '../styles/styles.css';
+import HeaderCell from './HeaderCell';
 
 class Header extends React.Component {
   render () {

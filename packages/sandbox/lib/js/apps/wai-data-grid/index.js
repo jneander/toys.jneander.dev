@@ -42,9 +42,12 @@ export default class Grid extends React.PureComponent {
 
         <Typography>
           <p>
-            These are the&nbsp;
-            <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/examples/grid/dataGrids.html">Data Grid Examples</Link>,&nbsp;
-            from the <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/">WAI-ARIA Authoring Practices 1.1</Link>&nbsp;
+            These are the
+            {' '}
+            <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/examples/grid/dataGrids.html">Data Grid Examples</Link>,
+            {' '}
+            from the <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/">WAI-ARIA Authoring Practices 1.1</Link>.
+            {' '}
             They have been recreated in React as an exercise in understanding how a data grid can be accessible.
           </p>
         </Typography>

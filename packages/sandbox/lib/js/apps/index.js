@@ -9,6 +9,11 @@ const apps = {
     path: '/slick-grid'
   },
 
+  staticGrid: {
+    label: 'Static Grid',
+    path: '/static-grid'
+  },
+
   waiDataGrid: {
     label: 'WAI Data Grid',
     path: '/wai-data-grid'

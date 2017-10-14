@@ -11,7 +11,7 @@ export default class ExampleHarness extends React.Component {
     super(props);
 
     this.state = {
-      selectedExample: props.examples[0]
+      selectedExample: props.defaultExample || props.examples[0]
     };
   }
 

@@ -1,6 +1,7 @@
 export default class Fitness {
-  constructor (value) {
+  constructor (value, maximize = true) {
     this.value = value;
+    this.maximize = maximize;
   }
 
   isEqualTo (fitness) {
@@ -8,11 +9,11 @@ export default class Fitness {
   }
 
   isGreaterThan (fitness) {
-    return this.value > fitness;
+    return this.maximize ? this.value > fitness : this.value < fitness;
   }
 
   isLessThan (fitness) {
-    return this.value < fitness.value;
+    return this.maximize ? this.value < fitness : this.value > fitness;
   }
 
   toString () {

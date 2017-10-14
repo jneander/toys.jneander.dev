@@ -4,7 +4,7 @@ import PropagationRecording from '../shared/PropagationRecording';
 
 export default class Controller {
   constructor (state) {
-    this.state = state;
+    this._state = state;
 
     this.listener = new PropagationListener(this.updateView.bind(this));
     this.recording = new PropagationRecording();
@@ -13,6 +13,7 @@ export default class Controller {
     this.randomizeTarget = this.randomizeTarget.bind(this);
     this.setPlaybackPosition = this.setPlaybackPosition.bind(this);
     this.setRecordAllIterations = this.setRecordAllIterations.bind(this);
+    this.state = this.state.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
   }
@@ -98,6 +99,10 @@ export default class Controller {
     this.propagation.start();
   }
 
+  state () {
+    return {};
+  }
+
   stop () {
     this.propagation.stop();
     this.listener.stop();
@@ -109,7 +114,7 @@ export default class Controller {
   }
 
   updateView () {
-    this.state.setState({
+    this._state.setState({
       allIterations: this.recording.isRecordingAllIterations(),
       best: this.recording.best(),
       current: this.recording.current(),
@@ -117,7 +122,8 @@ export default class Controller {
       isRunning: !!this.propagation && this.propagation.isRunning(),
       iterationCount: !!this.propagation && this.propagation.iterationCount(),
       playbackPosition: this.recording.playbackPosition(),
-      target: this.target()
+      target: this.target(),
+      ...this.state()
     });
   }
 }

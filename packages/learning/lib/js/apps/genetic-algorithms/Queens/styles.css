@@ -1,0 +1,26 @@
+:local(.Board) {
+  border-collapse: collapse;
+  border: 1px solid #383838;
+  display: inline-block;
+}
+
+:local(.Row) {
+
+}
+
+:local(.Space) {
+  border: 1px solid #383838;
+  box-sizing: border-box;
+  font-size: 20px;
+  height: 32px;
+  text-align: center;
+  width: 32px;
+}
+
+:local(.Space__white) {
+  background-color: #c0c0c0;
+}
+
+:local(.Space__black) {
+  background-color: #e5e5e6;
+}

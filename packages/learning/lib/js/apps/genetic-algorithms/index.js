@@ -4,19 +4,22 @@ import AppHarness from 'js/shared/components/AppHarness';
 import ExampleHarness from 'js/shared/components/ExampleHarness';
 
 import OneMax from './OneMax';
+import Queens from './Queens';
 import SortingNumbers from './SortingNumbers';
 import TextMatching from './TextMatching';
 
 const examples = [
   { label: 'Text Matching', component: TextMatching },
   { label: 'One Max', component: OneMax },
-  { label: 'Sorting Numbers', component: SortingNumbers }
+  { label: 'Sorting Numbers', component: SortingNumbers },
+  { label: 'Queens', component: Queens }
 ];
 
 export default function GeneticAlgorithms (props) {
   return (
     <AppHarness page="geneticAlgorithms">
       <ExampleHarness
+        defaultExample={examples[3]}
         examples={examples}
         heading="Genetic Algorithms"
       >

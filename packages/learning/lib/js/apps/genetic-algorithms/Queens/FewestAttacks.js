@@ -17,7 +17,7 @@ export default class FewestAttacks {
     this.config = config;
   }
 
-  getFitness (current, target) {
+  getFitness (current) {
     const geneHash = hashGenes(current.genes);
 
     const rowsWithQueens = new Set();

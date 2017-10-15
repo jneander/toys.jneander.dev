@@ -1,0 +1,27 @@
+:local(.Container) {
+  border: 1px solid #c3c3c3;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+:local(.CardSet__Top) {
+  margin-bottom: 10px;
+}
+
+:local(.Card) {
+  background-color: white;
+  border-radius: 3px;
+  display: inline-block;
+  font-family: sans-serif;
+  height: 3.5rem;
+  line-height: 3.5rem;
+  margin: 5px;
+  text-align: center;
+  width: 2.5rem;
+}
+
+:local(.SetMetrics) {
+  padding: 1rem 10px;
+  height: 4.5rem;
+  line-height: 3.5rem;
+}

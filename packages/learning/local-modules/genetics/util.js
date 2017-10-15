@@ -30,3 +30,11 @@ export function choice (array) {
 export function range (start, end) {
   return Array.from({ length: end - start }, (value, key) => key + start);
 }
+
+export function sum (array) {
+  return array.reduce((sum, value) => sum + value, 0);
+}
+
+export function product (array) {
+  return array.reduce((sum, value) => sum * value, 1);
+}

@@ -5,28 +5,22 @@ import ExampleControls from 'js/shared/components/ExampleControls';
 import ChromosomeTable from 'js/apps/genetic-algorithms/shared/ChromosomeTable';
 
 import State from '../shared/State';
-import Board from './Board';
-import Configuration from './Configuration';
+import Cards from './Cards';
 import Controller from './Controller';
 import Metrics from './Metrics';
 
-export default class OneMax extends React.PureComponent {
+export default class CardSplitting extends React.PureComponent {
   constructor (props) {
     super(props);
 
     this.controller = new Controller(new State(this));
     this.state = this.controller.getInitialState();
 
-    this.onBoardSizeChange = this.onBoardSizeChange.bind(this);
     this.onPositionChange = this.onPositionChange.bind(this);
   }
 
   componentWillMount () {
     this.controller.initialize();
-  }
-
-  onBoardSizeChange (size) {
-    this.controller.setBoardSize(size);
   }
 
   onPositionChange (position) {
@@ -47,17 +41,20 @@ export default class OneMax extends React.PureComponent {
           rangePositionCount={this.state.iterationCount}
           recordAllIterations={this.state.allIterations} />
 
-        <Configuration
-          boardSize={this.state.boardSize}
-          disabled={this.state.isRunning}
-          margin="medium 0 0 0"
-          onBoardSizeChange={this.onBoardSizeChange}
-        />
-
         <Metrics iteration={this.state.current ? this.state.current.iteration : 0} margin="small 0 0 0" />
 
         <Container as="div" margin="medium 0 0 0">
-          <Board chromosome={this.state.current} size={this.state.boardSize} />
+          {
+            this.state.current && (
+              <Cards label="Current" chromosome={this.state.current} />
+            )
+          }
+
+          {
+            this.state.best && (
+              <Cards label="Best" chromosome={this.state.best} />
+            )
+          }
         </Container>
       </div>
     );

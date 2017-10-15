@@ -78,14 +78,6 @@ export default class PropagationRecording {
     return this._iterations;
   }
 
-  lastIteration () {
-    return this._iterations[this._iterations.length - 1];
-  }
-
-  lastImprovement () {
-    return this._improvements[this._improvements.length - 1];
-  }
-
   playbackPosition () {
     return this._playbackPosition;
   }

@@ -39,14 +39,10 @@ export default class Controller {
       getFitness: this.getFitness,
       onFinish: this.onFinish.bind(this),
       onImprovement: (chromosome) => {
-        if (this.recording) {
-          this.recording.addImprovement(chromosome);
-        }
+        this.recording.addImprovement(chromosome);
       },
       onIteration: (chromosome) => {
-        if (this.recording) {
-          this.recording.addIteration(chromosome);
-        }
+        this.recording.addIteration(chromosome);
       },
       optimalFitness: this.target().fitness,
       ...this.propogationOptions()
@@ -79,6 +75,7 @@ export default class Controller {
   }
 
   setRecordAllIterations (allIterations) {
+    this.createPropagation();
     this.recording.configure({ allIterations });
     this.recording.reset();
     this.updateView();

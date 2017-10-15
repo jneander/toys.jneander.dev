@@ -17,11 +17,16 @@ export function replaceOneGene (parent, geneSet, getFitness, iteration) {
   return chromosome;
 }
 
-export function swapTwoGenes (parent, geneSet, getFitness, iteration) {
-  const [indexA, indexB] = sample(range(0, parent.genes.length), 2);
+export function swapTwoGenes (parent, geneSet, getFitness, iteration, times = 1) {
   const childGenes = [...parent.genes];
-  childGenes[indexA] = parent.genes[indexB];
-  childGenes[indexB] = parent.genes[indexA];
+
+  let mutations = times;
+  while (mutations > 0) {
+    mutations--;
+    const [indexA, indexB] = sample(range(0, parent.genes.length), 2);
+    childGenes[indexA] = parent.genes[indexB];
+    childGenes[indexB] = parent.genes[indexA];
+  }
 
   const chromosome = new Chromosome(childGenes, iteration);
   chromosome.fitness = getFitness(chromosome);

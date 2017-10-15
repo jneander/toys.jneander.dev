@@ -18,8 +18,8 @@ export default class Board extends React.PureComponent {
     if (this.props.chromosome) {
       const { genes } = this.props.chromosome;
 
-      for (let i = 0; i < this.props.chromosome.genes.length; i += 2) {
-        positions.push({ row: genes[i], col: genes[i + 1], piece: '♛' });
+      for (let i = 0; i < this.props.chromosome.genes.length; i++) {
+        positions.push({ row: genes[i].row, col: genes[i].col, piece: '♞' });
       }
     }
 

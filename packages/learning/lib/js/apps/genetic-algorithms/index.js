@@ -4,6 +4,7 @@ import AppHarness from 'js/shared/components/AppHarness';
 import ExampleHarness from 'js/shared/components/ExampleHarness';
 
 import CardSplitting from './CardSplitting';
+import KnightCovering from './KnightCovering';
 import OneMax from './OneMax';
 import Queens from './Queens';
 import SortingNumbers from './SortingNumbers';
@@ -14,14 +15,15 @@ const examples = [
   { label: 'One Max', component: OneMax },
   { label: 'Sorting Numbers', component: SortingNumbers },
   { label: 'Queens', component: Queens },
-  { label: 'Card Splitting', component: CardSplitting }
+  { label: 'Card Splitting', component: CardSplitting },
+  { label: 'Knight Covering', component: KnightCovering }
 ];
 
 export default function GeneticAlgorithms (props) {
   return (
     <AppHarness page="geneticAlgorithms">
       <ExampleHarness
-        defaultExample={examples[4]}
+        defaultExample={examples[5]}
         examples={examples}
         heading="Genetic Algorithms"
       >

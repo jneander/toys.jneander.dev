@@ -9,7 +9,7 @@ import Configuration from './Configuration';
 import Controller from './Controller';
 import Metrics from './Metrics';
 
-export default class Queens extends React.PureComponent {
+export default class KnightCovering extends React.PureComponent {
   constructor (props) {
     super(props);
 

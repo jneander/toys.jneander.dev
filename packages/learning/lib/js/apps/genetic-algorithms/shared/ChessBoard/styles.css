@@ -5,10 +5,10 @@
 }
 
 :local(.Row) {
-
 }
 
 :local(.Space) {
+  background-color: #e5e5e6;
   border: 1px solid #383838;
   box-sizing: border-box;
   font-size: 20px;
@@ -17,10 +17,10 @@
   width: 32px;
 }
 
-:local(.Space__white) {
+:local(.Row:nth-child(even) .Space:nth-child(even)) {
   background-color: #c0c0c0;
 }
 
-:local(.Space__black) {
-  background-color: #e5e5e6;
+:local(.Row:nth-child(odd) .Space:nth-child(odd)) {
+  background-color: #c0c0c0;
 }

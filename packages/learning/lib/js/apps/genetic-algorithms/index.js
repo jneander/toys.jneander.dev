@@ -3,10 +3,12 @@ import React from 'react';
 import AppHarness from 'js/shared/components/AppHarness';
 import ExampleHarness from 'js/shared/components/ExampleHarness';
 
+import OneMax from './OneMax';
 import TextMatching from './TextMatching';
 
 const examples = [
-  { label: 'Text Matching', component: TextMatching }
+  { label: 'Text Matching', component: TextMatching },
+  { label: 'One Max', component: OneMax }
 ];
 
 export default function GeneticAlgorithms (props) {

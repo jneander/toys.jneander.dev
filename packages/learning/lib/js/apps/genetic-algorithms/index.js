@@ -4,11 +4,13 @@ import AppHarness from 'js/shared/components/AppHarness';
 import ExampleHarness from 'js/shared/components/ExampleHarness';
 
 import OneMax from './OneMax';
+import SortingNumbers from './SortingNumbers';
 import TextMatching from './TextMatching';
 
 const examples = [
   { label: 'Text Matching', component: TextMatching },
-  { label: 'One Max', component: OneMax }
+  { label: 'One Max', component: OneMax },
+  { label: 'Sorting Numbers', component: SortingNumbers }
 ];
 
 export default function GeneticAlgorithms (props) {

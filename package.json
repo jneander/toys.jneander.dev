@@ -1,0 +1,17 @@
+{
+  "name": "jlnio",
+  "engines": {
+    "node": ">=8.9.4",
+    "yarn": ">=1.3.2"
+  },
+  "version": "0.0.1",
+  "description": "All @jneander projects in one place",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jneander/jlnio.git"
+  },
+  "author": "Jeremy Neander <jeremy.neander@gmail.com>",
+  "license": "MIT",
+  "private": true
+}

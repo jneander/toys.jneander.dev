@@ -4,7 +4,7 @@ var config = require('../config/webpack.js');
 
 config.entry = { react: ['react', 'react-dom'] };
 
-config.module.loaders.push({
+config.module.rules.push({
   exclude: '/node_modules/',
   loaders: ['style-loader', 'css-loader?localIdentName=[path][name]---[local]'],
   test: /\.(css)$/

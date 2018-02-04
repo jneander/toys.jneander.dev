@@ -42,7 +42,7 @@ module.exports = {
 
   output: {
     filename: 'js/[name].js',
-    path: path.join(__dirname, '..', 'dist'),
+    path: path.join(__dirname, '..', '__build__'),
     publicPath: '/'
   },
 
@@ -54,11 +54,6 @@ module.exports = {
   ].concat(bundles.plugins),
 
   resolve: {
-    alias: {
-      react: path.resolve(__dirname, '../node_modules/react'),
-      React: path.resolve(__dirname, '../node_modules/react')
-    },
-
     modules: [
       path.join(__dirname, '..', 'lib'),
       'local-modules',

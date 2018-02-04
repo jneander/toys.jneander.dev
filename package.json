@@ -4,6 +4,10 @@
     "node": ">=8.9.4",
     "yarn": ">=1.3.2"
   },
+  "scripts": {
+    "bootstrap": "lerna bootstrap --reject-cycles",
+    "build:all": "lerna run build"
+  },
   "version": "0.0.1",
   "description": "All @jneander projects in one place",
   "main": "index.js",
@@ -13,5 +17,11 @@
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "lerna": "2.8.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

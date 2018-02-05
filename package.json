@@ -12,6 +12,7 @@
     "clean:all": "lerna run clean --stream",
     "clean:modules": "lerna clean --yes",
     "deploy": "lerna run deploy --stream --scope",
+    "spec": "lerna run spec --stream --scope",
     "spec:all": "lerna run spec --stream",
     "spec:watch:all": "lerna run spec:watch --stream",
     "start:watch": "lerna run start:watch --stream --scope"

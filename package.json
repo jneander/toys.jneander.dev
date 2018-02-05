@@ -1,0 +1,35 @@
+{
+  "name": "jlnio",
+  "engines": {
+    "node": ">=8.9.4",
+    "yarn": ">=1.3.2"
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap --reject-cycles",
+    "build": "lerna run build --stream --scope",
+    "build:all": "lerna run build --stream",
+    "build:production": "lerna run build:production --stream --scope",
+    "clean:all": "lerna run clean --stream",
+    "clean:modules": "lerna clean --yes",
+    "deploy": "lerna run deploy --stream --scope",
+    "spec:all": "lerna run spec --stream",
+    "spec:watch:all": "lerna run spec:watch --stream",
+    "start:watch": "lerna run start:watch --stream --scope"
+  },
+  "version": "0.0.1",
+  "description": "All @jneander projects in one place",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jneander/jlnio.git"
+  },
+  "author": "Jeremy Neander <jeremy.neander@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "lerna": "2.8.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

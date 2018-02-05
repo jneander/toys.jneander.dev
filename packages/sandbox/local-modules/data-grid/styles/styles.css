@@ -1,0 +1,40 @@
+:local(.Grid) {
+  box-sizing: border-box;
+  overflow: scroll;
+}
+
+:local(.Grid__Header) {
+  display: block;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+:local(.Grid__Body) {
+  display: block;
+  position: relative;
+}
+
+:local(.Grid__Row) {
+  display: block;
+  white-space: nowrap;
+}
+
+:local(.Grid__Cell) {
+
+}
+
+:local(.Grid__HeaderCell) {
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+:local(.Grid__RowCell) {
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}

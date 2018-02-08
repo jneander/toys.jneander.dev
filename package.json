@@ -27,7 +27,7 @@
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "private": true,
-  "dependencies": {
+  "devDependencies": {
     "lerna": "2.8.0"
   },
   "workspaces": [

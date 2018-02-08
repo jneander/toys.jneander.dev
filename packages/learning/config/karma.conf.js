@@ -14,9 +14,7 @@ module.exports = function (config) {
 
     files: [
       'spec/globals.js',
-      { pattern: 'spec/**/*Spec.js', watched: false },
-      { pattern: 'local-modules/**/*Spec.js', watched: false }
-      // each file acts as entry point for the webpack configuration
+      { pattern: 'spec/**/*Spec.js', watched: false }
     ],
 
     logLevel: config.LOG_INFO,
@@ -26,8 +24,7 @@ module.exports = function (config) {
     preprocessors: {
       'spec/globals.js': ['webpack'],
       'spec/*Spec.js': ['webpack'],
-      'spec/**/*Spec.js': ['webpack'],
-      'local-modules/**/*Spec.js': ['webpack']
+      'spec/**/*Spec.js': ['webpack']
     },
 
     reporters: ['progress'],

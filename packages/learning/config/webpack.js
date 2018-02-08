@@ -1,5 +1,6 @@
 var path = require('path');
 
+var HappyPack = require('happypack');
 var webpack = require('webpack');
 
 var bundles = require('../config/bundles');
@@ -7,30 +8,27 @@ var bundles = require('../config/bundles');
 var PRODUCTION = process.env.NODE_ENV === 'production';
 var DEVELOPMENT = !PRODUCTION;
 
+var conditionalPlugins = []
+
+if (process.env.NODE_ENV !== 'test') {
+  conditionalPlugins.push(new webpack.optimize.CommonsChunkPlugin({
+    minChunk: function (module) {
+      return /node_modules/.test(module.resource);
+    },
+    name: 'vendor'
+  }))
+}
+
 module.exports = {
   devtool: 'source-map',
 
-  entry: Object.assign(
-    {},
-    bundles.entries,
-    { react: ['react', 'react-dom'] }
-  ),
+  entry: bundles.entries,
 
   module: {
     rules: [{
       exclude: path.join(__dirname, '..', 'node_modules'),
       test: /\.js$/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          plugins: ['react-hot-loader/babel'],
-          presets: [
-            ['es2015', { modules: false }],
-            'babel-preset-stage-1',
-            'react'
-          ]
-        }
-      }
+      use: 'happypack/loader?id=babel'
     }, {
       exclude: '/node_modules/',
       test: /\.(png|jpg|gif)$/,
@@ -50,7 +48,24 @@ module.exports = {
     new webpack.DefinePlugin({
       DEVELOPMENT: JSON.stringify(DEVELOPMENT),
       PRODUCTION: JSON.stringify(PRODUCTION)
-    })
+    }),
+
+    new HappyPack({
+      id: 'babel',
+      loaders: [{
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            ['es2015', { modules: false }],
+            'babel-preset-stage-1',
+            'react'
+          ]
+        }
+      }],
+      threads: 4
+    }),
+
+    ...conditionalPlugins
   ].concat(bundles.plugins),
 
   resolve: {

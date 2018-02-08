@@ -3,7 +3,7 @@ var path = require('path');
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-var bundlePath = path.join(__dirname, '..', 'lib/bundles');
+var bundlePath = path.join(__dirname, '..', 'src/bundles');
 
 var entries = {
   home: [
@@ -15,7 +15,7 @@ var plugins = [
   new HtmlWebpackPlugin({
     chunks: ['vendor', 'home'],
     filename: 'index.html',
-    template: path.join(__dirname, '..', 'lib/markup/index.html')
+    template: path.join(__dirname, '..', 'src/markup/index.html')
   })
 ];
 
@@ -35,7 +35,7 @@ fs.readdirSync(bundlePath).forEach(function (filename) {
     new HtmlWebpackPlugin({
       chunks: ['vendor', basename],
       filename: basename + '/index.html',
-      template: path.join(__dirname, '..', 'lib/markup/index.html')
+      template: path.join(__dirname, '..', 'src/markup/index.html')
     })
   );
 });

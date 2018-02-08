@@ -2,7 +2,7 @@ var webpack = require('webpack');
 
 var config = require('../config/webpack.js');
 
-config.entry = { react: ['react', 'react-dom'] };
+config.entry = null;
 
 config.module.rules.push({
   exclude: '/node_modules/',

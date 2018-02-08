@@ -8,16 +8,19 @@ var bundles = require('../config/bundles');
 var PRODUCTION = process.env.NODE_ENV === 'production';
 var DEVELOPMENT = !PRODUCTION;
 
-var happyPlugins = [];
+var conditionalPlugins = []
+
+if (process.env.NODE_ENV !== 'test') {
+  conditionalPlugins.push(new webpack.optimize.CommonsChunkPlugin({
+    minChunks: 3,
+    name: 'vendor'
+  }))
+}
 
 module.exports = {
   devtool: 'source-map',
 
-  entry: Object.assign(
-    {},
-    bundles.entries,
-    { react: ['react', 'react-dom'] }
-  ),
+  entry: bundles.entries,
 
   module: {
     rules: [{
@@ -58,7 +61,9 @@ module.exports = {
         }
       }],
       threads: 4
-    })
+    }),
+
+    ...conditionalPlugins
   ]
   .concat(bundles.plugins),
 

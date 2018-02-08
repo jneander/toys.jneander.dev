@@ -13,7 +13,7 @@ var entries = {
 };
 var plugins = [
   new HtmlWebpackPlugin({
-    chunks: ['home'],
+    chunks: ['vendor', 'home'],
     filename: 'index.html',
     template: path.join(__dirname, '..', 'lib/markup/index.html')
   })
@@ -33,7 +33,7 @@ fs.readdirSync(bundlePath).forEach(function (filename) {
 
   plugins.push(
     new HtmlWebpackPlugin({
-      chunks: [basename],
+      chunks: ['vendor', basename],
       filename: basename + '/index.html',
       template: path.join(__dirname, '..', 'lib/markup/index.html')
     })

@@ -13,8 +13,8 @@
     "build:watch": "webpack --config ./config/webpack.development.js --progress --watch",
     "clean": "rimraf __build__",
     "deploy": "node ./scripts/deploy.js",
-    "spec": "karma start --single-run --no-auto-watch config/karma.conf.js",
-    "spec:watch": "karma start config/karma.conf.js",
+    "spec": "NODE_ENV=test karma start --single-run --no-auto-watch config/karma.conf.js",
+    "spec:watch": "NODE_ENV=test karma start config/karma.conf.js",
     "start:watch": "node scripts/dev-server.js"
   },
   "repository": {

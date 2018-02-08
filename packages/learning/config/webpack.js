@@ -70,7 +70,7 @@ module.exports = {
 
   resolve: {
     modules: [
-      path.join(__dirname, '..', 'lib'),
+      path.join(__dirname, '..', 'src'),
       'local-modules',
       'node_modules'
     ]

@@ -1,11 +1,8 @@
 {
-  "name": "sandbox",
-  "engines": {
-    "node": ">=6.9.5"
-  },
-  "version": "0.0.0",
+  "name": "@jneander/sandbox",
+  "version": "0.0.1",
   "description": "A place to exercise various projects together and dogfood their development environments",
-  "main": "index.js",
+  "main": "./index.js",
   "scripts": {
     "build": "webpack --config ./config/webpack.development.js --progress",
     "build:production": "webpack --config ./config/webpack.production.js --progress",
@@ -19,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jneander/sandbox.git"
+    "url": "git+https://github.com/jneander/jlnio.git"
   },
-  "author": "Jeremy Neander",
+  "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jneander/sandbox/issues"
+    "url": "https://github.com/jneander/jlnio/issues"
   },
-  "homepage": "https://github.com/jneander/sandbox#readme",
+  "homepage": "https://github.com/jneander/jlnio",
   "devDependencies": {
     "@jneander/dev-tools": "^0.0.1",
     "babel-core": "^6.26.0",
@@ -71,5 +68,6 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "url-pattern": "^1.0.3"
-  }
+  },
+  "private": true
 }

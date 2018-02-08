@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Heading from 'instructure-ui/lib/components/Heading';
-import Table from 'instructure-ui/lib/components/Table';
+import Heading from '@instructure/ui-core/lib/components/Heading';
+import Table from '@instructure/ui-core/lib/components/Table';
 
 export default class TableReport extends React.PureComponent {
   static defaultProps = {

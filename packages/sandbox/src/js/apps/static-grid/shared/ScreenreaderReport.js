@@ -1,6 +1,6 @@
 import React from 'react';
-import Table from 'instructure-ui/lib/components/Table';
-import Container from 'instructure-ui/lib/components/Container';
+import Table from '@instructure/ui-core/lib/components/Table';
+import Container from '@instructure/ui-core/lib/components/Container';
 
 export default function ScreenreaderReport (props) {
   return (

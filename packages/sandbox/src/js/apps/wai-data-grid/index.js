@@ -1,8 +1,8 @@
 import React from 'react';
-import Container from 'instructure-ui/lib/components/Container';
-import Link from 'instructure-ui/lib/components/Link';
-import TabList, { TabPanel } from 'instructure-ui/lib/components/TabList';
-import Typography from 'instructure-ui/lib/components/Typography';
+import Container from '@instructure/ui-core/lib/components/Container';
+import Link from '@instructure/ui-core/lib/components/Link';
+import TabList, { TabPanel } from '@instructure/ui-core/lib/components/TabList';
+import Text from '@instructure/ui-core/lib/components/Text';
 
 import Example1 from './example-1';
 import Example2 from './example-2';
@@ -40,7 +40,7 @@ export default class Grid extends React.PureComponent {
           }
         </TabList>
 
-        <Typography>
+        <Text>
           <p>
             These are the
             {' '}
@@ -50,7 +50,7 @@ export default class Grid extends React.PureComponent {
             {' '}
             They have been recreated in React as an exercise in understanding how a data grid can be accessible.
           </p>
-        </Typography>
+        </Text>
       </Container>
     );
   }

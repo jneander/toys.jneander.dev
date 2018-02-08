@@ -1,16 +1,14 @@
 import React from 'react';
-
-import canvas from 'instructure-ui/lib/themes/canvas';
-import ApplyTheme from 'instructure-ui/lib/components/ApplyTheme';
-
-import Button from 'instructure-ui/lib/components/Button';
-import Container from 'instructure-ui/lib/components/Container';
-import Grid, { GridCol, GridRow } from 'instructure-ui/lib/components/Grid';
-import Heading from 'instructure-ui/lib/components/Heading';
-import Link from 'instructure-ui/lib/components/Link';
-import { MenuItem } from 'instructure-ui/lib/components/Menu';
-import PopoverMenu from 'instructure-ui/lib/components/PopoverMenu';
-import Typography from 'instructure-ui/lib/components/Typography';
+import canvas from '@instructure/ui-themes/lib/canvas';
+import ApplyTheme from '@instructure/ui-core/lib/components/ApplyTheme';
+import Button from '@instructure/ui-core/lib/components/Button';
+import Container from '@instructure/ui-core/lib/components/Container';
+import Grid, { GridCol, GridRow } from '@instructure/ui-core/lib/components/Grid';
+import Heading from '@instructure/ui-core/lib/components/Heading';
+import Link from '@instructure/ui-core/lib/components/Link';
+import { MenuItem } from '@instructure/ui-core/lib/components/Menu';
+import PopoverMenu from '@instructure/ui-core/lib/components/PopoverMenu';
+import Text from '@instructure/ui-core/lib/components/Text';
 
 import styles from 'styles/sandbox.css';
 import apps from 'js/apps';
@@ -43,7 +41,7 @@ class Header extends React.Component {
               </GridCol>
 
               <GridCol width="auto">
-                <Typography>{ this.props.app }</Typography>
+                <Text>{ this.props.app }</Text>
               </GridCol>
 
               <GridCol width="auto">

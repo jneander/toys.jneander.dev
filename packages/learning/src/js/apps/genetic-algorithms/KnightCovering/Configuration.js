@@ -1,6 +1,6 @@
 import React from 'react';
-import Container from 'instructure-ui/lib/components/Container';
-import NumberInput from 'instructure-ui/lib/components/NumberInput';
+import Container from '@instructure/ui-core/lib/components/Container';
+import NumberInput from '@instructure/ui-core/lib/components/NumberInput';
 
 export default class Configuration extends React.PureComponent {
   constructor (props) {

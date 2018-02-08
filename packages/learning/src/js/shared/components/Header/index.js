@@ -1,16 +1,14 @@
 import React from 'react';
-
-import canvas from 'instructure-ui/lib/themes/canvas';
-import ApplyTheme from 'instructure-ui/lib/components/ApplyTheme';
-
-import Button from 'instructure-ui/lib/components/Button';
-import Container from 'instructure-ui/lib/components/Container';
-import Heading from 'instructure-ui/lib/components/Heading';
-import Link from 'instructure-ui/lib/components/Link';
-import { MenuItem } from 'instructure-ui/lib/components/Menu';
-import ScreenReaderContent from 'instructure-ui/lib/components/ScreenReaderContent';
-import Select from 'instructure-ui/lib/components/Select';
-import Typography from 'instructure-ui/lib/components/Typography';
+import ApplyTheme from '@instructure/ui-core/lib/components/ApplyTheme';
+import Button from '@instructure/ui-core/lib/components/Button';
+import Container from '@instructure/ui-core/lib/components/Container';
+import Heading from '@instructure/ui-core/lib/components/Heading';
+import Link from '@instructure/ui-core/lib/components/Link';
+import { MenuItem } from '@instructure/ui-core/lib/components/Menu';
+import ScreenReaderContent from '@instructure/ui-core/lib/components/ScreenReaderContent';
+import Select from '@instructure/ui-core/lib/components/Select';
+import Text from '@instructure/ui-core/lib/components/Text';
+import canvas from '@instructure/ui-themes/lib/canvas';
 
 import styles from './styles.css';
 import apps from 'js/apps';
@@ -46,7 +44,7 @@ export default class Header extends React.Component {
           </div>
 
           <div className={styles.AppName}>
-            <Typography>{ this.props.app }</Typography>
+            <Text>{ this.props.app }</Text>
           </div>
 
           <div className={styles.Navigation}>

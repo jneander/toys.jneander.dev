@@ -1,5 +1,5 @@
 import React from 'react';
-import Container from 'instructure-ui/lib/components/Container';
+import Container from '@instructure/ui-core/lib/components/Container';
 
 import ExampleControls from 'js/shared/components/ExampleControls';
 

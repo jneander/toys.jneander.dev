@@ -1,5 +1,5 @@
 import React from 'react';
-import Heading from 'instructure-ui/lib/components/Heading';
+import Heading from '@instructure/ui-core/lib/components/Heading';
 
 import { product, sum } from 'genetics/util';
 

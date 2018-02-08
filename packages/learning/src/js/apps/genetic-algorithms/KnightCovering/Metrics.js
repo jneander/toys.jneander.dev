@@ -1,6 +1,6 @@
 import React from 'react';
-import ScreenReaderContent from 'instructure-ui/lib/components/ScreenReaderContent';
-import Table from 'instructure-ui/lib/components/Table';
+import ScreenReaderContent from '@instructure/ui-core/lib/components/ScreenReaderContent';
+import Table from '@instructure/ui-core/lib/components/Table';
 
 export default class Metrics extends React.PureComponent {
   render () {

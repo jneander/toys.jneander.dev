@@ -1,10 +1,9 @@
 import React from 'react';
-
-import ApplyTheme from 'instructure-ui/lib/components/ApplyTheme';
-import Container from 'instructure-ui/lib/components/Container';
-import Heading from 'instructure-ui/lib/components/Heading';
-import Select from 'instructure-ui/lib/components/Select';
-import canvas from 'instructure-ui/lib/themes/canvas';
+import ApplyTheme from '@instructure/ui-core/lib/components/ApplyTheme';
+import Container from '@instructure/ui-core/lib/components/Container';
+import Heading from '@instructure/ui-core/lib/components/Heading';
+import Select from '@instructure/ui-core/lib/components/Select';
+import canvas from '@instructure/ui-themes/lib/canvas';
 
 export default class ExampleHarness extends React.Component {
   constructor (props) {

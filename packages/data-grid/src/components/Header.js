@@ -1,6 +1,8 @@
 import React from 'react';
+import themeable from '@instructure/ui-themeable';
 
 import styles from '../styles/styles.css';
+import theme from '../theme';
 import HeaderCell from './HeaderCell';
 
 class Header extends React.Component {
@@ -34,4 +36,4 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default themeable(theme, styles)(Header);

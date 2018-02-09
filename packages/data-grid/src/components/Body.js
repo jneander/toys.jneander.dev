@@ -1,6 +1,8 @@
 import React from 'react';
+import themeable from '@instructure/ui-themeable';
 
 import styles from '../styles/styles.css';
+import theme from '../theme';
 import Row from './Row';
 
 function getRowClassname (index, rowClassNames = []) {
@@ -9,7 +11,7 @@ function getRowClassname (index, rowClassNames = []) {
   }
 }
 
-class Grid extends React.PureComponent {
+class Body extends React.PureComponent {
   render () {
     const classes = [styles.Grid__Body];
     if (this.props.className) {
@@ -51,4 +53,4 @@ class Grid extends React.PureComponent {
   }
 }
 
-export default Grid;
+export default themeable(theme, styles)(Body);

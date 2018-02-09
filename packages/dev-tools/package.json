@@ -7,17 +7,43 @@
     "url": "git+https://github.com/jneander/jlnio.git"
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
+  "bin": {
+    "build-lib": "./scripts/building/build-lib.js"
+  },
   "license": "MIT",
   "bugs": "https://github.com/jneander/jlnio/issues",
   "homepage": "https://github.com/jneander/jlnio",
   "dependencies": {
+    "@babel/cli": "^7.0.0-beta",
+    "@babel/core": "^7.0.0-beta",
+    "@babel/polyfill": "^7.0.0-beta",
+    "@babel/preset-es2015": "^7.0.0-beta",
+    "@babel/preset-react": "^7.0.0-beta",
+    "@babel/preset-stage-1": "^7.0.0-beta",
+    "@instructure/babel-plugin-transform-class-display-name": "^4.7.1",
+    "@jneander/babel-plugin-themeable-styles": "^0.0.1",
+    "babel-loader": "^7.1.2",
     "concurrently": "^3.5.1",
+    "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^5.1.3",
     "cross-spawn": "^6.0.4",
+    "css-loader": "^0.28.7",
     "dotenv": "^5.0.0",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.11.2",
+    "happypack": "^4.0.1",
+    "html-loader": "^0.5.1",
+    "html-webpack-plugin": "^2.30.1",
+    "imports-loader": "^0.7.1",
     "rimraf": "^2.6.2",
     "s3": "^4.4.0",
-    "which": "^1.3.0"
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "url-pattern": "^1.0.3",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2",
+    "which": "^1.3.0",
+    "write-file-webpack-plugin": "^4.1.0"
   },
   "private": true
 }

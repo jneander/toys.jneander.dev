@@ -1,7 +1,9 @@
 import React from 'react';
 import Measure from 'react-measure';
+import themeable from '@instructure/ui-themeable';
 
 import styles from '../styles/styles.css';
+import theme from '../theme';
 import Body from './Body';
 import Header from './Header';
 
@@ -103,4 +105,4 @@ class Grid extends React.PureComponent {
   }
 }
 
-export default Grid;
+export default themeable(theme, styles)(Grid);

@@ -1,6 +1,8 @@
 import React from 'react';
+import themeable from '@instructure/ui-themeable';
 
 import styles from '../styles/styles.css';
+import theme from '../theme';
 import RowCell from './RowCell';
 
 class Row extends React.PureComponent {
@@ -31,4 +33,4 @@ class Row extends React.PureComponent {
   }
 }
 
-export default Row;
+export default themeable(theme, styles)(Row);

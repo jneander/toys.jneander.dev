@@ -23,6 +23,9 @@
     "url": "https://github.com/jneander/jlnio/issues"
   },
   "homepage": "https://github.com/jneander/jlnio",
+  "dependencies": {
+    "@jneander/data-grid": "^0.0.1"
+  },
   "devDependencies": {
     "@instructure/ui-core": "^4.7.1",
     "@instructure/ui-themes": "^4.7.1",

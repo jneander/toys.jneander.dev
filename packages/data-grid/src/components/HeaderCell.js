@@ -1,6 +1,8 @@
 import React from 'react';
+import themeable from '@instructure/ui-themeable';
 
 import styles from '../styles/styles.css';
+import theme from '../theme';
 
 class HeaderCell extends React.Component {
   render () {
@@ -18,4 +20,4 @@ class HeaderCell extends React.Component {
   }
 }
 
-export default HeaderCell;
+export default themeable(theme, styles)(HeaderCell);

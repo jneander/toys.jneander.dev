@@ -1,6 +1,8 @@
 import React from 'react';
+import themeable from '@instructure/ui-themeable';
 
 import styles from '../styles/styles.css';
+import theme from '../theme';
 
 class RowCell extends React.Component {
   render () {
@@ -18,4 +20,4 @@ class RowCell extends React.Component {
   }
 }
 
-export default RowCell;
+export default themeable(theme, styles)(RowCell);

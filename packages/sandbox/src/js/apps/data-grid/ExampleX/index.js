@@ -1,6 +1,5 @@
 import React from 'react';
-
-import DataGrid from 'data-grid';
+import DataGrid from '@jneander/data-grid';
 
 import HeaderCellComponentFactory from './HeaderCellComponentFactory';
 import RowCellComponentFactory from './RowCellComponentFactory';

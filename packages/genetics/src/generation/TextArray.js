@@ -1,5 +1,5 @@
-import Chromosome from 'genetics/Chromosome';
-import { choice } from 'genetics/util';
+import Chromosome from '../Chromosome';
+import { choice } from '../util';
 
 function createPhraseArray (length, geneSet) {
   const phrase = [];

@@ -1,4 +1,4 @@
-import Fitness from 'genetics/fitness/Fitness';
+import Fitness from '@jneander/genetics/es/fitness/Fitness';
 
 import { listAttacks, positionHash } from './util';
 

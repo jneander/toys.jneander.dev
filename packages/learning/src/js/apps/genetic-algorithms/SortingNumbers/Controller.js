@@ -1,7 +1,7 @@
-import Chromosome from 'genetics/Chromosome';
-import ArrayOrder from 'genetics/fitness/ArrayOrder';
-import { swapTwoGenes } from 'genetics/mutation';
-import { range, sample, shuffle } from 'genetics/util';
+import Chromosome from '@jneander/genetics/es/Chromosome';
+import ArrayOrder from '@jneander/genetics/es/fitness/ArrayOrder';
+import { swapTwoGenes } from '@jneander/genetics/es/mutation';
+import { range, sample, shuffle } from '@jneander/genetics/es/util';
 
 import BaseController from '../shared/Controller';
 

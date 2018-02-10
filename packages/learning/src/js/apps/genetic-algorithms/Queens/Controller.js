@@ -1,8 +1,8 @@
-import Chromosome from 'genetics/Chromosome';
+import Chromosome from '@jneander/genetics/es/Chromosome';
 import FewestAttacks from './FewestAttacks';
-import { generateParent } from 'genetics/generation';
-import { replaceOneGene } from 'genetics/mutation';
-import { range } from 'genetics/util';
+import { generateParent } from '@jneander/genetics/es/generation';
+import { replaceOneGene } from '@jneander/genetics/es/mutation';
+import { range } from '@jneander/genetics/es/util';
 
 import BaseController from '../shared/Controller';
 

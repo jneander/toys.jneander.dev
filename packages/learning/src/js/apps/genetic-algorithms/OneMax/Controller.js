@@ -1,9 +1,9 @@
-import Chromosome from 'genetics/Chromosome';
-import ArrayMatch from 'genetics/fitness/ArrayMatch';
-import { generateParent } from 'genetics/generation';
-import TextArray from 'genetics/generation/TextArray';
-import { replaceOneGene } from 'genetics/mutation';
-import { sample } from 'genetics/util';
+import Chromosome from '@jneander/genetics/es/Chromosome';
+import ArrayMatch from '@jneander/genetics/es/fitness/ArrayMatch';
+import { generateParent } from '@jneander/genetics/es/generation';
+import TextArray from '@jneander/genetics/es/generation/TextArray';
+import { replaceOneGene } from '@jneander/genetics/es/mutation';
+import { sample } from '@jneander/genetics/es/util';
 
 import BaseController from '../shared/Controller';
 

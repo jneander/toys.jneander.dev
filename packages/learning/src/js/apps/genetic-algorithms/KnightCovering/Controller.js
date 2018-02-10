@@ -1,6 +1,6 @@
-import Chromosome from 'genetics/Chromosome';
-import { replaceOneGene } from 'genetics/mutation';
-import { choice, randomInt, range } from 'genetics/util';
+import Chromosome from '@jneander/genetics/es/Chromosome';
+import { replaceOneGene } from '@jneander/genetics/es/mutation';
+import { choice, randomInt, range } from '@jneander/genetics/es/util';
 
 import BaseController from '../shared/Controller';
 

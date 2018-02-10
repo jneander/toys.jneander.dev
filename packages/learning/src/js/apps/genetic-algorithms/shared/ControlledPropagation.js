@@ -1,4 +1,4 @@
-import Propagation from 'genetics/Propagation';
+import Propagation from '@jneander/genetics/es/Propagation';
 
 export default class ControlledPropagation {
   constructor (config) {

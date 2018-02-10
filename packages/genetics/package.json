@@ -1,0 +1,20 @@
+{
+  "name": "@jneander/genetics",
+  "version": "0.1.0",
+  "description": "Genetic Algorithms in JavaScript",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "scripts": {
+    "build": "build-lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jneander/jlnio.git"
+  },
+  "author": "Jeremy Neander <jeremy.neander@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@jneander/dev-tools": "^0.0.1"
+  },
+  "private": true
+}

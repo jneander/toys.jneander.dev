@@ -1,5 +1,5 @@
-import Chromosome from 'genetics/Chromosome';
-import { sample } from 'genetics/util';
+import Chromosome from '../Chromosome';
+import { sample } from '../util';
 
 export function generateParent (length, geneSet, getFitness) {
   let genes = [];

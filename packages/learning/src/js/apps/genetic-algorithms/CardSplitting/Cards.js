@@ -1,7 +1,7 @@
 import React from 'react';
 import Heading from '@instructure/ui-core/lib/components/Heading';
 
-import { product, sum } from 'genetics/util';
+import { product, sum } from '@jneander/genetics/es/util';
 
 import styles from './styles.css';
 

@@ -1,10 +1,10 @@
-import Chromosome from 'genetics/Chromosome';
-import ArrayOrder from 'genetics/fitness/ArrayOrder';
-import { generateParent } from 'genetics/generation';
-import { replaceOneGene } from 'genetics/mutation';
-import { sample } from 'genetics/util';
+import Chromosome from '@jneander/genetics/es/Chromosome';
+import ArrayOrder from '@jneander/genetics/es/fitness/ArrayOrder';
+import { generateParent } from '@jneander/genetics/es/generation';
+import { replaceOneGene } from '@jneander/genetics/es/mutation';
+import { sample } from '@jneander/genetics/es/util';
 
-import ArrayMatch from 'genetics/fitness/ArrayMatch';
+import ArrayMatch from '@jneander/genetics/es/fitness/ArrayMatch';
 
 import BaseController from '../shared/Controller';
 

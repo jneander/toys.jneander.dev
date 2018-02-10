@@ -1,7 +1,7 @@
-import Chromosome from 'genetics/Chromosome';
-import { generateParent } from 'genetics/generation';
-import { replaceOneGene, swapTwoGenes } from 'genetics/mutation';
-import { randomInt } from 'genetics/util';
+import Chromosome from '@jneander/genetics/es/Chromosome';
+import { generateParent } from '@jneander/genetics/es/generation';
+import { replaceOneGene, swapTwoGenes } from '@jneander/genetics/es/mutation';
+import { randomInt } from '@jneander/genetics/es/util';
 
 import BaseController from '../shared/Controller';
 

@@ -1,5 +1,5 @@
-import Fitness from 'genetics/fitness/Fitness';
-import { product, sum } from 'genetics/util';
+import Fitness from '@jneander/genetics/es/fitness/Fitness';
+import { product, sum } from '@jneander/genetics/es/util';
 
 function convertGene (gene) {
   return gene === 'A' ? 1 : parseInt(gene, 10);

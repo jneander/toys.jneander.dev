@@ -1,5 +1,5 @@
-import Chromosome from 'genetics/Chromosome';
-import { randomInt, range, sample } from 'genetics/util';
+import Chromosome from '../Chromosome';
+import { randomInt, range, sample } from '../util';
 
 export function replaceOneGene (parent, geneSet, getFitness, iteration) {
   const index = randomInt(0, parent.genes.length);

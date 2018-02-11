@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jneander/jlnio.git"
+    "url": "https://github.com/jneander/jlnio"
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@instructure/ui-core": "^4.7.1",
     "@instructure/ui-themes": "^4.7.1",
-    "@jneander/dev-tools": "^0.0.1",
+    "@jneander/dev-tools": "^0.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-polyfill": "^6.26.0",

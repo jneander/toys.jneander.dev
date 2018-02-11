@@ -4,7 +4,7 @@
   "description": "@jneander Shared Development Tools",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jneander/jlnio.git"
+    "url": "https://github.com/jneander/jlnio"
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "bin": {

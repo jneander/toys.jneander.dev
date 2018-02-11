@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jneander/jlnio.git"
+    "url": "https://github.com/jneander/jlnio"
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@jneander/dev-tools": "^0.0.1"
+    "@jneander/dev-tools": "^0.0"
   },
   "private": true
 }

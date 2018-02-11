@@ -14,7 +14,8 @@
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@instructure/ui-themeable": "^4.7.1"
+    "@instructure/ui-themeable": "^4.7.1",
+    "react-measure": "^1.4.7"
   },
   "devDependencies": {
     "@jneander/dev-tools": "^0.0"

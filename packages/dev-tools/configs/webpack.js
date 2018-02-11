@@ -20,7 +20,7 @@ module.exports = function(appConfig) {
 
   appConfig.pages.forEach(page => {
     pageEntries[page.name] = [
-      'babel-polyfill',
+      '@babel/polyfill',
       path.join(pkgSrc, page.sourcePath)
     ]
 
@@ -69,9 +69,9 @@ module.exports = function(appConfig) {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['es2015', { modules: false }],
-              'babel-preset-stage-1',
-              'react'
+              ['@babel/preset-es2015', { modules: false }],
+              '@babel/preset-stage-1',
+              '@babel/preset-react'
             ]
           }
         }],

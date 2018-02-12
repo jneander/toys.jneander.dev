@@ -1,9 +1,9 @@
-import HeaderCell from './HeaderCell';
+import HeaderCell from './HeaderCell'
 
 class HeaderCellComponentFactory {
-  getComponent () {
-    return HeaderCell;
+  getComponent() {
+    return HeaderCell
   }
 }
 
-export default HeaderCellComponentFactory;
+export default HeaderCellComponentFactory

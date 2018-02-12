@@ -1,9 +1,9 @@
-import RowCell from './RowCell';
+import RowCell from './RowCell'
 
 class RowCellComponentFactory {
-  getComponent () {
-    return RowCell;
+  getComponent() {
+    return RowCell
   }
 }
 
-export default RowCellComponentFactory;
+export default RowCellComponentFactory

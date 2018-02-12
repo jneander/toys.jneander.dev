@@ -1,49 +1,51 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import KeyCodes from 'js/apps/wai-data-grid/shared/KeyCodes';
+import KeyCodes from 'js/apps/wai-data-grid/shared/KeyCodes'
 
-import styles from './css/styles.css';
+import styles from './css/styles.css'
 
 export default class ColumnHeader extends React.PureComponent {
   static defaultProps = {
     sortable: false,
     sortDirection: 'none'
-  };
+  }
 
   static propTypes = {
     children: PropTypes.node.isRequired,
     sortable: PropTypes.bool,
     sortDirection: PropTypes.oneOf(['none', 'ascending', 'descending'])
-  };
+  }
 
-  bindFocusable = (ref) => { this.focusable = ref };
+  bindFocusable = ref => {
+    this.focusable = ref
+  }
 
   focus = () => {
-    this.focusable.focus();
-  };
+    this.focusable.focus()
+  }
 
-  handleClick = (event) => {
-    this.toggleSort();
-  };
+  handleClick = event => {
+    this.toggleSort()
+  }
 
-  handleKeyDown = (event) => {
+  handleKeyDown = event => {
     if (event.which === 13 || event.which === 32) {
-      this.toggleSort();
+      this.toggleSort()
     }
-  };
+  }
 
   toggleSort = () => {
-    this.props.onSort(this.props.sortDirection === 'ascending' ? 'descending' : 'ascending');
-  };
+    this.props.onSort(this.props.sortDirection === 'ascending' ? 'descending' : 'ascending')
+  }
 
-  render () {
+  render() {
     if (this.props.sortable) {
-      const classes = [styles.ColumnHeader];
+      const classes = [styles.ColumnHeader]
       if (this.props.sortDirection === 'ascending') {
-        classes.push(styles.SortAscending);
+        classes.push(styles.SortAscending)
       } else if (this.props.sortDirection === 'descending') {
-        classes.push(styles.SortDescending);
+        classes.push(styles.SortDescending)
       }
 
       return (
@@ -55,20 +57,16 @@ export default class ColumnHeader extends React.PureComponent {
             role="button"
             tabIndex={this.props.isActive ? '0' : '-1'}
           >
-            { this.props.children }
+            {this.props.children}
           </span>
         </th>
-      );
+      )
     }
 
     return (
-      <th
-        ref={this.bindFocusable}
-        className={styles.ColumnHeader}
-        tabIndex={this.props.isActive ? '0' : '-1'}
-      >
-        { this.props.children }
+      <th ref={this.bindFocusable} className={styles.ColumnHeader} tabIndex={this.props.isActive ? '0' : '-1'}>
+        {this.props.children}
       </th>
-    );
+    )
   }
 }

@@ -1,4 +1,4 @@
-import TableReport from './TableReport';
+import TableReport from './TableReport'
 
-export default { TableReport };
-export { default as TableReport } from './TableReport';
+export default {TableReport}
+export {default as TableReport} from './TableReport'

@@ -1,17 +1,17 @@
-import React from 'react';
+import React from 'react'
 
-import styles from './styles.css';
+import styles from './styles.css'
 
 class RowCell extends React.Component {
-  render () {
-    const text = this.props.row.data[this.props.column.id];
+  render() {
+    const text = this.props.row.data[this.props.column.id]
 
     return (
       <div className={styles.RowCell}>
-        <span>{ text }</span>
+        <span>{text}</span>
       </div>
-    );
+    )
   }
 }
 
-export default RowCell;
+export default RowCell

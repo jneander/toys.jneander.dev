@@ -1,8 +1,8 @@
-import React from 'react';
-import Table from '@instructure/ui-core/lib/components/Table';
-import Container from '@instructure/ui-core/lib/components/Container';
+import React from 'react'
+import Table from '@instructure/ui-core/lib/components/Table'
+import Container from '@instructure/ui-core/lib/components/Container'
 
-export default function ScreenreaderReport (props) {
+export default function ScreenreaderReport(props) {
   return (
     <Table caption={<Container padding="small">Screenreader Output</Container>}>
       <thead>
@@ -15,17 +15,15 @@ export default function ScreenreaderReport (props) {
       </thead>
 
       <tbody>
-        {
-          props.data.map((datum, index) => (
-            <tr key={index}>
-              <td>{ datum.action }</td>
-              <td>{ datum.voiceover || 'Not Tested' }</td>
-              <td>{ datum.nvda || 'Not Tested' }</td>
-              <td>{ datum.jaws || 'Not Tested' }</td>
-            </tr>
-          ))
-        }
+        {props.data.map((datum, index) => (
+          <tr key={index}>
+            <td>{datum.action}</td>
+            <td>{datum.voiceover || 'Not Tested'}</td>
+            <td>{datum.nvda || 'Not Tested'}</td>
+            <td>{datum.jaws || 'Not Tested'}</td>
+          </tr>
+        ))}
       </tbody>
     </Table>
-  );
+  )
 }

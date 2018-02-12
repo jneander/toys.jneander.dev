@@ -1,11 +1,9 @@
-import React from 'react';
+import React from 'react'
 
 class Sandbox extends React.Component {
-  render () {
-    return (
-      <h2>WIP</h2>
-    );
+  render() {
+    return <h2>WIP</h2>
   }
 }
 
-export default Sandbox;
+export default Sandbox

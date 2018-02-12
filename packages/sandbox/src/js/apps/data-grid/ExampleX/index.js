@@ -1,21 +1,21 @@
-import React from 'react';
-import DataGrid from '@jneander/data-grid';
+import React from 'react'
+import DataGrid from '@jneander/data-grid'
 
-import HeaderCellComponentFactory from './HeaderCellComponentFactory';
-import RowCellComponentFactory from './RowCellComponentFactory';
-import styles from './styles.css';
+import HeaderCellComponentFactory from './HeaderCellComponentFactory'
+import RowCellComponentFactory from './RowCellComponentFactory'
+import styles from './styles.css'
 
-import { keyedData } from './exampleData';
+import {keyedData} from './exampleData'
 
-const headerCellFactory = new HeaderCellComponentFactory();
-const rowCellFactory = new RowCellComponentFactory();
+const headerCellFactory = new HeaderCellComponentFactory()
+const rowCellFactory = new RowCellComponentFactory()
 
-const headerHeight = 40;
-const rowHeight = 36;
-const rowClassNames = [styles['Row--even'], styles['Row--odd']];
+const headerHeight = 40
+const rowHeight = 36
+const rowClassNames = [styles['Row--even'], styles['Row--odd']]
 
 export default class DataGridExampleX extends React.PureComponent {
-  render () {
+  render() {
     return (
       <DataGrid
         className={styles.Grid}
@@ -30,6 +30,6 @@ export default class DataGridExampleX extends React.PureComponent {
         rowHeight={rowHeight}
         {...this.props}
       />
-    );
+    )
   }
 }

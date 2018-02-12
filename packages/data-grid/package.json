@@ -6,8 +6,8 @@
   "module": "./es/index.js",
   "scripts": {
     "build": "build-lib",
-    "format": "format-code",
-    "lint": "lint-code"
+    "lint": "lint-code",
+    "lint:fix": "lint-code --fix"
   },
   "repository": {
     "type": "git",

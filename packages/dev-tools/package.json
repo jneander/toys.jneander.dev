@@ -1,6 +1,6 @@
 {
   "name": "@jneander/dev-tools",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "@jneander Shared Development Tools",
   "repository": {
     "type": "git",
@@ -10,7 +10,13 @@
   "bin": {
     "build-app": "./scripts/building/build-app.js",
     "build-lib": "./scripts/building/build-lib.js",
+    "format-code": "./scripts/quality/format-code.js",
+    "lint-code": "./scripts/quality/lint-code.js",
     "run-specs": "./scripts/specs/run-specs.js"
+  },
+  "scripts": {
+    "format": "format-code --include lib",
+    "lint": "lint-code --include lib"
   },
   "license": "MIT",
   "bugs": "https://github.com/jneander/jlnio/issues",
@@ -43,6 +49,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
     "mocha": "^3.5.3",
+    "prettier": "1.10.2",
     "rimraf": "^2.6.2",
     "s3": "^4.4.0",
     "style-loader": "^0.18.2",

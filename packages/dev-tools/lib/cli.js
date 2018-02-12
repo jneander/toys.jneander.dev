@@ -7,9 +7,7 @@ function getEntry(name) {
 }
 
 function getEnv(defaultValue = 'production') {
-  return ['development', 'production', 'test'].includes(process.env.NODE_ENV)
-    ? process.env.NODE_ENV
-    : defaultValue
+  return ['development', 'production', 'test'].includes(process.env.NODE_ENV) ? process.env.NODE_ENV : defaultValue
 }
 
 function getFlag(name) {
@@ -24,6 +22,11 @@ function getInteger(name) {
 function getString(name) {
   const entries = getEntry(name)
   return entries[1] || null
+}
+
+function getStringArray(name) {
+  const entries = getEntry(name)
+  return entries[1] ? entries[1].split(',').map(value => value.trim()) : []
 }
 
 function getVar(name) {
@@ -47,6 +50,7 @@ module.exports = {
   getFlag,
   getInteger,
   getString,
+  getStringArray,
   getVar,
   getVarFlag,
   getVarInteger

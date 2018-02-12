@@ -19,7 +19,7 @@ function deploy(options) {
       }
     })
 
-    uploader.on('error', (err) => {
+    uploader.on('error', err => {
       console.error('unable to sync:', err.stack)
       reject(err)
     })

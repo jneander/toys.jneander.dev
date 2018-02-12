@@ -27,7 +27,7 @@ const path = require('path')
 const which = require('which')
 const spawn = require('cross-spawn')
 
-function resolveBin (modName, {executable = modName, cwd = process.cwd()} = {}) {
+function resolveBin(modName, {executable = modName, cwd = process.cwd()} = {}) {
   let pathFromWhich
   try {
     pathFromWhich = fs.realpathSync(which.sync(executable))
@@ -37,7 +37,7 @@ function resolveBin (modName, {executable = modName, cwd = process.cwd()} = {}) 
   try {
     const modPkgPath = require.resolve(`${modName}/package.json`)
     const modPkgDir = path.dirname(modPkgPath)
-    const { bin } = require(modPkgPath)
+    const {bin} = require(modPkgPath)
     const binPath = typeof bin === 'string' ? bin : bin[executable]
     const fullPathToBin = path.join(modPkgDir, binPath)
     if (fullPathToBin === pathFromWhich) {
@@ -52,60 +52,27 @@ function resolveBin (modName, {executable = modName, cwd = process.cwd()} = {}) 
   }
 }
 
-function getCommand (vars, command, args) {
+function getCommand(vars, command, args) {
   return `${resolveBin('cross-env')} ${vars.join(' ')} ${resolveBin(command)} ${args.join(' ')}`
 }
 
-function runCommands (commands) {
+function runCommands(commands) {
   const args = [
     '--kill-others-on-fail',
-    '--prefix', '[{name}]',
-    '--names', Object.keys(commands).join(','),
-    '--prefix-colors', 'bgBlue.bold,bgMagenta.bold,bgGreen.bold',
-    '--success', 'all'
+    '--prefix=[{name}]',
+    `--names=${Object.keys(commands).join(',')}`,
+    '--prefix-colors=bgBlue.bold,bgMagenta.bold,bgGreen.bold',
+    '--success=all'
   ]
 
-  Object.keys(commands).forEach((name) => {
+  Object.keys(commands).forEach(name => {
     if (commands[name]) {
       args.push(JSON.stringify(commands[name]))
     }
   })
 
-  return spawn.sync(
-    `${resolveBin('concurrently')}`,
-    args,
-    { stdio: 'inherit' }
-  )
+  return spawn.sync(`${resolveBin('concurrently')}`, args, {stdio: 'inherit'})
 }
 
-function buildScript(vars, script, args) {
-  const scriptPath = path.join(__dirname, '../scripts', script)
-  return `${resolveBin('cross-env')} ${vars.join(' ')} ${scriptPath}.js ${args.join(' ')}`
-}
-
-function runScripts(scripts) {
-  const args = [
-    '--kill-others-on-fail',
-    '--prefix', '[{name}]',
-    '--names', Object.keys(scripts).join(','),
-    '--prefix-colors', 'bgBlue.bold,bgMagenta.bold,bgGreen.bold',
-    '--success', 'all'
-  ]
-
-  Object.keys(scripts).forEach((name) => {
-    if (scripts[name]) {
-      args.push(JSON.stringify(scripts[name]))
-    }
-  })
-
-  return spawn.sync(
-    `${resolveBin('concurrently')}`,
-    args,
-    { stdio: 'inherit' }
-  )
-}
-
-exports.buildScript = buildScript
 exports.runCommands = runCommands
 exports.getCommand = getCommand
-exports.runScripts = runScripts

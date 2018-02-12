@@ -15,7 +15,10 @@ export class CardGroupFitness extends Fitness {
   }
 
   isEqualTo(fitness) {
-    return this.value.duplicates === fitness.value.duplicates && this.value.difference === fitness.value.difference
+    return (
+      this.value.duplicates === fitness.value.duplicates &&
+      this.value.difference === fitness.value.difference
+    )
   }
 
   isGreaterThan(fitness) {

@@ -8,7 +8,8 @@ import styles from './styles.css'
 function renderRow(datum, rowIndex, grid) {
   const {row, column} = grid.state.focusPointer
   const tabIndexFor = columnIndex => (column === columnIndex && row === rowIndex ? '0' : '-1')
-  const refFor = columnIndex => (column === columnIndex && row === rowIndex ? grid.bindFocusedCell : undefined)
+  const refFor = columnIndex =>
+    column === columnIndex && row === rowIndex ? grid.bindFocusedCell : undefined
 
   return (
     <tr key={rowIndex}>

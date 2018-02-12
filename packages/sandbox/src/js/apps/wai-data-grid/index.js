@@ -41,8 +41,10 @@ export default class Grid extends React.PureComponent {
             <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/examples/grid/dataGrids.html">
               Data Grid Examples
             </Link>, from the{' '}
-            <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/">WAI-ARIA Authoring Practices 1.1</Link>. They
-            have been recreated in React as an exercise in understanding how a data grid can be accessible.
+            <Link href="https://www.w3.org/TR/wai-aria-practices-1.1/">
+              WAI-ARIA Authoring Practices 1.1
+            </Link>. They have been recreated in React as an exercise in understanding how a data
+            grid can be accessible.
           </p>
         </Text>
       </Container>

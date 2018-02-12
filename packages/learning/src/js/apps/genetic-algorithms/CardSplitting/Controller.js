@@ -34,7 +34,8 @@ export default class Controller extends BaseController {
 
   propogationOptions() {
     return {
-      mutate: (parent, iterationCount) => mutate(parent, this.geneSet(), this.getFitness, iterationCount)
+      mutate: (parent, iterationCount) =>
+        mutate(parent, this.geneSet(), this.getFitness, iterationCount)
     }
   }
 

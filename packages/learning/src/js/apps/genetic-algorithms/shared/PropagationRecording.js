@@ -36,7 +36,11 @@ export default class PropagationRecording {
     if (this.config.allIterations) {
       const improvements = this.improvements()
       let best = improvements[0]
-      for (let i = 1; i < improvements.length && improvements[i].iteration <= this._playbackPosition; i++) {
+      for (
+        let i = 1;
+        i < improvements.length && improvements[i].iteration <= this._playbackPosition;
+        i++
+      ) {
         best = improvements[i]
       }
       return best

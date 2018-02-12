@@ -46,7 +46,10 @@ keyedData.columns = buildLetterList(26).map((key, index) => ({
 
 keyedData.rows = range(1, 12).map(key => ({
   id: 2000 + key,
-  data: keyedData.columns.reduce((map, column) => ({...map, [column.id]: `${column.key}${key}`}), {})
+  data: keyedData.columns.reduce(
+    (map, column) => ({...map, [column.id]: `${column.key}${key}`}),
+    {}
+  )
 }))
 
 addMaps(keyedData)

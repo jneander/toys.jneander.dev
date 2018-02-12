@@ -29,7 +29,8 @@ export default class Controller extends BaseController {
 
   propogationOptions() {
     return {
-      mutate: (parent, iterationCount) => swapTwoGenes(parent, this.geneSet(), this.getFitness, iterationCount)
+      mutate: (parent, iterationCount) =>
+        swapTwoGenes(parent, this.geneSet(), this.getFitness, iterationCount)
     }
   }
 

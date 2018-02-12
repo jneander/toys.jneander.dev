@@ -23,7 +23,10 @@ export default function GeneticAlgorithms(props) {
   return (
     <AppHarness page="geneticAlgorithms">
       <ExampleHarness defaultExample={examples[5]} examples={examples} heading="Genetic Algorithms">
-        <div>I recommend not trying the Genetic Algorithms on your mobile device. They consume a lot of power.</div>
+        <div>
+          I recommend not trying the Genetic Algorithms on your mobile device. They consume a lot of
+          power.
+        </div>
       </ExampleHarness>
     </AppHarness>
   )

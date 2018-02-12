@@ -45,7 +45,10 @@ class Header extends React.Component {
               </GridCol>
 
               <GridCol width="auto">
-                <PopoverMenu onSelect={this.onAppChange} trigger={<Button variant="primary">Apps</Button>}>
+                <PopoverMenu
+                  onSelect={this.onAppChange}
+                  trigger={<Button variant="primary">Apps</Button>}
+                >
                   {appList.map(app => (
                     <MenuItem key={app.label} value={app.path}>
                       {app.label}

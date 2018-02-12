@@ -7,7 +7,9 @@ function getEntry(name) {
 }
 
 function getEnv(defaultValue = 'production') {
-  return ['development', 'production', 'test'].includes(process.env.NODE_ENV) ? process.env.NODE_ENV : defaultValue
+  return ['development', 'production', 'test'].includes(process.env.NODE_ENV)
+    ? process.env.NODE_ENV
+    : defaultValue
 }
 
 function getFlag(name) {

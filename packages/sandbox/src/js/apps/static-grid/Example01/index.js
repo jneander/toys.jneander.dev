@@ -30,7 +30,9 @@ export default class Example01 extends React.PureComponent {
 
             <tbody>
               {structure.rows.map(row => (
-                <tr key={row.id}>{structure.columns.map(column => <td key={column.id}>{row.data[column.id]}</td>)}</tr>
+                <tr key={row.id}>
+                  {structure.columns.map(column => <td key={column.id}>{row.data[column.id]}</td>)}
+                </tr>
               ))}
             </tbody>
           </table>

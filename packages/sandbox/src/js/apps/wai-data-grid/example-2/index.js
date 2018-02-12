@@ -12,7 +12,8 @@ import styles from './css/styles.css'
 function renderRow(datum, rowIndex, grid) {
   const {row, column} = grid.state.focusPointer
   const tabIndexFor = columnIndex => (column === columnIndex && row === rowIndex ? '0' : '-1')
-  const refFor = columnIndex => (column === columnIndex && row === rowIndex ? grid.bindFocusedCell : undefined)
+  const refFor = columnIndex =>
+    column === columnIndex && row === rowIndex ? grid.bindFocusedCell : undefined
   const cellIsActive = columnIndex => column === columnIndex && row === rowIndex
 
   return (
@@ -20,7 +21,12 @@ function renderRow(datum, rowIndex, grid) {
       <TextCell ref={refFor(0)} isActive={cellIsActive(0)} content={datum.date} />
       <TextCell ref={refFor(1)} isActive={cellIsActive(1)} content={datum.type} />
       <TextInputCell ref={refFor(2)} isActive={cellIsActive(2)} content={datum.description} />
-      <DropDownCell ref={refFor(3)} isActive={cellIsActive(3)} content={datum.category} rowIndex={rowIndex} />
+      <DropDownCell
+        ref={refFor(3)}
+        isActive={cellIsActive(3)}
+        content={datum.category}
+        rowIndex={rowIndex}
+      />
       <TextCell ref={refFor(4)} isActive={cellIsActive(4)} content={datum.amount} />
       <TextCell ref={refFor(5)} isActive={cellIsActive(5)} content={datum.balance} />
     </tr>
@@ -139,7 +145,8 @@ export default class WaiDataGrid1 extends React.Component {
 
   render() {
     const {row, column} = this.state.focusPointer
-    const refForHeader = columnIndex => (column === columnIndex && row === 0 ? this.bindFocusedCell : undefined)
+    const refForHeader = columnIndex =>
+      column === columnIndex && row === 0 ? this.bindFocusedCell : undefined
     const sortDirectionForColumn = columnKey =>
       this.state.sortColumn === columnKey ? this.state.sortDirection : 'none'
 

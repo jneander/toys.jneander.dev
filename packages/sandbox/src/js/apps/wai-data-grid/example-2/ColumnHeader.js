@@ -64,7 +64,11 @@ export default class ColumnHeader extends React.PureComponent {
     }
 
     return (
-      <th ref={this.bindFocusable} className={styles.ColumnHeader} tabIndex={this.props.isActive ? '0' : '-1'}>
+      <th
+        ref={this.bindFocusable}
+        className={styles.ColumnHeader}
+        tabIndex={this.props.isActive ? '0' : '-1'}
+      >
         {this.props.children}
       </th>
     )

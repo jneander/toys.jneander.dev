@@ -13,7 +13,11 @@ export default class TextCell extends React.PureComponent {
 
   render() {
     return (
-      <td className={styles.GridCell} ref={this.bindTableCell} tabIndex={this.props.isActive ? '0' : '-1'}>
+      <td
+        className={styles.GridCell}
+        ref={this.bindTableCell}
+        tabIndex={this.props.isActive ? '0' : '-1'}
+      >
         {this.props.content}
       </td>
     )

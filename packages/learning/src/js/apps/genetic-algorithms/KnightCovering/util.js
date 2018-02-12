@@ -3,7 +3,10 @@ export function listAttacks(position, boardSize) {
   const movements = [-2, -1, 1, 2]
   for (let row = 0; row < movements.length; row++) {
     for (let col = 0; col < movements.length; col++) {
-      const attackPosition = {row: position.row + movements[row], col: position.col + movements[col]}
+      const attackPosition = {
+        row: position.row + movements[row],
+        col: position.col + movements[col]
+      }
       if (
         attackPosition.row >= 0 &&
         attackPosition.row < boardSize &&

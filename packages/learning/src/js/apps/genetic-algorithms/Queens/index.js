@@ -54,7 +54,10 @@ export default class Queens extends React.PureComponent {
           onBoardSizeChange={this.onBoardSizeChange}
         />
 
-        <Metrics iteration={this.state.current ? this.state.current.iteration : 0} margin="small 0 0 0" />
+        <Metrics
+          iteration={this.state.current ? this.state.current.iteration : 0}
+          margin="small 0 0 0"
+        />
 
         <Container as="div" margin="medium 0 0 0">
           <Board chromosome={this.state.current} size={this.state.boardSize} />

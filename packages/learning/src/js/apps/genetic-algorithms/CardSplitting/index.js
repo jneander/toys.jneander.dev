@@ -42,7 +42,10 @@ export default class CardSplitting extends React.PureComponent {
           recordAllIterations={this.state.allIterations}
         />
 
-        <Metrics iteration={this.state.current ? this.state.current.iteration : 0} margin="small 0 0 0" />
+        <Metrics
+          iteration={this.state.current ? this.state.current.iteration : 0}
+          margin="small 0 0 0"
+        />
 
         <Container as="div" margin="medium 0 0 0">
           {this.state.current && <Cards label="Current" chromosome={this.state.current} />}

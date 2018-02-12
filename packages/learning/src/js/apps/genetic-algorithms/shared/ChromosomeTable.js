@@ -6,8 +6,12 @@ function ChromosomeRow(props) {
   return (
     <tr>
       <th scope="row">{props.version}</th>
-      <td style={{fontFamily: 'monospace'}}>{props.chromosome && props.formatGenes(props.chromosome.genes)}</td>
-      <td style={{textAlign: 'right'}}>{props.chromosome && props.chromosome.fitness.toString()}</td>
+      <td style={{fontFamily: 'monospace'}}>
+        {props.chromosome && props.formatGenes(props.chromosome.genes)}
+      </td>
+      <td style={{textAlign: 'right'}}>
+        {props.chromosome && props.chromosome.fitness.toString()}
+      </td>
       <td style={{textAlign: 'right'}}>{props.chromosome && props.chromosome.iteration}</td>
     </tr>
   )
@@ -40,13 +44,29 @@ export default class ChromosomeTable extends React.PureComponent {
         </thead>
 
         <tbody>
-          <ChromosomeRow chromosome={this.props.first} formatGenes={this.props.formatGenes} version="First" />
+          <ChromosomeRow
+            chromosome={this.props.first}
+            formatGenes={this.props.formatGenes}
+            version="First"
+          />
 
-          <ChromosomeRow chromosome={this.props.current} formatGenes={this.props.formatGenes} version="Current" />
+          <ChromosomeRow
+            chromosome={this.props.current}
+            formatGenes={this.props.formatGenes}
+            version="Current"
+          />
 
-          <ChromosomeRow chromosome={this.props.best} formatGenes={this.props.formatGenes} version="Best" />
+          <ChromosomeRow
+            chromosome={this.props.best}
+            formatGenes={this.props.formatGenes}
+            version="Best"
+          />
 
-          <ChromosomeRow chromosome={this.props.target} formatGenes={this.props.formatGenes} version="Target" />
+          <ChromosomeRow
+            chromosome={this.props.target}
+            formatGenes={this.props.formatGenes}
+            version="Target"
+          />
         </tbody>
       </Table>
     )

@@ -85,7 +85,10 @@ function mutate(parent, iteration) {
     if (unattacked.length) {
       for (let i = 0; i < unattacked.length; i++) {
         const positionsWhichCanAttackThisPosition = listAttacks(unattacked[i], this._boardSize)
-        potentialKnightPositions = [...potentialKnightPositions, ...positionsWhichCanAttackThisPosition]
+        potentialKnightPositions = [
+          ...potentialKnightPositions,
+          ...positionsWhichCanAttackThisPosition
+        ]
       }
     } else {
       potentialKnightPositions = [...this._allBoardPositions]

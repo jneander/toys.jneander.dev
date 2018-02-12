@@ -1,32 +1,32 @@
-import React from 'react';
-import Container from '@instructure/ui-core/lib/components/Container';
-import NumberInput from '@instructure/ui-core/lib/components/NumberInput';
+import React from 'react'
+import Container from '@instructure/ui-core/lib/components/Container'
+import NumberInput from '@instructure/ui-core/lib/components/NumberInput'
 
 export default class Configuration extends React.PureComponent {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
 
-    this.onBoardSizeChange = this.onBoardSizeChange.bind(this);
+    this.onBoardSizeChange = this.onBoardSizeChange.bind(this)
 
     this.state = {
       boardSize: String(props.boardSize)
-    };
-  }
-
-  componentWillReceiveProps (nextProps) {
-    this.setState({
-      boardSize: String(nextProps.boardSize)
-    });
-  }
-
-  onBoardSizeChange (_event, value) {
-    const size = parseInt(value, 10);
-    if (size >= 4 && size <= 20) {
-      this.props.onBoardSizeChange(size);
     }
   }
 
-  render () {
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      boardSize: String(nextProps.boardSize)
+    })
+  }
+
+  onBoardSizeChange(_event, value) {
+    const size = parseInt(value, 10)
+    if (size >= 4 && size <= 20) {
+      this.props.onBoardSizeChange(size)
+    }
+  }
+
+  render() {
     return (
       <Container as="div" margin={this.props.margin}>
         <NumberInput
@@ -39,6 +39,6 @@ export default class Configuration extends React.PureComponent {
           value={this.state.boardSize}
         />
       </Container>
-    );
+    )
   }
 }

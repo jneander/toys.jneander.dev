@@ -1,25 +1,25 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import {AppContainer} from 'react-hot-loader'
 
-import 'normalize.css';
-import 'styles/index.css';
+import 'normalize.css'
+import 'styles/index.css'
 
-export function bundle (config) {
-  const $app = document.getElementById('app');
+export function bundle(config) {
+  const $app = document.getElementById('app')
 
-  function render () {
+  function render() {
     ReactDOM.render(
       <AppContainer>
         <config.App />
       </AppContainer>,
       $app
-    );
+    )
   }
 
-  render();
+  render()
 
   if (module.hot) {
-    module.hot.accept(render);
+    module.hot.accept(render)
   }
 }

@@ -1,71 +1,71 @@
-import Propagation from '@jneander/genetics/es/Propagation';
+import Propagation from '@jneander/genetics/es/Propagation'
 
 export default class ControlledPropagation {
-  constructor (config) {
-    this.config = config;
+  constructor(config) {
+    this.config = config
 
     this.propagation = new Propagation({
       ...config,
       onFinish: this.onFinish.bind(this),
       onRun: this.onRun.bind(this)
-    });
-    this.runState = 'stopped';
+    })
+    this.runState = 'stopped'
   }
 
-  best () {
-    return this.propagation.best();
+  best() {
+    return this.propagation.best()
   }
 
-  current () {
-    return this.propagation.current();
+  current() {
+    return this.propagation.current()
   }
 
-  isFinished () {
-    return this.runState === 'finished';
+  isFinished() {
+    return this.runState === 'finished'
   }
 
-  isRunning () {
-    return this.runState === 'running';
+  isRunning() {
+    return this.runState === 'running'
   }
 
-  isStopped () {
-    return this.runState === 'stopped';
+  isStopped() {
+    return this.runState === 'stopped'
   }
 
-  iterationCount () {
-    return this.propagation.iterationCount;
+  iterationCount() {
+    return this.propagation.iterationCount
   }
 
-  onFinish () {
-    this.runState = 'finished';
+  onFinish() {
+    this.runState = 'finished'
     if (this.config.onFinish) {
-      this.config.onFinish();
+      this.config.onFinish()
     }
   }
 
-  onRun () {
-    this.runState = 'running';
+  onRun() {
+    this.runState = 'running'
     if (this.config.onRun) {
-      this.config.onRun();
+      this.config.onRun()
     }
   }
 
-  resume () {
+  resume() {
     if (this.isStopped()) {
-      this.propagation.run();
+      this.propagation.run()
     }
   }
 
-  start () {
+  start() {
     if (this.isStopped()) {
-      this.propagation.run();
+      this.propagation.run()
     }
   }
 
-  stop () {
+  stop() {
     if (this.isRunning()) {
-      this.propagation.stop();
-      this.runState = 'stopped';
+      this.propagation.stop()
+      this.runState = 'stopped'
     }
   }
 }

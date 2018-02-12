@@ -1,46 +1,46 @@
-import Chromosome from '@jneander/genetics/es/Chromosome';
-import { generateParent } from '@jneander/genetics/es/generation';
-import { replaceOneGene, swapTwoGenes } from '@jneander/genetics/es/mutation';
-import { randomInt } from '@jneander/genetics/es/util';
+import Chromosome from '@jneander/genetics/es/Chromosome'
+import {generateParent} from '@jneander/genetics/es/generation'
+import {replaceOneGene, swapTwoGenes} from '@jneander/genetics/es/mutation'
+import {randomInt} from '@jneander/genetics/es/util'
 
-import BaseController from '../shared/Controller';
+import BaseController from '../shared/Controller'
 
-import SumProductMatch from './SumProductMatch';
+import SumProductMatch from './SumProductMatch'
 
-const geneSet = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+const geneSet = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
-function mutate (parent, geneSet, getFitness, iterationCount) {
+function mutate(parent, geneSet, getFitness, iterationCount) {
   if (parent.genes.length === new Set(parent.genes).size) {
-    return swapTwoGenes(parent, geneSet, getFitness, iterationCount, randomInt(1, 4));
+    return swapTwoGenes(parent, geneSet, getFitness, iterationCount, randomInt(1, 4))
   }
 
-  return replaceOneGene(parent, geneSet, getFitness, iterationCount);
+  return replaceOneGene(parent, geneSet, getFitness, iterationCount)
 }
 
 export default class Controller extends BaseController {
-  constructor (state) {
-    super(state);
+  constructor(state) {
+    super(state)
 
-    this.fitnessMethod = new SumProductMatch();
+    this.fitnessMethod = new SumProductMatch()
   }
 
-  generateParent () {
-    return generateParent(10, geneSet, this.getFitness);
+  generateParent() {
+    return generateParent(10, geneSet, this.getFitness)
   }
 
-  geneSet () {
-    return geneSet;
+  geneSet() {
+    return geneSet
   }
 
-  propogationOptions () {
+  propogationOptions() {
     return {
-      mutate: (parent, iterationCount) => mutate(parent, this.geneSet(), this.getFitness, iterationCount),
+      mutate: (parent, iterationCount) => mutate(parent, this.geneSet(), this.getFitness, iterationCount)
     }
   }
 
-  randomTarget () {
-    const target = new Chromosome([], null);
-    target.fitness = this.fitnessMethod.getTargetFitness();
-    return target;
+  randomTarget() {
+    const target = new Chromosome([], null)
+    target.fitness = this.fitnessMethod.getTargetFitness()
+    return target
   }
 }

@@ -8,6 +8,6 @@ const apps = {
     label: 'Home',
     path: '/'
   }
-};
+}
 
-export default apps;
+export default apps

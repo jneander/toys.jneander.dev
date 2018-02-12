@@ -1,31 +1,31 @@
-import React from 'react';
-import Container from '@instructure/ui-core/lib/components/Container';
+import React from 'react'
+import Container from '@instructure/ui-core/lib/components/Container'
 
-import ExampleControls from 'js/shared/components/ExampleControls';
-import ChromosomeTable from 'js/apps/genetic-algorithms/shared/ChromosomeTable';
-import State from '../shared/State';
+import ExampleControls from 'js/shared/components/ExampleControls'
+import ChromosomeTable from 'js/apps/genetic-algorithms/shared/ChromosomeTable'
+import State from '../shared/State'
 
-import Controller from './Controller';
+import Controller from './Controller'
 
 export default class TextMatching extends React.PureComponent {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
 
-    this.controller = new Controller(new State(this));
-    this.state = this.controller.getInitialState();
+    this.controller = new Controller(new State(this))
+    this.state = this.controller.getInitialState()
 
-    this.onPositionChange = this.onPositionChange.bind(this);
+    this.onPositionChange = this.onPositionChange.bind(this)
   }
 
-  componentWillMount () {
-    this.controller.initialize();
+  componentWillMount() {
+    this.controller.initialize()
   }
 
-  onPositionChange (position) {
-    this.controller.setPlaybackPosition(position);
+  onPositionChange(position) {
+    this.controller.setPlaybackPosition(position)
   }
 
-  render () {
+  render() {
     return (
       <div>
         <ExampleControls
@@ -50,6 +50,6 @@ export default class TextMatching extends React.PureComponent {
           />
         </Container>
       </div>
-    );
+    )
   }
 }

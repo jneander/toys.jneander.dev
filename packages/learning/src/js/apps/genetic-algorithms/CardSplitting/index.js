@@ -1,33 +1,33 @@
-import React from 'react';
-import Container from '@instructure/ui-core/lib/components/Container';
+import React from 'react'
+import Container from '@instructure/ui-core/lib/components/Container'
 
-import ExampleControls from 'js/shared/components/ExampleControls';
-import ChromosomeTable from 'js/apps/genetic-algorithms/shared/ChromosomeTable';
+import ExampleControls from 'js/shared/components/ExampleControls'
+import ChromosomeTable from 'js/apps/genetic-algorithms/shared/ChromosomeTable'
 
-import State from '../shared/State';
-import Cards from './Cards';
-import Controller from './Controller';
-import Metrics from './Metrics';
+import State from '../shared/State'
+import Cards from './Cards'
+import Controller from './Controller'
+import Metrics from './Metrics'
 
 export default class CardSplitting extends React.PureComponent {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
 
-    this.controller = new Controller(new State(this));
-    this.state = this.controller.getInitialState();
+    this.controller = new Controller(new State(this))
+    this.state = this.controller.getInitialState()
 
-    this.onPositionChange = this.onPositionChange.bind(this);
+    this.onPositionChange = this.onPositionChange.bind(this)
   }
 
-  componentWillMount () {
-    this.controller.initialize();
+  componentWillMount() {
+    this.controller.initialize()
   }
 
-  onPositionChange (position) {
-    this.controller.setPlaybackPosition(position);
+  onPositionChange(position) {
+    this.controller.setPlaybackPosition(position)
   }
 
-  render () {
+  render() {
     return (
       <div>
         <ExampleControls
@@ -39,24 +39,17 @@ export default class CardSplitting extends React.PureComponent {
           playing={this.state.isRunning}
           rangePosition={this.state.playbackPosition}
           rangePositionCount={this.state.iterationCount}
-          recordAllIterations={this.state.allIterations} />
+          recordAllIterations={this.state.allIterations}
+        />
 
         <Metrics iteration={this.state.current ? this.state.current.iteration : 0} margin="small 0 0 0" />
 
         <Container as="div" margin="medium 0 0 0">
-          {
-            this.state.current && (
-              <Cards label="Current" chromosome={this.state.current} />
-            )
-          }
+          {this.state.current && <Cards label="Current" chromosome={this.state.current} />}
 
-          {
-            this.state.best && (
-              <Cards label="Best" chromosome={this.state.best} />
-            )
-          }
+          {this.state.best && <Cards label="Best" chromosome={this.state.best} />}
         </Container>
       </div>
-    );
+    )
   }
 }

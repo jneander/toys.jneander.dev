@@ -1,103 +1,103 @@
 export default class PropagationRecording {
-  constructor (config = {}) {
-    this.reset();
+  constructor(config = {}) {
+    this.reset()
 
     this.config = {
       allIterations: false,
       ...config
-    };
+    }
 
-    this.addIteration = this.addIteration.bind(this);
-    this.addImprovement = this.addImprovement.bind(this);
-    this._recording = false;
-    this._playbackPosition = 1;
+    this.addIteration = this.addIteration.bind(this)
+    this.addImprovement = this.addImprovement.bind(this)
+    this._recording = false
+    this._playbackPosition = 1
   }
 
-  addIteration (chromosome) {
+  addIteration(chromosome) {
     if (this.config.allIterations && this._playbackPosition === this._iterations.length) {
-      this._playbackPosition++;
+      this._playbackPosition++
     }
     if (this.config.allIterations || this._iterations.length === 0) {
-      this._iterations.push(chromosome);
+      this._iterations.push(chromosome)
     } else if (this._iterations.length > 0) {
-      this._iterations[1] = chromosome;
+      this._iterations[1] = chromosome
     }
   }
 
-  addImprovement (chromosome) {
-    this._improvements.push(chromosome);
+  addImprovement(chromosome) {
+    this._improvements.push(chromosome)
   }
 
-  best () {
+  best() {
     if (this._improvements.length === 0) {
-      return null;
+      return null
     }
 
     if (this.config.allIterations) {
-      const improvements = this.improvements();
-      let best = improvements[0];
+      const improvements = this.improvements()
+      let best = improvements[0]
       for (let i = 1; i < improvements.length && improvements[i].iteration <= this._playbackPosition; i++) {
-        best = improvements[i];
+        best = improvements[i]
       }
-      return best;
+      return best
     } else {
-      return this._improvements[this._improvements.length - 1];
+      return this._improvements[this._improvements.length - 1]
     }
   }
 
-  configure (config) {
-    this.config = { ...this.config, ...config };
-    this.reset();
+  configure(config) {
+    this.config = {...this.config, ...config}
+    this.reset()
   }
 
-  current () {
+  current() {
     if (this.config.allIterations) {
-      return this._iterations[this.playbackPosition() - 1] || null;
+      return this._iterations[this.playbackPosition() - 1] || null
     } else {
-      return this._iterations[this._iterations.length - 1] || null;
+      return this._iterations[this._iterations.length - 1] || null
     }
   }
 
-  first () {
-    return this._iterations[0];
+  first() {
+    return this._iterations[0]
   }
 
-  isRecordingAllIterations () {
-    return this.config.allIterations;
+  isRecordingAllIterations() {
+    return this.config.allIterations
   }
 
-  isRecording () {
-    return this._recording;
+  isRecording() {
+    return this._recording
   }
 
-  improvements () {
-    return this._improvements;
+  improvements() {
+    return this._improvements
   }
 
-  iterations () {
-    return this._iterations;
+  iterations() {
+    return this._iterations
   }
 
-  playbackPosition () {
-    return this._playbackPosition;
+  playbackPosition() {
+    return this._playbackPosition
   }
 
-  reset () {
-    this._iterations = [];
-    this._improvements = [];
-    this._playbackPosition = 1;
+  reset() {
+    this._iterations = []
+    this._improvements = []
+    this._playbackPosition = 1
   }
 
-  setPlaybackPosition (position) {
-    this._playbackPosition = position;
+  setPlaybackPosition(position) {
+    this._playbackPosition = position
   }
 
-  startRecording () {
-    this._recording = true;
+  startRecording() {
+    this._recording = true
   }
 
-  stopRecording () {
-    this._recording = false;
-    this.reset();
+  stopRecording() {
+    this._recording = false
+    this.reset()
   }
 }

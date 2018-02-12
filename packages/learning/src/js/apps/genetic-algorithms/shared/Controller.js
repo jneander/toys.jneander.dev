@@ -1,116 +1,116 @@
-import ControlledPropagation from '../shared/ControlledPropagation';
-import PropagationListener from '../shared/PropagationListener';
-import PropagationRecording from '../shared/PropagationRecording';
+import ControlledPropagation from '../shared/ControlledPropagation'
+import PropagationListener from '../shared/PropagationListener'
+import PropagationRecording from '../shared/PropagationRecording'
 
 export default class Controller {
-  constructor (state) {
-    this._state = state;
+  constructor(state) {
+    this._state = state
 
-    this.listener = new PropagationListener(this.updateView.bind(this));
-    this.recording = new PropagationRecording();
+    this.listener = new PropagationListener(this.updateView.bind(this))
+    this.recording = new PropagationRecording()
 
-    this.getFitness = this.getFitness.bind(this);
-    this.randomizeTarget = this.randomizeTarget.bind(this);
-    this.setPlaybackPosition = this.setPlaybackPosition.bind(this);
-    this.setRecordAllIterations = this.setRecordAllIterations.bind(this);
-    this.state = this.state.bind(this);
-    this.start = this.start.bind(this);
-    this.stop = this.stop.bind(this);
+    this.getFitness = this.getFitness.bind(this)
+    this.randomizeTarget = this.randomizeTarget.bind(this)
+    this.setPlaybackPosition = this.setPlaybackPosition.bind(this)
+    this.setRecordAllIterations = this.setRecordAllIterations.bind(this)
+    this.state = this.state.bind(this)
+    this.start = this.start.bind(this)
+    this.stop = this.stop.bind(this)
   }
 
-  getInitialState () {
+  getInitialState() {
     return {
       allIterations: false,
       isRunning: false,
       iterationCount: 0,
-      playbackPosition: 1,
-    };
+      playbackPosition: 1
+    }
   }
 
-  initialize () {
-    this.randomizeTarget();
-    this.createPropagation();
+  initialize() {
+    this.randomizeTarget()
+    this.createPropagation()
   }
 
-  createPropagation () {
+  createPropagation() {
     this.propagation = new ControlledPropagation({
       generateParent: this.generateParent.bind(this),
       geneSet: this.geneSet(),
       getFitness: this.getFitness,
       onFinish: this.onFinish.bind(this),
-      onImprovement: (chromosome) => {
-        this.recording.addImprovement(chromosome);
+      onImprovement: chromosome => {
+        this.recording.addImprovement(chromosome)
       },
-      onIteration: (chromosome) => {
-        this.recording.addIteration(chromosome);
+      onIteration: chromosome => {
+        this.recording.addIteration(chromosome)
       },
       optimalFitness: this.target().fitness,
       ...this.propogationOptions()
-    });
+    })
   }
 
-  getFitness (chromosome) {
-    return this.fitnessMethod.getFitness(chromosome, this.target());
+  getFitness(chromosome) {
+    return this.fitnessMethod.getFitness(chromosome, this.target())
   }
 
-  onFinish () {
-    this.listener.stop();
-    this.updateView();
+  onFinish() {
+    this.listener.stop()
+    this.updateView()
   }
 
-  randomizeTarget () {
-    this.setTarget(this.randomTarget());
+  randomizeTarget() {
+    this.setTarget(this.randomTarget())
   }
 
-  setPlaybackPosition (playbackPosition) {
-    this.recording.setPlaybackPosition(playbackPosition);
-    this.updateView();
+  setPlaybackPosition(playbackPosition) {
+    this.recording.setPlaybackPosition(playbackPosition)
+    this.updateView()
   }
 
-  setTarget (target) {
-    this._target = target;
-    this.createPropagation();
-    this.recording.reset();
-    this.updateView();
+  setTarget(target) {
+    this._target = target
+    this.createPropagation()
+    this.recording.reset()
+    this.updateView()
   }
 
-  setRecordAllIterations (allIterations) {
-    this.createPropagation();
-    this.recording.configure({ allIterations });
-    this.recording.reset();
-    this.updateView();
+  setRecordAllIterations(allIterations) {
+    this.createPropagation()
+    this.recording.configure({allIterations})
+    this.recording.reset()
+    this.updateView()
   }
 
-  start () {
+  start() {
     if (this.propagation.isRunning()) {
-      return;
+      return
     }
 
     if (this.propagation.isFinished()) {
-      this.createPropagation();
-      this.recording.reset();
-      this.updateView();
+      this.createPropagation()
+      this.recording.reset()
+      this.updateView()
     }
 
-    this.listener.start();
-    this.propagation.start();
+    this.listener.start()
+    this.propagation.start()
   }
 
-  state () {
-    return {};
+  state() {
+    return {}
   }
 
-  stop () {
-    this.propagation.stop();
-    this.listener.stop();
-    this.updateView();
+  stop() {
+    this.propagation.stop()
+    this.listener.stop()
+    this.updateView()
   }
 
-  target () {
-    return this._target;
+  target() {
+    return this._target
   }
 
-  updateView () {
+  updateView() {
     this._state.setState({
       allIterations: this.recording.isRecordingAllIterations(),
       best: this.recording.best(),
@@ -121,6 +121,6 @@ export default class Controller {
       playbackPosition: this.recording.playbackPosition(),
       target: this.target(),
       ...this.state()
-    });
+    })
   }
 }

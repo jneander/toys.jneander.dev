@@ -1,51 +1,51 @@
-import React from 'react';
-import IconPauseSolid from 'instructure-icons/lib/Solid/IconPauseSolid';
-import IconPlaySolid from 'instructure-icons/lib/Solid/IconPlaySolid';
-import IconRefreshSolid from 'instructure-icons/lib/Solid/IconRefreshSolid';
-import Button from '@instructure/ui-core/lib/components/Button';
-import Checkbox from '@instructure/ui-core/lib/components/Checkbox';
-import Container from '@instructure/ui-core/lib/components/Container';
-import RangeInput from '@instructure/ui-core/lib/components/RangeInput';
-import ScreenReaderContent from '@instructure/ui-core/lib/components/ScreenReaderContent';
+import React from 'react'
+import IconPauseSolid from 'instructure-icons/lib/Solid/IconPauseSolid'
+import IconPlaySolid from 'instructure-icons/lib/Solid/IconPlaySolid'
+import IconRefreshSolid from 'instructure-icons/lib/Solid/IconRefreshSolid'
+import Button from '@instructure/ui-core/lib/components/Button'
+import Checkbox from '@instructure/ui-core/lib/components/Checkbox'
+import Container from '@instructure/ui-core/lib/components/Container'
+import RangeInput from '@instructure/ui-core/lib/components/RangeInput'
+import ScreenReaderContent from '@instructure/ui-core/lib/components/ScreenReaderContent'
 
 export default class ExampleControls extends React.PureComponent {
   static defaultProps = {
-    onSetRecordAllIterations () {}
-  };
+    onSetRecordAllIterations() {}
+  }
 
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
 
     this.state = {
       currentStep: 1
-    };
+    }
 
-    this.pause = this.pause.bind(this);
-    this.refresh = this.refresh.bind(this);
-    this.start = this.start.bind(this);
+    this.pause = this.pause.bind(this)
+    this.refresh = this.refresh.bind(this)
+    this.start = this.start.bind(this)
 
-    this.onRangeChange = (indexString) => {
-      this.props.onPositionChange(parseInt(indexString, 10));
-    };
+    this.onRangeChange = indexString => {
+      this.props.onPositionChange(parseInt(indexString, 10))
+    }
   }
 
-  onToggleRecordAllIterations = (event) => {
-    this.props.onSetRecordAllIterations(event.target.checked);
+  onToggleRecordAllIterations = event => {
+    this.props.onSetRecordAllIterations(event.target.checked)
   }
 
-  pause () {
-    this.props.onPause();
+  pause() {
+    this.props.onPause()
   }
 
-  refresh () {
-    this.props.onRefresh();
+  refresh() {
+    this.props.onRefresh()
   }
 
-  start () {
-    this.props.onStart();
+  start() {
+    this.props.onStart()
   }
 
-  render () {
+  render() {
     return (
       <Container as="div">
         <Container as="div">
@@ -54,19 +54,17 @@ export default class ExampleControls extends React.PureComponent {
             Refresh
           </Button>
 
-          {
-            this.props.playing ? (
-              <Button key="play-pause" margin="0 x-small 0 0" onClick={this.pause}>
-                <IconPauseSolid title="Pause" />
-                Pause
-              </Button>
-            ) : (
-              <Button key="play-pause" margin="0 x-small 0 0" onClick={this.start}>
-                <IconPlaySolid title="Start" />
-                Start
-              </Button>
-            )
-          }
+          {this.props.playing ? (
+            <Button key="play-pause" margin="0 x-small 0 0" onClick={this.pause}>
+              <IconPauseSolid title="Pause" />
+              Pause
+            </Button>
+          ) : (
+            <Button key="play-pause" margin="0 x-small 0 0" onClick={this.start}>
+              <IconPlaySolid title="Start" />
+              Start
+            </Button>
+          )}
 
           <Checkbox
             checked={this.props.recordAllIterations}
@@ -75,11 +73,11 @@ export default class ExampleControls extends React.PureComponent {
             label="All Iterations"
             onChange={this.onToggleRecordAllIterations}
             size="small"
-            variant="toggle" />
+            variant="toggle"
+          />
         </Container>
 
-        {
-          this.props.recordAllIterations &&
+        {this.props.recordAllIterations && (
           <Container as="div" margin="medium 0">
             <RangeInput
               disabled={this.props.playing}
@@ -91,8 +89,8 @@ export default class ExampleControls extends React.PureComponent {
               value={this.props.rangePosition}
             />
           </Container>
-        }
+        )}
       </Container>
-    );
+    )
   }
 }

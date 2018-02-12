@@ -1,8 +1,8 @@
 module.exports = function(context, opts = {}) {
   const presets = [
-    ["@babel/preset-es2015", {modules: opts.type === 'lib' ? 'commonjs' : false}],
-    "@babel/preset-stage-1",
-    "@babel/preset-react"
+    ['@babel/preset-es2015', {modules: opts.type === 'lib' ? 'commonjs' : false}],
+    '@babel/preset-stage-1',
+    '@babel/preset-react'
   ]
 
   const plugins = [

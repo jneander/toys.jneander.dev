@@ -1,8 +1,3 @@
 module.exports = {
-  presets: [
-    [
-      require('./babelrc.shared.js'),
-      {type: 'es'}
-    ]
-  ]
+  presets: [[require('./babelrc.shared.js'), {type: 'es'}]]
 }

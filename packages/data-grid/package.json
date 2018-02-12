@@ -5,7 +5,9 @@
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "scripts": {
-    "build": "build-lib"
+    "build": "build-lib",
+    "format": "format-code",
+    "lint": "lint-code"
   },
   "repository": {
     "type": "git",

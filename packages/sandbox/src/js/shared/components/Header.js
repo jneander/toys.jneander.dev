@@ -10,7 +10,7 @@ import {MenuItem} from '@instructure/ui-core/lib/components/Menu'
 import PopoverMenu from '@instructure/ui-core/lib/components/PopoverMenu'
 import Text from '@instructure/ui-core/lib/components/Text'
 
-import styles from 'styles/sandbox.css'
+import styles from '../../../styles/sandbox.css'
 import apps from 'js/apps'
 
 let appList = []

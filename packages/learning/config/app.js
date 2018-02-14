@@ -1,7 +1,7 @@
-const configure = require('@jneander/dev-tools/configs/webpack')
+const configureWebpack = require('@jneander/dev-tools/lib/configuration/configureWebpack')
 const {getEnv} = require('@jneander/dev-tools/lib/cli')
 
-module.exports = configure({
+module.exports = configureWebpack({
   env: getEnv(),
   pages: [
     {

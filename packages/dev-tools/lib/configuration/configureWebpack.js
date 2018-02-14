@@ -69,9 +69,10 @@ module.exports = function(appConfig) {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { modules: false }],
-              '@babel/preset-stage-3',
-              '@babel/preset-react'
+              ['module:@jneander/babel-presets', {
+                modules: false,
+                themeable: true
+              }]
             ]
           }
         }],

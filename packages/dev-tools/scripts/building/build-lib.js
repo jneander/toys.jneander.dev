@@ -15,7 +15,7 @@ if (process.argv.includes('--watch')) {
 function buildArgs(args, type) {
   return [
     ...args,
-    `--config-file ${path.join(__dirname, `babelrc.${type}.js`)}`,
+    `--config-file ${path.join(__dirname, '../..', `config/babel/babelrc.${type}.js`)}`,
     `--out-dir ${path.join(process.cwd(), type)}`
   ]
 }

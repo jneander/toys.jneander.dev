@@ -10,6 +10,7 @@
   "bin": {
     "build-app": "./scripts/building/build-app.js",
     "build-lib": "./scripts/building/build-lib.js",
+    "clean": "./scripts/building/clean.js",
     "lint-code": "./scripts/quality/lint-code.js",
     "run-specs": "./scripts/specs/run-specs.js"
   },

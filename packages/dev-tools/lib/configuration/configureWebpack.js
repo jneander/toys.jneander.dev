@@ -69,8 +69,8 @@ module.exports = function(appConfig) {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-es2015', { modules: false }],
-              '@babel/preset-stage-1',
+              ['@babel/preset-env', { modules: false }],
+              '@babel/preset-stage-3',
               '@babel/preset-react'
             ]
           }

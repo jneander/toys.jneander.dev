@@ -1,0 +1,15 @@
+{
+  "name": "@jneander/babel-presets",
+  "version": "0.0.1",
+  "description": "Configurable Babel Presets",
+  "main": "index.js",
+  "author": "Jeremy Neander <jeremy.neander@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/preset-env": "^7.0.0-beta",
+    "@babel/preset-react": "^7.0.0-beta",
+    "@babel/preset-stage-3": "^7.0.0-beta",
+    "@instructure/babel-plugin-transform-class-display-name": "^4.7.1",
+    "@jneander/babel-plugin-themeable-styles": "^0.0.1"
+  }
+}

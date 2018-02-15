@@ -1,5 +1,5 @@
 # learning
-Learning Platform
+@jneander Learning Platform
 
 | branch | build status |
 | ------ | ------------ |

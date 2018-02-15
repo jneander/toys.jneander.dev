@@ -1,13 +1,12 @@
 import React from 'react'
 
-import ExampleHarness from 'js/shared/components/ExampleHarness'
-
-import Example01 from './Example01'
-import Example02 from './Example02'
+import ExampleHarness from '../../shared/components/ExampleHarness'
+import TableWithoutRowHeaders from './TableWithoutRowHeaders'
+import TableWithRowHeaders from './TableWithRowHeaders'
 
 const examples = [
-  {label: 'No Row Headers', component: Example01},
-  {label: 'With Row Headers', component: Example02}
+  {label: 'Table without Row Headers', component: TableWithoutRowHeaders},
+  {label: 'Table with Row Headers', component: TableWithRowHeaders}
 ]
 
 export default function StaticGridExamples(props) {

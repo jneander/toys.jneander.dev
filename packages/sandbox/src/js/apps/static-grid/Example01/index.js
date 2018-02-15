@@ -12,7 +12,7 @@ const screenreaderOutput = [
   {action: 'From Column A header, select Column B header', voiceover: 'Column B, column 2 of 5'},
   {action: 'From Column A header, select next row', voiceover: 'Row 2 of 11, A1'},
   {action: 'From Column B header, select next row', voiceover: 'Row 2 of 11, B1'},
-  {action: 'From A1, select B1', voiceover: 'Column B, B2, column 2 of 5'},
+  {action: 'From A1, select B1', voiceover: 'Column B, B1, column 2 of 5'},
   {action: 'From A1, select Column A header', voiceover: 'Row 1 of 11, Column A'}
 ]
 

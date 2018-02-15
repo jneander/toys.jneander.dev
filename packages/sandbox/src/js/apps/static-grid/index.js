@@ -10,6 +10,6 @@ const examples = [
   {label: 'With Row Headers', component: Example02}
 ]
 
-export default function SlickGridExamples(props) {
+export default function StaticGridExamples(props) {
   return <ExampleHarness examples={examples} heading="Static Grid" />
 }

@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 
-import Header from 'js/shared/components/Header'
+import Header from '../Header'
 
 export default class AppHarness extends PureComponent {
   render() {

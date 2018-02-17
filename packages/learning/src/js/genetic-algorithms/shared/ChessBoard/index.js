@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 
 import styles from './styles.css'
 
@@ -39,7 +39,7 @@ function renderRow(row, rowIndex) {
   )
 }
 
-export default class Board extends React.PureComponent {
+export default class Board extends PureComponent {
   constructor(props) {
     super(props)
 

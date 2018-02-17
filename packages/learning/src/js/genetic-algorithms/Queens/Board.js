@@ -1,8 +1,8 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 
-import ChessBoard from 'js/apps/genetic-algorithms/shared/ChessBoard'
+import ChessBoard from '../shared/ChessBoard'
 
-export default class Board extends React.PureComponent {
+export default class Board extends PureComponent {
   render() {
     const board = []
 

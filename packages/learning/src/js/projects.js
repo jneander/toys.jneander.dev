@@ -1,4 +1,4 @@
-const apps = {
+export default {
   geneticAlgorithms: {
     label: 'Genetic Algorithms',
     path: '/genetic-algorithms'
@@ -9,5 +9,3 @@ const apps = {
     path: '/'
   }
 }
-
-export default apps

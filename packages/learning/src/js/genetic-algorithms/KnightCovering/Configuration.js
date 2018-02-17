@@ -1,8 +1,8 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import Container from '@instructure/ui-core/lib/components/Container'
 import NumberInput from '@instructure/ui-core/lib/components/NumberInput'
 
-export default class Configuration extends React.PureComponent {
+export default class Configuration extends PureComponent {
   constructor(props) {
     super(props)
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import Heading from '@instructure/ui-core/lib/components/Heading'
 
 import {product, sum} from '@jneander/genetics/es/util'
@@ -17,7 +17,7 @@ function geneProduct(chromosome) {
   return product(chromosome.genes.slice(5, 10).map(convertGene))
 }
 
-export default class Cards extends React.PureComponent {
+export default class Cards extends PureComponent {
   render() {
     const sumGenes = this.props.chromosome.genes.slice(0, 5)
     const productGenes = this.props.chromosome.genes.slice(5, 10)

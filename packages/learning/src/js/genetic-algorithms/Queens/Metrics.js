@@ -1,8 +1,8 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import ScreenReaderContent from '@instructure/ui-core/lib/components/ScreenReaderContent'
 import Table from '@instructure/ui-core/lib/components/Table'
 
-export default class Metrics extends React.PureComponent {
+export default class Metrics extends PureComponent {
   render() {
     return (
       <Table

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import Heading from '@instructure/ui-core/lib/components/Heading'
 import Table from '@instructure/ui-core/lib/components/Table'
 
@@ -17,7 +17,7 @@ function ChromosomeRow(props) {
   )
 }
 
-export default class ChromosomeTable extends React.PureComponent {
+export default class ChromosomeTable extends PureComponent {
   static defaultProps = {
     formatGenes(genes) {
       return genes.join('')

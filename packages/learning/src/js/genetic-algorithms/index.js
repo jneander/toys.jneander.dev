@@ -1,6 +1,6 @@
 import React from 'react'
 
-import AppHarness from '../../shared/components/AppHarness'
+import AppHarness from '../shared/components/AppHarness'
 import ExampleHarness from './shared/ExampleHarness'
 import CardSplitting from './CardSplitting'
 import KnightCovering from './KnightCovering'

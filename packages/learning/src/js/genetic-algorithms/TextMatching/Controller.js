@@ -3,7 +3,6 @@ import ArrayOrder from '@jneander/genetics/es/fitness/ArrayOrder'
 import {generateParent} from '@jneander/genetics/es/generation'
 import {replaceOneGene} from '@jneander/genetics/es/mutation'
 import {sample} from '@jneander/genetics/es/util'
-
 import ArrayMatch from '@jneander/genetics/es/fitness/ArrayMatch'
 
 import BaseController from '../shared/Controller'

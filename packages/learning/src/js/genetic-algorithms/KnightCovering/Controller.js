@@ -3,7 +3,6 @@ import {replaceOneGene} from '@jneander/genetics/es/mutation'
 import {choice, randomInt, range} from '@jneander/genetics/es/util'
 
 import BaseController from '../shared/Controller'
-
 import BoardCoverage from './BoardCoverage'
 import {listAttacks, positionFromHash, positionHash} from './util'
 

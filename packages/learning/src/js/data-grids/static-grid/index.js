@@ -1,5 +1,6 @@
 import React from 'react'
 
+import AppHarness from '../../shared/components/AppHarness'
 import ExampleHarness from '../shared/components/ExampleHarness'
 import TableWithoutRowHeaders from './TableWithoutRowHeaders'
 import TableWithRowHeaders from './TableWithRowHeaders'
@@ -10,5 +11,9 @@ const examples = [
 ]
 
 export default function StaticGridExamples(props) {
-  return <ExampleHarness examples={examples} heading="Static Grid" />
+  return (
+    <AppHarness page="staticGrid">
+      <ExampleHarness examples={examples} heading="Static Grid" />
+    </AppHarness>
+  )
 }

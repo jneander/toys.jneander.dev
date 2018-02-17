@@ -15,6 +15,12 @@ module.exports = configureWebpack({
       outputPath: 'genetic-algorithms',
       sourcePath: 'bundles/genetic-algorithms.js',
       template: 'markup/index.html'
+    },
+    {
+      name: 'static-grid',
+      outputPath: 'data-grids/static-grid',
+      sourcePath: 'bundles/data-grids/static-grid.js',
+      template: 'markup/index.html'
     }
   ]
 })

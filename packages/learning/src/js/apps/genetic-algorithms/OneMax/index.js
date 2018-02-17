@@ -1,13 +1,12 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import Container from '@instructure/ui-core/lib/components/Container'
 
-import ExampleControls from 'js/shared/components/ExampleControls'
-import ChromosomeTable from 'js/apps/genetic-algorithms/shared/ChromosomeTable'
+import ChromosomeTable from '../shared/ChromosomeTable'
+import ExampleControls from '../shared/ExampleControls'
 import State from '../shared/State'
-
 import Controller from './Controller'
 
-export default class OneMax extends React.PureComponent {
+export default class OneMax extends PureComponent {
   constructor(props) {
     super(props)
 

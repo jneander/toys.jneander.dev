@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import IconPauseSolid from 'instructure-icons/lib/Solid/IconPauseSolid'
 import IconPlaySolid from 'instructure-icons/lib/Solid/IconPlaySolid'
 import IconRefreshSolid from 'instructure-icons/lib/Solid/IconRefreshSolid'
@@ -8,7 +8,7 @@ import Container from '@instructure/ui-core/lib/components/Container'
 import RangeInput from '@instructure/ui-core/lib/components/RangeInput'
 import ScreenReaderContent from '@instructure/ui-core/lib/components/ScreenReaderContent'
 
-export default class ExampleControls extends React.PureComponent {
+export default class ExampleControls extends PureComponent {
   static defaultProps = {
     onSetRecordAllIterations() {}
   }

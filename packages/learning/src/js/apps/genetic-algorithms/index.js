@@ -1,8 +1,7 @@
 import React from 'react'
 
-import AppHarness from 'js/shared/components/AppHarness'
-import ExampleHarness from 'js/shared/components/ExampleHarness'
-
+import AppHarness from '../../shared/components/AppHarness'
+import ExampleHarness from './shared/ExampleHarness'
 import CardSplitting from './CardSplitting'
 import KnightCovering from './KnightCovering'
 import OneMax from './OneMax'

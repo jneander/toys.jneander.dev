@@ -1,15 +1,14 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import Container from '@instructure/ui-core/lib/components/Container'
 
-import ExampleControls from 'js/shared/components/ExampleControls'
-import ChromosomeTable from 'js/apps/genetic-algorithms/shared/ChromosomeTable'
-
+import ChromosomeTable from '../shared/ChromosomeTable'
+import ExampleControls from '../shared/ExampleControls'
 import State from '../shared/State'
 import Cards from './Cards'
 import Controller from './Controller'
 import Metrics from './Metrics'
 
-export default class CardSplitting extends React.PureComponent {
+export default class CardSplitting extends PureComponent {
   constructor(props) {
     super(props)
 

@@ -1,15 +1,14 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import Container from '@instructure/ui-core/lib/components/Container'
 
-import ExampleControls from 'js/shared/components/ExampleControls'
-
+import ExampleControls from '../shared/ExampleControls'
 import State from '../shared/State'
 import Board from './Board'
 import Configuration from './Configuration'
 import Controller from './Controller'
 import Metrics from './Metrics'
 
-export default class Queens extends React.PureComponent {
+export default class Queens extends PureComponent {
   constructor(props) {
     super(props)
 

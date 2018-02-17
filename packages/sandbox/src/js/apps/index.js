@@ -4,11 +4,6 @@ const apps = {
     path: '/data-grid'
   },
 
-  slickGrid: {
-    label: 'SlickGrid',
-    path: '/slick-grid'
-  },
-
   staticGrid: {
     label: 'Static Grid',
     path: '/static-grid'

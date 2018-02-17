@@ -17,12 +17,6 @@ module.exports = configureWebpack({
       template: 'markup/index.html'
     },
     {
-      name: 'slick-grid',
-      outputPath: 'slick-grid',
-      sourcePath: 'bundles/slick-grid.js',
-      template: 'markup/index.html'
-    },
-    {
       name: 'static-grid',
       outputPath: 'static-grid',
       sourcePath: 'bundles/static-grid.js',

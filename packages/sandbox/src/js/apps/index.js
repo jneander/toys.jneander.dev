@@ -1,17 +1,17 @@
 const apps = {
   dataGrid: {
     label: 'DataGrid',
-    path: '/data-grid'
+    path: '/data-grids/data-grid'
   },
 
   staticGrid: {
     label: 'Static Grid',
-    path: '/static-grid'
+    path: '/data-grids/static-grid'
   },
 
   waiDataGrid: {
     label: 'WAI Data Grid',
-    path: '/wai-data-grid'
+    path: '/data-grids/wai-data-grid'
   }
 }
 

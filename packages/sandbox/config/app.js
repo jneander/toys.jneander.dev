@@ -15,12 +15,6 @@ module.exports = configureWebpack({
       outputPath: 'data-grids/data-grid',
       sourcePath: 'bundles/data-grid.js',
       template: 'markup/index.html'
-    },
-    {
-      name: 'wai-data-grid',
-      outputPath: 'data-grids/wai-data-grid',
-      sourcePath: 'bundles/wai-data-grid.js',
-      template: 'markup/index.html'
     }
   ]
 })

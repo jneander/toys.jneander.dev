@@ -21,6 +21,12 @@ module.exports = configureWebpack({
       outputPath: 'data-grids/static-grid',
       sourcePath: 'bundles/data-grids/static-grid.js',
       template: 'markup/index.html'
+    },
+    {
+      name: 'wai-data-grid',
+      outputPath: 'data-grids/wai-data-grid',
+      sourcePath: 'bundles/data-grids/wai-data-grid.js',
+      template: 'markup/index.html'
     }
   ]
 })

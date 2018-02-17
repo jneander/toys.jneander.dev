@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import canvas from '@instructure/ui-themes/lib/canvas'
 import ApplyTheme from '@instructure/ui-core/lib/components/ApplyTheme'
 import Button from '@instructure/ui-core/lib/components/Button'
@@ -11,15 +11,15 @@ import PopoverMenu from '@instructure/ui-core/lib/components/PopoverMenu'
 import Text from '@instructure/ui-core/lib/components/Text'
 
 import styles from '../../../styles/sandbox.css'
-import apps from 'js/apps'
+import dataGrids from '../../data-grids'
 
 let appList = []
-Object.keys(apps).forEach(app => {
-  appList.push(apps[app])
+Object.keys(dataGrids).forEach(app => {
+  appList.push(dataGrids[app])
 })
 appList = appList.sort(app => app.label)
 
-class Header extends React.Component {
+export default class Header extends Component {
   constructor(props) {
     super(props)
   }
@@ -63,5 +63,3 @@ class Header extends React.Component {
     )
   }
 }
-
-export default Header

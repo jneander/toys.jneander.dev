@@ -2,8 +2,8 @@
 
 const path = require('path')
 
-const {getEnv, getString} = require('../../lib/cli')
-const {getCommand, runCommands} = require('../../lib/utils')
+const {getEnv, getString} = require('../../utils/cli')
+const {getCommand, runCommands} = require('../utils')
 
 const env = `NODE_ENV=${getEnv('test')}`
 const args = ['start']

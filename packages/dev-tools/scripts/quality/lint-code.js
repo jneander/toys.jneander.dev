@@ -2,8 +2,8 @@
 
 const path = require('path')
 
-const {getFlag, getStringArray} = require('../../lib/cli')
-const {getCommand, runCommands} = require('../../lib/utils')
+const {getFlag, getStringArray} = require('../../utils/cli')
+const {getCommand, runCommands} = require('../utils')
 
 let suffix = ''
 const args = ['--no-bracket-spacing', '--no-semi', '--print-width 100', '--single-quote']

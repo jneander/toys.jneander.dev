@@ -1,6 +1,6 @@
-require('@jneander/dev-tools/lib/env')
+require('@jneander/dev-tools/utils/env')
 
-const s3 = require('@jneander/dev-tools/lib/deployment/s3')
+const s3 = require('@jneander/dev-tools/deployment/s3')
 
 s3
   .deploy({

@@ -1,4 +1,4 @@
-const configureWebpack = require('@jneander/dev-tools/lib/configuration/configureWebpack')
+const configureWebpack = require('@jneander/dev-tools/configuration/configureWebpack')
 const {getEnv} = require('@jneander/dev-tools/lib/cli')
 
 module.exports = configureWebpack({
@@ -7,7 +7,7 @@ module.exports = configureWebpack({
     {
       name: 'home',
       outputPath: '',
-      sourcePath: 'bundles/home.js',
+      sourcePath: 'js/home',
       template: 'markup/index.html'
     }
   ]

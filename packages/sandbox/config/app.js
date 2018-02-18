@@ -9,12 +9,6 @@ module.exports = configureWebpack({
       outputPath: '',
       sourcePath: 'bundles/home.js',
       template: 'markup/index.html'
-    },
-    {
-      name: 'data-grid',
-      outputPath: 'data-grids/data-grid',
-      sourcePath: 'bundles/data-grid.js',
-      template: 'markup/index.html'
     }
   ]
 })

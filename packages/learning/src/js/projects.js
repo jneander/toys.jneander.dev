@@ -1,4 +1,9 @@
 export default {
+  dataGrid: {
+    label: 'Data Grid',
+    path: '/data-grids/data-grid'
+  },
+
   geneticAlgorithms: {
     label: 'Genetic Algorithms',
     path: '/genetic-algorithms'

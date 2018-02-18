@@ -5,6 +5,12 @@ module.exports = configureWebpack({
   env: getEnv(),
   pages: [
     {
+      name: 'data-grid',
+      outputPath: 'data-grids/data-grid',
+      sourcePath: 'bundles/data-grids/data-grid.js',
+      template: 'markup/index.html'
+    },
+    {
       name: 'home',
       outputPath: '',
       sourcePath: 'bundles/home.js',

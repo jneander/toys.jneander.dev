@@ -1,8 +1,11 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 
-import Header from 'js/shared/components/Header'
+import Header from '../Header'
 
-export default class AppHarness extends React.PureComponent {
+import 'normalize.css'
+import './styles.css'
+
+export default class AppHarness extends PureComponent {
   render() {
     return (
       <div>

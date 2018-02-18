@@ -1,4 +1,4 @@
-const configureKarma = require('@jneander/dev-tools/lib/configuration/configureKarma')
+const configureKarma = require('@jneander/dev-tools/configuration/configureKarma')
 
 module.exports = configureKarma({
   appConfig: require('./app.js'),

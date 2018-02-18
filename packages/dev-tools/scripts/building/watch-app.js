@@ -7,7 +7,7 @@ const WriteFilePlugin = require('write-file-webpack-plugin')
 const rimraf = require('rimraf')
 const webpack = require('webpack')
 
-const {getVarFlag, getVarInteger, getString} = require('../../lib/cli')
+const {getVarFlag, getVarInteger, getString} = require('../../utils/cli')
 
 const config = require(getString('config'))
 const port = getVarInteger('PORT') || 8080

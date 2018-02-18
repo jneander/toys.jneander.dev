@@ -2,7 +2,7 @@
 
 const path = require('path')
 
-const {getCommand, runCommands} = require('../../lib/utils')
+const {getCommand, runCommands} = require('../utils')
 
 const env = `NODE_ENV=${process.env.NODE_ENV || 'production'}`
 const sourcePath = path.join(process.cwd(), 'src')
@@ -15,7 +15,7 @@ if (process.argv.includes('--watch')) {
 function buildArgs(args, type) {
   return [
     ...args,
-    `--config-file ${path.join(__dirname, '../..', `config/babel/babelrc.${type}.js`)}`,
+    `--config-file ${path.join(__dirname, '../..', `configuration/babel/babelrc.${type}.js`)}`,
     `--out-dir ${path.join(process.cwd(), type)}`
   ]
 }

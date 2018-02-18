@@ -1,6 +1,5 @@
-import React from 'react'
+import React, {Component} from 'react'
 import ApplyTheme from '@instructure/ui-core/lib/components/ApplyTheme'
-import Button from '@instructure/ui-core/lib/components/Button'
 import Container from '@instructure/ui-core/lib/components/Container'
 import Heading from '@instructure/ui-core/lib/components/Heading'
 import Link from '@instructure/ui-core/lib/components/Link'
@@ -10,12 +9,12 @@ import Select from '@instructure/ui-core/lib/components/Select'
 import Text from '@instructure/ui-core/lib/components/Text'
 import canvas from '@instructure/ui-themes/lib/canvas'
 
+import projects from '../../../projects'
 import styles from './styles.css'
-import apps from 'js/apps'
 
 let appList = []
-Object.keys(apps).forEach(app => {
-  const entry = {key: app, ...apps[app]}
+Object.keys(projects).forEach(app => {
+  const entry = {key: app, ...projects[app]}
   if (app === 'home') {
     appList.unshift(entry)
   } else {
@@ -24,13 +23,13 @@ Object.keys(apps).forEach(app => {
 })
 appList = appList.sort(app => app.label)
 
-export default class Header extends React.Component {
+export default class Header extends Component {
   constructor(props) {
     super(props)
   }
 
   onAppChange(event) {
-    window.location = apps[event.target.value].path
+    window.location = projects[event.target.value].path
   }
 
   render() {

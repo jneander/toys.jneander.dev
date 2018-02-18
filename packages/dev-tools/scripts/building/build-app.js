@@ -2,8 +2,8 @@
 
 const path = require('path')
 
-const {getEnv, getVarFlag, getVarInteger, getString} = require('../../lib/cli')
-const {getCommand, runCommands} = require('../../lib/utils')
+const {getEnv, getVarFlag, getVarInteger, getString} = require('../../utils/cli')
+const {getCommand, runCommands} = require('../utils')
 
 const vars = []
 vars.push(`NODE_ENV=${getEnv('production')}`)

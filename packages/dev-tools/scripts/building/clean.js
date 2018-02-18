@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const {runCommands, getCommand} = require('../../lib/utils')
+const {runCommands, getCommand} = require('../utils')
 
 const paths = ['__build__', 'es', 'dist', 'lib', '.babel-cache']
 

@@ -1,5 +1,5 @@
-const configureWebpack = require('@jneander/dev-tools/lib/configuration/configureWebpack')
-const {getEnv} = require('@jneander/dev-tools/lib/cli')
+const configureWebpack = require('@jneander/dev-tools/configuration/configureWebpack')
+const {getEnv} = require('@jneander/dev-tools/utils/cli')
 
 module.exports = configureWebpack({
   env: getEnv(),
@@ -7,31 +7,7 @@ module.exports = configureWebpack({
     {
       name: 'home',
       outputPath: '',
-      sourcePath: 'bundles/home.js',
-      template: 'markup/index.html'
-    },
-    {
-      name: 'data-grid',
-      outputPath: 'data-grid',
-      sourcePath: 'bundles/data-grid.js',
-      template: 'markup/index.html'
-    },
-    {
-      name: 'slick-grid',
-      outputPath: 'slick-grid',
-      sourcePath: 'bundles/slick-grid.js',
-      template: 'markup/index.html'
-    },
-    {
-      name: 'static-grid',
-      outputPath: 'static-grid',
-      sourcePath: 'bundles/static-grid.js',
-      template: 'markup/index.html'
-    },
-    {
-      name: 'wai-data-grid',
-      outputPath: 'wai-data-grid',
-      sourcePath: 'bundles/wai-data-grid.js',
+      sourcePath: 'js/home',
       template: 'markup/index.html'
     }
   ]

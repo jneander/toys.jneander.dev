@@ -15,8 +15,8 @@
     "run-specs": "./scripts/specs/run-specs.js"
   },
   "scripts": {
-    "format": "format-code --include lib",
-    "lint": "lint-code --include lib"
+    "lint": "lint-code --all",
+    "lint:fix": "lint-code --fix --all"
   },
   "license": "MIT",
   "bugs": "https://github.com/jneander/jlnio/issues",

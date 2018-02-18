@@ -23,18 +23,17 @@ module.exports = function(appConfig) {
   appConfig.pages.forEach(pageConfig => {
     const page = new Page(pageConfig)
 
-    pageEntries[page.chunkName] = [
-      '@babel/polyfill',
-      path.join(pkgPath, page.bundlePath)
-    ]
+    pageEntries[page.chunkName] = ['@babel/polyfill', path.join(pkgPath, page.bundlePath)]
 
     pagePlugins.push(new PageWrapperPlugin(page))
 
-    pagePlugins.push(new HtmlWebpackPlugin({
-      chunks: ['vendor', page.chunkName],
-      filename: `${page.outputPath ? page.outputPath + '/' : ''}index.html`,
-      template: path.join(pkgSrc, page.template)
-    }))
+    pagePlugins.push(
+      new HtmlWebpackPlugin({
+        chunks: ['vendor', page.chunkName],
+        filename: `${page.outputPath ? page.outputPath + '/' : ''}index.html`,
+        template: path.join(pkgSrc, page.template)
+      })
+    )
   })
 
   const webpackConfig = {
@@ -43,17 +42,22 @@ module.exports = function(appConfig) {
     entry: pageEntries,
 
     module: {
-      rules: [{
-        exclude: /node_modules/,
-        test: /\.js$/,
-        use: 'happypack/loader?id=babel'
-      }, {
-        exclude: /node_modules/,
-        test: /\.(png|jpg|gif)$/,
-        use: [{
-          loader: 'url-loader?limit=10000&name=img/[hash:12]/[ext]'
-        }]
-      }]
+      rules: [
+        {
+          exclude: /node_modules/,
+          test: /\.js$/,
+          use: 'happypack/loader?id=babel'
+        },
+        {
+          exclude: /node_modules/,
+          test: /\.(png|jpg|gif)$/,
+          use: [
+            {
+              loader: 'url-loader?limit=10000&name=img/[hash:12]/[ext]'
+            }
+          ]
+        }
+      ]
     },
 
     output: {
@@ -71,17 +75,22 @@ module.exports = function(appConfig) {
 
       new HappyPack({
         id: 'babel',
-        loaders: [{
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['module:@jneander/babel-presets', {
-                modules: false,
-                themeable: false
-              }]
-            ]
+        loaders: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                [
+                  'module:@jneander/babel-presets',
+                  {
+                    modules: false,
+                    themeable: false
+                  }
+                ]
+              ]
+            }
           }
-        }],
+        ],
         threads: 4
       }),
 
@@ -89,10 +98,7 @@ module.exports = function(appConfig) {
     ],
 
     resolve: {
-      modules: [
-        pkgSrc,
-        'node_modules'
-      ]
+      modules: [pkgSrc, 'node_modules']
     },
 
     stats: {
@@ -100,11 +106,13 @@ module.exports = function(appConfig) {
     }
   }
 
-  webpackConfig.plugins.unshift(new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: JSON.stringify(appEnv)
-    }
-  }))
+  webpackConfig.plugins.unshift(
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(appEnv)
+      }
+    })
+  )
 
   if (appEnv === 'development') {
     webpackConfig.module.rules.push({
@@ -115,8 +123,8 @@ module.exports = function(appConfig) {
     webpackConfig.plugins.push(new webpack.NamedModulesPlugin())
     webpackConfig.plugins.push(
       new webpack.optimize.CommonsChunkPlugin({
-        minChunk: function (module) {
-          return /node_modules/.test(module.resource);
+        minChunk: function(module) {
+          return /node_modules/.test(module.resource)
         },
         name: 'vendor'
       })
@@ -135,8 +143,8 @@ module.exports = function(appConfig) {
 
     webpackConfig.plugins.push(
       new webpack.optimize.CommonsChunkPlugin({
-        minChunk: function (module) {
-          return /node_modules/.test(module.resource);
+        minChunk: function(module) {
+          return /node_modules/.test(module.resource)
         },
         name: 'vendor'
       })

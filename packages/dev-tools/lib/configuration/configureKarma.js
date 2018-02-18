@@ -2,8 +2,9 @@ module.exports = function configure(options) {
   const pkgPath = process.cwd()
 
   const files = options.filePatterns.map(pattern => ({
-    pattern, watched: false}
-  ))
+    pattern,
+    watched: false
+  }))
 
   const preprocessors = options.filePatterns.reduce((map, pattern) => {
     map[pattern] = ['webpack', 'sourcemap']

@@ -2,7 +2,7 @@
 
 const path = require('path')
 
-const {getStringArray} = require('../../lib/cli')
+const {getFlag, getStringArray} = require('../../lib/cli')
 const {getCommand, runCommands} = require('../../lib/utils')
 
 let suffix = ''
@@ -15,10 +15,13 @@ if (process.argv.includes('--fix')) {
   args.unshift('-l')
 }
 
-const paths = getStringArray('include')
-paths.push('config', 'scripts', 'spec', 'src')
-
-args.push(`'./{${paths.join(',')}}/**/*.js'`)
+if (getFlag('all')) {
+  args.push(`'./**/*.js'`)
+} else {
+  const paths = getStringArray('include')
+  paths.push('config', 'scripts', 'spec', 'src')
+  args.push(`'./{${paths.join(',')}}/**/*.js'`)
+}
 
 const result = runCommands({
   [`lint:js${suffix}`]: getCommand([], 'prettier', args)

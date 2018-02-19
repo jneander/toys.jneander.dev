@@ -12,9 +12,9 @@
     "format": "format-code",
     "lint": "lint-code",
     "lint:fix": "lint-code --fix",
-    "spec": "NODE_ENV=test run-specs --config config/specs.js",
-    "spec:watch": "NODE_ENV=test run-specs --config config/specs.js --watch",
-    "start:watch": "NODE_ENV=development build-app --config ./config/app.js --watch --serve"
+    "start:watch": "NODE_ENV=development build-app --config ./config/app.js --watch --serve",
+    "test": "NODE_ENV=test run-specs --config config/specs.js",
+    "test:watch": "NODE_ENV=test run-specs --config config/specs.js --watch"
   },
   "repository": {
     "type": "git",

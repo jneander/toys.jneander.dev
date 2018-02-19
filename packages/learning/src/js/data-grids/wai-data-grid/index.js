@@ -50,7 +50,7 @@ export default class Grid extends PureComponent {
             </p>
           </Text>
         </Container>
-    </AppHarness>
+      </AppHarness>
     )
   }
 }

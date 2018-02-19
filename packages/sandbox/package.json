@@ -11,9 +11,9 @@
     "deploy": "node ./scripts/deploy.js",
     "lint": "lint-code",
     "lint:fix": "lint-code --fix",
-    "spec": "NODE_ENV=test run-specs --config config/specs.js",
-    "spec:watch": "NODE_ENV=test run-specs --config config/specs.js --watch",
-    "start:watch": "NODE_ENV=development build-app --config ./config/app.js --watch --serve"
+    "start:watch": "NODE_ENV=development build-app --config ./config/app.js --watch --serve",
+    "test": "NODE_ENV=test run-specs --config config/specs.js",
+    "test:watch": "NODE_ENV=test run-specs --config config/specs.js --watch"
   },
   "repository": {
     "type": "git",
@@ -26,17 +26,18 @@
   },
   "homepage": "https://github.com/jneander/jlnio",
   "dependencies": {
-    "@jneander/data-grid": "^0.0.1"
-  },
-  "devDependencies": {
     "@instructure/ui-core": "^4.7.1",
     "@instructure/ui-themes": "^4.7.1",
+    "@jneander/data-grid": "^0.0.1",
+    "normalize.css": "^8.0.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
     "@jneander/dev-tools": "^0.0",
     "chai": "^4.1.2",
-    "normalize.css": "^7.0.0",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "sinon": "^3.3.0"
+    "npm-run-all": "^4.1.2",
+    "sinon": "^4.3.0"
   },
   "private": true
 }

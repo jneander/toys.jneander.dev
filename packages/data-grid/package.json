@@ -18,10 +18,14 @@
   "license": "MIT",
   "dependencies": {
     "@instructure/ui-themeable": "^4.7.1",
-    "react-measure": "^1.4.7"
+    "react-measure": "1.4.7"
   },
   "devDependencies": {
     "@jneander/dev-tools": "^0.0"
+  },
+  "peerDependencies": {
+    "react": ">=15.6.1",
+    "react-dom": ">=15.6.1"
   },
   "private": false
 }

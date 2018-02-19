@@ -32,10 +32,10 @@
     "@instructure/ui-themes": "^4.7.1",
     "@jneander/dev-tools": "^0.0",
     "chai": "^4.1.2",
-    "normalize.css": "^7.0.0",
+    "normalize.css": "^8.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "sinon": "^3.3.0"
+    "sinon": "^4.3.0"
   },
   "private": true
 }

@@ -21,6 +21,7 @@
     "lint:all": "lerna run lint --stream",
     "lint:fix": "lerna run lint:fix --stream --scope",
     "lint:fix:all": "lerna run lint:fix --stream",
+    "publish:list": "list-module-files --pkg",
     "start:watch": "lerna run start:watch --stream --scope",
     "test": "yarn test:all",
     "test:all": "lerna run test --stream --concurrency 1",

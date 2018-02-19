@@ -25,16 +25,17 @@
   "bugs": "https://github.com/jneander/jlnio/issues",
   "homepage": "https://github.com/jneander/jlnio",
   "dependencies": {
-    "@jneander/genetics": "^0.1.0"
-  },
-  "devDependencies": {
     "@instructure/ui-core": "^4.7.1",
     "@instructure/ui-themes": "^4.7.1",
-    "@jneander/dev-tools": "^0.0",
-    "chai": "^4.1.2",
+    "@jneander/genetics": "^0.1.0",
     "normalize.css": "^8.0.0",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
+    "@jneander/dev-tools": "^0.0",
+    "chai": "^4.1.2",
+    "npm-run-all": "^4.1.2",
     "sinon": "^4.3.0"
   },
   "private": true

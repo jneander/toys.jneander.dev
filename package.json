@@ -21,8 +21,9 @@
     "lint:fix": "lerna run lint:fix --stream --scope",
     "lint:fix:all": "lerna run lint:fix --stream",
     "start:watch": "lerna run start:watch --stream --scope",
-    "test": "lerna run test --stream --scope",
+    "test": "yarn test:all",
     "test:all": "lerna run test --stream --concurrency 1",
+    "test:one": "lerna run test --stream --scope",
     "test:watch": "lerna run test:watch --stream --scope"
   },
   "version": "0.0.1",

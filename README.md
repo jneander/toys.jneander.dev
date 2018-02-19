@@ -1,4 +1,4 @@
-# @jneander Monorepo
+# @jneander Open Projects
 
 [![lerna][lerna-badge]][lerna-url]
 [![Build Status][build-status-badge]][build-status-url]

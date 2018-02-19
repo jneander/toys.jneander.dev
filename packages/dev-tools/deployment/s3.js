@@ -13,7 +13,7 @@ function deploy(options) {
   return new Promise((resolve, reject) => {
     const uploader = client.uploadDir({
       deleteRemoved: options.deleteRemoved || false,
-      localDir: path.join(__dirname, '../../..', options.packageDir),
+      localDir: path.join(__dirname, '../..', options.packageDir),
       s3Params: {
         Bucket: options.bucket
       }

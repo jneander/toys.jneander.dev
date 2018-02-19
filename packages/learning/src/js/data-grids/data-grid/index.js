@@ -57,7 +57,7 @@ export default class DataGridExamples extends Component {
             </main>
           </Container>
         </ApplyTheme>
-    </AppHarness>
+      </AppHarness>
     )
   }
 }

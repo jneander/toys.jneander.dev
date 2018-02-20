@@ -14,6 +14,7 @@
     "clean:all": "lerna run clean --stream",
     "clean:modules": "lerna clean --yes",
     "deploy": "lerna run deploy --stream --scope",
+    "deploy:all": "lerna run deploy --stream",
     "format": "lerna run format --stream --scope",
     "format:all": "lerna run format --stream",
     "lint": "lerna run lint --stream --scope",

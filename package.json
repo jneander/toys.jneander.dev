@@ -11,6 +11,7 @@
     "build:production": "lerna run build:production --stream --scope",
     "build:production:all": "lerna run build:production --stream",
     "build:watch": "lerna run build:watch --stream --scope",
+    "clean": "lerna run clean --scope",
     "clean:all": "lerna run clean --stream",
     "clean:modules": "lerna clean --yes",
     "deploy": "lerna run deploy --stream --scope",

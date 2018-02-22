@@ -7,6 +7,7 @@
   "scripts": {
     "build": "build-lib",
     "build:production": "build-lib",
+    "build:watch": "build-lib --watch",
     "clean": "clean",
     "lint": "lint-code",
     "lint:fix": "lint-code --fix"
@@ -17,6 +18,9 @@
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
+  "dependencies": {
+    "@jneander/async-utils": "^0.0"
+  },
   "devDependencies": {
     "@jneander/dev-tools": "^0.0"
   },

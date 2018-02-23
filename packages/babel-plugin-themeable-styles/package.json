@@ -10,5 +10,7 @@
     "@instructure/postcss-themeable-styles": "^4.7.2",
     "css-modules-require-hook": "^4.2.3"
   },
-  "private": true
+  "publishConfig": {
+    "access": "public"
+  }
 }

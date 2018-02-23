@@ -28,5 +28,7 @@
     "react": ">=15.6.1",
     "react-dom": ">=15.6.1"
   },
-  "private": false
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -24,5 +24,7 @@
   "devDependencies": {
     "@jneander/dev-tools": "^0.0"
   },
-  "private": false
+  "publishConfig": {
+    "access": "public"
+  }
 }

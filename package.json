@@ -24,7 +24,7 @@
     "lint:fix:all": "lerna run lint:fix --stream",
     "publish:all": "lerna publish",
     "publish:list": "list-module-files --pkg",
-    "publish:one": "lerna publish --scope",
+    "publish:one": "lerna publish --skip-git --force-publish=* --access=public --scope",
     "start:watch": "lerna run start:watch --stream --scope",
     "test": "yarn test:all",
     "test:all": "lerna run test --stream --concurrency 1",

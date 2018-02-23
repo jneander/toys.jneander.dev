@@ -501,7 +501,7 @@
     "@babel/plugin-syntax-dynamic-import" "7.0.0-beta.40"
     "@babel/plugin-syntax-import-meta" "7.0.0-beta.40"
 
-"@babel/template@7.0.0-beta.40", "@babel/template@^7.0.0-beta.39":
+"@babel/template@7.0.0-beta.40", "@babel/template@^7.0.0-beta.40":
   version "7.0.0-beta.40"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.0.0-beta.40.tgz#034988c6424eb5c3268fe6a608626de1f4410fc8"
   dependencies:
@@ -536,7 +536,7 @@
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/@instructure/babel-plugin-transform-class-display-name/-/babel-plugin-transform-class-display-name-4.7.2.tgz#a19aca1768d69290804cb9750a722fc6ef937ada"
 
-"@instructure/postcss-themeable-styles@^4.7.1":
+"@instructure/postcss-themeable-styles@^4.7.2":
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/@instructure/postcss-themeable-styles/-/postcss-themeable-styles-4.7.2.tgz#e8e0fb014e1b1fe29a0a3ab240449fb67650bdc5"
 

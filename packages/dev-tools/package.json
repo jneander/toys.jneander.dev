@@ -12,6 +12,7 @@
     "build-lib": "./scripts/building/build-lib.js",
     "clean": "./scripts/building/clean.js",
     "lint-code": "./scripts/quality/lint-code.js",
+    "list-module-files": "./scripts/deployment/list-module-files.js",
     "run-specs": "./scripts/specs/run-specs.js"
   },
   "scripts": {
@@ -45,6 +46,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
     "mocha": "^5.0.1",
+    "npm-packlist": "^1.1.10",
     "prettier": "1.10.2",
     "react-hot-loader": "^3.0.0-beta.7",
     "rimraf": "^2.6.2",
@@ -58,5 +60,7 @@
     "which": "^1.3.0",
     "write-file-webpack-plugin": "^4.1.0"
   },
-  "private": true
+  "publishConfig": {
+    "access": "public"
+  }
 }

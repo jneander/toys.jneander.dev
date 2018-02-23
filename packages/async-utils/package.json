@@ -1,32 +1,25 @@
 {
-  "name": "@jneander/data-grid",
-  "version": "0.0.1",
-  "description": "An Accessible Data Grid",
+  "name": "@jneander/async-utils",
+  "version": "0.0.2",
+  "description": "Asynchronous Utilities",
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "scripts": {
     "build": "build-lib",
     "build:production": "build-lib",
+    "build:watch": "build-lib --watch",
     "clean": "clean",
     "lint": "lint-code",
     "lint:fix": "lint-code --fix"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jneander/jlnio"
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "@instructure/ui-themeable": "^4.7.1",
-    "react-measure": "1.4.7"
-  },
   "devDependencies": {
     "@jneander/dev-tools": "^0.0"
-  },
-  "peerDependencies": {
-    "react": ">=15.6.1",
-    "react-dom": ">=15.6.1"
   },
   "publishConfig": {
     "access": "public"

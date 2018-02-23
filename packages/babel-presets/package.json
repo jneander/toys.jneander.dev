@@ -1,6 +1,6 @@
 {
   "name": "@jneander/babel-presets",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "Configurable Babel Presets",
   "main": "index.js",
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
@@ -14,5 +14,8 @@
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0-beta.40"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

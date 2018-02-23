@@ -1,2 +1,3 @@
-# dev-tools
-@jneander Shared Development Tools
+# @jneander/dev-tools
+
+Shared Development Tools

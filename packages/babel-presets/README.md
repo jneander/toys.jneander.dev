@@ -1,2 +1,3 @@
-# babel-presets
-@jneander Configurable Babel Presets
+# @jneander/babel-presets
+
+Configurable Babel Presets

@@ -1,2 +1,3 @@
-# async-utils
-@jneander Asynchronous Utilities
+# @jneander/async-utils
+
+Asynchronous Utilities

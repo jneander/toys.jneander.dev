@@ -1,2 +1,3 @@
-# data-grid
-@jneander Accessible Data Grid
+# @jneander/data-grid
+
+Accessible Data Grid

@@ -1,6 +1,6 @@
 {
   "name": "@jneander/babel-presets",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Configurable Babel Presets",
   "main": "index.js",
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",

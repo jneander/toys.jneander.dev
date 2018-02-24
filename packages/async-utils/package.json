@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jneander/jlnio"
+    "url": "https://github.com/jneander/jneander"
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "devDependencies": {

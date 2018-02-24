@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jneander/jlnio"
+    "url": "https://github.com/jneander/jneander"
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
-  "bugs": "https://github.com/jneander/jlnio/issues",
-  "homepage": "https://github.com/jneander/jlnio",
+  "bugs": "https://github.com/jneander/jneander/issues",
+  "homepage": "https://github.com/jneander/jneander",
   "dependencies": {
     "@instructure/ui-core": "^4.7.1",
     "@instructure/ui-themes": "^4.7.1",
@@ -36,7 +36,7 @@
     "@jneander/dev-tools": "^0.0",
     "chai": "^4.1.2",
     "npm-run-all": "^4.1.2",
-    "sinon": "^4.3.0"
+    "sinon": "^4.4.1"
   },
   "private": true
 }

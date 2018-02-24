@@ -11,4 +11,4 @@
 [build-status-url]: https://app.codeship.com/projects/0ca9a980-f721-0135-3370-521ae72d24b8/status?branch=master
 
 [license-badge]: https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square
-[license-url]: https://github.com/jneander/jlnio/blob/master/LICENSE
+[license-url]: https://github.com/jneander/jneander/blob/master/LICENSE

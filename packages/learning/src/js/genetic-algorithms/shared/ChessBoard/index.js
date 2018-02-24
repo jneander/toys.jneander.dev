@@ -31,9 +31,7 @@ function renderRow(row, rowIndex) {
   return (
     <tr key={rowIndex} className={styles.Row}>
       {row.map((piece, index) => (
-        <td key={index} className={styles.Space}>
-          {piece}
-        </td>
+        <td key={index} className={styles.Space} dangerouslySetInnerHTML={{__html: piece}} />
       ))}
     </tr>
   )

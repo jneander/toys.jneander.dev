@@ -19,7 +19,7 @@ export default class Board extends PureComponent {
       const {genes} = this.props.chromosome
 
       for (let i = 0; i < this.props.chromosome.genes.length; i += 2) {
-        positions.push({row: genes[i], col: genes[i + 1], piece: '♛'})
+        positions.push({row: genes[i], col: genes[i + 1], piece: '&#9819;'})
       }
     }
 

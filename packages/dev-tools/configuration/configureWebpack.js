@@ -98,6 +98,9 @@ module.exports = function(appConfig) {
     ],
 
     resolve: {
+      alias: {
+        React: 'react'
+      },
       modules: [pkgSrc, 'node_modules']
     },
 

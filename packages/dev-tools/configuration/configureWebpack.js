@@ -20,21 +20,34 @@ module.exports = function(appConfig) {
   const pageEntries = {}
   const pagePlugins = []
 
-  appConfig.pages.forEach(pageConfig => {
-    const page = new Page(pageConfig)
-
-    pageEntries[page.chunkName] = ['@babel/polyfill', path.join(pkgPath, page.bundlePath)]
-
-    pagePlugins.push(new PageWrapperPlugin(page))
-
-    pagePlugins.push(
-      new HtmlWebpackPlugin({
-        chunks: ['vendor', page.chunkName],
-        filename: `${page.outputPath ? page.outputPath + '/' : ''}index.html`,
-        template: path.join(pkgSrc, page.template)
+  function configurePage(config) {
+    if (config.context) {
+      config.pages.forEach(contextConfig => {
+        configurePage({
+          name: contextConfig.name,
+          outputPath: path.join(config.outputPath, contextConfig.outputPath),
+          sourcePath: path.join(config.sourcePath, contextConfig.sourcePath),
+          template: config.template || contextConfig.template
+        })
       })
-    )
-  })
+    } else {
+      const page = new Page(config)
+
+      pageEntries[page.chunkName] = ['@babel/polyfill', path.join(pkgPath, page.bundlePath)]
+
+      pagePlugins.push(new PageWrapperPlugin(page))
+
+      pagePlugins.push(
+        new HtmlWebpackPlugin({
+          chunks: ['vendor', page.chunkName],
+          filename: `${page.outputPath ? page.outputPath + '/' : ''}index.html`,
+          template: path.join(pkgSrc, page.template)
+        })
+      )
+    }
+  }
+
+  appConfig.pages.forEach(configurePage)
 
   const webpackConfig = {
     devtool: 'source-map',

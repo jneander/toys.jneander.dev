@@ -42,24 +42,28 @@ export default class Header extends Component {
             </Heading>
           </div>
 
-          <div className={styles.AppName}>
-            <Text>{this.props.app}</Text>
-          </div>
+          {this.props.page && (
+            <div className={styles.AppName}>
+              <Text>{this.props.app}</Text>
+            </div>
+          )}
 
-          <div className={styles.Navigation}>
-            <Select
-              label={<ScreenReaderContent>Apps</ScreenReaderContent>}
-              layout="inline"
-              onChange={this.onAppChange}
-              value={this.props.page}
-            >
-              {appList.map(app => (
-                <option key={app.key} value={app.key}>
-                  {app.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+          {this.props.page && (
+            <div className={styles.Navigation}>
+              <Select
+                label={<ScreenReaderContent>Apps</ScreenReaderContent>}
+                layout="inline"
+                onChange={this.onAppChange}
+                value={this.props.page}
+              >
+                {appList.map(app => (
+                  <option key={app.key} value={app.key}>
+                    {app.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          )}
         </Container>
       </ApplyTheme>
     )

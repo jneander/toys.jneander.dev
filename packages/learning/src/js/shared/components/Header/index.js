@@ -38,7 +38,7 @@ export default class Header extends Component {
         <Container as="header" className={styles.Header}>
           <div className={styles.Heading}>
             <Heading level="h1">
-              <Link href="/">Learning Platform</Link>
+              <Link href="/">Learning</Link>
             </Heading>
           </div>
 

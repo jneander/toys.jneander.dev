@@ -1,7 +1,7 @@
-const configureKarma = require('@jneander/dev-tools/configuration/configureKarma')
+const configureSpecs = require('@jneander/dev-tools/configuration/configureSpecs')
 
-module.exports = configureKarma({
-  appConfig: require('./app.js'),
-  filePatterns: ['spec/*Spec.js', 'spec/**/*Spec.js'],
-  globals: 'spec/globals.js'
+module.exports = configureSpecs({
+  filePatterns: ['src/**/__specs__/**/*.spec.js'],
+  globals: 'config/specGlobals.js',
+  srcPath: 'src'
 })

@@ -2,16 +2,14 @@ import React, {Component} from 'react'
 import Container from '@instructure/ui-core/lib/components/Container'
 import Heading from '@instructure/ui-core/lib/components/Heading'
 
-import AppHarness from '../shared/components/AppHarness'
+import Layout from '../shared/components/Layout'
 
 export default class Home extends Component {
   render() {
     return (
-      <AppHarness page="home">
-        <Container as="div" padding="medium">
-          <Heading level="h2">Work in Progress</Heading>
-        </Container>
-      </AppHarness>
+      <Layout page="home">
+        <Container as="div" padding="medium" />
+      </Layout>
     )
   }
 }

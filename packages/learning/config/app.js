@@ -5,15 +5,26 @@ module.exports = configureWebpack({
   env: getEnv(),
   pages: [
     {
-      name: 'data-grid',
-      outputPath: 'data-grids/data-grid',
-      sourcePath: 'js/data-grids/data-grid',
-      template: 'markup/index.html'
-    },
-    {
-      name: 'home',
-      outputPath: '',
-      sourcePath: 'js/home',
+      context: 'data-grids',
+      outputPath: 'data-grids',
+      pages: [
+        {
+          name: 'data-grid',
+          outputPath: 'data-grid',
+          sourcePath: 'data-grid'
+        },
+        {
+          name: 'static-grid',
+          outputPath: 'static-grid',
+          sourcePath: 'static-grid'
+        },
+        {
+          name: 'wai-data-grid',
+          outputPath: 'wai-data-grid',
+          sourcePath: 'wai-data-grid'
+        }
+      ],
+      sourcePath: 'js/data-grids',
       template: 'markup/index.html'
     },
     {
@@ -23,15 +34,9 @@ module.exports = configureWebpack({
       template: 'markup/index.html'
     },
     {
-      name: 'static-grid',
-      outputPath: 'data-grids/static-grid',
-      sourcePath: 'js/data-grids/static-grid',
-      template: 'markup/index.html'
-    },
-    {
-      name: 'wai-data-grid',
-      outputPath: 'data-grids/wai-data-grid',
-      sourcePath: 'js/data-grids/wai-data-grid',
+      name: 'home',
+      outputPath: '',
+      sourcePath: 'js/home',
       template: 'markup/index.html'
     }
   ]

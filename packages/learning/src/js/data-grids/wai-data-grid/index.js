@@ -4,7 +4,7 @@ import Link from '@instructure/ui-core/lib/components/Link'
 import TabList, {TabPanel} from '@instructure/ui-core/lib/components/TabList'
 import Text from '@instructure/ui-core/lib/components/Text'
 
-import AppHarness from '../../shared/components/AppHarness'
+import Layout from '../../shared/components/Layout'
 import Example1 from './example-1'
 import Example2 from './example-2'
 
@@ -27,7 +27,7 @@ export default class Grid extends PureComponent {
     const Example = examples[this.state.selectedExample]
 
     return (
-      <AppHarness page="waiDataGrid">
+      <Layout page="waiDataGrid">
         <Container margin="large" display="block">
           <TabList onChange={this.onExampleChange} selectedIndex={this.state.selectedTabIndex}>
             {examples.map(example => (
@@ -50,7 +50,7 @@ export default class Grid extends PureComponent {
             </p>
           </Text>
         </Container>
-      </AppHarness>
+      </Layout>
     )
   }
 }

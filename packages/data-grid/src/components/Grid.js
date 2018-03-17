@@ -85,11 +85,12 @@ class Grid extends React.PureComponent {
     return (
       <Measure onMeasure={this.handleMeasure} whitelist={['width', 'height']}>
         <div
+          aria-colcount={this.props.columns.length}
+          aria-rowcount={this.props.rows.length}
           className={classes.join(' ')}
           onScroll={this.handleGridScroll}
           role="grid"
-          aria-rowcount={this.props.rows.length}
-          aria-colcount={this.props.columns.length}
+          style={{overflow: 'scroll'}}
         >
           <Header
             cellFactory={this.props.headerCellFactory}

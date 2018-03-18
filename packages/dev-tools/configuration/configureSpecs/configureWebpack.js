@@ -17,7 +17,13 @@ module.exports = function(specConfig) {
   const pkgSrc = path.join(pkgPath, 'src')
   const appEnv = selectEnv(specConfig.env)
 
-  const specPlugins = [new SpecWrapperPlugin(pkgSrc)]
+  const specPlugins = [
+    new SpecWrapperPlugin(pkgSrc),
+
+    new webpack.ProvidePlugin({
+      Testbed: require.resolve('../../specs/ReactTestbed')
+    })
+  ]
 
   const webpackConfig = {
     devtool: 'source-map',

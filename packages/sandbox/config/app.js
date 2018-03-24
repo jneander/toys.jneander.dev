@@ -7,8 +7,8 @@ module.exports = configureApp({
     {
       name: 'home',
       outputPath: '',
-      sourcePath: 'js/home',
-      template: 'markup/index.html'
+      sourcePath: 'home',
+      template: 'shared/markup/index.html'
     }
   ]
 })

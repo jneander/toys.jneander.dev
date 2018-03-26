@@ -54,6 +54,8 @@ module.exports = function(appConfig) {
 
     entry: pageEntries,
 
+    externals: appConfig.globalImports,
+
     module: {
       rules: [
         {
@@ -97,7 +99,7 @@ module.exports = function(appConfig) {
                   'module:@jneander/babel-presets',
                   {
                     modules: false,
-                    themeable: false
+                    themeable: !!appConfig.themeable
                   }
                 ]
               ]

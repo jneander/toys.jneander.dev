@@ -1,6 +1,6 @@
 import React from 'react'
-import Container from '@instructure/ui-core/lib/components/Container'
-import Heading from '@instructure/ui-core/lib/components/Heading'
+import Container from '@instructure/ui-container/lib/components/Container'
+import Heading from '@instructure/ui-elements/lib/components/Heading'
 
 import Layout from '../shared/components/Layout'
 

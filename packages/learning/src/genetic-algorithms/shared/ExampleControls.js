@@ -1,12 +1,12 @@
 import React, {PureComponent} from 'react'
-import IconPauseSolid from 'instructure-icons/lib/Solid/IconPauseSolid'
-import IconPlaySolid from 'instructure-icons/lib/Solid/IconPlaySolid'
-import IconRefreshSolid from 'instructure-icons/lib/Solid/IconRefreshSolid'
-import Button from '@instructure/ui-core/lib/components/Button'
-import Checkbox from '@instructure/ui-core/lib/components/Checkbox'
-import Container from '@instructure/ui-core/lib/components/Container'
-import RangeInput from '@instructure/ui-core/lib/components/RangeInput'
-import ScreenReaderContent from '@instructure/ui-core/lib/components/ScreenReaderContent'
+import IconPause from '@instructure/ui-icons/lib/Solid/IconPause'
+import IconPlay from '@instructure/ui-icons/lib/Solid/IconPlay'
+import IconRefresh from '@instructure/ui-icons/lib/Solid/IconRefresh'
+import Button from '@instructure/ui-buttons/lib/components/Button'
+import Checkbox from '@instructure/ui-forms/lib/components/Checkbox'
+import Container from '@instructure/ui-container/lib/components/Container'
+import RangeInput from '@instructure/ui-forms/lib/components/RangeInput'
+import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
 
 export default class ExampleControls extends PureComponent {
   static defaultProps = {
@@ -50,18 +50,18 @@ export default class ExampleControls extends PureComponent {
       <Container as="div">
         <Container as="div">
           <Button key="refresh" margin="0 x-small 0 0" onClick={this.refresh}>
-            <IconRefreshSolid title="Refresh" />
+            <IconRefresh title="Refresh" />
             Refresh
           </Button>
 
           {this.props.playing ? (
             <Button key="play-pause" margin="0 x-small 0 0" onClick={this.pause}>
-              <IconPauseSolid title="Pause" />
+              <IconPause title="Pause" />
               Pause
             </Button>
           ) : (
             <Button key="play-pause" margin="0 x-small 0 0" onClick={this.start}>
-              <IconPlaySolid title="Start" />
+              <IconPlay title="Start" />
               Start
             </Button>
           )}

@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import ApplyTheme from '@instructure/ui-core/lib/components/ApplyTheme'
-import Container from '@instructure/ui-core/lib/components/Container'
-import Link from '@instructure/ui-core/lib/components/Link'
-import List, {ListItem} from '@instructure/ui-core/lib/components/List'
+import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
+import Container from '@instructure/ui-container/lib/components/Container'
+import Link from '@instructure/ui-elements/lib/components/Link'
+import List, {ListItem} from '@instructure/ui-elements/lib/components/List'
 import canvas from '@instructure/ui-themes/lib/canvas'
 
 import projects from '../../../projects'

@@ -26,8 +26,10 @@
   },
   "homepage": "https://github.com/jneander/jneander",
   "dependencies": {
-    "@instructure/ui-core": "^4.7.1",
-    "@instructure/ui-themes": "^4.7.1",
+    "@instructure/ui-container": "^5.0.0",
+    "@instructure/ui-elements": "^5.0.0",
+    "@instructure/ui-themes": "^5.0.0",
+    "@instructure/ui-themeable": "^5.0.0",
     "@jneander/data-grid": "^0.0.1",
     "normalize.css": "^8.0.0",
     "react": "^15.6.1",

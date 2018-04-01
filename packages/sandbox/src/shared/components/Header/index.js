@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import canvas from '@instructure/ui-themes/lib/canvas'
-import ApplyTheme from '@instructure/ui-core/lib/components/ApplyTheme'
-import Container from '@instructure/ui-core/lib/components/Container'
-import Heading from '@instructure/ui-core/lib/components/Heading'
-import Link from '@instructure/ui-core/lib/components/Link'
+import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
+import Container from '@instructure/ui-container/lib/components/Container'
+import Heading from '@instructure/ui-elements/lib/components/Heading'
+import Link from '@instructure/ui-elements/lib/components/Link'
 
 import styles from './styles.css'
 

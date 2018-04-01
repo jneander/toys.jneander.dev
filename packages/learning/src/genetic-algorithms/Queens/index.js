@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-core/lib/components/Container'
+import Container from '@instructure/ui-container/lib/components/Container'
 
 import ExampleControls from '../shared/ExampleControls'
 import State from '../shared/State'

@@ -5,10 +5,10 @@ const HappyPack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 
-const {Page, PageWrapperPlugin} = require('../plugins/PageWrapperPlugin')
+const {Page, PageWrapperPlugin} = require('../../plugins/PageWrapperPlugin')
 
 function selectEnv(env) {
-  return ['development', 'production', 'test'].includes(env) ? env : 'production'
+  return ['development', 'production'].includes(env) ? env : 'production'
 }
 
 module.exports = function(appConfig) {
@@ -22,7 +22,7 @@ module.exports = function(appConfig) {
 
   function configurePage(config) {
     if (config.context) {
-      config.pages.forEach(contextConfig => {
+      (config.pages || []).forEach(contextConfig => {
         configurePage({
           name: contextConfig.name,
           outputPath: path.join(config.outputPath, contextConfig.outputPath),
@@ -47,12 +47,14 @@ module.exports = function(appConfig) {
     }
   }
 
-  appConfig.pages.forEach(configurePage)
+  (appConfig.pages || []).forEach(configurePage)
 
   const webpackConfig = {
     devtool: 'source-map',
 
     entry: pageEntries,
+
+    externals: appConfig.globalImports,
 
     module: {
       rules: [
@@ -97,7 +99,7 @@ module.exports = function(appConfig) {
                   'module:@jneander/babel-presets',
                   {
                     modules: false,
-                    themeable: false
+                    themeable: !!appConfig.themeable
                   }
                 ]
               ]
@@ -167,14 +169,6 @@ module.exports = function(appConfig) {
     )
     webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin())
     webpackConfig.plugins.push(new ExtractTextPlugin('styles/index-[contenthash:10].css'))
-  } else if (appEnv === 'test') {
-    webpackConfig.entry = null
-
-    webpackConfig.module.rules.push({
-      exclude: '/node_modules/',
-      loaders: ['style-loader', 'css-loader?localIdentName=[path][name]---[local]'],
-      test: /\.(css)$/
-    })
   }
 
   return webpackConfig

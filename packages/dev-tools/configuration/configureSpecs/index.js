@@ -1,3 +1,10 @@
+const path = require('path')
+
+const VirtualModuleWebpackPlugin = require('virtual-module-webpack-plugin')
+
+const {getEnv} = require('../../utils/cli')
+const configureWebpack = require('./configureWebpack')
+
 module.exports = function configure(options) {
   const pkgPath = process.cwd()
 
@@ -36,7 +43,10 @@ module.exports = function configure(options) {
         noInfo: true
       },
 
-      webpack: options.appConfig
+      webpack: configureWebpack({
+        env: options.env || getEnv(),
+        srcPath: path.join(pkgPath, options.srcPath)
+      })
     })
   }
 }

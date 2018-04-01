@@ -1,7 +1,7 @@
-const configureWebpack = require('@jneander/dev-tools/configuration/configureWebpack')
+const configureApp = require('@jneander/dev-tools/configuration/configureApp')
 const {getEnv} = require('@jneander/dev-tools/utils/cli')
 
-module.exports = configureWebpack({
+module.exports = configureApp({
   env: getEnv(),
   pages: [
     {
@@ -24,20 +24,20 @@ module.exports = configureWebpack({
           sourcePath: 'wai-data-grid'
         }
       ],
-      sourcePath: 'js/data-grids',
-      template: 'markup/index.html'
+      sourcePath: 'data-grids',
+      template: 'shared/markup/index.html'
     },
     {
       name: 'genetic-algorithms',
       outputPath: 'genetic-algorithms',
-      sourcePath: 'js/genetic-algorithms',
-      template: 'markup/index.html'
+      sourcePath: 'genetic-algorithms',
+      template: 'shared/markup/index.html'
     },
     {
       name: 'home',
       outputPath: '',
-      sourcePath: 'js/home',
-      template: 'markup/index.html'
+      sourcePath: 'home',
+      template: 'shared/markup/index.html'
     }
   ]
 })

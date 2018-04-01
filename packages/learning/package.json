@@ -2,7 +2,6 @@
   "name": "@jneander/learning",
   "version": "0.0.1",
   "description": "Demonstrations from learning",
-  "main": "./index.js",
   "scripts": {
     "build": "NODE_ENV=development build-app --config ./config/app.js",
     "build:production": "NODE_ENV=production build-app --config ./config/app.js",

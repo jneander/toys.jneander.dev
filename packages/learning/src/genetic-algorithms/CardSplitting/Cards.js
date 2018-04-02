@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import Heading from '@instructure/ui-core/lib/components/Heading'
+import Heading from '@instructure/ui-elements/lib/components/Heading'
 
 import {product, sum} from '@jneander/genetics/es/util'
 

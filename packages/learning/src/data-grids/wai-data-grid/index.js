@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-core/lib/components/Container'
-import Link from '@instructure/ui-core/lib/components/Link'
-import TabList, {TabPanel} from '@instructure/ui-core/lib/components/TabList'
-import Text from '@instructure/ui-core/lib/components/Text'
+import Container from '@instructure/ui-container/lib/components/Container'
+import Link from '@instructure/ui-elements/lib/components/Link'
+import TabList, {TabPanel} from '@instructure/ui-tabs/lib/components/TabList'
+import Text from '@instructure/ui-elements/lib/components/Text'
 
 import Layout from '../../shared/components/Layout'
 import Example1 from './example-1'

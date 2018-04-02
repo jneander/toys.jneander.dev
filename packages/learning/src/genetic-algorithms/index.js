@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import Container from '@instructure/ui-core/lib/components/Container'
-import Heading from '@instructure/ui-core/lib/components/Heading'
-import Select from '@instructure/ui-core/lib/components/Select'
+import Container from '@instructure/ui-container/lib/components/Container'
+import Heading from '@instructure/ui-elements/lib/components/Heading'
+import Select from '@instructure/ui-forms/lib/components/Select'
 
 import Layout from '../shared/components/Layout'
 import CardSplitting from './CardSplitting'

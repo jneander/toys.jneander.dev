@@ -41,9 +41,9 @@ export default class StaticGridExamples extends Component {
     })
   }
 
-  onExampleChange = event => {
+  onExampleChange = (_, selectedExample) => {
     this.setState({
-      selectedExample: examples.find(example => example.label === event.target.value)
+      selectedExample: examples.find(example => example.label === selectedExample.label)
     })
   }
 

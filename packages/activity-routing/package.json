@@ -1,0 +1,35 @@
+{
+  "name": "@jneander/activity-routing",
+  "version": "0.0.1",
+  "description": "Routing by domain concepts instead of URLs",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "scripts": {
+    "build": "build-lib",
+    "build:production": "build-lib",
+    "build:watch": "build-lib --watch",
+    "clean": "clean",
+    "lint": "lint-code",
+    "lint:fix": "lint-code --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jneander/jneander"
+  },
+  "keywords": [
+    "routing"
+  ],
+  "author": "Jeremy Neander <jeremy.neander@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jneander/jneander/issues"
+  },
+  "homepage": "https://github.com/jneander/jneander",
+  "dependencies": {
+    "qs": "^6.4.0",
+    "url-pattern": "^1.0.3"
+  },
+  "devDependencies": {
+    "@jneander/dev-tools": "^0.0.10"
+  }
+}

@@ -45,7 +45,8 @@ module.exports = function configure(options) {
 
       webpack: configureWebpack({
         env: options.env || getEnv(),
-        srcPath: path.join(pkgPath, options.srcPath)
+        srcPath: path.join(pkgPath, options.srcPath),
+        themeable: options.themeable
       })
     })
   }

@@ -78,7 +78,7 @@ module.exports = function(specConfig) {
                   'module:@jneander/babel-presets',
                   {
                     modules: false,
-                    themeable: false
+                    themeable: !!specConfig.themeable
                   }
                 ]
               ]

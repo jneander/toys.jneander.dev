@@ -16,7 +16,7 @@ module.exports = function(appConfig) {
 
   const pkgSrc = path.join(pkgPath, 'src')
   const appEnv = selectEnv(appConfig.env)
-  const pages = config.pages || []
+  const pages = appConfig.pages || []
 
   const pageEntries = {}
   const pagePlugins = []

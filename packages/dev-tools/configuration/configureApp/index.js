@@ -23,7 +23,8 @@ module.exports = function(appConfig) {
 
   function configurePage(config) {
     if (config.context) {
-      pages.forEach(contextConfig => {
+      const contextPages = config.pages || []
+      contextPages.forEach(contextConfig => {
         configurePage({
           name: contextConfig.name,
           outputPath: path.join(config.outputPath, contextConfig.outputPath),

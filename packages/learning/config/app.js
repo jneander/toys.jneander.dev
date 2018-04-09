@@ -54,6 +54,18 @@ module.exports = configureApp({
           outputPath: 'static-table-with-row-headers',
           sourcePath: 'static-table-with-row-headers',
           template: 'html-grids/static-table-with-row-headers/index.html'
+        },
+        {
+          name: 'aria-static-grid',
+          outputPath: 'aria-static-grid',
+          sourcePath: 'aria-static-grid',
+          template: 'html-grids/aria-static-grid/index.html'
+        },
+        {
+          name: 'aria-static-grid-with-row-headers',
+          outputPath: 'aria-static-grid-with-row-headers',
+          sourcePath: 'aria-static-grid-with-row-headers',
+          template: 'html-grids/aria-static-grid-with-row-headers/index.html'
         }
       ],
       sourcePath: 'html-grids',

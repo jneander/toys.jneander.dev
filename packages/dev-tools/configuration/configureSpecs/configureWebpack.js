@@ -1,7 +1,6 @@
 const path = require('path')
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const HappyPack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 
@@ -35,7 +34,22 @@ module.exports = function(specConfig) {
         {
           exclude: /node_modules/,
           test: /\.js$/,
-          use: 'happypack/loader?id=babel'
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  [
+                    'module:@jneander/babel-presets',
+                    {
+                      modules: false,
+                      themeable: !!specConfig.themeable
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
         },
         {
           exclude: /node_modules/,
@@ -65,27 +79,6 @@ module.exports = function(specConfig) {
         DEVELOPMENT: JSON.stringify(appEnv === 'development'),
         PRODUCTION: JSON.stringify(appEnv === 'production'),
         TEST: JSON.stringify(appEnv === 'test')
-      }),
-
-      new HappyPack({
-        id: 'babel',
-        loaders: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                [
-                  'module:@jneander/babel-presets',
-                  {
-                    modules: false,
-                    themeable: false
-                  }
-                ]
-              ]
-            }
-          }
-        ],
-        threads: 1
       }),
 
       ...specPlugins

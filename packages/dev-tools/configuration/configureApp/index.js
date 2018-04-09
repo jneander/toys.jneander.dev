@@ -16,13 +16,15 @@ module.exports = function(appConfig) {
 
   const pkgSrc = path.join(pkgPath, 'src')
   const appEnv = selectEnv(appConfig.env)
+  const pages = appConfig.pages || []
 
   const pageEntries = {}
   const pagePlugins = []
 
   function configurePage(config) {
     if (config.context) {
-      (config.pages || []).forEach(contextConfig => {
+      const contextPages = config.pages || []
+      contextPages.forEach(contextConfig => {
         configurePage({
           name: contextConfig.name,
           outputPath: path.join(config.outputPath, contextConfig.outputPath),
@@ -47,7 +49,7 @@ module.exports = function(appConfig) {
     }
   }
 
-  (appConfig.pages || []).forEach(configurePage)
+  pages.forEach(configurePage)
 
   const webpackConfig = {
     devtool: 'source-map',

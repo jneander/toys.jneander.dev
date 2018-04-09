@@ -29,7 +29,7 @@ class ReactTestbed {
   }
 
   render() {
-    return this.instance = Enzyme.mount(this.subject)
+    return (this.instance = Enzyme.mount(this.subject))
   }
 }
 

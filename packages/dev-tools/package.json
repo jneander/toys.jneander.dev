@@ -1,6 +1,6 @@
 {
   "name": "@jneander/dev-tools",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "description": "@jneander Shared Development Tools",
   "repository": {
     "type": "git",
@@ -56,7 +56,6 @@
     "s3": "^4.4.0",
     "style-loader": "^0.20.2",
     "url-loader": "^0.6.2",
-    "url-pattern": "^1.0.3",
     "virtual-module-webpack-plugin": "^0.3.0",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.8.2",

@@ -48,6 +48,12 @@ module.exports = configureApp({
           outputPath: 'simple-table',
           sourcePath: 'simple-table',
           template: 'html-grids/simple-table/index.html'
+        },
+        {
+          name: 'simple-table-with-row-headers',
+          outputPath: 'simple-table-with-row-headers',
+          sourcePath: 'simple-table-with-row-headers',
+          template: 'html-grids/simple-table-with-row-headers/index.html'
         }
       ],
       sourcePath: 'html-grids',

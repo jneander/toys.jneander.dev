@@ -29,9 +29,20 @@ module.exports = function(appConfig) {
           name: contextConfig.name,
           outputPath: path.join(config.outputPath, contextConfig.outputPath),
           sourcePath: path.join(config.sourcePath, contextConfig.sourcePath),
-          template: config.template || contextConfig.template
+          template: config.template || contextConfig.template,
+          type: contextConfig.type || config.type
         })
       })
+    } else if (config.type === 'static') {
+      const page = new Page(config)
+
+      pagePlugins.push(
+        new HtmlWebpackPlugin({
+          chunks: [],
+          filename: `${page.outputPath ? page.outputPath + '/' : ''}index.html`,
+          template: path.join(pkgSrc, page.template)
+        })
+      )
     } else {
       const page = new Page(config)
 

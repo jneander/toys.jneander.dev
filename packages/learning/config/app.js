@@ -38,6 +38,20 @@ module.exports = configureApp({
       outputPath: '',
       sourcePath: 'home',
       template: 'shared/markup/index.html'
+    },
+    {
+      context: 'html-grids',
+      outputPath: 'html-grids',
+      pages: [
+        {
+          name: 'simple-table',
+          outputPath: 'simple-table',
+          sourcePath: 'simple-table',
+          template: 'html-grids/simple-table/index.html'
+        }
+      ],
+      sourcePath: 'html-grids',
+      type: 'static'
     }
   ]
 })

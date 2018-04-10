@@ -1,8 +1,6 @@
 :local(.Sidebar) {
+  background: var(--white);
   flex-grow: 0;
   flex-shrink: 0;
-  flex-basis: 280px;
-}
-
-:local(.Navigation) {
+  flex-basis: 200px;
 }

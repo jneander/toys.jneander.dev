@@ -10,5 +10,16 @@
 
 body {
   background: var(--background);
+  height: 100vh;
   margin: 0;
+}
+
+#app {
+  height: 100vh;
+}
+
+:local(.Layout) {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
 }

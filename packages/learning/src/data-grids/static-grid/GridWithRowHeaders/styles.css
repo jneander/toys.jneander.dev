@@ -1,0 +1,14 @@
+:local(.ColumnHeader) {
+  display: inline-block;
+  width: 100px;
+}
+
+:local(.RowHeader) {
+  display: inline-block;
+  width: 100px;
+}
+
+:local(.GridCell) {
+  display: inline-block;
+  width: 100px;
+}

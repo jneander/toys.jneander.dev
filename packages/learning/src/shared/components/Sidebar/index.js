@@ -26,6 +26,10 @@ export default class Sidebar extends Component {
             </ListItem>
 
             <ListItem>
+              <Link href="/data-grids/static-grid">Static Grid</Link>
+            </ListItem>
+
+            <ListItem>
               <Link href="/data-grids/wai-data-tables">WAI Data Tables</Link>
             </ListItem>
 

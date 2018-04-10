@@ -19,9 +19,14 @@ module.exports = configureApp({
           sourcePath: 'static-grid'
         },
         {
-          name: 'wai-data-grid',
-          outputPath: 'wai-data-grid',
-          sourcePath: 'wai-data-grid'
+          name: 'static-table',
+          outputPath: 'static-table',
+          sourcePath: 'static-table'
+        },
+        {
+          name: 'wai-data-tables',
+          outputPath: 'wai-data-tables',
+          sourcePath: 'wai-data-tables'
         }
       ],
       sourcePath: 'data-grids',
@@ -44,16 +49,28 @@ module.exports = configureApp({
       outputPath: 'html-grids',
       pages: [
         {
-          name: 'simple-table',
-          outputPath: 'simple-table',
-          sourcePath: 'simple-table',
-          template: 'html-grids/simple-table/index.html'
+          name: 'static-table',
+          outputPath: 'static-table',
+          sourcePath: 'static-table',
+          template: 'html-grids/static-table/index.html'
         },
         {
-          name: 'simple-table-with-row-headers',
-          outputPath: 'simple-table-with-row-headers',
-          sourcePath: 'simple-table-with-row-headers',
-          template: 'html-grids/simple-table-with-row-headers/index.html'
+          name: 'static-table-with-row-headers',
+          outputPath: 'static-table-with-row-headers',
+          sourcePath: 'static-table-with-row-headers',
+          template: 'html-grids/static-table-with-row-headers/index.html'
+        },
+        {
+          name: 'aria-static-grid',
+          outputPath: 'aria-static-grid',
+          sourcePath: 'aria-static-grid',
+          template: 'html-grids/aria-static-grid/index.html'
+        },
+        {
+          name: 'aria-static-grid-with-row-headers',
+          outputPath: 'aria-static-grid-with-row-headers',
+          sourcePath: 'aria-static-grid-with-row-headers',
+          template: 'html-grids/aria-static-grid-with-row-headers/index.html'
         }
       ],
       sourcePath: 'html-grids',

@@ -4,10 +4,10 @@ import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
 
 import Layout from '../../shared/components/Layout'
-import GridWithoutRowHeaders from './GridWithoutRowHeaders'
-import GridWithRowHeaders from './GridWithRowHeaders'
+import TableWithoutRowHeaders from './TableWithoutRowHeaders'
+import TableWithRowHeaders from './TableWithRowHeaders'
 
-export default class StaticGrids extends Component {
+export default class StaticTable extends Component {
   constructor(props) {
     super(props)
 
@@ -29,7 +29,7 @@ export default class StaticGrids extends Component {
       <Layout>
         <Container as="div" padding="medium">
           <Container as="header" margin="0 0 medium 0">
-            <Heading level="h2">Static Grids</Heading>
+            <Heading level="h2">Static Table</Heading>
           </Container>
 
           <Container as="div" margin="0 0 medium 0">
@@ -43,9 +43,9 @@ export default class StaticGrids extends Component {
           </Container>
 
           {this.state.includeRowHeaders ? (
-            <GridWithRowHeaders />
+            <TableWithRowHeaders />
           ) : (
-            <GridWithoutRowHeaders />
+            <TableWithoutRowHeaders />
           )}
         </Container>
       </Layout>

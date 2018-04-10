@@ -1,38 +1,52 @@
 import React, {Component} from 'react'
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
 import Container from '@instructure/ui-container/lib/components/Container'
+import Heading from '@instructure/ui-elements/lib/components/Heading'
 import Link from '@instructure/ui-elements/lib/components/Link'
 import List, {ListItem} from '@instructure/ui-elements/lib/components/List'
-import canvas from '@instructure/ui-themes/lib/canvas'
+import Text from '@instructure/ui-elements/lib/components/Text'
 
-import projects from '../../../projects'
 import styles from './styles.css'
-
-let pageList = []
-Object.keys(projects).forEach(app => {
-  const entry = {key: app, ...projects[app]}
-  if (app !== 'home') {
-    pageList.push(entry)
-  }
-})
-pageList = pageList.sort(app => app.label)
 
 export default class Sidebar extends Component {
   render() {
     return (
-      <ApplyTheme theme={canvas}>
-        <Container as="aside" className={styles.Sidebar} padding="medium">
-          <nav className={styles.Navigation}>
-            <List variant="unstyled">
-              {pageList.map(page => (
-                <ListItem key={page.key}>
-                  <Link href={page.path}>{page.label}</Link>
-                </ListItem>
-              ))}
-            </List>
-          </nav>
+      <Container as="nav" className={styles.Sidebar}>
+        <Container as="header" margin="medium">
+          <Heading level="h1">
+            <Link href="/">Learning</Link>
+          </Heading>
         </Container>
-      </ApplyTheme>
+
+        <Container as="div" margin="medium">
+          <Text id="data-grids-label">Data Grids</Text>
+
+          <List aria-labelledby="data-grids-label" margin="xx-small 0 small 0" variant="unstyled">
+            <ListItem>
+              <Link href="/data-grids/static-table">Static Table</Link>
+            </ListItem>
+
+            <ListItem>
+              <Link href="/data-grids/static-grid">Static Grid</Link>
+            </ListItem>
+
+            <ListItem>
+              <Link href="/data-grids/wai-data-tables">WAI Data Tables</Link>
+            </ListItem>
+
+            <ListItem>
+              <Link href="/data-grids/data-grid">Data Grid (WIP)</Link>
+            </ListItem>
+          </List>
+
+          <Text id="other-projects-label">Other Projects</Text>
+
+          <List aria-labelledby="other-projects-label" margin="xx-small 0 0 0" variant="unstyled">
+            <ListItem>
+              <Link href="/genetic-algorithms">Genetic Algorithms</Link>
+            </ListItem>
+          </List>
+        </Container>
+      </Container>
     )
   }
 }

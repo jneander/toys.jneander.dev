@@ -1,29 +1,29 @@
 import React, {Component} from 'react'
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
 import Checkbox from '@instructure/ui-forms/lib/components/Checkbox'
 import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
-import Select from '@instructure/ui-forms/lib/components/Select'
-import canvas from '@instructure/ui-themes/lib/canvas'
 
 import Layout from '../../shared/components/Layout'
 import TableReport from '../shared/components/TableReport'
 import TableWithoutRowHeaders from './TableWithoutRowHeaders'
 import TableWithRowHeaders from './TableWithRowHeaders'
 
-const examples = [
-  {label: 'Table without Row Headers', component: TableWithoutRowHeaders},
-  {label: 'Table with Row Headers', component: TableWithRowHeaders}
-]
-
 export default class StaticTables extends Component {
+  static defaultProps = {
+    debuggable: false
+  }
+
   constructor(props) {
     super(props)
 
     this.state = {
-      debug: false,
-      debugData: {},
-      selectedExample: examples[0]
+      includeRowHeaders: false
+    }
+
+    this.onRowHeadersChange = event => {
+      this.setState({
+        includeRowHeaders: event.target.checked
+      })
     }
   }
 
@@ -41,55 +41,47 @@ export default class StaticTables extends Component {
     })
   }
 
-  onExampleChange = (_, selectedExample) => {
-    this.setState({
-      selectedExample: examples.find(example => example.label === selectedExample.label)
-    })
-  }
-
   render() {
     const Example = this.state.selectedExample
 
     return (
       <Layout>
-        <ApplyTheme theme={canvas}>
-          <Container as="div" padding="medium">
-            <Container as="header" margin="0 0 medium 0">
-              <Heading level="h2">Static Table</Heading>
-            </Container>
+        <Container as="div" padding="medium">
+          <Container as="header" margin="0 0 medium 0">
+            <Heading level="h2">Static Tables</Heading>
+          </Container>
 
-            <Container as="div" margin="0 0 medium 0">
-              <Select
-                inline
-                label="Examples"
-                layout="inline"
-                onChange={this.onExampleChange}
-                value={Example.label}
-                width="200px"
-              >
-                {examples.map(example => (
-                  <option key={example.label} value={example.label}>
-                    {example.label}
-                  </option>
-                ))}
-              </Select>
+          <Container as="div" margin="0 0 medium 0">
+            <Checkbox
+              inline
+              label="Row Headers"
+              onChange={this.onRowHeadersChange}
+              size="small"
+              variant="toggle"
+            />
 
+            {this.props.debuggable && (
               <Container margin="0 0 0 small">
                 <Checkbox inline label="Debug" onChange={this.onDebugChange} />
               </Container>
-            </Container>
+            )}
+          </Container>
 
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-              {this.state.debug && (
+          <div style={{display: 'flex', flexDirection: 'row'}}>
+            {this.props.debuggable &&
+              this.state.debug && (
                 <div style={{flex: '0 0 200px', margin: '0 20px 0 0'}}>
                   <TableReport data={this.state.debugData} />
                 </div>
               )}
 
-              <Example.component debug={this.onDebug} />
-            </div>
-          </Container>
-        </ApplyTheme>
+            {this.state.includeRowHeaders ? (
+              <TableWithRowHeaders debug={this.onDebug} />
+            ) : (
+              <TableWithoutRowHeaders debug={this.onDebug} />
+            )}
+          </div>
+        </Container>
       </Layout>
     )
   }

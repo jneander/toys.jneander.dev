@@ -42,11 +42,7 @@ export default class StaticGrids extends Component {
             />
           </Container>
 
-          {this.state.includeRowHeaders ? (
-            <GridWithRowHeaders />
-          ) : (
-            <GridWithoutRowHeaders />
-          )}
+          {this.state.includeRowHeaders ? <GridWithRowHeaders /> : <GridWithoutRowHeaders />}
         </Container>
       </Layout>
     )

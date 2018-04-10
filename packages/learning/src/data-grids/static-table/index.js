@@ -42,11 +42,7 @@ export default class StaticTable extends Component {
             />
           </Container>
 
-          {this.state.includeRowHeaders ? (
-            <TableWithRowHeaders />
-          ) : (
-            <TableWithoutRowHeaders />
-          )}
+          {this.state.includeRowHeaders ? <TableWithRowHeaders /> : <TableWithoutRowHeaders />}
         </Container>
       </Layout>
     )

@@ -16,7 +16,7 @@ const examples = [
   {label: 'Table with Row Headers', component: TableWithRowHeaders}
 ]
 
-export default class StaticGridExamples extends Component {
+export default class StaticTableExamples extends Component {
   constructor(props) {
     super(props)
 
@@ -51,11 +51,11 @@ export default class StaticGridExamples extends Component {
     const Example = this.state.selectedExample
 
     return (
-      <Layout page="staticGrid">
+      <Layout>
         <ApplyTheme theme={canvas}>
           <Container as="div" padding="medium">
             <Container as="header" margin="0 0 medium 0">
-              <Heading level="h2">Static Grid</Heading>
+              <Heading level="h2">Static Table</Heading>
             </Container>
 
             <Container as="div" margin="0 0 medium 0">

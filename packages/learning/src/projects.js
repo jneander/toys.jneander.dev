@@ -19,8 +19,8 @@ export default {
     path: '/data-grids/static-table'
   },
 
-  waiDataGrid: {
-    label: 'WAI Data Grid',
-    path: '/data-grids/wai-data-grid'
+  waiDataTables: {
+    label: 'WAI Data Tables',
+    path: '/data-grids/wai-data-tables'
   }
 }

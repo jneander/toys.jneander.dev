@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react'
 import Container from '@instructure/ui-container/lib/components/Container'
+import Heading from '@instructure/ui-elements/lib/components/Heading'
 import Link from '@instructure/ui-elements/lib/components/Link'
 import TabList, {TabPanel} from '@instructure/ui-tabs/lib/components/TabList'
 import Text from '@instructure/ui-elements/lib/components/Text'
@@ -14,7 +15,7 @@ const examples = [
   // { label: 'Scrollable Data Grid With Column Hiding', component: Example3 }
 ]
 
-export default class Grid extends PureComponent {
+export default class WaiDataTables extends PureComponent {
   state = {
     selectedTabIndex: 0
   }
@@ -27,8 +28,12 @@ export default class Grid extends PureComponent {
     const Example = examples[this.state.selectedExample]
 
     return (
-      <Layout page="waiDataGrid">
-        <Container margin="large" display="block">
+      <Layout>
+        <Container margin="medium" display="block">
+          <Container as="header" margin="0 0 medium 0">
+            <Heading level="h2">WAI Data Tables</Heading>
+          </Container>
+
           <TabList onChange={this.onExampleChange} selectedIndex={this.state.selectedTabIndex}>
             {examples.map(example => (
               <TabPanel key={example.label} title={example.label}>

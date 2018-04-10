@@ -16,7 +16,7 @@ const examples = [
   {label: 'Table with Row Headers', component: TableWithRowHeaders}
 ]
 
-export default class StaticTableExamples extends Component {
+export default class StaticTables extends Component {
   constructor(props) {
     super(props)
 

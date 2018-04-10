@@ -14,9 +14,9 @@ export default {
     path: '/'
   },
 
-  staticTable: {
-    label: 'Static Table',
-    path: '/data-grids/static-table'
+  staticTables: {
+    label: 'Static Tables',
+    path: '/data-grids/static-tables'
   },
 
   waiDataTables: {

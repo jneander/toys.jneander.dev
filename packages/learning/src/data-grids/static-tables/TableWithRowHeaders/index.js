@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react'
 import Container from '@instructure/ui-container/lib/components/Container'
 
+import ScreenreaderReport from '../../shared/components/ScreenreaderReport'
 import createGridData from '../../shared/example-data/createGridData'
-import ScreenreaderReport from '../shared/ScreenreaderReport'
 
 const structure = createGridData(5, 10)
 

@@ -22,7 +22,7 @@ export default class Sidebar extends Component {
 
           <List aria-labelledby="data-grids-label" margin="xx-small 0 small 0" variant="unstyled">
             <ListItem>
-              <Link href="/data-grids/static-tables">Static Tables</Link>
+              <Link href="/data-grids/static-table">Static Table</Link>
             </ListItem>
 
             <ListItem>

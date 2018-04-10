@@ -19,9 +19,9 @@ module.exports = configureApp({
           sourcePath: 'static-grid'
         },
         {
-          name: 'static-tables',
-          outputPath: 'static-tables',
-          sourcePath: 'static-tables'
+          name: 'static-table',
+          outputPath: 'static-table',
+          sourcePath: 'static-table'
         },
         {
           name: 'wai-data-tables',

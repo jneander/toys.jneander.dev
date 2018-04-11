@@ -6,12 +6,12 @@ import TabList, {TabPanel} from '@instructure/ui-tabs/lib/components/TabList'
 import Text from '@instructure/ui-elements/lib/components/Text'
 
 import Layout from '../../shared/components/Layout'
-import Example1 from './example-1'
-import Example2 from './example-2'
+import MinimalDataGrid from './MinimalDataGrid'
+import SortableDataGrid from './SortableDataGrid'
 
 const examples = [
-  {label: 'Minimal Data Grid', component: Example1},
-  {label: 'Sortable Data Grid With Editable Cells', component: Example2}
+  {label: 'Minimal Data Grid', component: MinimalDataGrid},
+  {label: 'Sortable Data Grid With Editable Cells', component: SortableDataGrid}
   // { label: 'Scrollable Data Grid With Column Hiding', component: Example3 }
 ]
 

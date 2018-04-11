@@ -42,7 +42,7 @@ function getCellFromEvent(event, grid) {
   return {}
 }
 
-export default class WaiDataGrid1 extends Component {
+export default class SortableDataGrid extends Component {
   state = {
     data: [...data],
     focusPointer: {

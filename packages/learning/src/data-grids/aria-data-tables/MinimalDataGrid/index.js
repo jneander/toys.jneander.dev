@@ -43,7 +43,7 @@ function getCellFromEvent(event, grid) {
   return {}
 }
 
-export default class WaiDataGrid1 extends Component {
+export default class MinimalDataGrid extends Component {
   state = {
     focusPointer: {
       column: 0,

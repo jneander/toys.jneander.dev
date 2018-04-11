@@ -30,11 +30,11 @@ export default class Sidebar extends Component {
             </ListItem>
 
             <ListItem>
-              <Link href="/data-grids/aria-layout-grids">ARIA Layout Grids</Link>
+              <Link href="/data-grids/aria-data-tables">ARIA Data Tables</Link>
             </ListItem>
 
             <ListItem>
-              <Link href="/data-grids/wai-data-tables">WAI Data Tables</Link>
+              <Link href="/data-grids/aria-layout-grids">ARIA Layout Grids</Link>
             </ListItem>
 
             <ListItem>

@@ -9,6 +9,11 @@ module.exports = configureApp({
       outputPath: 'data-grids',
       pages: [
         {
+          name: 'aria-data-tables',
+          outputPath: 'aria-data-tables',
+          sourcePath: 'aria-data-tables'
+        },
+        {
           name: 'aria-layout-grids',
           outputPath: 'aria-layout-grids',
           sourcePath: 'aria-layout-grids'
@@ -27,11 +32,6 @@ module.exports = configureApp({
           name: 'static-table',
           outputPath: 'static-table',
           sourcePath: 'static-table'
-        },
-        {
-          name: 'wai-data-tables',
-          outputPath: 'wai-data-tables',
-          sourcePath: 'wai-data-tables'
         }
       ],
       sourcePath: 'data-grids',

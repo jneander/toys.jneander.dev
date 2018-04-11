@@ -250,8 +250,7 @@ export default class ScrollableList extends PureComponent {
                       {datum.linkText}
                     </a>
                   </h5>
-                </div>
-                &nbsp;
+                </div>{' '}
                 <span
                   aria-colindex="2"
                   className={styles.GridCell}
@@ -262,8 +261,7 @@ export default class ScrollableList extends PureComponent {
                   tabIndex={tabIndex({colIndex: 1, rowIndex}, this.state.activeLocation)}
                 >
                   {datum.source}
-                </span>
-                &nbsp;
+                </span>{' '}
                 <span
                   aria-colindex="3"
                   className={styles.GridCell}
@@ -283,8 +281,7 @@ export default class ScrollableList extends PureComponent {
         <div className={styles.Pagination}>
           <button disabled={this.state.visibleStartIndex === 0} onClick={this.movePageUp}>
             Previous
-          </button>
-          &nbsp;
+          </button>{' '}
           <button
             disabled={this.state.visibleEndIndex === this.props.data.length - 1}
             onClick={this.movePageDown}

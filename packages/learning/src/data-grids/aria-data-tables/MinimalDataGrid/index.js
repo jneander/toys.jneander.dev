@@ -107,8 +107,10 @@ export default class MinimalDataGrid extends Component {
 
   render() {
     return (
-      <div>
-        <h4 id="grid1Label">Transactions January 1 through January 6</h4>
+      <div className={styles.ExampleContainer}>
+        <h4 className={styles.Heading} id="grid1Label">
+          Transactions January 1 through January 6
+        </h4>
 
         <table
           ref={this.bindTableRef}

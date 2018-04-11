@@ -1,0 +1,4 @@
+:local(.ExampleContainer) {
+  background: var(--white);
+  margin-top: var(--spacing-medium);
+}

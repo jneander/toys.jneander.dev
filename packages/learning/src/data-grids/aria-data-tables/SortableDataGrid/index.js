@@ -151,8 +151,10 @@ export default class SortableDataGrid extends Component {
       this.state.sortColumn === columnKey ? this.state.sortDirection : 'none'
 
     return (
-      <div>
-        <h4 id="grid2Label">Transactions January 1 through January 7</h4>
+      <div className={styles.ExampleContainer}>
+        <h4 className={styles.Heading} id="grid2Label">
+          Transactions January 1 through January 7
+        </h4>
 
         <table
           ref={this.bindTableRef}

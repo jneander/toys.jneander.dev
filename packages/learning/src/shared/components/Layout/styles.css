@@ -23,3 +23,10 @@ body {
   flex-direction: row;
   height: 100vh;
 }
+
+:local(.Main) {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: scroll;
+}

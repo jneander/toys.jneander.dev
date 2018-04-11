@@ -63,7 +63,11 @@ module.exports = function(specConfig) {
         {
           exclude: '/node_modules/',
           loaders: ['style-loader', 'css-loader?localIdentName=[path][name]---[local]'],
-          test: /\.(css)$/
+          test: /\.css$/
+        },
+        {
+          loaders: ['markdown-loader'],
+          test: /\.md$/
         }
       ]
     },

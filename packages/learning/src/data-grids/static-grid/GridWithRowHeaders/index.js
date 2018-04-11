@@ -23,7 +23,9 @@ export default class GridWithoutRowHeaders extends PureComponent {
           <div role="grid">
             <div role="row">
               {structure.columns.map(column => (
-                <div className={styles.ColumnHeader} key={column.id} role="columnheader">{column.name}</div>
+                <div className={styles.ColumnHeader} key={column.id} role="columnheader">
+                  {column.name}
+                </div>
               ))}
             </div>
 
@@ -32,7 +34,11 @@ export default class GridWithoutRowHeaders extends PureComponent {
                 {structure.columns.map((column, index) => {
                   const className = index === 0 ? styles.RowHeader : styles.GridCell
                   const role = index === 0 ? 'rowheader' : 'gridcell'
-                  return <div className={className} key={column.id} role={role}>{row.data[column.id]}</div>
+                  return (
+                    <div className={className} key={column.id} role={role}>
+                      {row.data[column.id]}
+                    </div>
+                  )
                 })}
               </div>
             ))}

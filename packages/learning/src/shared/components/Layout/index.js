@@ -14,7 +14,7 @@ export default class Layout extends PureComponent {
       <div className={styles.Layout}>
         <Sidebar page={this.props.page} />
 
-        <main style={{overflow: 'hidden'}}>{this.props.children}</main>
+        <main className={styles.Main}>{this.props.children}</main>
       </div>
     )
   }

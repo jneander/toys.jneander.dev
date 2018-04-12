@@ -6,10 +6,11 @@ import Text from '@instructure/ui-elements/lib/components/Text'
 
 import Layout from '../../shared/components/Layout'
 import MinimalDataGrid from './MinimalDataGrid'
+import ScrollableDataGrid from './ScrollableDataGrid'
 import SortableDataGrid from './SortableDataGrid'
 import styles from './styles.css'
 
-export default class WaiDataTables extends PureComponent {
+export default class AriaDataTables extends PureComponent {
   state = {
     selectedTabIndex: 0
   }
@@ -39,6 +40,14 @@ export default class WaiDataTables extends PureComponent {
 
             <div className={styles.ExampleContainer}>
               <SortableDataGrid />
+            </div>
+          </Container>
+
+          <Container as="div" margin="medium 0 0 0">
+            <Heading level="h3">Example 3: Scrollable Data Grid With Column Hiding</Heading>
+
+            <div className={styles.ExampleContainer}>
+              <ScrollableDataGrid />
             </div>
           </Container>
 

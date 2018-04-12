@@ -29,7 +29,12 @@ export default class Column {
 
   renderColumnHeader(props) {
     return (
-      <th {...props} className={styles.ColumnHeader}>
+      <th
+        className={styles.ColumnHeader}
+        key={props.key}
+        ref={props.focusableRef}
+        tabIndex={props.tabIndex}
+      >
         {this.attr.name}
       </th>
     )

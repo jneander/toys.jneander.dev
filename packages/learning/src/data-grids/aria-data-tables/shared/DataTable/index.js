@@ -20,6 +20,7 @@ function getLocationFromEvent(event, grid) {
     if (columnIndex > -1) {
       return {
         columnId: grid.props.columns[columnIndex].id,
+        region: 'body',
         rowId: grid.props.rows[rowIndex - 1].id
       }
     }
@@ -29,6 +30,7 @@ function getLocationFromEvent(event, grid) {
 
 export default class DataTable extends Component {
   static defaultProps = {
+    navigableHeaders: false,
     perPage: 5
   }
 
@@ -51,7 +53,8 @@ export default class DataTable extends Component {
     this.state = {
       activeLocation: {
         columnId: this.props.columns[0].id,
-        rowId: this.props.rows[0].id
+        region: this.props.navigableHeaders ? 'header' : 'body',
+        rowId: this.props.navigableHeaders ? null : this.props.rows[0].id
       },
       visibleRowsEndIndex: this.props.perPage - 1,
       visibleRowsStartIndex: 0
@@ -84,23 +87,33 @@ export default class DataTable extends Component {
 
   handleKeyDown(event) {
     const key = event.which || event.keyCode
-    const location = {...this.state.activeLocation}
+    let location = this.state.activeLocation
 
     const columnIndex = this.props.columns.findIndex(column => column.id === location.columnId)
     const rowIndex = this.props.rows.findIndex(row => row.id === location.rowId)
 
     switch (key) {
       case KeyCodes.LEFT:
-        location.columnId = (this.props.columns[columnIndex - 1] || {}).id
+        location = {
+          ...location,
+          columnId: (this.props.columns[columnIndex - 1] || {}).id
+        }
         break
       case KeyCodes.RIGHT:
-        location.columnId = (this.props.columns[columnIndex + 1] || {}).id
+        location = {
+          ...location,
+          columnId: (this.props.columns[columnIndex + 1] || {}).id
+        }
         break
       case KeyCodes.UP:
-        location.rowId = (this.props.rows[rowIndex - 1] || {}).id
+        if (rowIndex === 0 && this.props.navigableHeaders) {
+          location = {...location, region: 'header', rowId: null}
+        } else {
+          location = {...location, rowId: (this.props.rows[rowIndex - 1] || {}).id}
+        }
         break
       case KeyCodes.DOWN:
-        location.rowId = (this.props.rows[rowIndex + 1] || {}).id
+        location = {...location, region: 'body', rowId: (this.props.rows[rowIndex + 1] || {}).id}
         break
       case KeyCodes.PAGEUP:
         event.preventDefault()
@@ -114,8 +127,10 @@ export default class DataTable extends Component {
         return
     }
 
-    event.preventDefault()
-    this.setActiveLocation(location)
+    if (location !== this.state.activeLocation) {
+      event.preventDefault()
+      this.setActiveLocation(location)
+    }
   }
 
   movePageDown() {
@@ -129,7 +144,7 @@ export default class DataTable extends Component {
       visibleRowsEndIndex = Math.min(visibleRowsStartIndex + perPage - 1, maxEndIndex)
       const rowId = this.props.rows[visibleRowsStartIndex].id
       this.setActiveLocation(
-        {columnId: this.state.activeLocation.columnId, rowId},
+        {...this.state.activeLocation, rowId},
         {visibleRowsEndIndex, visibleRowsStartIndex}
       )
     }
@@ -146,61 +161,70 @@ export default class DataTable extends Component {
       visibleRowsEndIndex = Math.min(visibleRowsStartIndex + perPage - 1, maxEndIndex)
       const rowId = this.props.rows[visibleRowsEndIndex].id
       this.setActiveLocation(
-        {columnId: this.state.activeLocation.columnId, rowId},
+        {...this.state.activeLocation, rowId},
         {visibleRowsEndIndex, visibleRowsStartIndex}
       )
     }
   }
 
   setActiveLocation(activeLocation, visibleRowIndices = null) {
-    const {columns, rows} = this.props
-    const {columnId, rowId} = activeLocation
+    const {columns, navigableHeaders, rows} = this.props
+    const {columnId, region, rowId} = {...this.props.activeLocation, ...activeLocation}
+
+    if (region === 'header' && !navigableHeaders) {
+      return
+    }
 
     const columnIndex = this.props.columns.findIndex(column => column.id === columnId)
-    const rowIndex = this.props.rows.findIndex(row => row.id === rowId)
 
-    if (
-      columnIndex >= 0 &&
-      columnIndex < columns.length &&
-      rowIndex >= 0 &&
-      rowIndex < rows.length
-    ) {
-      let visibleRowsEndIndex, visibleRowsStartIndex
+    if (columnIndex < 0 || columnIndex >= columns.length) {
+      return
+    }
 
-      if (visibleRowIndices) {
-        visibleRowsEndIndex = visibleRowIndices.visibleRowsEndIndex
-        visibleRowsStartIndex = visibleRowIndices.visibleRowsStartIndex
-      } else {
-        visibleRowsEndIndex = this.state.visibleRowsEndIndex
-        visibleRowsStartIndex = this.state.visibleRowsStartIndex
+    const rowIndex = region === 'header' ? 0 : this.props.rows.findIndex(row => row.id === rowId)
 
-        const perPageOffset = this.props.perPage - 1
+    if (region !== 'header' && (rowIndex < 0 || rowIndex >= rows.length)) {
+      return
+    }
 
-        if (rowIndex < visibleRowsStartIndex) {
-          visibleRowsStartIndex = rowIndex
-        } else if (rowIndex > visibleRowsStartIndex + perPageOffset) {
-          visibleRowsStartIndex = Math.max(rowIndex - perPageOffset, 0)
-        }
+    let visibleRowsEndIndex, visibleRowsStartIndex
 
-        visibleRowsEndIndex = Math.min(
-          visibleRowsStartIndex + perPageOffset,
-          this.props.rows.length - 1
-        )
+    if (visibleRowIndices) {
+      visibleRowsEndIndex = visibleRowIndices.visibleRowsEndIndex
+      visibleRowsStartIndex = visibleRowIndices.visibleRowsStartIndex
+    } else if (region === 'header') {
+      visibleRowsStartIndex = 0
+      visibleRowsEndIndex = this.props.perPage - 1
+    } else {
+      visibleRowsEndIndex = this.state.visibleRowsEndIndex
+      visibleRowsStartIndex = this.state.visibleRowsStartIndex
+
+      const perPageOffset = this.props.perPage - 1
+
+      if (rowIndex < visibleRowsStartIndex) {
+        visibleRowsStartIndex = rowIndex
+      } else if (rowIndex > visibleRowsStartIndex + perPageOffset) {
+        visibleRowsStartIndex = Math.max(rowIndex - perPageOffset, 0)
       }
 
-      this.setState(
-        {
-          activeLocation,
-          visibleRowsEndIndex,
-          visibleRowsStartIndex
-        },
-        () => {
-          if (this.activeElement) {
-            this.activeElement.focus()
-          }
-        }
+      visibleRowsEndIndex = Math.min(
+        visibleRowsStartIndex + perPageOffset,
+        this.props.rows.length - 1
       )
     }
+
+    this.setState(
+      {
+        activeLocation,
+        visibleRowsEndIndex,
+        visibleRowsStartIndex
+      },
+      () => {
+        if (this.activeElement) {
+          this.activeElement.focus()
+        }
+      }
+    )
   }
 
   render() {
@@ -216,7 +240,11 @@ export default class DataTable extends Component {
         role="grid"
       >
         <tbody>
-          <HeaderRow columns={this.props.columns} />
+          <HeaderRow
+            activeLocation={this.state.activeLocation}
+            bindActiveElement={this.bindActiveElement}
+            columns={this.props.columns}
+          />
 
           {this.props.rows.map((row, rowIndex) => (
             <Row

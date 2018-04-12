@@ -51,7 +51,12 @@ export default class ScrollableDataGrid extends Component {
           {this.state.typeAndCategoryHidden ? 'Show Type and Category' : 'Hide Type and Category'}
         </button>
 
-        <DataTable aria-labelledby="grid3Label" columns={columns} perPage={this.props.perPage} rows={rows} />
+        <DataTable
+          aria-labelledby="grid3Label"
+          columns={columns}
+          perPage={this.props.perPage}
+          rows={rows}
+        />
       </div>
     )
   }

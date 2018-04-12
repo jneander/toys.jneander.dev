@@ -1,4 +1,12 @@
 :local(.ExampleContainer) {
+  font-size: 100%;
+  font-family: sans-serif;
+  line-height: 1.5;
+  widows: 2;
+  orphans: 2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
   padding: var(--spacing-medium);
 }
 

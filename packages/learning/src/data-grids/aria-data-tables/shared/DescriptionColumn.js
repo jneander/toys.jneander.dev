@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 
-import Column from '../shared/DataTable/Column'
-import styles from '../shared/DataTable/styles.css'
+import Column from './DataTable/Column'
+import styles from './DataTable/styles.css'
 
 export default class DescriptionColumn extends Column {
   renderCell(props) {

@@ -13,27 +13,3 @@
 :local(.Heading) {
   margin: 0 0 1rem 0;
 }
-
-:local(.Grid) {
-  border: hidden;
-  border-collapse: collapse;
-}
-
-:local(.GridHeader),
-:local(.GridCell) {
-  padding: 0.5em 1em;
-  position: relative;
-  text-align: start;
-}
-
-:local(.GridCell) {
-  border-top: 1px solid grey;
-}
-
-:local(.GridCell:focus),
-:local(.GridCell *:focus),
-:local(.Grid:focus) {
-  outline: #005a9c;
-  outline-style: dotted;
-  outline-width: 3px;
-}

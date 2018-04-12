@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 
-import KeyCodes from '../shared/KeyCodes'
-import DataTable from '../shared/DataTable'
 import Column from '../shared/DataTable/Column'
-import DescriptionColumn from './DescriptionColumn'
+import DataTable from '../shared/DataTable'
+import DescriptionColumn from '../shared/DescriptionColumn'
+import KeyCodes from '../shared/KeyCodes'
 import rows from './data'
 import styles from './styles.css'
 
@@ -51,7 +51,7 @@ export default class ScrollableDataGrid extends Component {
           {this.state.typeAndCategoryHidden ? 'Show Type and Category' : 'Hide Type and Category'}
         </button>
 
-        <DataTable columns={columns} perPage={this.props.perPage} rows={rows} />
+        <DataTable aria-labelledby="grid3Label" columns={columns} perPage={this.props.perPage} rows={rows} />
       </div>
     )
   }

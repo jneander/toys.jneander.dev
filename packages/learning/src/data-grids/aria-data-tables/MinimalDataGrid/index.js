@@ -1,17 +1,18 @@
 import React, {Component} from 'react'
 
-import DescriptionColumn from '../shared/DescriptionColumn'
+import TextCell from '../shared/TextCell'
+import TextColumnHeader from '../shared/TextColumnHeader'
+import DescriptionCell from '../shared/DescriptionCell'
 import DataTable from '../shared/DataTable'
-import Column from '../shared/DataTable/Column'
 import rows from './data'
 import styles from './styles.css'
 
 const COLUMNS = [
-  new Column({id: 'date', name: 'Date'}),
-  new Column({id: 'type', name: 'Type'}),
-  new DescriptionColumn({id: 'description', name: 'Description'}),
-  new Column({id: 'amount', name: 'Amount'}),
-  new Column({id: 'balance', name: 'Balance'})
+  {id: 'date', name: 'Date'},
+  {id: 'type', name: 'Type'},
+  {id: 'description', name: 'Description'},
+  {id: 'amount', name: 'Amount'},
+  {id: 'balance', name: 'Balance'}
 ]
 
 export default class MinimalDataGrid extends Component {
@@ -26,6 +27,13 @@ export default class MinimalDataGrid extends Component {
           aria-labelledby="grid1Label"
           columns={COLUMNS}
           perPage={rows.length}
+          renderColumnHeader={props => <TextColumnHeader {...props} />}
+          renderCell={props => {
+            if (props.column.id === 'description') {
+              return <DescriptionCell {...props} />
+            }
+            return <TextCell {...props} />
+          }}
           rows={rows}
         />
       </div>

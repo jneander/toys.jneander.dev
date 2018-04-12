@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
 
-import ColumnHeader from './ColumnHeader'
-
 export default class HeaderRow extends Component {
   render() {
     const {activeLocation, bindActiveElement} = this.props
@@ -14,7 +12,8 @@ export default class HeaderRow extends Component {
     return (
       <tr>
         {this.props.columns.map(column =>
-          column.renderColumnHeader({
+          this.props.renderColumnHeader({
+            column,
             focusableRef: refFor(column.id),
             key: column.id,
             tabIndex: tabIndexFor(column.id)

@@ -244,6 +244,7 @@ export default class DataTable extends Component {
             activeLocation={this.state.activeLocation}
             bindActiveElement={this.bindActiveElement}
             columns={this.props.columns}
+            renderColumnHeader={this.props.renderColumnHeader}
           />
 
           {this.props.rows.map((row, rowIndex) => (
@@ -253,6 +254,7 @@ export default class DataTable extends Component {
               columns={this.props.columns}
               hidden={isRowNotVisible(rowIndex, this.state)}
               key={rowIndex}
+              renderCell={this.props.renderCell}
               row={row}
             />
           ))}

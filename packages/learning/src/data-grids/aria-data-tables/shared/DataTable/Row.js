@@ -18,10 +18,11 @@ export default class Row extends Component {
     return (
       <tr className={this.props.className}>
         {this.props.columns.map(column =>
-          column.renderCell({
-            data: row[column.id],
+          this.props.renderCell({
+            column,
             key: column.id,
             focusableRef: refFor(column.id),
+            row,
             tabIndex: tabIndexFor(column.id)
           })
         )}

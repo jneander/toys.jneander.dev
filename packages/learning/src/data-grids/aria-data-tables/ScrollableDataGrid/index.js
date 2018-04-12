@@ -1,19 +1,20 @@
 import React, {Component} from 'react'
 
-import Column from '../shared/DataTable/Column'
+import TextCell from '../shared/TextCell'
+import TextColumnHeader from '../shared/TextColumnHeader'
+import DescriptionCell from '../shared/DescriptionCell'
 import DataTable from '../shared/DataTable'
-import DescriptionColumn from '../shared/DescriptionColumn'
 import KeyCodes from '../shared/KeyCodes'
 import rows from './data'
 import styles from './styles.css'
 
 const COLUMNS = [
-  new Column({id: 'date', name: 'Date'}),
-  new Column({id: 'type', name: 'Type'}),
-  new DescriptionColumn({id: 'description', name: 'Description'}),
-  new Column({id: 'category', name: 'Category'}),
-  new Column({id: 'amount', name: 'Amount'}),
-  new Column({id: 'balance', name: 'Balance'})
+  {id: 'date', name: 'Date'},
+  {id: 'type', name: 'Type'},
+  {id: 'description', name: 'Description'},
+  {id: 'category', name: 'Category'},
+  {id: 'amount', name: 'Amount'},
+  {id: 'balance', name: 'Balance'}
 ]
 
 export default class ScrollableDataGrid extends Component {
@@ -55,6 +56,13 @@ export default class ScrollableDataGrid extends Component {
           aria-labelledby="grid3Label"
           columns={columns}
           perPage={this.props.perPage}
+          renderColumnHeader={props => <TextColumnHeader {...props} />}
+          renderCell={props => {
+            if (props.column.id === 'description') {
+              return <DescriptionCell {...props} />
+            }
+            return <TextCell {...props} />
+          }}
           rows={rows}
         />
       </div>

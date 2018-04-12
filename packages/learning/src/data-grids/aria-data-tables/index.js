@@ -2,20 +2,15 @@ import React, {PureComponent} from 'react'
 import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
 import Link from '@instructure/ui-elements/lib/components/Link'
-import TabList, {TabPanel} from '@instructure/ui-tabs/lib/components/TabList'
 import Text from '@instructure/ui-elements/lib/components/Text'
 
 import Layout from '../../shared/components/Layout'
-import Example1 from './example-1'
-import Example2 from './example-2'
+import MinimalDataGrid from './MinimalDataGrid'
+import ScrollableDataGrid from './ScrollableDataGrid'
+import SortableDataGrid from './SortableDataGrid'
+import styles from './styles.css'
 
-const examples = [
-  {label: 'Minimal Data Grid', component: Example1},
-  {label: 'Sortable Data Grid With Editable Cells', component: Example2}
-  // { label: 'Scrollable Data Grid With Column Hiding', component: Example3 }
-]
-
-export default class WaiDataTables extends PureComponent {
+export default class AriaDataTables extends PureComponent {
   state = {
     selectedTabIndex: 0
   }
@@ -25,8 +20,6 @@ export default class WaiDataTables extends PureComponent {
   }
 
   render() {
-    const Example = examples[this.state.selectedExample]
-
     return (
       <Layout>
         <Container margin="medium" display="block">
@@ -34,13 +27,29 @@ export default class WaiDataTables extends PureComponent {
             <Heading level="h2">WAI Data Tables</Heading>
           </Container>
 
-          <TabList onChange={this.onExampleChange} selectedIndex={this.state.selectedTabIndex}>
-            {examples.map(example => (
-              <TabPanel key={example.label} title={example.label}>
-                <example.component />
-              </TabPanel>
-            ))}
-          </TabList>
+          <Container as="div" margin="medium 0 0 0">
+            <Heading level="h3">Example 1: Minimal Data Grid</Heading>
+
+            <div className={styles.ExampleContainer}>
+              <MinimalDataGrid />
+            </div>
+          </Container>
+
+          <Container as="div" margin="medium 0 0 0">
+            <Heading level="h3">Example 2: Sortable Data Grid With Editable Cells</Heading>
+
+            <div className={styles.ExampleContainer}>
+              <SortableDataGrid />
+            </div>
+          </Container>
+
+          <Container as="div" margin="medium 0 0 0">
+            <Heading level="h3">Example 3: Scrollable Data Grid With Column Hiding</Heading>
+
+            <div className={styles.ExampleContainer}>
+              <ScrollableDataGrid />
+            </div>
+          </Container>
 
           <Text>
             <p>

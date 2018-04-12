@@ -8,15 +8,16 @@ import TextInputCell from './TextInputCell'
 import data from './data'
 import styles from './css/styles.css'
 
-function renderRow(datum, rowIndex, grid) {
-  const {row, column} = grid.state.focusPointer
+function TableRow(props) {
+  const {datum, rowIndex} = props
+  const {row, column} = props.focusPointer
   const tabIndexFor = columnIndex => (column === columnIndex && row === rowIndex ? '0' : '-1')
   const refFor = columnIndex =>
-    column === columnIndex && row === rowIndex ? grid.bindFocusedCell : undefined
+    column === columnIndex && row === rowIndex ? props.activeCellRef : undefined
   const cellIsActive = columnIndex => column === columnIndex && row === rowIndex
 
   return (
-    <tr key={datum.id}>
+    <tr>
       <TextCell ref={refFor(0)} isActive={cellIsActive(0)} content={datum.date} />
       <TextCell ref={refFor(1)} isActive={cellIsActive(1)} content={datum.type} />
       <TextInputCell ref={refFor(2)} isActive={cellIsActive(2)} content={datum.description} />
@@ -42,7 +43,7 @@ function getCellFromEvent(event, grid) {
   return {}
 }
 
-export default class WaiDataGrid1 extends Component {
+export default class SortableDataGrid extends Component {
   state = {
     data: [...data],
     focusPointer: {
@@ -150,8 +151,10 @@ export default class WaiDataGrid1 extends Component {
       this.state.sortColumn === columnKey ? this.state.sortDirection : 'none'
 
     return (
-      <div>
-        <h4 id="grid2Label">Transactions January 1 through January 7</h4>
+      <div className={styles.ExampleContainer}>
+        <h4 className={styles.Heading} id="grid2Label">
+          Transactions January 1 through January 7
+        </h4>
 
         <table
           ref={this.bindTableRef}
@@ -202,7 +205,15 @@ export default class WaiDataGrid1 extends Component {
               </ColumnHeader>
             </tr>
 
-            {this.state.data.map((datum, index) => renderRow(datum, index + 1, this))}
+            {this.state.data.map((datum, index) => (
+              <TableRow
+                datum={datum}
+                focusPointer={this.state.focusPointer}
+                key={datum.id}
+                rowIndex={index + 1}
+                activeCellRef={this.bindFocusedCell}
+              />
+            ))}
           </tbody>
         </table>
       </div>

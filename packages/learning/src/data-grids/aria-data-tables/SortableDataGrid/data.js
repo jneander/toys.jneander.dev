@@ -1,6 +1,6 @@
 export default [
   {
-    id: 1,
+    id: '1',
     date: '01-Jan-16',
     type: 'Deposit',
     description: 'Cash Deposit',
@@ -9,7 +9,7 @@ export default [
     balance: '$1,000,000.00'
   },
   {
-    id: 2,
+    id: '2',
     date: '02-Jan-16',
     type: 'Debit',
     description: 'Down Town Grocery',
@@ -18,7 +18,7 @@ export default [
     balance: '$999,750.00'
   },
   {
-    id: 3,
+    id: '3',
     date: '03-Jan-16',
     type: 'Debit',
     description: 'Hot Coffee',
@@ -27,7 +27,7 @@ export default [
     balance: '$999,741.00'
   },
   {
-    id: 4,
+    id: '4',
     date: '04-Jan-16',
     type: 'Debit',
     description: 'The Filling Station',
@@ -36,7 +36,7 @@ export default [
     balance: '$999,653.00'
   },
   {
-    id: 5,
+    id: '5',
     date: '05-Jan-16',
     type: 'Debit',
     description: "Tinker's Hardware",
@@ -45,7 +45,7 @@ export default [
     balance: '$996,232.00'
   },
   {
-    id: 6,
+    id: '6',
     date: '06-Jan-16',
     type: 'Debit',
     description: "Cutey's Salon",
@@ -54,7 +54,7 @@ export default [
     balance: '$995,532.00'
   },
   {
-    id: 7,
+    id: '7',
     date: '07-Jan-16',
     type: 'Debit',
     description: 'My Chocolate Shop',

@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 
-import styles from './styles.css'
-
-export default class Row extends Component {
+export default class BodyRow extends Component {
   render() {
     if (this.props.hidden) {
       return null

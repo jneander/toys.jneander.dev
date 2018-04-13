@@ -1,29 +1,36 @@
 import React, {PureComponent} from 'react'
 
 import KeyCodes from '../shared/KeyCodes'
-import styles from './css/styles.css'
+import styles from '../shared/DataTable/styles.css'
+import sortableStyles from './css/styles.css'
 
 const menuItems = ['Income', 'Groceries', 'Dining Out', 'Auto', 'Household', 'Beauty']
 
-export default class DropDownCell extends React.PureComponent {
+export default class DropDownCell extends PureComponent {
   constructor(props) {
     super(props)
 
+    this.bindMenuButton = ref => {
+      this.menuButton = ref
+    }
+    this.bindSelectedMenuItem = ref => {
+      this.selectedMenuItem = ref
+    }
+
+    this.focus = this.focus.bind(this)
+    this.handleButtonClick = this.handleButtonClick.bind(this)
+    this.handleButtonKeyDown = this.handleButtonKeyDown.bind(this)
+    this.handleMenuItemClick = this.handleMenuItemClick.bind(this)
+    this.handleMenuItemKeyDown = this.handleMenuItemKeyDown.bind(this)
+
     this.state = {
-      content: props.content,
+      content: this.props.row[this.props.column.id],
       menuIsOpen: false,
       selectedMenuItem: null
     }
   }
 
-  bindMenuButton = ref => {
-    this.menuButton = ref
-  }
-  bindSelectedMenuItem = ref => {
-    this.selectedMenuItem = ref
-  }
-
-  componentDidUpdate = (lastProps, lastState) => {
+  componentDidUpdate(lastProps, lastState) {
     if (this.selectedMenuItem) {
       this.selectedMenuItem.focus()
     } else if (lastState.menuIsOpen && !this.state.menuIsOpen) {
@@ -31,19 +38,19 @@ export default class DropDownCell extends React.PureComponent {
     }
   }
 
-  focus = () => {
+  focus() {
     if (this.menuButton) {
       this.menuButton.focus()
     }
   }
 
-  onButtonClick = event => {
+  handleButtonClick(event) {
     this.setState({
       menuIsOpen: !this.state.menuIsOpen
     })
   }
 
-  onButtonKeyDown = event => {
+  handleButtonKeyDown(event) {
     const key = event.which || event.keyCode
 
     switch (key) {
@@ -82,7 +89,7 @@ export default class DropDownCell extends React.PureComponent {
     event.preventDefault()
   }
 
-  onMenuItemClick = event => {
+  handleMenuItemClick(event) {
     this.setState({
       content: event.target.innerText,
       menuIsOpen: false,
@@ -90,7 +97,7 @@ export default class DropDownCell extends React.PureComponent {
     })
   }
 
-  onMenuItemKeyDown = event => {
+  handleMenuItemKeyDown(event) {
     const key = event.which || event.keyCode
 
     switch (key) {
@@ -130,28 +137,28 @@ export default class DropDownCell extends React.PureComponent {
     const menuId = `menu${this.props.rowIndex}`
 
     return (
-      <td className={styles.DropDownCell}>
+      <td className={sortableStyles.DropDownCell}>
         <button
           ref={this.bindMenuButton}
-          className={styles.DropDownButton}
-          tabIndex={this.props.isActive ? '0' : '-1'}
+          className={sortableStyles.DropDownButton}
+          tabIndex={this.props.tabIndex}
           aria-haspopup="true"
           aria-controls={menuId}
-          onClick={this.onButtonClick}
-          onKeyDown={this.onButtonKeyDown}
+          onClick={this.handleButtonClick}
+          onKeyDown={this.handleButtonKeyDown}
         >
           {this.state.content}
         </button>
 
         {this.state.menuIsOpen && (
-          <ul className={styles.DropDownMenu} role="menu" id={menuId}>
+          <ul className={sortableStyles.DropDownMenu} role="menu" id={menuId}>
             {menuItems.map((menuItem, index) => (
               <li
                 key={menuItem}
                 ref={this.state.selectedMenuItem === index ? this.bindSelectedMenuItem : null}
-                className={styles.DropDownMenuItem}
-                onClick={this.onMenuItemClick}
-                onKeyDown={this.onMenuItemKeyDown}
+                className={sortableStyles.DropDownMenuItem}
+                onClick={this.handleMenuItemClick}
+                onKeyDown={this.handleMenuItemKeyDown}
                 role="menuitem"
                 tabIndex="-1"
               >

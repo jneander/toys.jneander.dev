@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
+import Pagination, {PaginationButton} from '@instructure/ui-pagination/lib/components/Pagination'
 
-import KeyCodes from '../KeyCodes'
+import KeyCodes from './KeyCodes'
 import HeaderRow from './HeaderRow'
-import Row from './Row'
+import BodyRow from './BodyRow'
 import styles from './styles.css'
 
 function isRowNotVisible(rowIndex, state) {
@@ -31,16 +32,18 @@ function getLocationFromEvent(event, grid) {
 export default class DataTable extends Component {
   static defaultProps = {
     navigableHeaders: false,
-    perPage: 5
+    rowsPerPage: 5
   }
 
   constructor(props) {
     super(props)
 
     this.handleClick = this.handleClick.bind(this)
+    this.handleHeaderClick = this.handleHeaderClick.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.movePageDown = this.movePageDown.bind(this)
     this.movePageUp = this.movePageUp.bind(this)
+    this.setPage = this.setPage.bind(this)
 
     this.bindActiveElement = ref => {
       this.activeElement = ref
@@ -56,7 +59,7 @@ export default class DataTable extends Component {
         region: this.props.navigableHeaders ? 'header' : 'body',
         rowId: this.props.navigableHeaders ? null : this.props.rows[0].id
       },
-      visibleRowsEndIndex: this.props.perPage - 1,
+      visibleRowsEndIndex: this.props.rowsPerPage - 1,
       visibleRowsStartIndex: 0
     }
   }
@@ -83,6 +86,13 @@ export default class DataTable extends Component {
   handleClick(event) {
     const location = getLocationFromEvent(event, this)
     this.setActiveLocation(location)
+  }
+
+  handleHeaderClick(event, location) {
+    if (this.props.navigableHeaders) {
+      event.preventDefault()
+      this.setActiveLocation(location)
+    }
   }
 
   handleKeyDown(event) {
@@ -135,13 +145,13 @@ export default class DataTable extends Component {
 
   movePageDown() {
     // go to next page
-    const {perPage, rows} = this.props
+    const {rowsPerPage, rows} = this.props
     let {visibleRowsEndIndex, visibleRowsStartIndex} = this.state
     const maxEndIndex = rows.length - 1
 
     if (visibleRowsEndIndex < maxEndIndex) {
       visibleRowsStartIndex = visibleRowsEndIndex + 1
-      visibleRowsEndIndex = Math.min(visibleRowsStartIndex + perPage - 1, maxEndIndex)
+      visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
       const rowId = this.props.rows[visibleRowsStartIndex].id
       this.setActiveLocation(
         {...this.state.activeLocation, rowId},
@@ -152,13 +162,13 @@ export default class DataTable extends Component {
 
   movePageUp() {
     // go to previous page
-    const {perPage, rows} = this.props
+    const {rowsPerPage, rows} = this.props
     let {visibleRowsEndIndex, visibleRowsStartIndex} = this.state
     const maxEndIndex = rows.length - 1
 
     if (visibleRowsStartIndex > 0) {
-      visibleRowsStartIndex = Math.max(visibleRowsStartIndex - perPage, 0)
-      visibleRowsEndIndex = Math.min(visibleRowsStartIndex + perPage - 1, maxEndIndex)
+      visibleRowsStartIndex = Math.max(visibleRowsStartIndex - rowsPerPage, 0)
+      visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
       const rowId = this.props.rows[visibleRowsEndIndex].id
       this.setActiveLocation(
         {...this.state.activeLocation, rowId},
@@ -167,7 +177,23 @@ export default class DataTable extends Component {
     }
   }
 
-  setActiveLocation(activeLocation, visibleRowIndices = null) {
+  setPage(page) {
+    const {rowsPerPage, rows} = this.props
+    const lastPage = Math.ceil(rows.length / rowsPerPage)
+
+    if (page >= 0 && page < lastPage) {
+      const visibleRowsStartIndex = page * rowsPerPage
+      const maxEndIndex = rows.length - 1
+      const visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
+      const rowId = this.props.rows[visibleRowsStartIndex].id
+      this._setActiveLocation(
+        {...this.state.activeLocation, rowId},
+        {visibleRowsEndIndex, visibleRowsStartIndex}
+      )
+    }
+  }
+
+  _setActiveLocation(activeLocation, visibleRowIndices = null, stateCallback) {
     const {columns, navigableHeaders, rows} = this.props
     const {columnId, region, rowId} = {...this.props.activeLocation, ...activeLocation}
 
@@ -194,12 +220,12 @@ export default class DataTable extends Component {
       visibleRowsStartIndex = visibleRowIndices.visibleRowsStartIndex
     } else if (region === 'header') {
       visibleRowsStartIndex = 0
-      visibleRowsEndIndex = this.props.perPage - 1
+      visibleRowsEndIndex = this.props.rowsPerPage - 1
     } else {
       visibleRowsEndIndex = this.state.visibleRowsEndIndex
       visibleRowsStartIndex = this.state.visibleRowsStartIndex
 
-      const perPageOffset = this.props.perPage - 1
+      const perPageOffset = this.props.rowsPerPage - 1
 
       if (rowIndex < visibleRowsStartIndex) {
         visibleRowsStartIndex = rowIndex
@@ -213,53 +239,69 @@ export default class DataTable extends Component {
       )
     }
 
-    this.setState(
-      {
-        activeLocation,
-        visibleRowsEndIndex,
-        visibleRowsStartIndex
-      },
-      () => {
-        if (this.activeElement) {
-          this.activeElement.focus()
-        }
+    this.setState({activeLocation, visibleRowsEndIndex, visibleRowsStartIndex}, stateCallback)
+  }
+
+  setActiveLocation(activeLocation, visibleRowIndices = null) {
+    this._setActiveLocation(activeLocation, visibleRowIndices, () => {
+      if (this.activeElement) {
+        this.activeElement.focus()
       }
-    )
+    })
   }
 
   render() {
-    return (
-      <table
-        aria-colcount={this.props.columns.length}
-        aria-labelledby={this.props['aria-labelledby']}
-        aria-rowcount={this.props.rows.length}
-        className={styles.Table}
-        onClick={this.handleClick}
-        onKeyDown={this.handleKeyDown}
-        ref={this.bindTableRef}
-        role="grid"
+    const pageCount = Math.ceil(this.props.rows.length / this.props.rowsPerPage)
+    const currentPage = Math.floor(this.state.visibleRowsStartIndex / this.props.rowsPerPage)
+    const pages = Array.from(Array(pageCount)).map((v, i) => (
+      <PaginationButton
+        key={i}
+        onClick={() => {
+          this.setPage(i)
+        }}
+        current={i === currentPage}
       >
-        <tbody>
-          <HeaderRow
-            activeLocation={this.state.activeLocation}
-            bindActiveElement={this.bindActiveElement}
-            columns={this.props.columns}
-            renderColumnHeader={this.props.renderColumnHeader}
-          />
+        {i + 1}
+      </PaginationButton>
+    ))
 
-          {this.props.rows.map((row, rowIndex) => (
-            <Row
+    return (
+      <div style={{display: 'inline-block'}}>
+        <table
+          className={styles.Table}
+          onClick={this.handleClick}
+          onKeyDown={this.handleKeyDown}
+          ref={this.bindTableRef}
+          role="grid"
+        >
+          <tbody>
+            <HeaderRow
               activeLocation={this.state.activeLocation}
               bindActiveElement={this.bindActiveElement}
               columns={this.props.columns}
-              hidden={isRowNotVisible(rowIndex, this.state)}
-              key={row.id}
-              renderCell={this.props.renderCell}
-              row={row}
+              navigable={this.props.navigableHeaders}
+              onClick={this.handleHeaderClick}
+              renderColumnHeader={this.props.renderColumnHeader}
             />
-          ))}
-        </tbody>
-      </table>
+
+            {this.props.rows.map((row, rowIndex) => (
+              <BodyRow
+                activeLocation={this.state.activeLocation}
+                bindActiveElement={this.bindActiveElement}
+                columns={this.props.columns}
+                hidden={isRowNotVisible(rowIndex, this.state)}
+                key={row.id}
+                renderCell={this.props.renderCell}
+                row={row}
+              />
+            ))}
+          </tbody>
+        </table>
+
+        <Pagination variant="compact" labelNext="Next Page" labelPrev="Previous Page">
+          {pages}
+        </Pagination>
+      </div>
     )
   }
 }

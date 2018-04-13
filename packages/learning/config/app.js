@@ -19,9 +19,14 @@ module.exports = configureApp({
           sourcePath: 'aria-layout-grids'
         },
         {
-          name: 'data-grid',
-          outputPath: 'data-grid',
-          sourcePath: 'data-grid'
+          name: 'data-grid-v0',
+          outputPath: 'data-grid-v0',
+          sourcePath: 'data-grid-v0'
+        },
+        {
+          name: 'data-grid-v1',
+          outputPath: 'data-grid-v1',
+          sourcePath: 'data-grid-v1'
         },
         {
           name: 'static-grid',
@@ -48,38 +53,6 @@ module.exports = configureApp({
       outputPath: '',
       sourcePath: 'home',
       template: 'shared/markup/index.html'
-    },
-    {
-      context: 'html-grids',
-      outputPath: 'html-grids',
-      pages: [
-        {
-          name: 'static-table',
-          outputPath: 'static-table',
-          sourcePath: 'static-table',
-          template: 'html-grids/static-table/index.html'
-        },
-        {
-          name: 'static-table-with-row-headers',
-          outputPath: 'static-table-with-row-headers',
-          sourcePath: 'static-table-with-row-headers',
-          template: 'html-grids/static-table-with-row-headers/index.html'
-        },
-        {
-          name: 'aria-static-grid',
-          outputPath: 'aria-static-grid',
-          sourcePath: 'aria-static-grid',
-          template: 'html-grids/aria-static-grid/index.html'
-        },
-        {
-          name: 'aria-static-grid-with-row-headers',
-          outputPath: 'aria-static-grid-with-row-headers',
-          sourcePath: 'aria-static-grid-with-row-headers',
-          template: 'html-grids/aria-static-grid-with-row-headers/index.html'
-        }
-      ],
-      sourcePath: 'html-grids',
-      type: 'static'
     }
   ]
 })

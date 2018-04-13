@@ -253,7 +253,7 @@ export default class DataTable extends Component {
               bindActiveElement={this.bindActiveElement}
               columns={this.props.columns}
               hidden={isRowNotVisible(rowIndex, this.state)}
-              key={rowIndex}
+              key={row.id}
               renderCell={this.props.renderCell}
               row={row}
             />

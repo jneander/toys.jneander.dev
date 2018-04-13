@@ -703,6 +703,18 @@
     no-scroll "^2.1.0"
     prop-types "^15.5.10"
 
+"@instructure/ui-pagination@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@instructure/ui-pagination/-/ui-pagination-5.2.0.tgz#220783566be839ea2e78b79ae876c50c8e7e5f92"
+  dependencies:
+    "@instructure/ui-buttons" "^5.2.0"
+    "@instructure/ui-container" "^5.2.0"
+    "@instructure/ui-elements" "^5.2.0"
+    "@instructure/ui-icons" "^5.2.0"
+    "@instructure/ui-themeable" "^5.2.0"
+    "@instructure/ui-utils" "^5.2.0"
+    prop-types "^15.5.10"
+
 "@instructure/ui-portal@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@instructure/ui-portal/-/ui-portal-5.2.0.tgz#db81649d21e6eb9ca7232f962051650e26c8601d"

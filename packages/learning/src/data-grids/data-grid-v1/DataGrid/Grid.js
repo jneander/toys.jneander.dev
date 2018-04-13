@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import Pagination, {PaginationButton} from '@instructure/ui-pagination/lib/components/Pagination'
 
 import KeyCodes from './KeyCodes'
 import HeaderRow from './HeaderRow'
@@ -42,6 +43,7 @@ export default class DataTable extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.movePageDown = this.movePageDown.bind(this)
     this.movePageUp = this.movePageUp.bind(this)
+    this.setPage = this.setPage.bind(this)
 
     this.bindActiveElement = ref => {
       this.activeElement = ref
@@ -175,7 +177,23 @@ export default class DataTable extends Component {
     }
   }
 
-  setActiveLocation(activeLocation, visibleRowIndices = null) {
+  setPage(page) {
+    const {rowsPerPage, rows} = this.props
+    const lastPage = Math.ceil(rows.length / rowsPerPage)
+
+    if (page >= 0 && page < lastPage) {
+      const visibleRowsStartIndex = page * rowsPerPage
+      const maxEndIndex = rows.length - 1
+      const visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
+      const rowId = this.props.rows[visibleRowsStartIndex].id
+      this._setActiveLocation(
+        {...this.state.activeLocation, rowId},
+        {visibleRowsEndIndex, visibleRowsStartIndex}
+      )
+    }
+  }
+
+  _setActiveLocation(activeLocation, visibleRowIndices = null, stateCallback) {
     const {columns, navigableHeaders, rows} = this.props
     const {columnId, region, rowId} = {...this.props.activeLocation, ...activeLocation}
 
@@ -221,52 +239,69 @@ export default class DataTable extends Component {
       )
     }
 
-    this.setState(
-      {
-        activeLocation,
-        visibleRowsEndIndex,
-        visibleRowsStartIndex
-      },
-      () => {
-        if (this.activeElement) {
-          this.activeElement.focus()
-        }
+    this.setState({activeLocation, visibleRowsEndIndex, visibleRowsStartIndex}, stateCallback)
+  }
+
+  setActiveLocation(activeLocation, visibleRowIndices = null) {
+    this._setActiveLocation(activeLocation, visibleRowIndices, () => {
+      if (this.activeElement) {
+        this.activeElement.focus()
       }
-    )
+    })
   }
 
   render() {
-    return (
-      <table
-        className={styles.Table}
-        onClick={this.handleClick}
-        onKeyDown={this.handleKeyDown}
-        ref={this.bindTableRef}
-        role="grid"
+    const pageCount = Math.ceil(this.props.rows.length / this.props.rowsPerPage)
+    const currentPage = Math.floor(this.state.visibleRowsStartIndex / this.props.rowsPerPage)
+    const pages = Array.from(Array(pageCount)).map((v, i) => (
+      <PaginationButton
+        key={i}
+        onClick={() => {
+          this.setPage(i)
+        }}
+        current={i === currentPage}
       >
-        <tbody>
-          <HeaderRow
-            activeLocation={this.state.activeLocation}
-            bindActiveElement={this.bindActiveElement}
-            columns={this.props.columns}
-            navigable={this.props.navigableHeaders}
-            onClick={this.handleHeaderClick}
-            renderColumnHeader={this.props.renderColumnHeader}
-          />
+        {i + 1}
+      </PaginationButton>
+    ))
 
-          {this.props.rows.map((row, rowIndex) => (
-            <BodyRow
+    return (
+      <div style={{display: 'inline-block'}}>
+        <table
+          className={styles.Table}
+          onClick={this.handleClick}
+          onKeyDown={this.handleKeyDown}
+          ref={this.bindTableRef}
+          role="grid"
+        >
+          <tbody>
+            <HeaderRow
               activeLocation={this.state.activeLocation}
               bindActiveElement={this.bindActiveElement}
               columns={this.props.columns}
-              hidden={isRowNotVisible(rowIndex, this.state)}
-              key={row.id}
-              renderCell={this.props.renderCell}
-              row={row}
+              navigable={this.props.navigableHeaders}
+              onClick={this.handleHeaderClick}
+              renderColumnHeader={this.props.renderColumnHeader}
             />
-          ))}
-        </tbody>
-      </table>
+
+            {this.props.rows.map((row, rowIndex) => (
+              <BodyRow
+                activeLocation={this.state.activeLocation}
+                bindActiveElement={this.bindActiveElement}
+                columns={this.props.columns}
+                hidden={isRowNotVisible(rowIndex, this.state)}
+                key={row.id}
+                renderCell={this.props.renderCell}
+                row={row}
+              />
+            ))}
+          </tbody>
+        </table>
+
+        <Pagination variant="compact" labelNext="Next Page" labelPrev="Previous Page">
+          {pages}
+        </Pagination>
+      </div>
     )
   }
 }

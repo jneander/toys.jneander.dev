@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
 
 function getLocationFromEvent(event, self) {
-  const columnIndex = [].findIndex.call(self.tableRow.children, header => header.contains(event.target))
+  const columnIndex = [].findIndex.call(self.tableRow.children, header =>
+    header.contains(event.target)
+  )
 
   if (columnIndex === -1) {
     return null // this should never occur

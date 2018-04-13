@@ -7,7 +7,12 @@ export default class StudentCell extends PureComponent {
     const {column, row} = this.props
 
     return (
-      <th className={styles.Cell} ref={this.props.focusableRef} scope="row" tabIndex={this.props.tabIndex}>
+      <th
+        className={styles.Cell}
+        ref={this.props.focusableRef}
+        scope="row"
+        tabIndex={this.props.tabIndex}
+      >
         {row[column.id]}
       </th>
     )

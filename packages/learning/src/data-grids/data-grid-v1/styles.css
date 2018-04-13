@@ -1,0 +1,20 @@
+:local(.ColumnHeader) {
+  padding: 0.5em 1em;
+  position: relative;
+  text-align: start;
+}
+
+:local(.Cell) {
+  border-top: 1px solid grey;
+  padding: 0.5em 1em;
+  width: 120px;
+}
+
+:local(.ColumnHeader:focus),
+:local(.ColumnHeader *:focus),
+:local(.Cell:focus),
+:local(.Cell *:focus) {
+  outline: #005a9c;
+  outline-style: dotted;
+  outline-width: 3px;
+}

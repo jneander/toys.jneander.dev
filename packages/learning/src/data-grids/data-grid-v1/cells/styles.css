@@ -1,0 +1,28 @@
+:local(.GradeMenuButton) {
+  cursor: pointer;
+  font-size: 110%;
+}
+
+:local(.GradeCell) {
+  position: relative;
+}
+
+:local(.GradeMenu) {
+  background-color: #EEEEEE;
+  border: thin solid black;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: 8em;
+  z-index: 1;
+}
+
+:local(.GradeMenuItem) {
+  list-style: none;
+  padding: 0.25em;
+}
+
+:local(.GradeMenuItem:focus),
+:local(.GradeMenuItem:hover) {
+  background-color: #FFFFFF;
+}

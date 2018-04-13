@@ -4,6 +4,7 @@ import Heading from '@instructure/ui-elements/lib/components/Heading'
 
 import Layout from '../../shared/components/Layout'
 import students from '../shared-data-grid/students'
+import GradeCell from './cells/GradeCell'
 import StudentCell from './cells/StudentCell'
 import TextCell from './cells/TextCell'
 import TextColumnHeader from './headers/TextColumnHeader'
@@ -39,6 +40,29 @@ export default class DataGridV1 extends PureComponent {
                 renderCell={props => {
                   if (props.column.id === 'name') {
                     return <StudentCell {...props} />
+                  }
+                  return <TextCell {...props} />
+                }}
+                rows={this.state.rows}
+                rowsPerPage={10}
+              />
+            </Container>
+          </Container>
+
+          <Container as="div" margin="medium 0 0 0">
+            <Heading level="h3">Example 2: Data Grid with Widgets</Heading>
+
+            <Container as="div" margin="medium 0 0 0">
+              <DataGrid
+                columns={this.state.columns}
+                navigableHeaders
+                renderColumnHeader={props => <TextColumnHeader {...props} />}
+                renderCell={props => {
+                  if (props.column.id === 'name') {
+                    return <StudentCell {...props} />
+                  }
+                  if (props.column.id === 'grade') {
+                    return <GradeCell {...props} />
                   }
                   return <TextCell {...props} />
                 }}

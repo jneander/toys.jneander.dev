@@ -29,6 +29,11 @@ module.exports = configureApp({
           sourcePath: 'data-grid-v1'
         },
         {
+          name: 'data-grid-v2',
+          outputPath: 'data-grid-v2',
+          sourcePath: 'data-grid-v2'
+        },
+        {
           name: 'static-grid',
           outputPath: 'static-grid',
           sourcePath: 'static-grid'

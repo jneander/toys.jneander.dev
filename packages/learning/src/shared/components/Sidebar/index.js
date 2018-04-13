@@ -36,10 +36,6 @@ export default class Sidebar extends Component {
             <ListItem>
               <Link href="/data-grids/aria-layout-grids">ARIA Layout Grids</Link>
             </ListItem>
-
-            <ListItem>
-              <Link href="/data-grids/data-grid">Data Grid (WIP)</Link>
-            </ListItem>
           </List>
 
           <Text id="other-projects-label">Other Projects</Text>

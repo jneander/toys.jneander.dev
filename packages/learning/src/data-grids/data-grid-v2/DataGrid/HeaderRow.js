@@ -55,7 +55,12 @@ export default class HeaderRow extends Component {
     const refFor = columnId => (isActiveLocation(columnId) ? bindActiveElement : undefined)
 
     return (
-      <div className={styles.Row} onClick={this.props.onClick && this.handleClick} ref={this.bindGridRow} role="row">
+      <div
+        className={styles.Row}
+        onClick={this.props.onClick && this.handleClick}
+        ref={this.bindGridRow}
+        role="row"
+      >
         {this.props.columns.map(column =>
           this.props.renderColumnHeader({
             column,

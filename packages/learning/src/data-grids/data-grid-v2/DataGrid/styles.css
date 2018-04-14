@@ -7,7 +7,7 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   hyphens: auto;
-  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
   box-sizing: border-box;
   display: table;
 }

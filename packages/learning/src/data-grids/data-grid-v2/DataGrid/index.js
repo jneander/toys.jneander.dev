@@ -160,7 +160,7 @@ export default class DataGrid extends Component {
       visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
       const rowId = this.props.rows[visibleRowsStartIndex].id
       this.setActiveLocation(
-        {...this.state.activeLocation, rowId},
+        {...this.state.activeLocation, region: 'body', rowId},
         {visibleRowsEndIndex, visibleRowsStartIndex}
       )
     }
@@ -177,7 +177,7 @@ export default class DataGrid extends Component {
       visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
       const rowId = this.props.rows[visibleRowsEndIndex].id
       this.setActiveLocation(
-        {...this.state.activeLocation, rowId},
+        {...this.state.activeLocation, region: 'body', rowId},
         {visibleRowsEndIndex, visibleRowsStartIndex}
       )
     }
@@ -193,7 +193,7 @@ export default class DataGrid extends Component {
       const visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
       const rowId = this.props.rows[visibleRowsStartIndex].id
       this._setActiveLocation(
-        {...this.state.activeLocation, rowId},
+        {...this.state.activeLocation, region: 'body', rowId},
         {visibleRowsEndIndex, visibleRowsStartIndex}
       )
     }
@@ -245,7 +245,14 @@ export default class DataGrid extends Component {
       )
     }
 
-    this.setState({activeLocation, visibleRowsEndIndex, visibleRowsStartIndex}, stateCallback)
+    this.setState({activeLocation, visibleRowsEndIndex, visibleRowsStartIndex}, () => {
+      if (this.props.onActiveLocationChange) {
+        this.props.onActiveLocationChange(activeLocation)
+      }
+      if (stateCallback) {
+        stateCallback()
+      }
+    })
   }
 
   setActiveLocation(activeLocation, visibleRowIndices = null) {

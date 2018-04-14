@@ -12,12 +12,13 @@ function isRowNotVisible(rowIndex, state) {
 
 function getLocationFromEvent(event, grid) {
   const rows = grid.table.querySelectorAll('tbody tr')
-  const rowIndex = [].findIndex.call(rows, row => row.contains(event.target))
+  let rowIndex = [].findIndex.call(rows, row => row.contains(event.target))
   if (rowIndex > 0) {
     // TODO: optionally include header row
-    const columnIndex = [].findIndex.call(rows[rowIndex].children, cell =>
+    let columnIndex = [].findIndex.call(rows[rowIndex].children, cell =>
       cell.contains(event.target)
     )
+    rowIndex += grid.state.visibleRowsStartIndex
     if (columnIndex > -1) {
       return {
         columnId: grid.props.columns[columnIndex].id,

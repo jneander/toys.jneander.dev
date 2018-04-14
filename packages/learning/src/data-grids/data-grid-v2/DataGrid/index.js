@@ -295,7 +295,12 @@ export default class DataGrid extends Component {
             renderColumnHeader={this.props.renderColumnHeader}
           />
 
-          <div onClick={this.handleClick} ref={this.bindRowGroup} role="rowgroup" style={{display: 'table-row-group'}}>
+          <div
+            onClick={this.handleClick}
+            ref={this.bindRowGroup}
+            role="rowgroup"
+            style={{display: 'table-row-group'}}
+          >
             {getVisibleRows(this.props.rows, this.state).map(row => (
               <BodyRow
                 activeLocation={this.state.activeLocation}

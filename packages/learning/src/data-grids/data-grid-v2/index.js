@@ -5,6 +5,8 @@ import Text from '@instructure/ui-elements/lib/components/Text'
 
 import Layout from '../../shared/components/Layout'
 import students from '../shared-data-grid/students'
+import GradeCell from './cells/GradeCell'
+import NotesCell from './cells/NotesCell'
 import StudentCell from './cells/StudentCell'
 import TextCell from './cells/TextCell'
 import TextColumnHeader from './headers/TextColumnHeader'
@@ -77,6 +79,46 @@ export default class DataGridV1 extends PureComponent {
                 renderCell={props => {
                   if (props.column.id === 'name') {
                     return <StudentCell {...props} />
+                  }
+                  return <TextCell {...props} />
+                }}
+                rows={this.state.rows}
+                rowsPerPage={10}
+              />
+            </Container>
+          </Container>
+
+          <Container as="div" margin="medium 0 0 0">
+            <Heading level="h3">Example 2: Data Grid with Widgets</Heading>
+
+            <Location
+              columns={this.state.columns}
+              location={this.state.example1.activeLocation}
+              rows={this.state.rows}
+            />
+
+            <Container as="div" margin="medium 0 0 0">
+              <DataGrid
+                columns={this.state.columns}
+                navigableHeaders
+                onActiveLocationChange={location => {
+                  this.setState({
+                    example1: {
+                      ...this.state.example1,
+                      activeLocation: location
+                    }
+                  })
+                }}
+                renderColumnHeader={props => <TextColumnHeader {...props} />}
+                renderCell={props => {
+                  if (props.column.id === 'name') {
+                    return <StudentCell {...props} />
+                  }
+                  if (props.column.id === 'notes') {
+                    return <NotesCell {...props} />
+                  }
+                  if (props.column.id === 'grade') {
+                    return <GradeCell {...props} />
                   }
                   return <TextCell {...props} />
                 }}

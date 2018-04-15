@@ -55,6 +55,7 @@ export default class Header extends PureComponent {
         className={styles.Header}
         onClick={this.props.onClick && this.handleClick}
         ref={this.bindGridRow}
+        role="row"
         style={style}
       >
         {this.props.columns.map(column => (

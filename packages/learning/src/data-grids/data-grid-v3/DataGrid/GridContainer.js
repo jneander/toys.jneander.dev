@@ -25,7 +25,10 @@ function getLocationFromEvent(event, self) {
 export default class GridContainer extends PureComponent {
   render() {
     return (
-      <div className={this.props.frozen ? styles.GridContainerFrozen : styles.GridContainer}>
+      <div
+        className={this.props.frozen ? styles.GridContainerFrozen : styles.GridContainer}
+        role="grid"
+      >
         <ScrollSyncPane>
           <Header
             activeLocation={this.props.activeLocation}

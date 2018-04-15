@@ -1,0 +1,49 @@
+:local(.Grid) {
+  box-sizing: border-box;
+  font-family: LatoWeb, Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  overflow: scroll;
+}
+
+:local(.Header) {
+  display: block;
+  flex-grow: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+:local(.Body) {
+  display: block;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  position: relative;
+}
+
+:local(.Row) {
+  display: block;
+  white-space: nowrap;
+}
+
+:local(.ColumnHeader) {
+  display: inline-block;
+  height: 100%;
+  position: relative;
+}
+
+:local(.Cell) {
+  display: inline-block;
+  height: 100%;
+  position: relative;
+}
+
+:local(.RowEven) {
+  background: #fff;
+}
+
+:local(.RowOdd) {
+  background: #eee;
+}

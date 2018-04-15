@@ -44,6 +44,10 @@ export default class Sidebar extends Component {
             <ListItem>
               <Link href="/data-grids/data-grid-v2">Data Grid v2</Link>
             </ListItem>
+
+            <ListItem>
+              <Link href="/data-grids/frozen-grid-v1">Frozen Grid v1</Link>
+            </ListItem>
           </List>
 
           <Text id="other-projects-label">Other Projects</Text>

@@ -42,7 +42,7 @@ export default class Row extends Component {
     classNames.push(this.props.even ? styles.RowEven : styles.RowOdd)
 
     return (
-      <div className={classNames.join(' ')} style={style}>
+      <div className={classNames.join(' ')} role="row" style={style}>
         {this.props.columns.map(column => (
           <Cell
             column={column}

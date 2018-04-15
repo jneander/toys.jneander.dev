@@ -47,7 +47,13 @@ export default class Body extends Component {
     }
 
     return (
-      <div className={styles.Body} onClick={this.handleClick} ref={this.bindRowGroup} style={style}>
+      <div
+        className={styles.Body}
+        onClick={this.handleClick}
+        ref={this.bindRowGroup}
+        role="rowgroup"
+        style={style}
+      >
         {this.props.rows.map((row, index) => (
           <Row
             activeLocation={this.props.activeLocation}

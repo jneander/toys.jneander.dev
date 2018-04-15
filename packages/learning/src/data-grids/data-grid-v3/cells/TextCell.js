@@ -7,14 +7,15 @@ export default class TextCell extends PureComponent {
     const {column, row} = this.props
 
     return (
-      <div
+      <span
         aria-labelledby={`row-${row.id}-label column-${column.id}-label`}
         className={styles.Cell}
         ref={this.props.focusableRef}
+        role="gridcell"
         tabIndex={this.props.tabIndex}
       >
         {row[column.id] || '–'}
-      </div>
+      </span>
     )
   }
 }

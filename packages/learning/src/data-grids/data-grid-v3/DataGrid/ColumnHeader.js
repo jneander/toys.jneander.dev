@@ -14,7 +14,7 @@ export default class ColumnHeader extends PureComponent {
     }
 
     return (
-      <div className={classNames.join(' ')} style={style}>
+      <div className={classNames.join(' ')} role="columnheader" style={style}>
         {this.props.children}
       </div>
     )

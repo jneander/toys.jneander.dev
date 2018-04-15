@@ -14,7 +14,7 @@ export default class Cell extends PureComponent {
     }
 
     return (
-      <div className={classNames.join(' ')} style={style}>
+      <div className={classNames.join(' ')} role="gridcell" style={style}>
         {this.props.children}
       </div>
     )

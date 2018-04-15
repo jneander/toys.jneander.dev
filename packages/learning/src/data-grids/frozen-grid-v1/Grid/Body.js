@@ -6,10 +6,7 @@ import Row from './Row'
 export default class Body extends PureComponent {
   render() {
     const style = {
-      flexBasis: '364px',
-      height: `${this.props.rows.length * this.props.rowHeight}px`,
-      maxHeight: '364px',
-      width: `${this.props.columns.reduce((sum, column) => sum + column.width, 0)}px`
+      top: `${this.props.headerHeight}px`
     }
 
     return (

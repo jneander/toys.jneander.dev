@@ -1,26 +1,29 @@
 :local(.Grid) {
+  bottom: 0;
   box-sizing: border-box;
   font-family: LatoWeb, Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
-  overflow: scroll;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 :local(.Header) {
   display: block;
-  flex-grow: 0;
-  flex-shrink: 0;
+  overflow: hidden;
   white-space: nowrap;
   z-index: 1;
 }
 
 :local(.Body) {
+  bottom: 0;
   display: block;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  position: relative;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  right: 0;
 }
 
 :local(.Row) {

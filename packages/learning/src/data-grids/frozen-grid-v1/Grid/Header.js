@@ -5,18 +5,9 @@ import ColumnHeader from './ColumnHeader'
 
 export default class Header extends PureComponent {
   render() {
-    const {cellFactory} = this.props
-
-    const classes = []
-    if (this.props.className) {
-      classes.push(this.props.className)
-    }
-
     const style = {
-      display: 'inline-block',
-      flexBasis: '36px',
-      height: '36px',
-      lineHeight: '36px'
+      height: `${this.props.height}px`,
+      lineHeight: `${this.props.height}px`
     }
 
     return (

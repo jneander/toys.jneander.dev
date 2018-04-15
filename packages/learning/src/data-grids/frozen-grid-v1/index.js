@@ -18,8 +18,8 @@ export default class AriaLayoutGrids extends PureComponent {
             <Heading level="h2">Frozen Grid</Heading>
           </Container>
 
-          <div style={{width: '600px', height: '400px', overflow: 'hidden'}}>
-            <Grid columns={columns} rows={rows} />
+          <div style={{width: '600px', height: '400px', position: 'relative'}}>
+            <Grid columns={columns} headerHeight={36} rowHeight={32} rows={rows} />
           </div>
         </Container>
       </Layout>

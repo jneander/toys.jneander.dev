@@ -1,0 +1,4 @@
+:local(.ColumnHeader) {
+  display: flex;
+  flex-direction: row;
+}

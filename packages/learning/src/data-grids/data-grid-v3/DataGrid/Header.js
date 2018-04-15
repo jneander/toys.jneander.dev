@@ -58,7 +58,11 @@ export default class Header extends PureComponent {
         style={style}
       >
         {this.props.columns.map(column => (
-          <ColumnHeader column={column} key={column.id}>
+          <ColumnHeader
+            column={column}
+            isActiveLocation={isActiveLocation(column.id)}
+            key={column.id}
+          >
             {this.props.renderColumnHeader({
               column,
               focusableRef: refFor(column.id),

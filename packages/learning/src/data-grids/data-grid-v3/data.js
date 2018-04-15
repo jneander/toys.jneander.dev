@@ -10,7 +10,7 @@ for (let i = 0; i < 24; i++) {
 
 const rows = []
 for (let i = 0; i < 100; i++) {
-  rows.push({id: `student-${i}`, studentName: `Student ${i + 1}`})
+  rows.push({id: `student-${i + 1}`, studentName: `Student ${i + 1}`})
 }
 
 export {columns, rows}

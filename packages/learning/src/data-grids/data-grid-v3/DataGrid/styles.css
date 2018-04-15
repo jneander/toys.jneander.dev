@@ -60,6 +60,10 @@
   position: relative;
 }
 
+:local(.CellActive) {
+  background: #d2d2f5;
+}
+
 :local(.RowEven) {
   background: #fff;
 }

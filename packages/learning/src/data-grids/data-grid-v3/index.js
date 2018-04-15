@@ -10,6 +10,7 @@ import TextCell from './cells/TextCell'
 import TextColumnHeader from './headers/TextColumnHeader'
 import {columns, rows} from './data'
 import DataGrid from './DataGrid'
+import styles from './styles.css'
 
 export default class DataGridV3 extends PureComponent {
   render() {
@@ -24,7 +25,10 @@ export default class DataGridV3 extends PureComponent {
             <Heading level="h3">Example 1: Minimal Data Grid</Heading>
 
             <Container as="div" margin="medium 0 0 0">
-              <div style={{width: '600px', height: '400px', position: 'relative'}}>
+              <div
+                className={styles.Grid}
+                style={{width: '600px', height: '400px', position: 'relative'}}
+              >
                 <DataGrid
                   columns={columns}
                   headerHeight={36}

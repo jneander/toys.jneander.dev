@@ -8,8 +8,13 @@ export default class Cell extends PureComponent {
       width: `${this.props.column.width}px`
     }
 
+    const classNames = [styles.Cell]
+    if (this.props.isActiveLocation) {
+      classNames.push(styles.CellActive)
+    }
+
     return (
-      <div className={styles.Cell} style={style}>
+      <div className={classNames.join(' ')} style={style}>
         {this.props.children}
       </div>
     )

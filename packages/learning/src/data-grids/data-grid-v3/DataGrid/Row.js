@@ -35,7 +35,6 @@ export default class Row extends Component {
 
     const style = {
       display: 'inline-block',
-      lineHeight: `${this.props.height}px`,
       height: `${this.props.height}px`
     }
 
@@ -45,7 +44,11 @@ export default class Row extends Component {
     return (
       <div className={classNames.join(' ')} style={style}>
         {this.props.columns.map(column => (
-          <Cell column={column} key={column.id}>
+          <Cell
+            column={column}
+            isActiveLocation={isActiveLocation(column.id)}
+            key={`${row.id}_${column.id}`}
+          >
             {this.props.renderCell({
               'aria-labelledby': `column-${column.id}-label,${rowElementId}`,
               column,

@@ -6,6 +6,7 @@ import TabList, {TabPanel} from '@instructure/ui-tabs/lib/components/TabList'
 import Text from '@instructure/ui-elements/lib/components/Text'
 
 import Layout from '../../shared/components/Layout'
+import StudentCell from './cells/StudentCell'
 import TextCell from './cells/TextCell'
 import TextColumnHeader from './headers/TextColumnHeader'
 import {columns, rows} from './data'
@@ -34,6 +35,9 @@ export default class DataGridV3 extends PureComponent {
                   headerHeight={36}
                   navigableHeaders
                   renderCell={props => {
+                    if (props.column.id === 'studentName') {
+                      return <StudentCell {...props} />
+                    }
                     return <TextCell {...props} />
                   }}
                   renderColumnHeader={props => <TextColumnHeader {...props} />}

@@ -8,6 +8,7 @@ import Text from '@instructure/ui-elements/lib/components/Text'
 import Layout from '../../shared/components/Layout'
 import StudentCell from './cells/StudentCell'
 import TextCell from './cells/TextCell'
+import StudentColumnHeader from './headers/StudentColumnHeader'
 import TextColumnHeader from './headers/TextColumnHeader'
 import {columns, rows} from './data'
 import DataGrid from './DataGrid'
@@ -18,9 +19,13 @@ export default class DataGridV3 extends PureComponent {
     return (
       <Layout>
         <div className={styles.Root}>
-          <Heading level="h2" margin="0 0 medium 0">DataGrid v3</Heading>
+          <Heading level="h2" margin="0 0 medium 0">
+            DataGrid v3
+          </Heading>
 
-          <Heading level="h3" margin="0 0 medium 0">Example 1: Minimal Data Grid</Heading>
+          <Heading level="h3" margin="0 0 medium 0">
+            Example 1: Minimal Data Grid
+          </Heading>
 
           <div className={styles.Grid}>
             <DataGrid
@@ -33,7 +38,12 @@ export default class DataGridV3 extends PureComponent {
                 }
                 return <TextCell {...props} />
               }}
-              renderColumnHeader={props => <TextColumnHeader {...props} />}
+              renderColumnHeader={props => {
+                if (props.column.id === 'studentName') {
+                  return <StudentColumnHeader {...props} />
+                }
+                return <TextColumnHeader {...props} />
+              }}
               rowHeight={32}
               rows={rows}
             />

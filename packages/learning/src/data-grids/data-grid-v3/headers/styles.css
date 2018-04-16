@@ -5,3 +5,15 @@
   height: 100%;
   padding: 0 0.5em;
 }
+
+:local(.NotesColumnHeader) {
+  justify-content: center;
+}
+
+:local(.StudentColumnHeader) {
+  justify-content: start;
+}
+
+:local(.TextColumnHeader) {
+  justify-content: center;
+}

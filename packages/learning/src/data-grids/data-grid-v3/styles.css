@@ -1,3 +1,12 @@
+:local(.Root) {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-large);
+}
+
 :local(.Grid) {
-  border: 1px solid #555555;
+  flex-grow: 1;
+  position: relative;
 }

@@ -53,6 +53,7 @@ export default class Row extends Component {
               'aria-labelledby': `column-${column.id}-label,${rowElementId}`,
               column,
               focusableRef: refFor(column.id),
+              isActiveLocation: isActiveLocation(column.id),
               row,
               tabIndex: tabIndexFor(column.id)
             })}

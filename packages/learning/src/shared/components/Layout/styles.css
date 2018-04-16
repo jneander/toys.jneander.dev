@@ -2,9 +2,10 @@
   /* Spacing */
   --spacing-small: 0.25rem;
   --spacing-medium: 1rem;
+  --spacing-large: 1.5rem;
 
   /* Color */
-  --background: #eeeeee;
+  --background: #ffffff;
   --white: #ffffff;
 }
 

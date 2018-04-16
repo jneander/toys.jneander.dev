@@ -63,8 +63,6 @@ export default class Grid extends PureComponent {
     const columnIndex = this.props.columns.findIndex(column => column.id === location.columnId)
     const rowIndex = this.props.rows.findIndex(row => row.id === location.rowId)
 
-    // console.log(location, key)
-
     switch (key) {
       case KeyCodes.LEFT:
         location = {

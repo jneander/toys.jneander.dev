@@ -17,37 +17,28 @@ export default class DataGridV3 extends PureComponent {
   render() {
     return (
       <Layout>
-        <Container margin="medium" display="block">
-          <Container as="header" margin="0 0 medium 0">
-            <Heading level="h2">DataGrid v3</Heading>
-          </Container>
+        <div className={styles.Root}>
+          <Heading level="h2" margin="0 0 medium 0">DataGrid v3</Heading>
 
-          <Container as="div" margin="medium 0 0 0">
-            <Heading level="h3">Example 1: Minimal Data Grid</Heading>
+          <Heading level="h3" margin="0 0 medium 0">Example 1: Minimal Data Grid</Heading>
 
-            <Container as="div" margin="medium 0 0 0">
-              <div
-                className={styles.Grid}
-                style={{width: '600px', height: '400px', position: 'relative'}}
-              >
-                <DataGrid
-                  columns={columns}
-                  headerHeight={36}
-                  navigableHeaders
-                  renderCell={props => {
-                    if (props.column.id === 'studentName') {
-                      return <StudentCell {...props} />
-                    }
-                    return <TextCell {...props} />
-                  }}
-                  renderColumnHeader={props => <TextColumnHeader {...props} />}
-                  rowHeight={32}
-                  rows={rows}
-                />
-              </div>
-            </Container>
-          </Container>
-        </Container>
+          <div className={styles.Grid}>
+            <DataGrid
+              columns={columns}
+              headerHeight={36}
+              navigableHeaders
+              renderCell={props => {
+                if (props.column.id === 'studentName') {
+                  return <StudentCell {...props} />
+                }
+                return <TextCell {...props} />
+              }}
+              renderColumnHeader={props => <TextColumnHeader {...props} />}
+              rowHeight={32}
+              rows={rows}
+            />
+          </div>
+        </div>
       </Layout>
     )
   }

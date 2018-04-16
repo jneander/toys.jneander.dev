@@ -46,8 +46,7 @@ export default class Header extends PureComponent {
     const refFor = columnId => (isActiveLocation(columnId) ? bindActiveElement : undefined)
 
     const style = {
-      height: `${this.props.height}px`,
-      lineHeight: `${this.props.height}px`
+      height: `${this.props.height}px`
     }
 
     return (

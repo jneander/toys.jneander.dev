@@ -9,7 +9,7 @@ export default class StudentCell extends PureComponent {
     return (
       <span
         aria-labelledby={`column-${column.id}-label`}
-        className={styles.Cell}
+        className={`${styles.Cell} ${styles.StudentCell}`}
         id={`row-${row.id}-label`}
         ref={this.props.focusableRef}
         role="rowheader"

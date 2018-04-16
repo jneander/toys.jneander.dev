@@ -6,8 +6,10 @@ import TabList, {TabPanel} from '@instructure/ui-tabs/lib/components/TabList'
 import Text from '@instructure/ui-elements/lib/components/Text'
 
 import Layout from '../../shared/components/Layout'
+import NotesCell from './cells/NotesCell'
 import StudentCell from './cells/StudentCell'
 import TextCell from './cells/TextCell'
+import NotesColumnHeader from './headers/NotesColumnHeader'
 import StudentColumnHeader from './headers/StudentColumnHeader'
 import TextColumnHeader from './headers/TextColumnHeader'
 import {columns, rows} from './data'
@@ -30,11 +32,14 @@ export default class DataGridV3 extends PureComponent {
           <div className={styles.Grid}>
             <DataGrid
               columns={columns}
-              headerHeight={36}
+              headerHeight={40}
               navigableHeaders
               renderCell={props => {
                 if (props.column.id === 'studentName') {
                   return <StudentCell {...props} />
+                }
+                if (props.column.id === 'notes') {
+                  return <NotesCell {...props} />
                 }
                 return <TextCell {...props} />
               }}
@@ -42,9 +47,12 @@ export default class DataGridV3 extends PureComponent {
                 if (props.column.id === 'studentName') {
                   return <StudentColumnHeader {...props} />
                 }
+                if (props.column.id === 'notes') {
+                  return <NotesColumnHeader {...props} />
+                }
                 return <TextColumnHeader {...props} />
               }}
-              rowHeight={32}
+              rowHeight={36}
               rows={rows}
             />
           </div>

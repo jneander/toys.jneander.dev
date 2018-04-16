@@ -220,7 +220,7 @@ export default class Grid extends PureComponent {
             {...this.props}
             activeLocation={this.state.activeLocation}
             bindActiveElement={this.bindActiveElement}
-            columns={this.props.columns.slice(0, 1)}
+            columns={this.props.columns.filter(column => column.frozen)}
             frozen
             onClick={this.handleGridClick}
           />
@@ -229,7 +229,7 @@ export default class Grid extends PureComponent {
             {...this.props}
             activeLocation={this.state.activeLocation}
             bindActiveElement={this.bindActiveElement}
-            columns={this.props.columns.slice(1)}
+            columns={this.props.columns.filter(column => !column.frozen)}
             onClick={this.handleGridClick}
           />
         </div>

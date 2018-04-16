@@ -6,8 +6,12 @@
   padding: 0 0.5em;
 }
 
+:local(.NotesColumnHeader) {
+  justify-content: center;
+}
+
 :local(.StudentColumnHeader) {
-  text-align: left;
+  justify-content: start;
 }
 
 :local(.TextColumnHeader) {

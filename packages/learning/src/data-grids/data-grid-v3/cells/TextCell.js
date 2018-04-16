@@ -9,7 +9,7 @@ export default class TextCell extends PureComponent {
     return (
       <span
         aria-labelledby={`row-${row.id}-label column-${column.id}-label`}
-        className={styles.Cell}
+        className={`${styles.Cell} ${styles.TextCell}`}
         ref={this.props.focusableRef}
         role="gridcell"
         tabIndex={this.props.tabIndex}

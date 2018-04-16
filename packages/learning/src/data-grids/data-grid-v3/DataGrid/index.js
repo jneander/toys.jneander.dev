@@ -8,7 +8,7 @@ import styles from './styles.css'
 export default class Grid extends PureComponent {
   static defaultProps = {
     navigableHeaders: false,
-    rowsPerPage: 5
+    rowsPerPage: 10
   }
 
   constructor(props) {
@@ -26,9 +26,7 @@ export default class Grid extends PureComponent {
         columnId: this.props.columns[0].id,
         region: this.props.navigableHeaders ? 'header' : 'body',
         rowId: this.props.navigableHeaders ? null : this.props.rows[0].id
-      },
-      visibleRowsEndIndex: this.props.rowsPerPage - 1,
-      visibleRowsStartIndex: 0
+      }
     }
   }
 
@@ -94,6 +92,23 @@ export default class Grid extends PureComponent {
         event.preventDefault()
         this.movePageDown()
         return
+      case KeyCodes.HOME:
+        event.preventDefault()
+        location = {
+          columnId: this.props.columns[0].id,
+          region: 'body',
+          rowId: this.props.rows[0].id
+        }
+        break
+      case KeyCodes.END:
+        event.preventDefault()
+        const {columns, rows} = this.props
+        location = {
+          columnId: columns[columns.length - 1].id,
+          region: 'body',
+          rowId: rows[rows.length - 1].id
+        }
+        break
       default:
         return
     }
@@ -107,34 +122,45 @@ export default class Grid extends PureComponent {
   movePageDown() {
     // go to next page
     const {rowsPerPage, rows} = this.props
-    let {visibleRowsEndIndex, visibleRowsStartIndex} = this.state
-    const maxEndIndex = rows.length - 1
+    const {activeLocation} = this.state
 
-    if (visibleRowsEndIndex < maxEndIndex) {
-      visibleRowsStartIndex = visibleRowsEndIndex + 1
-      visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
-      const rowId = this.props.rows[visibleRowsStartIndex].id
-      this.setActiveLocation(
-        {...this.state.activeLocation, region: 'body', rowId},
-        {visibleRowsEndIndex, visibleRowsStartIndex}
-      )
+    let nextLocation = activeLocation
+
+    if (activeLocation.region === 'header') {
+      const nextRow = rows[rowsPerPage - 1]
+      nextLocation = {columnId: activeLocation.columnId, region: 'body', rowId: nextRow.id}
+    } else {
+      const rowIndex = rows.findIndex(row => row.id === activeLocation.rowId)
+      const nextRowIndex = Math.min(rowIndex + rowsPerPage, rows.length - 1)
+
+      if (nextRowIndex > rowIndex) {
+        const nextRow = rows[nextRowIndex]
+        nextLocation = {columnId: activeLocation.columnId, region: 'body', rowId: nextRow.id}
+      }
+    }
+
+    if (nextLocation !== activeLocation) {
+      this.setActiveLocation(nextLocation)
     }
   }
 
   movePageUp() {
     // go to previous page
     const {rowsPerPage, rows} = this.props
-    let {visibleRowsEndIndex, visibleRowsStartIndex} = this.state
-    const maxEndIndex = rows.length - 1
+    const {activeLocation} = this.state
 
-    if (visibleRowsStartIndex > 0) {
-      visibleRowsStartIndex = Math.max(visibleRowsStartIndex - rowsPerPage, 0)
-      visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
-      const rowId = this.props.rows[visibleRowsEndIndex].id
-      this.setActiveLocation(
-        {...this.state.activeLocation, region: 'body', rowId},
-        {visibleRowsEndIndex, visibleRowsStartIndex}
-      )
+    if (activeLocation.region === 'header') {
+      return
+    }
+
+    let nextLocation = activeLocation
+    const rowIndex = rows.findIndex(row => row.id === activeLocation.rowId)
+    const nextRowIndex = Math.max(rowIndex - rowsPerPage, 0)
+
+    if (nextRowIndex < rowIndex) {
+      const nextRow = rows[nextRowIndex]
+      const nextLocation = {columnId: activeLocation.columnId, region: 'body', rowId: nextRow.id}
+      this.setActiveLocation(nextLocation)
     }
   }
 
@@ -143,18 +169,12 @@ export default class Grid extends PureComponent {
     const lastPage = Math.ceil(rows.length / rowsPerPage)
 
     if (page >= 0 && page < lastPage) {
-      const visibleRowsStartIndex = page * rowsPerPage
-      const maxEndIndex = rows.length - 1
-      const visibleRowsEndIndex = Math.min(visibleRowsStartIndex + rowsPerPage - 1, maxEndIndex)
-      const rowId = this.props.rows[visibleRowsStartIndex].id
-      this._setActiveLocation(
-        {...this.state.activeLocation, region: 'body', rowId},
-        {visibleRowsEndIndex, visibleRowsStartIndex}
-      )
+      const rowId = this.props.rows[page * rowsPerPage].id
+      this._setActiveLocation({...this.state.activeLocation, region: 'body', rowId})
     }
   }
 
-  _setActiveLocation(activeLocation, visibleRowIndices = null, stateCallback) {
+  _setActiveLocation(activeLocation, stateCallback) {
     const {columns, navigableHeaders, rows} = this.props
     const {columnId, region, rowId} = {...this.props.activeLocation, ...activeLocation}
 
@@ -174,33 +194,7 @@ export default class Grid extends PureComponent {
       return
     }
 
-    let visibleRowsEndIndex, visibleRowsStartIndex
-
-    if (visibleRowIndices) {
-      visibleRowsEndIndex = visibleRowIndices.visibleRowsEndIndex
-      visibleRowsStartIndex = visibleRowIndices.visibleRowsStartIndex
-    } else if (region === 'header') {
-      visibleRowsStartIndex = 0
-      visibleRowsEndIndex = this.props.rowsPerPage - 1
-    } else {
-      visibleRowsEndIndex = this.state.visibleRowsEndIndex
-      visibleRowsStartIndex = this.state.visibleRowsStartIndex
-
-      const perPageOffset = this.props.rowsPerPage - 1
-
-      if (rowIndex < visibleRowsStartIndex) {
-        visibleRowsStartIndex = rowIndex
-      } else if (rowIndex > visibleRowsStartIndex + perPageOffset) {
-        visibleRowsStartIndex = Math.max(rowIndex - perPageOffset, 0)
-      }
-
-      visibleRowsEndIndex = Math.min(
-        visibleRowsStartIndex + perPageOffset,
-        this.props.rows.length - 1
-      )
-    }
-
-    this.setState({activeLocation, visibleRowsEndIndex, visibleRowsStartIndex}, () => {
+    this.setState({activeLocation}, () => {
       if (this.props.onActiveLocationChange) {
         this.props.onActiveLocationChange(activeLocation)
       }
@@ -210,8 +204,8 @@ export default class Grid extends PureComponent {
     })
   }
 
-  setActiveLocation(activeLocation, visibleRowIndices = null) {
-    this._setActiveLocation(activeLocation, visibleRowIndices, () => {
+  setActiveLocation(activeLocation) {
+    this._setActiveLocation(activeLocation, () => {
       if (this.activeElement) {
         this.activeElement.focus()
       }

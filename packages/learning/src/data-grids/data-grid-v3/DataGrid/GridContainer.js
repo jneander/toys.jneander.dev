@@ -4,6 +4,7 @@ import {ScrollSyncPane} from 'react-scroll-sync'
 import Body from './Body'
 import Header from './Header'
 import styles from './styles.css'
+
 function getLocationFromEvent(event, self) {
   const rows = self.rowGroup.children
   let rowIndex = [].findIndex.call(rows, row => row.contains(event.target))

@@ -1,9 +1,5 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
-import Link from '@instructure/ui-elements/lib/components/Link'
-import TabList, {TabPanel} from '@instructure/ui-tabs/lib/components/TabList'
-import Text from '@instructure/ui-elements/lib/components/Text'
 
 import Layout from '../../shared/components/Layout'
 import NotesCell from './cells/NotesCell'

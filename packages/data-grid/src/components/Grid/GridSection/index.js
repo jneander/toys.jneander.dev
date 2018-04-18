@@ -1,8 +1,9 @@
 import React, {PureComponent} from 'react'
+import themeable from '@instructure/ui-themeable'
 import {ScrollSyncPane} from 'react-scroll-sync'
 
-import Body from './Body'
-import Header from './Header'
+import Body from '../Body'
+import Header from '../Header'
 import styles from './styles.css'
 
 function getLocationFromEvent(event, self) {
@@ -23,11 +24,11 @@ function getLocationFromEvent(event, self) {
   return {}
 }
 
-export default class GridContainer extends PureComponent {
+class GridSection extends PureComponent {
   render() {
     return (
       <div
-        className={this.props.frozen ? styles.GridContainerFrozen : styles.GridContainer}
+        className={this.props.frozen ? styles.GridSectionFrozen : styles.GridSection}
         role="grid"
       >
         <ScrollSyncPane>
@@ -57,3 +58,5 @@ export default class GridContainer extends PureComponent {
     )
   }
 }
+
+export default themeable(() => ({}), styles)(GridSection)

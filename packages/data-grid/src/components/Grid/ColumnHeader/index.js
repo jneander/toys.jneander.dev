@@ -1,8 +1,9 @@
 import React, {PureComponent} from 'react'
+import themeable from '@instructure/ui-themeable'
 
 import styles from './styles.css'
 
-export default class ColumnHeader extends PureComponent {
+class ColumnHeader extends PureComponent {
   render() {
     const style = {
       width: `${this.props.column.width}px`
@@ -20,3 +21,5 @@ export default class ColumnHeader extends PureComponent {
     )
   }
 }
+
+export default themeable(() => ({}), styles)(ColumnHeader)

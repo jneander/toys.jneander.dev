@@ -1,3 +1,3 @@
-import DataGrid from './components/Grid'
+import Grid from './components/Grid'
 
-export default DataGrid
+export default Grid

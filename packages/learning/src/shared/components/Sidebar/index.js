@@ -66,9 +66,7 @@ export default class Sidebar extends Component {
 
         <Container className={styles.GithubLink}>
           <Link href="https://github.com/jneander/jneander/tree/master/packages/learning">
-            <Text size="small">View on Github</Text>
-            {' '}
-            <IconGithub />
+            <Text size="small">View on Github</Text> <IconGithub />
           </Link>
         </Container>
       </Container>

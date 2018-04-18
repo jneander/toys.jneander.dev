@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
+import themeable from '@instructure/ui-themeable'
 
+import Row from '../Row'
 import styles from './styles.css'
-import Row from './Row'
 
 function getLocationFromEvent(event, self) {
   const rows = self.rowGroup.children
@@ -21,7 +22,7 @@ function getLocationFromEvent(event, self) {
   return {}
 }
 
-export default class Body extends Component {
+class Body extends Component {
   constructor(props) {
     super(props)
 
@@ -70,3 +71,5 @@ export default class Body extends Component {
     )
   }
 }
+
+export default themeable(() => ({}), styles)(Body)

@@ -38,11 +38,11 @@
     "@instructure/ui-themes": "^5.2.0",
     "@instructure/ui-themeable": "^5.2.0",
     "@instructure/ui-utils": "^5.2.0",
+    "@jneander/data-grid": "link:../data-grid",
     "@jneander/genetics": "^0.1.0",
     "normalize.css": "^8.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-measure": "^2.0.2",
     "react-scroll-sync": "^0.5.0"
   },
   "devDependencies": {

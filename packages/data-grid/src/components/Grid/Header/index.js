@@ -1,7 +1,8 @@
 import React, {PureComponent} from 'react'
+import themeable from '@instructure/ui-themeable'
 
+import ColumnHeader from '../ColumnHeader'
 import styles from './styles.css'
-import ColumnHeader from './ColumnHeader'
 
 function getLocationFromEvent(event, self) {
   const columnIndex = [].findIndex.call(self.gridRow.children, header =>
@@ -19,7 +20,7 @@ function getLocationFromEvent(event, self) {
   }
 }
 
-export default class Header extends PureComponent {
+class Header extends PureComponent {
   constructor(props) {
     super(props)
 
@@ -75,3 +76,5 @@ export default class Header extends PureComponent {
     )
   }
 }
+
+export default themeable(() => ({}), styles)(Header)

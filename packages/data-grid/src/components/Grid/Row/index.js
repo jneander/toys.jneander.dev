@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
+import themeable from '@instructure/ui-themeable'
 
 import styles from './styles.css'
-import Cell from './Cell'
+import Cell from '../Cell'
 
-export default class Row extends Component {
+class Row extends Component {
   shouldComponentUpdate(nextProps) {
     const {activeLocation: currentLocation} = this.props
     const {activeLocation: nextLocation} = nextProps
@@ -63,3 +64,5 @@ export default class Row extends Component {
     )
   }
 }
+
+export default themeable(() => ({}), styles)(Row)

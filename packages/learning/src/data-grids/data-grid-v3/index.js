@@ -1,9 +1,6 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
-import Link from '@instructure/ui-elements/lib/components/Link'
-import TabList, {TabPanel} from '@instructure/ui-tabs/lib/components/TabList'
-import Text from '@instructure/ui-elements/lib/components/Text'
+import DataGrid from '@jneander/data-grid'
 
 import Layout from '../../shared/components/Layout'
 import NotesCell from './cells/NotesCell'
@@ -13,7 +10,6 @@ import NotesColumnHeader from './headers/NotesColumnHeader'
 import StudentColumnHeader from './headers/StudentColumnHeader'
 import TextColumnHeader from './headers/TextColumnHeader'
 import {columns, rows} from './data'
-import DataGrid from './DataGrid'
 import styles from './styles.css'
 
 export default class DataGridV3 extends PureComponent {

@@ -1,8 +1,9 @@
 import React, {PureComponent} from 'react'
+import themeable from '@instructure/ui-themeable'
 
 import styles from './styles.css'
 
-export default class Cell extends PureComponent {
+class Cell extends PureComponent {
   render() {
     const style = {
       width: `${this.props.column.width}px`
@@ -20,3 +21,5 @@ export default class Cell extends PureComponent {
     )
   }
 }
+
+export default themeable(() => ({}), styles)(Cell)

@@ -1,11 +1,12 @@
 import React, {PureComponent} from 'react'
+import themeable from '@instructure/ui-themeable'
 import {ScrollSync, ScrollSyncPane} from 'react-scroll-sync'
 
-import KeyCodes from './KeyCodes'
-import GridContainer from './GridContainer'
+import KeyCodes from '../../utils/KeyCodes'
+import GridSection from './GridSection'
 import styles from './styles.css'
 
-export default class Grid extends PureComponent {
+class Grid extends PureComponent {
   static defaultProps = {
     navigableHeaders: false,
     rowsPerPage: 10
@@ -216,7 +217,7 @@ export default class Grid extends PureComponent {
     return (
       <ScrollSync>
         <div className={styles.Grid} onKeyDown={this.handleKeyDown}>
-          <GridContainer
+          <GridSection
             {...this.props}
             activeLocation={this.state.activeLocation}
             bindActiveElement={this.bindActiveElement}
@@ -225,7 +226,7 @@ export default class Grid extends PureComponent {
             onClick={this.handleGridClick}
           />
 
-          <GridContainer
+          <GridSection
             {...this.props}
             activeLocation={this.state.activeLocation}
             bindActiveElement={this.bindActiveElement}
@@ -237,3 +238,5 @@ export default class Grid extends PureComponent {
     )
   }
 }
+
+export default themeable(() => ({}), styles)(Grid)

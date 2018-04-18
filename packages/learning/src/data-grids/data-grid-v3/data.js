@@ -28,7 +28,12 @@ const assignmentColumns = []
 for (let i = 0; i < 24; i++) {
   const subject = SUBJECTS[i % 4]
   const unit = Math.floor(i / 4) + 1
-  assignmentColumns.push({frozen: false, id: `${subject}-${unit}`, name: `${subject} ${unit}`, width: 150})
+  assignmentColumns.push({
+    frozen: false,
+    id: `${subject}-${unit}`,
+    name: `${subject} ${unit}`,
+    width: 150
+  })
 }
 
 const rows = []

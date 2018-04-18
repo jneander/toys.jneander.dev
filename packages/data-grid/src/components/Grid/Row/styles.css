@@ -1,0 +1,17 @@
+.Row {
+  border-bottom: 1px solid #c7cdd1;
+  display: block;
+  white-space: nowrap;
+}
+
+.Row:last-child {
+  border-bottom: none;
+}
+
+.RowEven {
+  background: #fff;
+}
+
+.RowOdd {
+  background: #f5f5f5;
+}

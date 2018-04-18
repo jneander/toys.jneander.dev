@@ -1,0 +1,19 @@
+.Cell {
+  border-right: 1px solid #c7cdd1;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+}
+
+.Cell,
+.Cell > * {
+  outline: none;
+}
+
+.Cell:last-child {
+  border-right: none;
+}
+
+.CellActive {
+  background: #bae1f7;
+}

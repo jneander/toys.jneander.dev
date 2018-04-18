@@ -7,6 +7,7 @@
   "scripts": {
     "build": "build-lib",
     "build:production": "build-lib",
+    "build:watch": "build-lib --watch",
     "clean": "clean",
     "lint": "lint-code",
     "lint:fix": "lint-code --fix"
@@ -18,8 +19,8 @@
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@instructure/ui-themeable": "^4.7.1",
-    "react-measure": "1.4.7"
+    "@instructure/ui-themeable": "^5.2.0",
+    "react-scroll-sync": "^0.5.0"
   },
   "devDependencies": {
     "@jneander/dev-tools": "^0.0"

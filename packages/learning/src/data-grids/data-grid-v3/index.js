@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
+import DataGrid from '@jneander/data-grid'
 
 import Layout from '../../shared/components/Layout'
 import NotesCell from './cells/NotesCell'
@@ -9,7 +10,6 @@ import NotesColumnHeader from './headers/NotesColumnHeader'
 import StudentColumnHeader from './headers/StudentColumnHeader'
 import TextColumnHeader from './headers/TextColumnHeader'
 import {columns, rows} from './data'
-import DataGrid from './DataGrid'
 import styles from './styles.css'
 
 export default class DataGridV3 extends PureComponent {

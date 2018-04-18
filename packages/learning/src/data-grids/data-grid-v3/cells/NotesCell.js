@@ -2,8 +2,8 @@ import React, {PureComponent} from 'react'
 import Button from '@instructure/ui-buttons/lib/components/Button'
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
 import TextInput from '@instructure/ui-forms/lib/components/TextInput'
+import KeyCodes from '@jneander/data-grid/src/utils/KeyCodes'
 
-import KeyCodes from '../DataGrid/KeyCodes'
 import styles from './styles.css'
 
 function NotesInput(props) {

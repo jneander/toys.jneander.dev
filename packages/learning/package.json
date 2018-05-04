@@ -46,7 +46,7 @@
     "react-scroll-sync": "^0.5.0"
   },
   "devDependencies": {
-    "@jneander/dev-tools": "^0.0.12",
+    "@jneander/dev-tools": "^0.0.13",
     "chai": "^4.1.2",
     "npm-run-all": "^4.1.2",
     "sinon": "^4.4.1"

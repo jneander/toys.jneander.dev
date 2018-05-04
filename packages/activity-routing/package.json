@@ -30,6 +30,6 @@
     "url-pattern": "^1.0.3"
   },
   "devDependencies": {
-    "@jneander/dev-tools": "^0.0.12"
+    "@jneander/dev-tools": "^0.0.13"
   }
 }

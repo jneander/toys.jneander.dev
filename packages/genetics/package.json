@@ -19,7 +19,7 @@
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@jneander/async-utils": "^0.0.2"
+    "@jneander/async-utils": "^0.0.4"
   },
   "devDependencies": {
     "@jneander/dev-tools": "^0.0.12"

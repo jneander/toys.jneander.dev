@@ -11,7 +11,7 @@
     "@babel/preset-react": "7.0.0-beta.46",
     "@babel/preset-stage-3": "7.0.0-beta.46",
     "@instructure/babel-plugin-transform-class-display-name": "^5.5.0",
-    "@jneander/babel-plugin-themeable-styles": "^0.0.2"
+    "@jneander/babel-plugin-themeable-styles": "^0.0.3"
   },
   "publishConfig": {
     "access": "public"

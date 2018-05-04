@@ -84,6 +84,11 @@ module.exports = function(appConfig) {
               loader: 'url-loader?limit=10000&name=img/[hash:12]/[ext]'
             }
           ]
+        },
+        {
+          exclude: /node_modules/,
+          test: /\.svg$/,
+          use: 'svg-inline-loader'
         }
       ]
     },

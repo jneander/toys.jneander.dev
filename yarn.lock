@@ -808,12 +808,6 @@
     object.pick "^1.2.0"
     prop-types "^15.5.10"
 
-"@jneander/data-grid@link:packages/data-grid":
-  version "0.1.0"
-  dependencies:
-    "@instructure/ui-themeable" "^5.2.0"
-    react-scroll-sync "^0.5.0"
-
 "@jneander/dev-tools@^0.0.10":
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/@jneander/dev-tools/-/dev-tools-0.0.10.tgz#d5007b19b3bb2242ff407483463ced70ca7f5925"

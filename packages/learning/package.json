@@ -38,7 +38,7 @@
     "@instructure/ui-themes": "^5.2.0",
     "@instructure/ui-themeable": "^5.2.0",
     "@instructure/ui-utils": "^5.2.0",
-    "@jneander/data-grid": "link:../data-grid",
+    "@jneander/data-grid": "^0.1.0",
     "@jneander/genetics": "^0.1.0",
     "normalize.css": "^8.0.0",
     "react": "^15.6.1",

@@ -26,16 +26,16 @@
   },
   "homepage": "https://github.com/jneander/jneander",
   "dependencies": {
-    "@instructure/ui-container": "^5.0.0",
-    "@instructure/ui-elements": "^5.0.0",
-    "@instructure/ui-themes": "^5.0.0",
-    "@instructure/ui-themeable": "^5.0.0",
+    "@instructure/ui-container": "^5.5.0",
+    "@instructure/ui-elements": "^5.5.0",
+    "@instructure/ui-themes": "^5.5.0",
+    "@instructure/ui-themeable": "^5.5.0",
     "normalize.css": "^8.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
   },
   "devDependencies": {
-    "@jneander/dev-tools": "^0.0",
+    "@jneander/dev-tools": "^0.0.13",
     "chai": "^4.1.2",
     "npm-run-all": "^4.1.2",
     "sinon": "^4.4.1"

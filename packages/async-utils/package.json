@@ -19,7 +19,7 @@
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "devDependencies": {
-    "@jneander/dev-tools": "^0.0.10"
+    "@jneander/dev-tools": "^0.0.12"
   },
   "publishConfig": {
     "access": "public"

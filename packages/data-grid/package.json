@@ -19,15 +19,17 @@
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@instructure/ui-themeable": "^5.2.0",
+    "@instructure/ui-themeable": "^5.5.0",
     "react-scroll-sync": "^0.5.0"
   },
   "devDependencies": {
-    "@jneander/dev-tools": "^0.0"
+    "@jneander/dev-tools": "^0.0.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   },
   "peerDependencies": {
-    "react": ">=15.6.1",
-    "react-dom": ">=15.6.1"
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   },
   "publishConfig": {
     "access": "public"

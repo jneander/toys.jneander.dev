@@ -6,14 +6,12 @@
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@babel/preset-env": "7.0.0-beta.40",
-    "@babel/preset-react": "7.0.0-beta.40",
-    "@babel/preset-stage-3": "7.0.0-beta.40",
-    "@instructure/babel-plugin-transform-class-display-name": "^4.7.1",
+    "@babel/core": "7.0.0-beta.46",
+    "@babel/preset-env": "7.0.0-beta.46",
+    "@babel/preset-react": "7.0.0-beta.46",
+    "@babel/preset-stage-3": "7.0.0-beta.46",
+    "@instructure/babel-plugin-transform-class-display-name": "^5.5.0",
     "@jneander/babel-plugin-themeable-styles": "^0.0.2"
-  },
-  "peerDependencies": {
-    "@babel/core": "7.0.0-beta.40"
   },
   "publishConfig": {
     "access": "public"

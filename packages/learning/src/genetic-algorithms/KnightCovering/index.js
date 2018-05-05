@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import ExampleControls from '../shared/ExampleControls'
 import State from '../shared/State'
@@ -58,9 +58,9 @@ export default class KnightCovering extends PureComponent {
           margin="small 0 0 0"
         />
 
-        <Container as="div" margin="medium 0 0 0">
+        <View as="div" margin="medium 0 0 0">
           <Board chromosome={this.state.current} size={this.state.boardSize} />
-        </Container>
+        </View>
       </div>
     )
   }

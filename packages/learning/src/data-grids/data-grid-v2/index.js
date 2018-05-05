@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
 import Text from '@instructure/ui-elements/lib/components/Text'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import Layout from '../../shared/components/Layout'
 import students from '../shared-data-grid/students'
@@ -49,12 +49,12 @@ export default class DataGridV1 extends PureComponent {
   render() {
     return (
       <Layout>
-        <Container margin="medium" display="block">
-          <Container as="header" margin="0 0 medium 0">
+        <View margin="medium" display="block">
+          <View as="header" margin="0 0 medium 0">
             <Heading level="h2">Data Grid v2</Heading>
-          </Container>
+          </View>
 
-          <Container as="div" margin="medium 0 0 0">
+          <View as="div" margin="medium 0 0 0">
             <Heading level="h3">Example 1: Minimal Data Grid</Heading>
 
             <Location
@@ -63,7 +63,7 @@ export default class DataGridV1 extends PureComponent {
               rows={this.state.rows}
             />
 
-            <Container as="div" margin="medium 0 0 0">
+            <View as="div" margin="medium 0 0 0">
               <DataGrid
                 columns={this.state.columns}
                 navigableHeaders
@@ -85,10 +85,10 @@ export default class DataGridV1 extends PureComponent {
                 rows={this.state.rows}
                 rowsPerPage={10}
               />
-            </Container>
-          </Container>
+            </View>
+          </View>
 
-          <Container as="div" margin="medium 0 0 0">
+          <View as="div" margin="medium 0 0 0">
             <Heading level="h3">Example 2: Data Grid with Widgets</Heading>
 
             <Location
@@ -97,7 +97,7 @@ export default class DataGridV1 extends PureComponent {
               rows={this.state.rows}
             />
 
-            <Container as="div" margin="medium 0 0 0">
+            <View as="div" margin="medium 0 0 0">
               <DataGrid
                 columns={this.state.columns}
                 navigableHeaders
@@ -125,9 +125,9 @@ export default class DataGridV1 extends PureComponent {
                 rows={this.state.rows}
                 rowsPerPage={10}
               />
-            </Container>
-          </Container>
-        </Container>
+            </View>
+          </View>
+        </View>
       </Layout>
     )
   }

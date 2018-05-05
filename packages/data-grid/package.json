@@ -19,7 +19,7 @@
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@instructure/ui-themeable": "^5.5.0",
+    "@instructure/ui-themeable": "^5.6.0",
     "react-scroll-sync": "^0.5.0"
   },
   "devDependencies": {

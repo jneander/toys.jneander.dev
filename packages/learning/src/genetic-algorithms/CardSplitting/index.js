@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import ChromosomeTable from '../shared/ChromosomeTable'
 import ExampleControls from '../shared/ExampleControls'
@@ -46,11 +46,11 @@ export default class CardSplitting extends PureComponent {
           margin="small 0 0 0"
         />
 
-        <Container as="div" margin="medium 0 0 0">
+        <View as="div" margin="medium 0 0 0">
           {this.state.current && <Cards label="Current" chromosome={this.state.current} />}
 
           {this.state.best && <Cards label="Best" chromosome={this.state.best} />}
-        </Container>
+        </View>
       </div>
     )
   }

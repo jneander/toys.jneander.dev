@@ -23,7 +23,7 @@ export default class Cards extends PureComponent {
     const productGenes = this.props.chromosome.genes.slice(5, 10)
 
     return (
-      <div className={styles.Container}>
+      <div className={styles.View}>
         <Heading level="h3" margin="0 0 small 0">
           {this.props.label}
         </Heading>

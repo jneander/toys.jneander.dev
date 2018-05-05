@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
 import NumberInput from '@instructure/ui-forms/lib/components/NumberInput'
+import View from '@instructure/ui-layout/lib/components/View'
 
 export default class Configuration extends PureComponent {
   constructor(props) {
@@ -28,7 +28,7 @@ export default class Configuration extends PureComponent {
 
   render() {
     return (
-      <Container as="div" margin={this.props.margin}>
+      <View as="div" margin={this.props.margin}>
         <NumberInput
           disabled={this.props.disabled}
           inline
@@ -38,7 +38,7 @@ export default class Configuration extends PureComponent {
           onChange={this.onBoardSizeChange}
           value={this.state.boardSize}
         />
-      </Container>
+      </View>
     )
   }
 }

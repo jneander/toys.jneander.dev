@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import ScreenreaderReport from '../../shared/components/ScreenreaderReport'
 import createGridData from '../../shared/example-data/createGridData'
@@ -19,7 +19,7 @@ export default class TableWithRowHeaders extends PureComponent {
   render() {
     return (
       <div>
-        <Container as="div" margin="0 0 medium">
+        <View as="div" margin="0 0 medium">
           <table>
             <caption>Example Data</caption>
 
@@ -45,11 +45,11 @@ export default class TableWithRowHeaders extends PureComponent {
               ))}
             </tbody>
           </table>
-        </Container>
+        </View>
 
-        <Container as="div">
+        <View as="div">
           <ScreenreaderReport data={screenreaderOutput} />
-        </Container>
+        </View>
       </div>
     )
   }

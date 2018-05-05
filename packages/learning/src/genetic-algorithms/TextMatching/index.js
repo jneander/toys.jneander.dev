@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import ChromosomeTable from '../shared/ChromosomeTable'
 import ExampleControls from '../shared/ExampleControls'
@@ -39,7 +39,7 @@ export default class TextMatching extends PureComponent {
           recordAllIterations={this.state.allIterations}
         />
 
-        <Container as="div" margin="medium 0 0 0">
+        <View as="div" margin="medium 0 0 0">
           <ChromosomeTable
             best={this.state.best}
             current={this.state.current}
@@ -47,7 +47,7 @@ export default class TextMatching extends PureComponent {
             formatGenes={genes => genes.join('')}
             target={this.state.target}
           />
-        </Container>
+        </View>
       </div>
     )
   }

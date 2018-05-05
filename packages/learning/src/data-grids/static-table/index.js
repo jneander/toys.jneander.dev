@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import Checkbox from '@instructure/ui-forms/lib/components/Checkbox'
-import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import Layout from '../../shared/components/Layout'
 import TableWithoutRowHeaders from './TableWithoutRowHeaders'
@@ -27,12 +27,12 @@ export default class StaticTable extends Component {
 
     return (
       <Layout>
-        <Container as="div" padding="medium">
-          <Container as="header" margin="0 0 medium 0">
+        <View as="div" padding="medium">
+          <View as="header" margin="0 0 medium 0">
             <Heading level="h2">Static Table</Heading>
-          </Container>
+          </View>
 
-          <Container as="div" margin="0 0 medium 0">
+          <View as="div" margin="0 0 medium 0">
             <Checkbox
               inline
               label="Row Headers"
@@ -40,10 +40,10 @@ export default class StaticTable extends Component {
               size="small"
               variant="toggle"
             />
-          </Container>
+          </View>
 
           {this.state.includeRowHeaders ? <TableWithRowHeaders /> : <TableWithoutRowHeaders />}
-        </Container>
+        </View>
       </Layout>
     )
   }

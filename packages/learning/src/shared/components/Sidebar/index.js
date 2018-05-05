@@ -1,24 +1,24 @@
 import React, {Component} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
 import IconGithub from '@instructure/ui-icons/lib/Solid/IconGithub'
 import Link from '@instructure/ui-elements/lib/components/Link'
 import List, {ListItem} from '@instructure/ui-elements/lib/components/List'
 import Text from '@instructure/ui-elements/lib/components/Text'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import styles from './styles.css'
 
 export default class Sidebar extends Component {
   render() {
     return (
-      <Container as="nav" className={styles.Sidebar} padding="medium">
-        <Container as="header">
+      <View as="nav" className={styles.Sidebar} padding="medium">
+        <View as="header">
           <Heading level="h1">
             <Link href="/">Learning</Link>
           </Heading>
-        </Container>
+        </View>
 
-        <Container as="div" className={styles.Nav} margin="medium 0">
+        <View as="div" className={styles.Nav} margin="medium 0">
           <Text id="data-grids-label">Data Grids</Text>
 
           <List aria-labelledby="data-grids-label" margin="xx-small 0 small 0" variant="unstyled">
@@ -62,14 +62,14 @@ export default class Sidebar extends Component {
               <Link href="/genetic-algorithms">Genetic Algorithms</Link>
             </ListItem>
           </List>
-        </Container>
+        </View>
 
-        <Container className={styles.GithubLink}>
+        <View className={styles.GithubLink}>
           <Link href="https://github.com/jneander/jneander/tree/master/packages/learning">
             <Text size="small">View on Github</Text> <IconGithub />
           </Link>
-        </Container>
-      </Container>
+        </View>
+      </View>
     )
   }
 }

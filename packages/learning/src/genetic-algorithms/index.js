@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
 import Select from '@instructure/ui-forms/lib/components/Select'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import Layout from '../shared/components/Layout'
 import CardSplitting from './CardSplitting'
@@ -40,11 +40,11 @@ export default class GeneticAlgorithms extends Component {
 
     return (
       <Layout page="geneticAlgorithms">
-        <Container as="header" margin="medium medium 0 medium">
+        <View as="header" margin="medium medium 0 medium">
           <Heading level="h2">Genetic Algorithms</Heading>
-        </Container>
+        </View>
 
-        <Container as="div" padding="medium medium 0 medium">
+        <View as="div" padding="medium medium 0 medium">
           <Select
             inline
             label="Examples"
@@ -59,11 +59,11 @@ export default class GeneticAlgorithms extends Component {
               </option>
             ))}
           </Select>
-        </Container>
+        </View>
 
-        <Container as="div" padding="medium">
+        <View as="div" padding="medium">
           <Example.component />
-        </Container>
+        </View>
       </Layout>
     )
   }

@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
 import Heading from '@instructure/ui-elements/lib/components/Heading'
 import Link from '@instructure/ui-elements/lib/components/Link'
 import Text from '@instructure/ui-elements/lib/components/Text'
+import View from '@instructure/ui-layout/lib/components/View'
 
 import Layout from '../../shared/components/Layout'
 import MinimalDataGrid from './MinimalDataGrid'
@@ -22,34 +22,34 @@ export default class AriaDataTables extends PureComponent {
   render() {
     return (
       <Layout>
-        <Container margin="medium" display="block">
-          <Container as="header" margin="0 0 medium 0">
+        <View margin="medium" display="block">
+          <View as="header" margin="0 0 medium 0">
             <Heading level="h2">WAI Data Tables</Heading>
-          </Container>
+          </View>
 
-          <Container as="div" margin="medium 0 0 0">
+          <View as="div" margin="medium 0 0 0">
             <Heading level="h3">Example 1: Minimal Data Grid</Heading>
 
             <div className={styles.ExampleContainer}>
               <MinimalDataGrid />
             </div>
-          </Container>
+          </View>
 
-          <Container as="div" margin="medium 0 0 0">
+          <View as="div" margin="medium 0 0 0">
             <Heading level="h3">Example 2: Sortable Data Grid With Editable Cells</Heading>
 
             <div className={styles.ExampleContainer}>
               <SortableDataGrid />
             </div>
-          </Container>
+          </View>
 
-          <Container as="div" margin="medium 0 0 0">
+          <View as="div" margin="medium 0 0 0">
             <Heading level="h3">Example 3: Scrollable Data Grid With Column Hiding</Heading>
 
             <div className={styles.ExampleContainer}>
               <ScrollableDataGrid />
             </div>
-          </Container>
+          </View>
 
           <Text>
             <p>
@@ -63,7 +63,7 @@ export default class AriaDataTables extends PureComponent {
               grid can be accessible.
             </p>
           </Text>
-        </Container>
+        </View>
       </Layout>
     )
   }

@@ -4,9 +4,9 @@ import IconPlay from '@instructure/ui-icons/lib/Solid/IconPlay'
 import IconRefresh from '@instructure/ui-icons/lib/Solid/IconRefresh'
 import Button from '@instructure/ui-buttons/lib/components/Button'
 import Checkbox from '@instructure/ui-forms/lib/components/Checkbox'
-import Container from '@instructure/ui-container/lib/components/Container'
 import RangeInput from '@instructure/ui-forms/lib/components/RangeInput'
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
+import View from '@instructure/ui-layout/lib/components/View'
 
 export default class ExampleControls extends PureComponent {
   static defaultProps = {
@@ -47,8 +47,8 @@ export default class ExampleControls extends PureComponent {
 
   render() {
     return (
-      <Container as="div">
-        <Container as="div">
+      <View as="div">
+        <View as="div">
           <Button key="refresh" margin="0 x-small 0 0" onClick={this.refresh}>
             <IconRefresh title="Refresh" />
             Refresh
@@ -75,10 +75,10 @@ export default class ExampleControls extends PureComponent {
             size="small"
             variant="toggle"
           />
-        </Container>
+        </View>
 
         {this.props.recordAllIterations && (
-          <Container as="div" margin="medium 0">
+          <View as="div" margin="medium 0">
             <RangeInput
               disabled={this.props.playing}
               displayValue={false}
@@ -88,9 +88,9 @@ export default class ExampleControls extends PureComponent {
               onChange={this.onRangeChange}
               value={this.props.rangePosition}
             />
-          </Container>
+          </View>
         )}
-      </Container>
+      </View>
     )
   }
 }

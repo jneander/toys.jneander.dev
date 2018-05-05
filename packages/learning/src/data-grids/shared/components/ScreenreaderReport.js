@@ -1,10 +1,10 @@
 import React from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
 import Table from '@instructure/ui-elements/lib/components/Table'
+import View from '@instructure/ui-layout/lib/components/View'
 
 export default function ScreenreaderReport(props) {
   return (
-    <Table caption={<Container padding="small">Screenreader Output</Container>}>
+    <Table caption={<View padding="small">Screenreader Output</View>}>
       <thead>
         <tr>
           <th>Action</th>

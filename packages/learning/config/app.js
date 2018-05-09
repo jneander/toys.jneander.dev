@@ -19,6 +19,11 @@ module.exports = configureApp({
           sourcePath: 'aria-layout-grids'
         },
         {
+          name: 'data-grid-v0',
+          outputPath: 'data-grid-v0',
+          sourcePath: 'data-grid-v0'
+        },
+        {
           name: 'data-grid-v1',
           outputPath: 'data-grid-v1',
           sourcePath: 'data-grid-v1'

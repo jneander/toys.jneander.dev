@@ -39,6 +39,11 @@ module.exports = configureApp({
           sourcePath: 'frozen-grid-v1'
         },
         {
+          name: 'nine-patch',
+          outputPath: 'nine-patch',
+          sourcePath: 'nine-patch'
+        },
+        {
           name: 'static-grid',
           outputPath: 'static-grid',
           sourcePath: 'static-grid'

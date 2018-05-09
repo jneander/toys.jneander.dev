@@ -1,0 +1,50 @@
+:local(.Cell) {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  padding: 0 0.5em;
+}
+
+:local(.StudentCell) {
+  justify-content: start;
+}
+
+:local(.NotesCell) {
+  justify-content: center;
+}
+
+:local(.NotesEditButton) {
+  color: #360;
+  display: block;
+  height: 1rem;
+  position: relative;
+}
+
+:local(.NotesEditButton:hover,)
+:local(.NotesEditButton:focus) {
+  color: black;
+}
+
+:local(.NotesEditButton:hover::after),
+:local(.NotesEditButton:focus::after) {
+  opacity: 1;
+}
+
+:local(.NotesEditButton::after) {
+  background-image: url('./img/pencil-icon.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 44px;
+  content: ' ';
+  height: 17px;
+  opacity: 0.6;
+  position: absolute;
+  right: -24px;
+  top: 0px;
+  width: 20px;
+}
+
+:local(.TextCell) {
+  justify-content: center;
+}

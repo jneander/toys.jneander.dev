@@ -1,0 +1,17 @@
+:local(.Row) {
+  border-bottom: 1px solid var(--borderColor);
+  display: block;
+  white-space: nowrap;
+}
+
+:local(.Row:last-child) {
+  border-bottom: none;
+}
+
+:local(.RowEven) {
+  background: #fff;
+}
+
+:local(.RowOdd) {
+  background: #f5f5f5;
+}

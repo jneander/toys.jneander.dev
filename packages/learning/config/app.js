@@ -54,6 +54,11 @@ module.exports = configureApp({
           sourcePath: 'nine-patch-v2'
         },
         {
+          name: 'nine-patch-v3',
+          outputPath: 'nine-patch-v3',
+          sourcePath: 'nine-patch-v3'
+        },
+        {
           name: 'static-grid',
           outputPath: 'static-grid',
           sourcePath: 'static-grid'

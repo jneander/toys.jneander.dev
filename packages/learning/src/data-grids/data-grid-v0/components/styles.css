@@ -1,0 +1,43 @@
+:local(.Grid) {
+  border: 1px solid rgb(255,105,105);
+  flex: 1;
+  height: 400px;
+}
+
+:local(.GridHeader) {
+  background-color: rgb(255,255,255);
+}
+
+:local(.GridBody) {
+  background: repeating-linear-gradient(
+    0deg,
+    rgb(245,205,205),
+    rgb(245,205,205) 36px,
+    rgb(255,255,255) 36px,
+    rgb(255,255,255) 72px
+  );
+}
+
+:local(.HeaderCell) {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+:local(.RowCell) {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+:local(.Row--even) {
+  background-color: rgb(205,205,245);
+}
+
+:local(.Row--odd) {
+  background-color: rgb(255,255,255);
+}

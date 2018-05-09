@@ -1,8 +1,8 @@
 {
   "name": "jneander",
   "engines": {
-    "node": ">=8.10.0",
-    "yarn": ">=1.6.0"
+    "node": "8.10.0",
+    "yarn": "1.6.0"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --reject-cycles",

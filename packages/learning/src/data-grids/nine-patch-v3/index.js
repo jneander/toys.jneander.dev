@@ -10,7 +10,7 @@ export default class NinePatchExample extends PureComponent {
     return (
       <Layout>
         <div className={styles.Root}>
-          <Heading level="h2">9-Patch</Heading>
+          <Heading level="h2">9-Patch v3</Heading>
 
           <div className={styles.ExampleContainer}>
             <NinePatch sectionHeights={[100, 300, 100]} sectionWidths={[200, 1000, 200]} />

@@ -19,6 +19,11 @@ module.exports = configureApp({
           sourcePath: 'aria-layout-grids'
         },
         {
+          name: 'data-grid-v0',
+          outputPath: 'data-grid-v0',
+          sourcePath: 'data-grid-v0'
+        },
+        {
           name: 'data-grid-v1',
           outputPath: 'data-grid-v1',
           sourcePath: 'data-grid-v1'
@@ -34,14 +39,24 @@ module.exports = configureApp({
           sourcePath: 'data-grid-v3'
         },
         {
+          name: 'data-grid-v4',
+          outputPath: 'data-grid-v4',
+          sourcePath: 'data-grid-v4'
+        },
+        {
           name: 'frozen-grid-v1',
           outputPath: 'frozen-grid-v1',
           sourcePath: 'frozen-grid-v1'
         },
         {
-          name: 'nine-patch',
-          outputPath: 'nine-patch',
-          sourcePath: 'nine-patch'
+          name: 'nine-patch-v2',
+          outputPath: 'nine-patch-v2',
+          sourcePath: 'nine-patch-v2'
+        },
+        {
+          name: 'nine-patch-v3',
+          outputPath: 'nine-patch-v3',
+          sourcePath: 'nine-patch-v3'
         },
         {
           name: 'static-grid',

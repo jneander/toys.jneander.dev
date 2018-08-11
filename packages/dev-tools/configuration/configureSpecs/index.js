@@ -1,7 +1,5 @@
 const path = require('path')
 
-const VirtualModuleWebpackPlugin = require('virtual-module-webpack-plugin')
-
 const {getEnv} = require('../../utils/cli')
 const configureWebpack = require('./configureWebpack')
 

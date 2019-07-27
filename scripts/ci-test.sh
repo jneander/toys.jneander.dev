@@ -1,3 +1,7 @@
+#!/usr/bin/env sh
+
 yarn install
-yarn bootstrap
+yarn clean
+yarn build:production
+yarn clean
 yarn test

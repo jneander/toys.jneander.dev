@@ -1,7 +1,0 @@
-:local(.StudentColumnHeader) {
-  text-align: left;
-}
-
-:local(.TextColumnHeader) {
-  text-align: center;
-}

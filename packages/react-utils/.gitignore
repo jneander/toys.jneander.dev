@@ -1,6 +1,0 @@
-# Build Directories
-lib/
-es/
-
-# Caches
-.babel-cache/

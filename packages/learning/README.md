@@ -1,3 +1,0 @@
-# @jneander/learning
-
-Learning Platform

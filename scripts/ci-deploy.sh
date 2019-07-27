@@ -1,5 +1,6 @@
+#!/usr/bin/env sh
+
+./ci-setup.sh
 yarn install
-yarn bootstrap
-yarn clean:all
-yarn build:production:all
-yarn deploy:all
+yarn clean
+yarn build:production

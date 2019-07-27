@@ -1,3 +1,0 @@
-# @jneander/sandbox
-
-Development Sandbox

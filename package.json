@@ -1,51 +1,53 @@
 {
-  "name": "jneander",
+  "name": "cs.jneander.com",
   "engines": {
-    "node": "8.10.0",
-    "yarn": "1.7.0"
+    "node": "^10.15.3",
+    "yarn": "^1.15.2"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap --reject-cycles",
-    "build": "lerna run build --stream --scope",
-    "build:all": "lerna run build --stream",
-    "build:production": "lerna run build:production --stream --scope",
-    "build:production:all": "lerna run build:production --stream",
-    "build:watch": "lerna run build:watch --stream --scope",
-    "clean": "lerna run clean --scope",
-    "clean:all": "lerna run clean --stream",
-    "clean:modules": "lerna clean --yes",
-    "deploy": "lerna run deploy --stream --scope",
-    "deploy:all": "lerna run deploy --stream",
-    "format": "lerna run format --stream --scope",
-    "format:all": "lerna run format --stream",
-    "lint": "lerna run lint --stream --scope",
-    "lint:all": "lerna run lint --stream",
-    "lint:fix": "lerna run lint:fix --stream --scope",
-    "lint:fix:all": "lerna run lint:fix --stream",
-    "publish:all": "lerna publish",
-    "publish:list": "list-module-files --pkg",
-    "publish:one": "lerna publish --skip-git --force-publish=* --access=public --scope",
-    "start:watch": "lerna run start:watch --stream --scope",
-    "test": "yarn test:all",
-    "test:all": "lerna run test --stream --concurrency 1",
-    "test:one": "lerna run test --stream --scope",
-    "test:watch": "lerna run test:watch --stream --scope"
+    "build": "NODE_ENV=development build-app --config ./config/app.js",
+    "build:production": "NODE_ENV=production build-app --config ./config/app.js",
+    "build:watch": "NODE_ENV=development build-app --config ./config/app.js --watch",
+    "clean": "rimraf __build__",
+    "format": "format-code",
+    "lint": "lint-code",
+    "lint:fix": "lint-code --fix",
+    "start:watch": "NODE_ENV=development build-app --config ./config/app.js --watch --serve",
+    "test": "NODE_ENV=test run-specs --config config/specs.js",
+    "test:watch": "NODE_ENV=test run-specs --config config/specs.js --watch"
   },
-  "version": "0.0.1",
-  "description": "All @jneander projects in one place",
-  "main": "index.js",
+  "version": "1.0.0",
+  "description": "Projects for Learning CS Topics",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jneander/jneander"
+    "url": "https://github.com/jneander/cs.jneander.com"
   },
   "author": "Jeremy Neander <jeremy.neander@gmail.com>",
   "license": "MIT",
   "private": true,
-  "devDependencies": {
-    "lerna": "2.9.0",
-    "npm-run-all": "^4.1.2"
+  "dependencies": {
+    "@instructure/ui-a11y": "^5.6.0",
+    "@instructure/ui-buttons": "^5.6.0",
+    "@instructure/ui-elements": "^5.6.0",
+    "@instructure/ui-forms": "^5.6.0",
+    "@instructure/ui-i18n": "^5.6.0",
+    "@instructure/ui-icons": "^5.6.0",
+    "@instructure/ui-layout": "^5.6.0",
+    "@instructure/ui-menu": "^5.6.0",
+    "@instructure/ui-pagination": "^5.6.0",
+    "@instructure/ui-tabs": "^5.6.0",
+    "@instructure/ui-themeable": "^5.6.0",
+    "@instructure/ui-themes": "^5.6.0",
+    "@instructure/ui-utils": "^5.6.0",
+    "@jneander/genetics": "^0.1.0",
+    "normalize.css": "^8.0.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   },
-  "workspaces": [
-    "packages/*"
-  ]
+  "devDependencies": {
+    "@jneander/dev-tools": "^0.0.13",
+    "chai": "^4.1.2",
+    "npm-run-all": "^4.1.2",
+    "sinon": "^4.4.1"
+  }
 }

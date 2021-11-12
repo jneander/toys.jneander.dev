@@ -1,0 +1,31 @@
+.ExampleControlsContainer > *:not(:first-child) {
+  margin-block-start: var(--spacing-medium);
+}
+
+.ExampleControlsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.ChromosomeTable {
+  border-collapse: collapse;
+}
+
+.ChromosomeTable caption {
+  text-align: start;
+}
+
+.ChromosomeTable th,
+.ChromosomeTable td {
+  padding: var(--spacing-medium);
+}
+
+.ChromosomeTable tbody th,
+.ChromosomeTable tbody td {
+  border-block-start: 1px solid var(--grey-dark, black);
+}
+
+.ChromosomeTable tbody tr > *:first-child {
+  text-align: start;
+}

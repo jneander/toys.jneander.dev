@@ -1,57 +1,49 @@
-import React, {PureComponent} from 'react'
-import View from '@instructure/ui-layout/lib/components/View'
+import {useEffect, useMemo} from 'react'
 
-import ChromosomeTable from '../shared/ChromosomeTable'
+import {useStore} from '../../shared/state'
 import ExampleControls from '../shared/ExampleControls'
-import State from '../shared/State'
 import Cards from './Cards'
 import Controller from './Controller'
 import Metrics from './Metrics'
 
-export default class CardSplitting extends PureComponent {
-  constructor(props) {
-    super(props)
+import styles from './styles.module.css'
 
-    this.controller = new Controller(new State(this))
-    this.state = this.controller.getInitialState()
+export default function CardSplitting() {
+  const controller = useMemo(() => {
+    return new Controller()
+  }, [])
 
-    this.onPositionChange = this.onPositionChange.bind(this)
+  const state = useStore(controller.store)
+
+  useEffect(() => {
+    controller.initialize()
+  }, [controller])
+
+  function handlePositionChange(position) {
+    controller.setPlaybackPosition(position)
   }
 
-  componentWillMount() {
-    this.controller.initialize()
-  }
+  return (
+    <div className={styles.Container}>
+      <ExampleControls
+        onPause={controller.stop}
+        onPositionChange={handlePositionChange}
+        onRefresh={controller.randomizeTarget}
+        onStart={controller.start}
+        onSetRecordAllIterations={controller.setRecordAllIterations}
+        playing={state.isRunning}
+        rangePosition={state.playbackPosition}
+        rangePositionCount={state.iterationCount}
+        recordAllIterations={state.allIterations}
+      />
 
-  onPositionChange(position) {
-    this.controller.setPlaybackPosition(position)
-  }
+      <Metrics iteration={state.current?.iteration ?? 0} margin="small 0 0 0" />
 
-  render() {
-    return (
-      <div>
-        <ExampleControls
-          onPause={this.controller.stop}
-          onPositionChange={this.onPositionChange}
-          onRefresh={this.controller.randomizeTarget}
-          onStart={this.controller.start}
-          onSetRecordAllIterations={this.controller.setRecordAllIterations}
-          playing={this.state.isRunning}
-          rangePosition={this.state.playbackPosition}
-          rangePositionCount={this.state.iterationCount}
-          recordAllIterations={this.state.allIterations}
-        />
+      <div className={styles.Dunno}>
+        {state.current && <Cards label="Current" chromosome={state.current} />}
 
-        <Metrics
-          iteration={this.state.current ? this.state.current.iteration : 0}
-          margin="small 0 0 0"
-        />
-
-        <View as="div" margin="medium 0 0 0">
-          {this.state.current && <Cards label="Current" chromosome={this.state.current} />}
-
-          {this.state.best && <Cards label="Best" chromosome={this.state.best} />}
-        </View>
+        {state.best && <Cards label="Best" chromosome={state.best} />}
       </div>
-    )
-  }
+    </div>
+  )
 }

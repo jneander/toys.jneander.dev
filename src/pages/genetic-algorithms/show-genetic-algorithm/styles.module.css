@@ -1,0 +1,8 @@
+.Container > *:not(:first-child) {
+  margin-block-start: var(--spacing-medium);
+}
+
+.ExampleSelectLabel {
+  display: block;
+  margin-block-end: var(--spacing-small);
+}

@@ -26,7 +26,7 @@ export function positionHash(row, col) {
 }
 
 export function positionFromHash(hash) {
-  const col = hash % 1000 - 1
+  const col = (hash % 1000) - 1
   const row = (hash - col - 1) / 1000 - 1
   return {row, col}
 }

@@ -1,96 +1,52 @@
-import React, {PureComponent} from 'react'
-import IconPause from '@instructure/ui-icons/lib/Solid/IconPause'
-import IconPlay from '@instructure/ui-icons/lib/Solid/IconPlay'
-import IconRefresh from '@instructure/ui-icons/lib/Solid/IconRefresh'
-import Button from '@instructure/ui-buttons/lib/components/Button'
-import Checkbox from '@instructure/ui-forms/lib/components/Checkbox'
-import RangeInput from '@instructure/ui-forms/lib/components/RangeInput'
-import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
-import View from '@instructure/ui-layout/lib/components/View'
+import {CheckboxInputField, RangeInputField} from '../../shared/components'
 
-export default class ExampleControls extends PureComponent {
-  static defaultProps = {
-    onSetRecordAllIterations() {}
+import styles from './styles.module.css'
+
+export default function ExampleControls(props) {
+  function handleRangeChange(event) {
+    props.onPositionChange(Number.parseInt(event.target.value, 10))
   }
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      currentStep: 1
-    }
-
-    this.pause = this.pause.bind(this)
-    this.refresh = this.refresh.bind(this)
-    this.start = this.start.bind(this)
-
-    this.onRangeChange = indexString => {
-      this.props.onPositionChange(parseInt(indexString, 10))
-    }
+  function handleToggleRecordAllIterations(event) {
+    props.onSetRecordAllIterations(event.target.checked)
   }
 
-  onToggleRecordAllIterations = event => {
-    this.props.onSetRecordAllIterations(event.target.checked)
-  }
+  return (
+    <div className={styles.ExampleControlsContainer}>
+      <div className={styles.ExampleControlsRow}>
+        <button onClick={props.onRefresh}>Refresh</button>
 
-  pause() {
-    this.props.onPause()
-  }
-
-  refresh() {
-    this.props.onRefresh()
-  }
-
-  start() {
-    this.props.onStart()
-  }
-
-  render() {
-    return (
-      <View as="div">
-        <View as="div">
-          <Button key="refresh" margin="0 x-small 0 0" onClick={this.refresh}>
-            <IconRefresh title="Refresh" />
-            Refresh
-          </Button>
-
-          {this.props.playing ? (
-            <Button key="play-pause" margin="0 x-small 0 0" onClick={this.pause}>
-              <IconPause title="Pause" />
-              Pause
-            </Button>
-          ) : (
-            <Button key="play-pause" margin="0 x-small 0 0" onClick={this.start}>
-              <IconPlay title="Start" />
-              Start
-            </Button>
-          )}
-
-          <Checkbox
-            checked={this.props.recordAllIterations}
-            disabled={this.props.playing}
-            inline
-            label="All Iterations"
-            onChange={this.onToggleRecordAllIterations}
-            size="small"
-            variant="toggle"
-          />
-        </View>
-
-        {this.props.recordAllIterations && (
-          <View as="div" margin="medium 0">
-            <RangeInput
-              disabled={this.props.playing}
-              displayValue={false}
-              label={<ScreenReaderContent>Iteration Range</ScreenReaderContent>}
-              max={this.props.rangePositionCount}
-              min={1}
-              onChange={this.onRangeChange}
-              value={this.props.rangePosition}
-            />
-          </View>
+        {props.playing ? (
+          <button onClick={props.onPause}>Pause</button>
+        ) : (
+          <button onClick={props.onStart}>Start</button>
         )}
-      </View>
-    )
-  }
+
+        <span>
+          <CheckboxInputField
+            id="all-iterations-checkbox"
+            labelText="All Iterations"
+            checked={props.recordAllIterations}
+            disabled={props.playing}
+            onChange={handleToggleRecordAllIterations}
+          />
+        </span>
+      </div>
+
+      {props.recordAllIterations && (
+        <RangeInputField
+          disabled={props.playing}
+          labelText="Iteration Range"
+          max={props.rangePositionCount}
+          min={1}
+          onChange={handleRangeChange}
+          value={props.rangePosition}
+        />
+      )}
+    </div>
+  )
+}
+
+ExampleControls.defaultProps = {
+  onSetRecordAllIterations() {}
 }

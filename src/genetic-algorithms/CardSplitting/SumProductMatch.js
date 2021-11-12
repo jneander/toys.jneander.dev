@@ -1,11 +1,10 @@
-import Fitness from '@jneander/genetics/es/fitness/Fitness'
-import {product, sum} from '@jneander/genetics/es/util'
+import {Fitness, product, sum} from '@jneander/genetics'
 
 function convertGene(gene) {
   return gene === 'A' ? 1 : parseInt(gene, 10)
 }
 
-export class CardGroupFitness extends Fitness {
+class CardGroupFitness extends Fitness {
   constructor(sum, product, duplicates) {
     super({duplicates})
 

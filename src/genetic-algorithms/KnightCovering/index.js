@@ -1,67 +1,62 @@
-import React, {PureComponent} from 'react'
-import View from '@instructure/ui-layout/lib/components/View'
+import {useEffect, useMemo} from 'react'
 
+import {useStore} from '../../shared/state'
 import ExampleControls from '../shared/ExampleControls'
-import State from '../shared/State'
 import Board from './Board'
 import Configuration from './Configuration'
 import Controller from './Controller'
 import Metrics from './Metrics'
 
-export default class KnightCovering extends PureComponent {
-  constructor(props) {
-    super(props)
+import styles from './styles.module.css'
 
-    this.controller = new Controller(new State(this))
-    this.state = this.controller.getInitialState()
+export default function KnightCovering() {
+  const controller = useMemo(() => {
+    return new Controller()
+  }, [])
 
-    this.onBoardSizeChange = this.onBoardSizeChange.bind(this)
-    this.onPositionChange = this.onPositionChange.bind(this)
+  const state = useStore(controller.store)
+
+  useEffect(() => {
+    controller.initialize()
+  }, [controller])
+
+  function handleBoardSizeChange(size) {
+    controller.setBoardSize(size)
   }
 
-  componentWillMount() {
-    this.controller.initialize()
+  function handlePositionChange(position) {
+    controller.setPlaybackPosition(position)
   }
 
-  onBoardSizeChange(size) {
-    this.controller.setBoardSize(size)
-  }
+  return (
+    <div className={styles.Container}>
+      <ExampleControls
+        onPause={controller.stop}
+        onPositionChange={handlePositionChange}
+        onRefresh={controller.randomizeTarget}
+        onStart={controller.start}
+        onSetRecordAllIterations={controller.setRecordAllIterations}
+        playing={state.isRunning}
+        rangePosition={state.playbackPosition}
+        rangePositionCount={state.iterationCount}
+        recordAllIterations={state.allIterations}
+      />
 
-  onPositionChange(position) {
-    this.controller.setPlaybackPosition(position)
-  }
+      <Configuration
+        boardSize={state.boardSize}
+        disabled={state.isRunning}
+        margin="medium 0 0 0"
+        onBoardSizeChange={handleBoardSizeChange}
+      />
 
-  render() {
-    return (
+      <Metrics
+        iteration={state.current ? state.current.iteration : 0}
+        margin="small 0 0 0"
+      />
+
       <div>
-        <ExampleControls
-          onPause={this.controller.stop}
-          onPositionChange={this.onPositionChange}
-          onRefresh={this.controller.randomizeTarget}
-          onStart={this.controller.start}
-          onSetRecordAllIterations={this.controller.setRecordAllIterations}
-          playing={this.state.isRunning}
-          rangePosition={this.state.playbackPosition}
-          rangePositionCount={this.state.iterationCount}
-          recordAllIterations={this.state.allIterations}
-        />
-
-        <Configuration
-          boardSize={this.state.boardSize}
-          disabled={this.state.isRunning}
-          margin="medium 0 0 0"
-          onBoardSizeChange={this.onBoardSizeChange}
-        />
-
-        <Metrics
-          iteration={this.state.current ? this.state.current.iteration : 0}
-          margin="small 0 0 0"
-        />
-
-        <View as="div" margin="medium 0 0 0">
-          <Board chromosome={this.state.current} size={this.state.boardSize} />
-        </View>
+        <Board chromosome={state.current} size={state.boardSize} />
       </div>
-    )
-  }
+    </div>
+  )
 }

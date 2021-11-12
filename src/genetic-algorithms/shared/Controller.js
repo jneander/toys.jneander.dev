@@ -1,10 +1,17 @@
+import {Store} from '@jneander/utils-state'
+
 import ControlledPropagation from '../shared/ControlledPropagation'
 import PropagationListener from '../shared/PropagationListener'
 import PropagationRecording from '../shared/PropagationRecording'
 
 export default class Controller {
-  constructor(state) {
-    this._state = state
+  constructor() {
+    this.store = new Store({
+      allIterations: false,
+      isRunning: false,
+      iterationCount: 0,
+      playbackPosition: 1
+    })
 
     this.listener = new PropagationListener(this.updateView.bind(this))
     this.recording = new PropagationRecording()
@@ -111,7 +118,7 @@ export default class Controller {
   }
 
   updateView() {
-    this._state.setState({
+    this.store.setState({
       allIterations: this.recording.isRecordingAllIterations(),
       best: this.recording.best(),
       current: this.recording.current(),

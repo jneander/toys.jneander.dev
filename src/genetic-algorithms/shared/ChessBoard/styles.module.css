@@ -1,13 +1,13 @@
-:local(.Board) {
+.Board {
   border-collapse: collapse;
   border: 1px solid #383838;
   display: inline-block;
 }
 
-:local(.Row) {
+.Row {
 }
 
-:local(.Space) {
+.Space {
   background-color: #e5e5e6;
   border: 1px solid #383838;
   box-sizing: border-box;
@@ -17,10 +17,10 @@
   width: 32px;
 }
 
-:local(.Row:nth-child(even) .Space:nth-child(even)) {
+.Row:nth-child(even) .Space:nth-child(even) {
   background-color: #c0c0c0;
 }
 
-:local(.Row:nth-child(odd) .Space:nth-child(odd)) {
+.Row:nth-child(odd) .Space:nth-child(odd) {
   background-color: #c0c0c0;
 }

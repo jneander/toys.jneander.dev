@@ -1,7 +1,11 @@
-import Chromosome from '@jneander/genetics/es/Chromosome'
-import ArrayOrder from '@jneander/genetics/es/fitness/ArrayOrder'
-import {swapTwoGenes} from '@jneander/genetics/es/mutation'
-import {range, sample, shuffle} from '@jneander/genetics/es/util'
+import {
+  ArrayOrder,
+  Chromosome,
+  range,
+  sample,
+  shuffle,
+  swapTwoGenes
+} from '@jneander/genetics'
 
 import BaseController from '../shared/Controller'
 
@@ -10,8 +14,8 @@ const maxLength = 100
 const geneSet = range(0, maxLength)
 
 export default class Controller extends BaseController {
-  constructor(state) {
-    super(state)
+  constructor() {
+    super()
 
     this.fitnessMethod = new ArrayOrder()
   }

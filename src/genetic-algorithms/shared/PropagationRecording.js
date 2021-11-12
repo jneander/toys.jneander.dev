@@ -14,7 +14,10 @@ export default class PropagationRecording {
   }
 
   addIteration(chromosome) {
-    if (this.config.allIterations && this._playbackPosition === this._iterations.length) {
+    if (
+      this.config.allIterations &&
+      this._playbackPosition === this._iterations.length
+    ) {
       this._playbackPosition++
     }
     if (this.config.allIterations || this._iterations.length === 0) {
@@ -38,7 +41,8 @@ export default class PropagationRecording {
       let best = improvements[0]
       for (
         let i = 1;
-        i < improvements.length && improvements[i].iteration <= this._playbackPosition;
+        i < improvements.length &&
+        improvements[i].iteration <= this._playbackPosition;
         i++
       ) {
         best = improvements[i]

@@ -1,4 +1,4 @@
-export default class PropogationListener {
+export default class PropagationListener {
   constructor(onUpdate) {
     this.onUpdate = onUpdate
   }

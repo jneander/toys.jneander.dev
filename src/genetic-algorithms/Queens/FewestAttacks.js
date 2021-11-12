@@ -1,4 +1,4 @@
-import Fitness from '@jneander/genetics/es/fitness/Fitness'
+import {Fitness} from '@jneander/genetics'
 
 function positionKey(row, column) {
   return `${row},${column}`
@@ -31,7 +31,9 @@ export default class FewestAttacks {
           rowsWithQueens.add(row)
           colsWithQueens.add(col)
           northEastDiagonalsWithQueens.add(row + col)
-          southEastDiagonalsWithQueens.add(this.config.boardSize - 1 - row + col)
+          southEastDiagonalsWithQueens.add(
+            this.config.boardSize - 1 - row + col
+          )
         }
       }
     }

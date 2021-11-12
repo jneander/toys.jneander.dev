@@ -1,21 +1,13 @@
-import React, {PureComponent} from 'react'
-import canvas from '@instructure/ui-themes/lib/canvas'
-
 import Sidebar from '../Sidebar'
 
-import 'normalize.css'
-import styles from './styles.css'
+import styles from './styles.module.css'
 
-canvas.use()
+export default function Layout(props) {
+  return (
+    <div className={styles.Layout}>
+      <Sidebar page={props.page} />
 
-export default class Layout extends PureComponent {
-  render() {
-    return (
-      <div className={styles.Layout}>
-        <Sidebar page={this.props.page} />
-
-        <main className={styles.Main}>{this.props.children}</main>
-      </div>
-    )
-  }
+      <main className={styles.Main}>{props.children}</main>
+    </div>
+  )
 }

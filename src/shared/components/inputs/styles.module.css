@@ -1,0 +1,18 @@
+.InputContainer {
+  display: block;
+}
+
+.InputLabelContent {
+  margin-block-end: var(--spacing-small);
+}
+
+.NumberInputField,
+.RangeInputField {
+  width: 100%;
+}
+
+.CheckboxInputField {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-small);
+}

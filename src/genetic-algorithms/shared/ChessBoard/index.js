@@ -1,6 +1,6 @@
-import React, {PureComponent} from 'react'
+import {useMemo} from 'react'
 
-import styles from './styles.css'
+import styles from './styles.module.css'
 
 function scaledBoard(size) {
   const board = []
@@ -31,34 +31,27 @@ function renderRow(row, rowIndex) {
   return (
     <tr key={rowIndex} className={styles.Row}>
       {row.map((piece, index) => (
-        <td key={index} className={styles.Space} dangerouslySetInnerHTML={{__html: piece}} />
+        <td
+          key={index}
+          className={styles.Space}
+          dangerouslySetInnerHTML={{__html: piece}}
+        />
       ))}
     </tr>
   )
 }
 
-export default class Board extends PureComponent {
-  constructor(props) {
-    super(props)
+export default function ChessBoard(props) {
+  const {positions, size} = props
 
-    this.state = {
-      board: boardFromProps(props)
-    }
-  }
+  const board = useMemo(
+    () => boardFromProps({positions, size}),
+    [size, positions]
+  )
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.size !== this.props.size || nextProps.positions !== this.props.positions) {
-      this.setState({
-        board: boardFromProps(nextProps)
-      })
-    }
-  }
-
-  render() {
-    return (
-      <table className={styles.Board}>
-        <tbody>{this.state.board.map(renderRow)}</tbody>
-      </table>
-    )
-  }
+  return (
+    <table className={styles.Board}>
+      <tbody>{board.map(renderRow)}</tbody>
+    </table>
+  )
 }

@@ -1,14 +1,16 @@
-import Chromosome from '@jneander/genetics/es/Chromosome'
-import FewestAttacks from './FewestAttacks'
-import {generateParent} from '@jneander/genetics/es/generation'
-import {replaceOneGene} from '@jneander/genetics/es/mutation'
-import {range} from '@jneander/genetics/es/util'
+import {
+  Chromosome,
+  generateParent,
+  range,
+  replaceOneGene
+} from '@jneander/genetics'
 
 import BaseController from '../shared/Controller'
+import FewestAttacks from './FewestAttacks'
 
 export default class Controller extends BaseController {
-  constructor(state) {
-    super(state)
+  constructor() {
+    super()
 
     this._boardSize = 8
     this.fitnessMethod = new FewestAttacks({boardSize: this._boardSize})

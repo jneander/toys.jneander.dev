@@ -1,6 +1,4 @@
-import Chromosome from '@jneander/genetics/es/Chromosome'
-import {replaceOneGene} from '@jneander/genetics/es/mutation'
-import {choice, randomInt, range} from '@jneander/genetics/es/util'
+import {Chromosome, choice, randomInt, range} from '@jneander/genetics'
 
 import BaseController from '../shared/Controller'
 import BoardCoverage from './BoardCoverage'
@@ -67,7 +65,8 @@ function mutate(parent, iteration) {
 
     const positionToKnightIndexArray = Array.from(positionToKnightIndexes)
     for (let i = 0; i < positionToKnightIndexArray.length; i++) {
-      const [positionHash, knightIndexesAtPosition] = positionToKnightIndexArray[i]
+      const [positionHash, knightIndexesAtPosition] =
+        positionToKnightIndexArray[i]
       if (knightIndexesAtPosition.length > 1) {
         continue
       }
@@ -83,7 +82,10 @@ function mutate(parent, iteration) {
     let potentialKnightPositions = []
     if (unattacked.length) {
       for (let i = 0; i < unattacked.length; i++) {
-        const positionsWhichCanAttackThisPosition = listAttacks(unattacked[i], this._boardSize)
+        const positionsWhichCanAttackThisPosition = listAttacks(
+          unattacked[i],
+          this._boardSize
+        )
         potentialKnightPositions = [
           ...potentialKnightPositions,
           ...positionsWhichCanAttackThisPosition
@@ -109,8 +111,8 @@ function mutate(parent, iteration) {
 }
 
 export default class Controller extends BaseController {
-  constructor(state) {
-    super(state)
+  constructor() {
+    super()
 
     this._boardSize = 8
     this._knightCount = minimumKnightsByBoardSize[this._boardSize]

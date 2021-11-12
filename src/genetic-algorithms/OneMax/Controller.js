@@ -1,9 +1,9 @@
-import Chromosome from '@jneander/genetics/es/Chromosome'
-import ArrayMatch from '@jneander/genetics/es/fitness/ArrayMatch'
-import {generateParent} from '@jneander/genetics/es/generation'
-import TextArray from '@jneander/genetics/es/generation/TextArray'
-import {replaceOneGene} from '@jneander/genetics/es/mutation'
-import {sample} from '@jneander/genetics/es/util'
+import {
+  ArrayMatch,
+  TextArray,
+  generateParent,
+  replaceOneGene
+} from '@jneander/genetics'
 
 import BaseController from '../shared/Controller'
 
@@ -11,8 +11,8 @@ const defaultLength = 150
 const geneSet = ['0', '1']
 
 export default class Controller extends BaseController {
-  constructor(state) {
-    super(state)
+  constructor() {
+    super()
 
     this.fitnessMethod = new ArrayMatch()
   }

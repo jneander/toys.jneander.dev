@@ -10,8 +10,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@jneander/genetics": "^0.3.0",
-    "@jneander/utils-state": "^1.0.1",
+    "@jneander/genetics": "^0.5.1",
+    "@jneander/utils-state": "^2.0.1",
     "next": "12.0.3",
     "normalize.css": "^8.0.0",
     "react": "17.0.2",

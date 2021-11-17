@@ -1,8 +1,7 @@
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
-import ChromosomeTable from '../shared/ChromosomeTable'
-import ExampleControls from '../shared/ExampleControls'
+import {ChromosomeTable, ExampleControls} from '../shared'
 import Controller from './Controller'
 
 export default function OneMax() {
@@ -16,7 +15,7 @@ export default function OneMax() {
     controller.initialize()
   }, [controller])
 
-  function handlePositionChange(position) {
+  function handlePositionChange(position: number) {
     controller.setPlaybackPosition(position)
   }
 

@@ -1,11 +1,13 @@
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
-import ChromosomeTable from '../shared/ChromosomeTable'
-import ExampleControls from '../shared/ExampleControls'
+import {ExampleControls, Metrics} from '../shared'
+import Cards from './Cards'
 import Controller from './Controller'
 
-export default function TextMatching() {
+import styles from './styles.module.css'
+
+export default function CardSplitting() {
   const controller = useMemo(() => {
     return new Controller()
   }, [])
@@ -16,12 +18,12 @@ export default function TextMatching() {
     controller.initialize()
   }, [controller])
 
-  function handlePositionChange(position) {
+  function handlePositionChange(position: number) {
     controller.setPlaybackPosition(position)
   }
 
   return (
-    <div>
+    <div className={styles.Container}>
       <ExampleControls
         onPause={controller.stop}
         onPositionChange={handlePositionChange}
@@ -34,14 +36,12 @@ export default function TextMatching() {
         recordAllIterations={state.allIterations}
       />
 
-      <div>
-        <ChromosomeTable
-          best={state.best}
-          current={state.current}
-          first={state.first}
-          formatGenes={genes => genes.join('')}
-          target={state.target}
-        />
+      <Metrics iteration={state.current?.iteration ?? 0} />
+
+      <div className={styles.Dunno}>
+        {state.current && <Cards label="Current" chromosome={state.current} />}
+
+        {state.best && <Cards label="Best" chromosome={state.best} />}
       </div>
     </div>
   )

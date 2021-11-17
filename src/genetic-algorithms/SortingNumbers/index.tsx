@@ -1,15 +1,10 @@
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
-import ExampleControls from '../shared/ExampleControls'
-import Board from './Board'
-import Configuration from './Configuration'
+import {ChromosomeTable, ExampleControls} from '../shared'
 import Controller from './Controller'
-import Metrics from './Metrics'
 
-import styles from './styles.module.css'
-
-export default function KnightCovering() {
+export default function SortingNumbers() {
   const controller = useMemo(() => {
     return new Controller()
   }, [])
@@ -20,16 +15,12 @@ export default function KnightCovering() {
     controller.initialize()
   }, [controller])
 
-  function handleBoardSizeChange(size) {
-    controller.setBoardSize(size)
-  }
-
-  function handlePositionChange(position) {
+  function handlePositionChange(position: number) {
     controller.setPlaybackPosition(position)
   }
 
   return (
-    <div className={styles.Container}>
+    <div>
       <ExampleControls
         onPause={controller.stop}
         onPositionChange={handlePositionChange}
@@ -42,20 +33,14 @@ export default function KnightCovering() {
         recordAllIterations={state.allIterations}
       />
 
-      <Configuration
-        boardSize={state.boardSize}
-        disabled={state.isRunning}
-        margin="medium 0 0 0"
-        onBoardSizeChange={handleBoardSizeChange}
-      />
-
-      <Metrics
-        iteration={state.current ? state.current.iteration : 0}
-        margin="small 0 0 0"
-      />
-
       <div>
-        <Board chromosome={state.current} size={state.boardSize} />
+        <ChromosomeTable
+          best={state.best}
+          current={state.current}
+          first={state.first}
+          formatGenes={genes => genes.join(', ')}
+          target={state.target}
+        />
       </div>
     </div>
   )

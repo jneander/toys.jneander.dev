@@ -1,14 +1,30 @@
+import {ChangeEvent} from 'react'
+
 import {CheckboxInputField, RangeInputField} from '../../shared/components'
 
 import styles from './styles.module.css'
 
-export default function ExampleControls(props) {
-  function handleRangeChange(event) {
+interface ExampleControlsProps {
+  onPause: () => void
+  onPositionChange: (position: number) => void
+  onRefresh: () => void
+  onSetRecordAllIterations?: (record: boolean) => void
+  onStart: () => void
+  playing: boolean
+  rangePosition: number
+  rangePositionCount: number
+  recordAllIterations: boolean
+}
+
+export default function ExampleControls(props: ExampleControlsProps) {
+  function handleRangeChange(event: ChangeEvent<HTMLInputElement>) {
     props.onPositionChange(Number.parseInt(event.target.value, 10))
   }
 
-  function handleToggleRecordAllIterations(event) {
-    props.onSetRecordAllIterations(event.target.checked)
+  function handleToggleRecordAllIterations(
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    props.onSetRecordAllIterations?.(event.target.checked)
   }
 
   return (
@@ -24,10 +40,10 @@ export default function ExampleControls(props) {
 
         <span>
           <CheckboxInputField
-            id="all-iterations-checkbox"
-            labelText="All Iterations"
             checked={props.recordAllIterations}
             disabled={props.playing}
+            id="all-iterations-checkbox"
+            labelText="All Iterations"
             onChange={handleToggleRecordAllIterations}
           />
         </span>
@@ -45,8 +61,4 @@ export default function ExampleControls(props) {
       )}
     </div>
   )
-}
-
-ExampleControls.defaultProps = {
-  onSetRecordAllIterations() {}
 }

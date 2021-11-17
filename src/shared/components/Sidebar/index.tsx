@@ -20,9 +20,7 @@ export default function Sidebar() {
       </ul>
 
       <div className={styles.GithubLink}>
-        <a href="https://github.com/jneander/jneander/tree/master/packages/learning">
-          <span size="small">View on Github</span>
-        </a>
+        <a href="https://github.com/jneander/cs.jneander.dev">View on Github</a>
       </div>
     </nav>
   )

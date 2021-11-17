@@ -1,20 +1,25 @@
-import {product, sum} from '@jneander/genetics'
+import {Chromosome, product, sum} from '@jneander/genetics'
 
 import styles from './styles.module.css'
 
-function convertGene(gene) {
+function convertGene(gene: string) {
   return gene === 'A' ? 1 : parseInt(gene, 10)
 }
 
-function geneSum(chromosome) {
+function geneSum(chromosome: Chromosome<string, number>) {
   return sum(chromosome.genes.slice(0, 5).map(convertGene))
 }
 
-function geneProduct(chromosome) {
+function geneProduct(chromosome: Chromosome<string, number>) {
   return product(chromosome.genes.slice(5, 10).map(convertGene))
 }
 
-export default function Cards(props) {
+interface CardsProps {
+  chromosome: Chromosome<string, number>
+  label: string
+}
+
+export default function Cards(props: CardsProps) {
   const sumGenes = props.chromosome.genes.slice(0, 5)
   const productGenes = props.chromosome.genes.slice(5, 10)
 

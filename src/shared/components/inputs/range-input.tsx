@@ -1,6 +1,13 @@
+import {HTMLProps} from 'react'
+
 import styles from './styles.module.css'
 
-export function RangeInputField(props) {
+interface RangeInputFieldProps
+  extends Omit<HTMLProps<HTMLInputElement>, 'className' | 'label' | 'type'> {
+  labelText: string
+}
+
+export function RangeInputField(props: RangeInputFieldProps) {
   const {labelText, ...inputProps} = props
 
   return (

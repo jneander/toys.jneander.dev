@@ -1,11 +1,10 @@
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
-import ChromosomeTable from '../shared/ChromosomeTable'
-import ExampleControls from '../shared/ExampleControls'
+import {ChromosomeTable, ExampleControls} from '../shared'
 import Controller from './Controller'
 
-export default function SortingNumbers() {
+export default function TextMatching() {
   const controller = useMemo(() => {
     return new Controller()
   }, [])
@@ -16,7 +15,7 @@ export default function SortingNumbers() {
     controller.initialize()
   }, [controller])
 
-  function handlePositionChange(position) {
+  function handlePositionChange(position: number) {
     controller.setPlaybackPosition(position)
   }
 
@@ -39,7 +38,7 @@ export default function SortingNumbers() {
           best={state.best}
           current={state.current}
           first={state.first}
-          formatGenes={genes => genes.join(', ')}
+          formatGenes={genes => genes.join('')}
           target={state.target}
         />
       </div>

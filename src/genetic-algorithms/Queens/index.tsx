@@ -1,14 +1,15 @@
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
-import ExampleControls from '../shared/ExampleControls'
-import Cards from './Cards'
+import {ExampleControls} from '../shared'
+import Board from './Board'
+import Configuration from './Configuration'
 import Controller from './Controller'
 import Metrics from './Metrics'
 
 import styles from './styles.module.css'
 
-export default function CardSplitting() {
+export default function Queens() {
   const controller = useMemo(() => {
     return new Controller()
   }, [])
@@ -19,7 +20,11 @@ export default function CardSplitting() {
     controller.initialize()
   }, [controller])
 
-  function handlePositionChange(position) {
+  function handleBoardSizeChange(size: number) {
+    controller.setBoardSize(size)
+  }
+
+  function handlePositionChange(position: number) {
     controller.setPlaybackPosition(position)
   }
 
@@ -37,12 +42,16 @@ export default function CardSplitting() {
         recordAllIterations={state.allIterations}
       />
 
-      <Metrics iteration={state.current?.iteration ?? 0} margin="small 0 0 0" />
+      <Configuration
+        boardSize={state.boardSize}
+        disabled={state.isRunning}
+        onBoardSizeChange={handleBoardSizeChange}
+      />
 
-      <div className={styles.Dunno}>
-        {state.current && <Cards label="Current" chromosome={state.current} />}
+      <Metrics iteration={state.current ? state.current.iteration : 0} />
 
-        {state.best && <Cards label="Best" chromosome={state.best} />}
+      <div>
+        <Board chromosome={state.current} size={state.boardSize} />
       </div>
     </div>
   )

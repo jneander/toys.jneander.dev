@@ -1,12 +1,18 @@
+import {Chromosome} from '@jneander/genetics'
 import {useMemo} from 'react'
 
 import ChessBoard from '../shared/ChessBoard'
 
-export default function Board(props) {
+interface BoardProps {
+  chromosome: Chromosome<number, number>
+  size: number
+}
+
+export default function Board(props: BoardProps) {
   const {chromosome, size} = props
 
   const positions = useMemo(() => {
-    const board = []
+    const board: string[][] = []
 
     for (let row = 0; row < size; row++) {
       board[row] = []
@@ -20,8 +26,8 @@ export default function Board(props) {
     if (chromosome) {
       const {genes} = chromosome
 
-      for (let i = 0; i < chromosome.genes.length; i++) {
-        positions.push({row: genes[i].row, col: genes[i].col, piece: '&#9822;'})
+      for (let i = 0; i < chromosome.genes.length; i += 2) {
+        positions.push({row: genes[i], col: genes[i + 1], piece: '&#9819;'})
       }
     }
 

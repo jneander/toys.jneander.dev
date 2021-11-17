@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {ChangeEvent, useState} from 'react'
 
 import {
   CardSplitting,
@@ -8,7 +8,7 @@ import {
   SortingNumbers,
   TextMatching
 } from '../../../genetic-algorithms'
-import Layout from '../../../shared/components/Layout'
+import {Layout} from '../../../shared/components'
 
 import styles from './styles.module.css'
 
@@ -26,14 +26,14 @@ export function ShowGeneticAlgorithm() {
 
   const Component = selectedExample.component
 
-  function handleExampleChange(event) {
+  function handleExampleChange(event: ChangeEvent<HTMLSelectElement>) {
     setSelectedExample(
-      examples.find(example => example.label === event.target.value)
+      examples.find(example => example.label === event.target.value)!
     )
   }
 
   return (
-    <Layout page="geneticAlgorithms">
+    <Layout>
       <div className={styles.Container}>
         <header className={styles.Header}>
           <h1>Genetic Algorithms</h1>

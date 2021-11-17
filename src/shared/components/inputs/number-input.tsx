@@ -1,6 +1,13 @@
+import {HTMLProps} from 'react'
+
 import styles from './styles.module.css'
 
-export function NumberInputField(props) {
+interface NumberInputFieldProps
+  extends Omit<HTMLProps<HTMLInputElement>, 'className' | 'label' | 'type'> {
+  labelText: string
+}
+
+export function NumberInputField(props: NumberInputFieldProps) {
   const {labelText, ...inputProps} = props
 
   return (

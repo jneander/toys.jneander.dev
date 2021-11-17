@@ -1,6 +1,15 @@
+import {Chromosome} from '@jneander/genetics'
+import {ReactNode} from 'react'
+
 import styles from './styles.module.css'
 
-function ChromosomeRow(props) {
+interface ChromosomeRowProps<GeneType> {
+  chromosome?: Chromosome<GeneType, any>
+  formatGenes: (genes: GeneType[]) => ReactNode
+  version: string
+}
+
+function ChromosomeRow<GeneType>(props: ChromosomeRowProps<GeneType>) {
   return (
     <tr>
       <th scope="row">{props.version}</th>
@@ -10,17 +19,31 @@ function ChromosomeRow(props) {
       </td>
 
       <td style={{textAlign: 'right'}}>
-        {props.chromosome && props.chromosome.fitness.toString()}
+        {props.chromosome?.fitness?.toString()}
       </td>
 
-      <td style={{textAlign: 'right'}}>
-        {props.chromosome && props.chromosome.iteration}
-      </td>
+      <td style={{textAlign: 'right'}}>{props.chromosome?.iteration}</td>
     </tr>
   )
 }
 
-export default function ChromosomeTable(props) {
+function defaultFormatGenes<GeneType = any>(genes: GeneType[]): ReactNode {
+  return genes.join('')
+}
+
+interface ChromosomeTableProps<GeneType> {
+  best: Chromosome<GeneType, any>
+  current: Chromosome<GeneType, any>
+  first: Chromosome<GeneType, any>
+  formatGenes: (genes: GeneType[]) => ReactNode
+  target: Chromosome<GeneType, any>
+}
+
+export default function ChromosomeTable<GeneType = any>(
+  props: ChromosomeTableProps<GeneType>
+) {
+  const {formatGenes = defaultFormatGenes} = props
+
   return (
     <table className={styles.ChromosomeTable}>
       <caption className={styles.ChromosomeTableCaption}>
@@ -39,34 +62,28 @@ export default function ChromosomeTable(props) {
       <tbody>
         <ChromosomeRow
           chromosome={props.first}
-          formatGenes={props.formatGenes}
+          formatGenes={formatGenes}
           version="First"
         />
 
         <ChromosomeRow
           chromosome={props.current}
-          formatGenes={props.formatGenes}
+          formatGenes={formatGenes}
           version="Current"
         />
 
         <ChromosomeRow
           chromosome={props.best}
-          formatGenes={props.formatGenes}
+          formatGenes={formatGenes}
           version="Best"
         />
 
         <ChromosomeRow
           chromosome={props.target}
-          formatGenes={props.formatGenes}
+          formatGenes={formatGenes}
           version="Target"
         />
       </tbody>
     </table>
   )
-}
-
-ChromosomeTable.defaultProps = {
-  formatGenes(genes) {
-    return genes.join('')
-  }
 }

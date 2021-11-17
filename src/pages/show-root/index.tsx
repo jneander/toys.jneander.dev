@@ -1,8 +1,8 @@
-import Layout from '../../shared/components/Layout'
+import {Layout} from '../../shared/components'
 
 export function ShowRoot() {
   return (
-    <Layout page="home">
+    <Layout>
       <h1>Learning Some CS Topics</h1>
     </Layout>
   )

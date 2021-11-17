@@ -1,7 +1,7 @@
 import {Chromosome} from '@jneander/genetics'
 import {useMemo} from 'react'
 
-import ChessBoard from '../shared/ChessBoard'
+import {ChessBoard, KNIGHT_UNICODE} from '../shared'
 import {Position} from './types'
 
 interface BoardProps {
@@ -28,7 +28,11 @@ export default function Board(props: BoardProps) {
       const {genes} = chromosome
 
       for (let i = 0; i < chromosome.genes.length; i++) {
-        positions.push({row: genes[i].row, col: genes[i].col, piece: '&#9822;'})
+        positions.push({
+          row: genes[i].row,
+          col: genes[i].col,
+          piece: KNIGHT_UNICODE
+        })
       }
     }
 

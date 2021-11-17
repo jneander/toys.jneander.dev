@@ -1,11 +1,10 @@
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
-import {ExampleControls} from '../shared'
+import {ExampleControls, Metrics} from '../shared'
 import Board from './Board'
 import Configuration from './Configuration'
 import Controller from './Controller'
-import Metrics from './Metrics'
 
 import styles from './styles.module.css'
 

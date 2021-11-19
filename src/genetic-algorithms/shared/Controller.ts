@@ -1,11 +1,12 @@
 import {Chromosome, Fitness, PropagationRecord} from '@jneander/genetics'
 import {Store} from '@jneander/utils-state'
 
-import ControlledPropagation, {
-  ControlledPropagationConfig
-} from './ControlledPropagation'
-import PropagationListener from './PropagationListener'
-import PropagationRecording from './PropagationRecording'
+import {
+  ControlledPropagation,
+  ControlledPropagationConfig,
+  PropagationListener,
+  PropagationRecording
+} from './propagation'
 import {State} from './types'
 
 export default abstract class Controller<GeneType, FitnessValueType> {

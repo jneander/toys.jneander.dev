@@ -1,4 +1,4 @@
-export default class PropagationListener {
+export class PropagationListener {
   private interval: ReturnType<typeof setInterval> | null
   private onUpdate: () => void
 

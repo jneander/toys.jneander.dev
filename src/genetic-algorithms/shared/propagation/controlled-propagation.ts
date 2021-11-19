@@ -12,7 +12,7 @@ export type ControlledPropagationConfig<GeneType, FitnessValueType> = Omit<
   onRun?: () => void
 }
 
-export default class ControlledPropagation<GeneType, FitnessValueType> {
+export class ControlledPropagation<GeneType, FitnessValueType> {
   private config: ControlledPropagationConfig<GeneType, FitnessValueType>
   private propagation: Propagation<GeneType, FitnessValueType>
   private runState: 'stopped' | 'running' | 'finished'

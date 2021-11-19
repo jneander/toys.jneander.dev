@@ -1,13 +1,12 @@
 import {
   Chromosome,
   Fitness,
-  PropagationRecord,
   randomEntry,
   randomInt,
   range
 } from '@jneander/genetics'
 
-import {BaseController, PropagationOptions} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
 import BoardCoverage from './BoardCoverage'
 import {KnightCoveringState, Position} from './types'
 import {
@@ -93,11 +92,9 @@ export default class Controller extends BaseController<Position, number> {
     }
   }
 
-  protected randomTarget(): PropagationRecord<Position, number> {
+  protected randomTarget(): PropagationTarget<Position, number> {
     return {
-      chromosome: new Chromosome<Position>([]),
-      fitness: this.fitnessMethod.getTargetFitness(),
-      iteration: -1
+      fitness: this.fitnessMethod.getTargetFitness()
     }
   }
 

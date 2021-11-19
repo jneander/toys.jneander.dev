@@ -4,6 +4,8 @@ import {useStore} from '../../shared/state'
 import {ChromosomeTable, ExampleControls} from '../shared'
 import Controller from './Controller'
 
+import styles from './styles.module.css'
+
 export default function TextMatching() {
   const controller = useMemo(() => {
     return new Controller()
@@ -20,7 +22,7 @@ export default function TextMatching() {
   }
 
   return (
-    <div>
+    <div className={styles.Container}>
       <ExampleControls
         onPause={controller.stop}
         onPositionChange={handlePositionChange}

@@ -1,0 +1,11 @@
+.Container {
+  padding: var(--spacing-medium);
+}
+
+.Container > *:not(:first-child) {
+  margin-block-start: var(--spacing-medium);
+}
+
+.SpacedBlocks > *:not(:first-child) {
+  margin-block-start: var(--spacing-medium);
+}

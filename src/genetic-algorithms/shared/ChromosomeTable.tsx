@@ -61,9 +61,7 @@ export default function ChromosomeTable<GeneType = any, FitnessValueType = any>(
 
   return (
     <table className={styles.ChromosomeTable}>
-      <caption className={styles.ChromosomeTableCaption}>
-        <h3>Chromosomes</h3>
-      </caption>
+      <caption className={styles.ChromosomeTableCaption}>Chromosomes</caption>
 
       <thead>
         <tr>

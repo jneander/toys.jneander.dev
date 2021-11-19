@@ -1,0 +1,20 @@
+.breadcrumbList {
+  align-items: center;
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumbListItem::before {
+  border-inline-end: calc(1rem / 16) solid var(--text-body-color);
+  content: '';
+  display: inline-block;
+  height: 0.75rem;
+  margin: 0 0.5rem;
+  transform: rotate(10deg);
+}
+
+.breadcrumbListItem:first-child::before {
+  margin-inline-start: 0;
+}

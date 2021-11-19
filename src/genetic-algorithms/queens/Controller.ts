@@ -16,19 +16,6 @@ export default class Controller extends BaseController<number, number> {
   private _boardSize: number | undefined
   private _fitnessMethod: FewestAttacks | undefined
 
-  constructor() {
-    super()
-
-    this.getInitialState = this.getInitialState.bind(this)
-  }
-
-  getInitialState() {
-    return {
-      ...super.getInitialState(),
-      boardSize: this.boardSize
-    }
-  }
-
   setBoardSize(size: number): void {
     this._boardSize = size
     this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})

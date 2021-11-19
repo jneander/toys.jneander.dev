@@ -1,11 +1,10 @@
-import {Chromosome} from '@jneander/genetics'
 import {useMemo} from 'react'
 
 import {ChessBoard, KNIGHT_UNICODE} from '../shared'
-import {Position} from './types'
+import {KnightCoveringChromosome} from './types'
 
 interface BoardProps {
-  chromosome?: Chromosome<Position>
+  chromosome?: KnightCoveringChromosome
   size: number
 }
 

@@ -1,1 +1,1 @@
-export {ShowGeneticAlgorithm as default} from '../../src/pages'
+export {ShowGeneticAlgorithms as default} from '../../src/pages'

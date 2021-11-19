@@ -1,6 +1,4 @@
-import Link from 'next/link'
-
-import {PrimaryLayout} from '../../shared/components'
+import {InternalLink, PrimaryLayout} from '../../shared/components'
 
 import styles from './styles.module.css'
 
@@ -12,9 +10,9 @@ export function ShowRoot() {
 
         <ul>
           <li>
-            <Link href="/genetic-algorithms">
-              <a>Genetic Algorithms</a>
-            </Link>
+            <InternalLink href="/genetic-algorithms">
+              Genetic Algorithms
+            </InternalLink>
           </li>
         </ul>
       </main>

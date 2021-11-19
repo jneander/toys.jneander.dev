@@ -1,6 +1,8 @@
-import Link from 'next/link'
-
-import {Breadcrumb, PrimaryLayout} from '../../../shared/components'
+import {
+  Breadcrumb,
+  InternalLink,
+  PrimaryLayout
+} from '../../../shared/components'
 
 import styles from './styles.module.css'
 
@@ -9,9 +11,7 @@ export function ShowGeneticAlgorithms() {
     <PrimaryLayout>
       <div className={styles.Container}>
         <Breadcrumb>
-          <Link href={`/`}>
-            <a>Home</a>
-          </Link>
+          <InternalLink href="/">Home</InternalLink>
 
           <span>Genetic Algorithms</span>
         </Breadcrumb>
@@ -21,39 +21,39 @@ export function ShowGeneticAlgorithms() {
 
           <ul>
             <li>
-              <Link href="/genetic-algorithms/text-matching">
-                <a>Text Matching</a>
-              </Link>
+              <InternalLink href="/genetic-algorithms/text-matching">
+                Text Matching
+              </InternalLink>
             </li>
 
             <li>
-              <Link href="/genetic-algorithms/one-max">
-                <a>One Max</a>
-              </Link>
+              <InternalLink href="/genetic-algorithms/one-max">
+                One Max
+              </InternalLink>
             </li>
 
             <li>
-              <Link href="/genetic-algorithms/sorting-numbers">
-                <a>Sorting Numbers</a>
-              </Link>
+              <InternalLink href="/genetic-algorithms/sorting-numbers">
+                Sorting Numbers
+              </InternalLink>
             </li>
 
             <li>
-              <Link href="/genetic-algorithms/queens">
-                <a>Queens</a>
-              </Link>
+              <InternalLink href="/genetic-algorithms/queens">
+                Queens
+              </InternalLink>
             </li>
 
             <li>
-              <Link href="/genetic-algorithms/card-splitting">
-                <a>Card Splitting</a>
-              </Link>
+              <InternalLink href="/genetic-algorithms/card-splitting">
+                Card Splitting
+              </InternalLink>
             </li>
 
             <li>
-              <Link href="/genetic-algorithms/knight-covering">
-                <a>Knight Covering</a>
-              </Link>
+              <InternalLink href="/genetic-algorithms/knight-covering">
+                Knight Covering
+              </InternalLink>
             </li>
           </ul>
         </main>

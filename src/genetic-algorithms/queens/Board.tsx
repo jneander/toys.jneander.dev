@@ -4,7 +4,7 @@ import {ChessBoard, ChessBoardTable, QUEEN_UNICODE} from '../shared'
 import {QueensChromosome} from './types'
 
 interface BoardProps {
-  chromosome: QueensChromosome
+  chromosome?: QueensChromosome
   size: number
 }
 

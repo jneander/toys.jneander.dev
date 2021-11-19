@@ -5,7 +5,7 @@ import {ChessBoard, KNIGHT_UNICODE} from '../shared'
 import {Position} from './types'
 
 interface BoardProps {
-  chromosome: Chromosome<Position, number>
+  chromosome?: Chromosome<Position>
   size: number
 }
 

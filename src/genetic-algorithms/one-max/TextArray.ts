@@ -19,11 +19,8 @@ export default class TextArray {
     this.fitnessMethod = new ArrayMatch<string>()
   }
 
-  generateTargetWithLength(length: number): Chromosome<string, number> {
+  generateTargetWithLength(length: number): Chromosome<string> {
     const targetArray = createPhraseArray(length, this.geneSet)
-    const target = new Chromosome<string, number>(targetArray, 0)
-    target.fitness = this.fitnessMethod.getTargetFitness(target)
-
-    return target
+    return new Chromosome<string>(targetArray)
   }
 }

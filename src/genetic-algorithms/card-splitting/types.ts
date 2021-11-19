@@ -5,7 +5,4 @@ export type CardSplittingFitnessValue = {
   duplicates: number
 }
 
-export type CardSplittingChromosome = Chromosome<
-  string,
-  CardSplittingFitnessValue
->
+export type CardSplittingChromosome = Chromosome<string>

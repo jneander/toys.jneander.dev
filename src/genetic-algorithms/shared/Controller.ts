@@ -1,4 +1,4 @@
-import {Chromosome, Fitness} from '@jneander/genetics'
+import {Chromosome, Fitness, PropagationRecord} from '@jneander/genetics'
 import {Store} from '@jneander/utils-state'
 
 import ControlledPropagation, {
@@ -14,7 +14,6 @@ export default abstract class Controller<GeneType, FitnessValueType> {
   private listener: PropagationListener
   private recording: PropagationRecording<GeneType, FitnessValueType>
   private propagation: ControlledPropagation<GeneType, FitnessValueType> | null
-  private _target: Chromosome<GeneType, FitnessValueType> | null
 
   constructor() {
     this.store = new Store<State<GeneType, FitnessValueType>>({
@@ -25,13 +24,12 @@ export default abstract class Controller<GeneType, FitnessValueType> {
       isRunning: false,
       iterationCount: 0,
       playbackPosition: 1,
-      target: null
+      target: this.randomTarget()
     })
 
     this.listener = new PropagationListener(this.updateView.bind(this))
     this.recording = new PropagationRecording()
     this.propagation = null
-    this._target = null
 
     this.getFitness = this.getFitness.bind(this)
     this.randomizeTarget = this.randomizeTarget.bind(this)
@@ -53,22 +51,6 @@ export default abstract class Controller<GeneType, FitnessValueType> {
 
   initialize(): void {
     this.randomizeTarget()
-    this.createPropagation()
-  }
-
-  createPropagation(): void {
-    this.propagation = new ControlledPropagation({
-      generateParent: this.generateParent.bind(this),
-      onFinish: this.onFinish.bind(this),
-      onImprovement: chromosome => {
-        this.recording.addImprovement(chromosome)
-      },
-      onIteration: chromosome => {
-        this.recording.addIteration(chromosome)
-      },
-      optimalFitness: this.target()!.fitness!,
-      ...this.propogationOptions()
-    })
   }
 
   onFinish(): void {
@@ -85,8 +67,11 @@ export default abstract class Controller<GeneType, FitnessValueType> {
     this.updateView()
   }
 
-  setTarget(target: Chromosome<GeneType, FitnessValueType>): void {
-    this._target = target
+  setTarget(chromosome: PropagationRecord<GeneType, FitnessValueType>): void {
+    this.store.setState({
+      target: chromosome
+    })
+
     this.createPropagation()
     this.recording.reset()
     this.updateView()
@@ -120,11 +105,11 @@ export default abstract class Controller<GeneType, FitnessValueType> {
     this.updateView()
   }
 
-  target() {
-    return this._target
+  target(): PropagationRecord<GeneType, FitnessValueType> {
+    return this.store.getState().target
   }
 
-  updateView() {
+  updateView(): void {
     this.store.setState({
       allIterations: this.recording.isRecordingAllIterations(),
       best: this.recording.best(),
@@ -143,12 +128,31 @@ export default abstract class Controller<GeneType, FitnessValueType> {
   }
 
   protected abstract geneSet(): GeneType[]
-  protected abstract generateParent(): Chromosome<GeneType, FitnessValueType>
+  protected abstract generateParent(): Chromosome<GeneType>
   protected abstract getFitness(
-    chromosome: Chromosome<GeneType, FitnessValueType>
+    chromosome: Chromosome<GeneType>
   ): Fitness<FitnessValueType>
   protected abstract propogationOptions(): {
     mutate: ControlledPropagationConfig<GeneType, FitnessValueType>['mutate']
   }
-  protected abstract randomTarget(): Chromosome<GeneType, FitnessValueType>
+  protected abstract randomTarget(): PropagationRecord<
+    GeneType,
+    FitnessValueType
+  >
+
+  private createPropagation(): void {
+    this.propagation = new ControlledPropagation({
+      calculateFitness: this.getFitness.bind(this),
+      generateParent: this.generateParent.bind(this),
+      onFinish: this.onFinish.bind(this),
+      onImprovement: chromosome => {
+        this.recording.addImprovement(chromosome)
+      },
+      onIteration: chromosome => {
+        this.recording.addIteration(chromosome)
+      },
+      optimalFitness: this.target()!.fitness,
+      ...this.propogationOptions()
+    })
+  }
 }

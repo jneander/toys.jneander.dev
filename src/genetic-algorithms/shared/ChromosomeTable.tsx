@@ -1,48 +1,63 @@
-import {Chromosome} from '@jneander/genetics'
+import {PropagationRecord} from '@jneander/genetics'
 import {ReactNode} from 'react'
 
 import styles from './styles.module.css'
 
-interface ChromosomeRowProps<GeneType> {
-  chromosome?: Chromosome<GeneType, any>
+interface RecordRowProps<GeneType, FitnessValueType> {
+  record: PropagationRecord<GeneType, FitnessValueType> | null
+  formatFitness: (fitness: FitnessValueType) => ReactNode
   formatGenes: (genes: GeneType[]) => ReactNode
   version: string
 }
 
-function ChromosomeRow<GeneType>(props: ChromosomeRowProps<GeneType>) {
+function RecordRow<GeneType, FitnessValueType>(
+  props: RecordRowProps<GeneType, FitnessValueType>
+) {
+  const {record, formatFitness, formatGenes, version} = props
+
   return (
     <tr>
-      <th scope="row">{props.version}</th>
+      <th scope="row">{version}</th>
 
       <td style={{fontFamily: 'monospace'}}>
-        {props.chromosome && props.formatGenes(props.chromosome.genes)}
+        {record?.chromosome && formatGenes(record.chromosome.genes)}
       </td>
 
       <td style={{textAlign: 'right'}}>
-        {props.chromosome?.fitness?.toString()}
+        {record && formatFitness(record.fitness.value)}
       </td>
 
-      <td style={{textAlign: 'right'}}>{props.chromosome?.iteration}</td>
+      <td style={{textAlign: 'right'}}>
+        {record?.iteration! >= 0 && record?.iteration}
+      </td>
     </tr>
   )
+}
+
+function defaultFormatFitness<FitnessValueType = any>(
+  fitness: FitnessValueType
+): ReactNode {
+  return String(fitness)
 }
 
 function defaultFormatGenes<GeneType = any>(genes: GeneType[]): ReactNode {
   return genes.join('')
 }
 
-interface ChromosomeTableProps<GeneType> {
-  best: Chromosome<GeneType, any>
-  current: Chromosome<GeneType, any>
-  first: Chromosome<GeneType, any>
-  formatGenes: (genes: GeneType[]) => ReactNode
-  target: Chromosome<GeneType, any>
+interface ChromosomeTableProps<GeneType, FitnessValueType> {
+  best: PropagationRecord<GeneType, any> | null
+  current: PropagationRecord<GeneType, any> | null
+  first: PropagationRecord<GeneType, any> | null
+  formatFitness?: (fitness: FitnessValueType) => ReactNode
+  formatGenes?: (genes: GeneType[]) => ReactNode
+  target: PropagationRecord<GeneType, any>
 }
 
-export default function ChromosomeTable<GeneType = any>(
-  props: ChromosomeTableProps<GeneType>
+export default function ChromosomeTable<GeneType = any, FitnessValueType = any>(
+  props: ChromosomeTableProps<GeneType, FitnessValueType>
 ) {
   const {formatGenes = defaultFormatGenes} = props
+  const {formatFitness = defaultFormatFitness} = props
 
   return (
     <table className={styles.ChromosomeTable}>
@@ -60,27 +75,31 @@ export default function ChromosomeTable<GeneType = any>(
       </thead>
 
       <tbody>
-        <ChromosomeRow
-          chromosome={props.first}
+        <RecordRow
+          formatFitness={formatFitness}
           formatGenes={formatGenes}
+          record={props.first}
           version="First"
         />
 
-        <ChromosomeRow
-          chromosome={props.current}
+        <RecordRow
+          formatFitness={formatFitness}
           formatGenes={formatGenes}
+          record={props.current}
           version="Current"
         />
 
-        <ChromosomeRow
-          chromosome={props.best}
+        <RecordRow
+          formatFitness={formatFitness}
           formatGenes={formatGenes}
+          record={props.best}
           version="Best"
         />
 
-        <ChromosomeRow
-          chromosome={props.target}
+        <RecordRow
+          formatFitness={formatFitness}
           formatGenes={formatGenes}
+          record={props.target}
           version="Target"
         />
       </tbody>

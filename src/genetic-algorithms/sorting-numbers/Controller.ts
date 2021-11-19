@@ -1,8 +1,9 @@
 import {
   ArrayOrder,
+  ArrayOrderFitnessValue,
   Chromosome,
   Fitness,
-  OrderFitnessValue,
+  PropagationRecord,
   range,
   sampleArray,
   shuffleArray,
@@ -17,51 +18,50 @@ const geneSet = range(0, maxLength)
 
 export default class Controller extends BaseController<
   number,
-  OrderFitnessValue
+  ArrayOrderFitnessValue
 > {
-  private fitnessMethod: ArrayOrder
-
-  constructor() {
-    super()
-
-    this.fitnessMethod = new ArrayOrder()
-  }
+  private _fitnessMethod: ArrayOrder | undefined
 
   protected geneSet(): number[] {
     return geneSet
   }
 
-  protected generateParent(): Chromosome<number, OrderFitnessValue> {
-    const genes = shuffleArray(this.target()!.genes)
-
-    const chromosome = new Chromosome<number, OrderFitnessValue>(genes, 1)
-    chromosome.fitness = this.getFitness(chromosome)
-
-    return chromosome
+  protected generateParent(): Chromosome<number> {
+    const genes = shuffleArray(this.target().chromosome.genes)
+    return new Chromosome<number>(genes)
   }
 
-  protected propogationOptions(): PropagationOptions<
-    number,
-    OrderFitnessValue
-  > {
+  protected propogationOptions(): PropagationOptions<number> {
     return {
-      mutate: (parent, iterationCount) =>
-        swapTwoGenes(parent, this.geneSet(), this.getFitness, iterationCount)
+      mutate: parent => swapTwoGenes(parent)
     }
   }
 
-  protected randomTarget(): Chromosome<number, OrderFitnessValue> {
+  protected randomTarget(): PropagationRecord<number, ArrayOrderFitnessValue> {
     const genes = sampleArray(this.geneSet(), defaultLength).sort(
       (a, b) => a - b
     )
-    const target = new Chromosome<number, OrderFitnessValue>(genes, 0)
-    target.fitness = this.fitnessMethod.getTargetFitness(target)
-    return target
+
+    const chromosome = new Chromosome<number>(genes)
+
+    return {
+      chromosome,
+      fitness: this.fitnessMethod.getTargetFitness(chromosome),
+      iteration: -1
+    }
   }
 
   protected getFitness(
-    chromosome: Chromosome<number, OrderFitnessValue>
-  ): Fitness<OrderFitnessValue> {
+    chromosome: Chromosome<number>
+  ): Fitness<ArrayOrderFitnessValue> {
     return this.fitnessMethod.getFitness(chromosome)
+  }
+
+  protected get fitnessMethod() {
+    if (this._fitnessMethod == null) {
+      this._fitnessMethod = new ArrayOrder()
+    }
+
+    return this._fitnessMethod
   }
 }

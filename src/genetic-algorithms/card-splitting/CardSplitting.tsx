@@ -39,9 +39,9 @@ export default function CardSplitting() {
       <Metrics iteration={state.current?.iteration ?? 0} />
 
       <div className={styles.Dunno}>
-        {state.current && <Cards label="Current" chromosome={state.current} />}
+        {state.current && <Cards label="Current" record={state.current} />}
 
-        {state.best && <Cards label="Best" chromosome={state.best} />}
+        {state.best && <Cards label="Best" record={state.best} />}
       </div>
     </div>
   )

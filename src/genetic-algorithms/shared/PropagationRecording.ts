@@ -1,4 +1,4 @@
-import {Chromosome} from '@jneander/genetics'
+import {PropagationRecord} from '@jneander/genetics'
 
 export type PropagationRecordingConfig = {
   allIterations?: boolean
@@ -9,8 +9,8 @@ export default class PropagationRecording<GeneType, FitnessValueType> {
 
   private _recording: boolean
   private _playbackPosition: number
-  private _iterations: Chromosome<GeneType, FitnessValueType>[]
-  private _improvements: Chromosome<GeneType, FitnessValueType>[]
+  private _iterations: PropagationRecord<GeneType, FitnessValueType>[]
+  private _improvements: PropagationRecord<GeneType, FitnessValueType>[]
 
   constructor(config = {}) {
     this.reset()
@@ -29,7 +29,7 @@ export default class PropagationRecording<GeneType, FitnessValueType> {
     this.addImprovement = this.addImprovement.bind(this)
   }
 
-  addIteration(chromosome: Chromosome<GeneType, FitnessValueType>): void {
+  addIteration(record: PropagationRecord<GeneType, FitnessValueType>): void {
     if (
       this.config.allIterations &&
       this._playbackPosition === this._iterations.length
@@ -37,17 +37,17 @@ export default class PropagationRecording<GeneType, FitnessValueType> {
       this._playbackPosition++
     }
     if (this.config.allIterations || this._iterations.length === 0) {
-      this._iterations.push(chromosome)
+      this._iterations.push(record)
     } else if (this._iterations.length > 0) {
-      this._iterations[1] = chromosome
+      this._iterations[1] = record
     }
   }
 
-  addImprovement(chromosome: Chromosome<GeneType, FitnessValueType>): void {
-    this._improvements.push(chromosome)
+  addImprovement(record: PropagationRecord<GeneType, FitnessValueType>): void {
+    this._improvements.push(record)
   }
 
-  best(): Chromosome<GeneType, FitnessValueType> | null {
+  best(): PropagationRecord<GeneType, FitnessValueType> | null {
     if (this._improvements.length === 0) {
       return null
     }
@@ -76,7 +76,7 @@ export default class PropagationRecording<GeneType, FitnessValueType> {
     this.reset()
   }
 
-  current(): Chromosome<GeneType, FitnessValueType> | null {
+  current(): PropagationRecord<GeneType, FitnessValueType> | null {
     if (this.config.allIterations) {
       return this._iterations[this.playbackPosition() - 1] || null
     } else {
@@ -84,7 +84,7 @@ export default class PropagationRecording<GeneType, FitnessValueType> {
     }
   }
 
-  first(): Chromosome<GeneType, FitnessValueType> | null {
+  first(): PropagationRecord<GeneType, FitnessValueType> | null {
     return this._iterations[0]
   }
 
@@ -96,11 +96,11 @@ export default class PropagationRecording<GeneType, FitnessValueType> {
     return this._recording
   }
 
-  improvements(): Chromosome<GeneType, FitnessValueType>[] {
+  improvements(): PropagationRecord<GeneType, FitnessValueType>[] {
     return this._improvements
   }
 
-  iterations(): Chromosome<GeneType, FitnessValueType>[] {
+  iterations(): PropagationRecord<GeneType, FitnessValueType>[] {
     return this._iterations
   }
 

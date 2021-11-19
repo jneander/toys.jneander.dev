@@ -50,7 +50,7 @@ export default function Queens() {
       <Metrics iteration={state.current ? state.current.iteration : 0} />
 
       <div>
-        <Board chromosome={state.current} size={state.boardSize} />
+        <Board chromosome={state.current?.chromosome} size={state.boardSize} />
       </div>
     </div>
   )

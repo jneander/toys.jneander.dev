@@ -1,4 +1,6 @@
-import {Chromosome, product, sum} from '@jneander/genetics'
+import {Chromosome, PropagationRecord, product, sum} from '@jneander/genetics'
+
+import {CardSplittingFitnessValue} from './types'
 
 import styles from './styles.module.css'
 
@@ -6,22 +8,22 @@ function convertGene(gene: string) {
   return gene === 'A' ? 1 : parseInt(gene, 10)
 }
 
-function geneSum(chromosome: Chromosome<string, number>) {
+function geneSum(chromosome: Chromosome<string>) {
   return sum(chromosome.genes.slice(0, 5).map(convertGene))
 }
 
-function geneProduct(chromosome: Chromosome<string, number>) {
+function geneProduct(chromosome: Chromosome<string>) {
   return product(chromosome.genes.slice(5, 10).map(convertGene))
 }
 
 interface CardsProps {
-  chromosome: Chromosome<string, number>
   label: string
+  record: PropagationRecord<string, CardSplittingFitnessValue>
 }
 
 export default function Cards(props: CardsProps) {
-  const sumGenes = props.chromosome.genes.slice(0, 5)
-  const productGenes = props.chromosome.genes.slice(5, 10)
+  const sumGenes = props.record.chromosome.genes.slice(0, 5)
+  const productGenes = props.record.chromosome.genes.slice(5, 10)
 
   return (
     <div className={styles.View}>
@@ -35,7 +37,7 @@ export default function Cards(props: CardsProps) {
         ))}
 
         <span className={styles.SetMetrics}>
-          Sum: {geneSum(props.chromosome)}
+          Sum: {geneSum(props.record.chromosome)}
         </span>
       </div>
 
@@ -47,7 +49,7 @@ export default function Cards(props: CardsProps) {
         ))}
 
         <span className={styles.SetMetrics}>
-          Product: {geneProduct(props.chromosome)}
+          Product: {geneProduct(props.record.chromosome)}
         </span>
       </div>
     </div>

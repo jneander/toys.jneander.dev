@@ -9,14 +9,14 @@ function haveSameIdentity(valueA: any, valueB: any): boolean {
   return valueA === valueB
 }
 
-export function useStore<State, Substate = any>(
+export function useStore<State, Substate = State>(
   store: Store<State>,
   accessorFn: (state: State) => Substate = getState,
   compareFn: (
     previous: Substate,
     current: Substate
   ) => boolean = haveSameIdentity
-) {
+): Substate {
   const accessorFnRef = useRef<typeof accessorFn>(accessorFn)
   accessorFnRef.current = accessorFn
 

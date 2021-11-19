@@ -1,7 +1,8 @@
 import {
   Chromosome,
   Fitness,
-  generateParent,
+  PropagationRecord,
+  randomChromosome,
   range,
   replaceOneGene
 } from '@jneander/genetics'
@@ -10,15 +11,14 @@ import {BaseController, PropagationOptions} from '../shared'
 import FewestAttacks from './FewestAttacks'
 import {QueensState} from './types'
 
+const DEFAULT_BOARD_SIZE = 8
+
 export default class Controller extends BaseController<number, number> {
-  private boardSize: number
-  private fitnessMethod: FewestAttacks
+  private _boardSize: number | undefined
+  private _fitnessMethod: FewestAttacks | undefined
 
   constructor() {
     super()
-
-    this.boardSize = 8
-    this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
 
     this.getInitialState = this.getInitialState.bind(this)
   }
@@ -31,8 +31,8 @@ export default class Controller extends BaseController<number, number> {
   }
 
   setBoardSize(size: number): void {
-    this.boardSize = size
-    this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
+    this._boardSize = size
+    this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
   }
 
@@ -47,25 +47,37 @@ export default class Controller extends BaseController<number, number> {
   }
 
   protected generateParent() {
-    return generateParent(this.boardSize * 2, this.geneSet(), this.getFitness)
+    return randomChromosome(this.boardSize * 2, this.geneSet())
   }
 
-  protected propogationOptions(): PropagationOptions<number, number> {
+  protected propogationOptions(): PropagationOptions<number> {
     return {
-      mutate: (parent, iterationCount) =>
-        replaceOneGene(parent, this.geneSet(), this.getFitness, iterationCount)
+      mutate: parent => replaceOneGene(parent, this.geneSet())
     }
   }
 
-  protected randomTarget(): Chromosome<number, number> {
-    const target = new Chromosome<number, number>([], 0)
-    target.fitness = this.fitnessMethod.getTargetFitness()
-    return target
+  // TODO: The target below is meaningless. Use explicit fitness instead of target.
+  protected randomTarget(): PropagationRecord<number, number> {
+    return {
+      chromosome: new Chromosome<number>([]),
+      fitness: this.fitnessMethod.getTargetFitness(),
+      iteration: -1
+    }
   }
 
-  protected getFitness(
-    chromosome: Chromosome<number, number>
-  ): Fitness<number> {
+  protected getFitness(chromosome: Chromosome<number>): Fitness<number> {
     return this.fitnessMethod.getFitness(chromosome)
+  }
+
+  protected get boardSize() {
+    return this._boardSize || DEFAULT_BOARD_SIZE
+  }
+
+  protected get fitnessMethod() {
+    if (this._fitnessMethod == null) {
+      this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
+    }
+
+    return this._fitnessMethod
   }
 }

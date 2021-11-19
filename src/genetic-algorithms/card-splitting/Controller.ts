@@ -1,7 +1,8 @@
 import {
   Chromosome,
   Fitness,
-  generateParent,
+  PropagationRecord,
+  randomChromosome,
   randomInt,
   replaceOneGene,
   swapTwoGenes
@@ -13,66 +14,58 @@ import {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
 const geneSet = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
-function mutate(
-  parent: CardSplittingChromosome,
-  geneSet: string[],
-  getFitness: (
-    chromosome: CardSplittingChromosome
-  ) => Fitness<CardSplittingFitnessValue>,
-  iterationCount: number
-) {
+function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
   if (parent.genes.length === new Set(parent.genes).size) {
-    return swapTwoGenes(
-      parent,
-      geneSet,
-      getFitness,
-      iterationCount,
-      randomInt(1, 4)
-    )
+    return swapTwoGenes(parent, randomInt(1, 4))
   }
 
-  return replaceOneGene(parent, geneSet, getFitness, iterationCount)
+  return replaceOneGene(parent, geneSet)
 }
 
 export default class Controller extends BaseController<
   string,
   CardSplittingFitnessValue
 > {
-  private fitnessMethod: SumProductMatch
-
-  constructor() {
-    super()
-
-    this.fitnessMethod = new SumProductMatch()
-  }
+  private _fitnessMethod: SumProductMatch | undefined
 
   protected geneSet(): string[] {
     return geneSet
   }
 
   protected generateParent(): CardSplittingChromosome {
-    return generateParent(10, geneSet, this.getFitness)
+    return randomChromosome(10, geneSet)
   }
 
-  protected propogationOptions(): PropagationOptions<
+  protected propogationOptions(): PropagationOptions<string> {
+    return {
+      mutate: (parent: CardSplittingChromosome) =>
+        mutate(parent, this.geneSet())
+    }
+  }
+
+  // TODO: The target below is meaningless. Use explicit fitness instead of target.
+  protected randomTarget(): PropagationRecord<
     string,
     CardSplittingFitnessValue
   > {
     return {
-      mutate: (parent: CardSplittingChromosome, iterationCount: number) =>
-        mutate(parent, this.geneSet(), this.getFitness, iterationCount)
+      chromosome: new Chromosome<string>([]),
+      fitness: this.fitnessMethod.getTargetFitness(),
+      iteration: -1
     }
-  }
-
-  protected randomTarget(): CardSplittingChromosome {
-    const target = new Chromosome<string, CardSplittingFitnessValue>([], 0)
-    target.fitness = this.fitnessMethod.getTargetFitness()
-    return target
   }
 
   protected getFitness(
     chromosome: CardSplittingChromosome
   ): Fitness<CardSplittingFitnessValue> {
     return this.fitnessMethod.getFitness(chromosome)
+  }
+
+  protected get fitnessMethod() {
+    if (this._fitnessMethod == null) {
+      this._fitnessMethod = new SumProductMatch()
+    }
+
+    return this._fitnessMethod
   }
 }

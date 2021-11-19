@@ -5,7 +5,7 @@ export type Position = {
   row: number
 }
 
-export type KnightCoveringChromosome = Chromosome<Position, number>
+export type KnightCoveringChromosome = Chromosome<Position>
 
 export type KnightCoveringState = {
   boardSize: number

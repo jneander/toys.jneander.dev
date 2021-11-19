@@ -38,6 +38,7 @@ export default function SortingNumbers() {
           best={state.best}
           current={state.current}
           first={state.first}
+          formatFitness={({gap, ordered}) => `${ordered},${gap}`}
           formatGenes={genes => genes.join(', ')}
           target={state.target}
         />

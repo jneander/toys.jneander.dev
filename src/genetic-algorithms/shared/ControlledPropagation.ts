@@ -1,4 +1,8 @@
-import {Propagation, PropagationConfig} from '@jneander/genetics'
+import {
+  Propagation,
+  PropagationConfig,
+  PropagationRecord
+} from '@jneander/genetics'
 
 export type ControlledPropagationConfig<GeneType, FitnessValueType> = Omit<
   PropagationConfig<GeneType, FitnessValueType>,
@@ -24,57 +28,57 @@ export default class ControlledPropagation<GeneType, FitnessValueType> {
     this.runState = 'stopped'
   }
 
-  best() {
-    return this.propagation.best()
+  best(): PropagationRecord<GeneType, FitnessValueType> | null {
+    return this.propagation.best
   }
 
-  current() {
-    return this.propagation.current()
+  current(): PropagationRecord<GeneType, FitnessValueType> | null {
+    return this.propagation.current
   }
 
-  isFinished() {
+  isFinished(): boolean {
     return this.runState === 'finished'
   }
 
-  isRunning() {
+  isRunning(): boolean {
     return this.runState === 'running'
   }
 
-  isStopped() {
+  isStopped(): boolean {
     return this.runState === 'stopped'
   }
 
-  iterationCount() {
-    return this.propagation.iterationCount
+  iterationCount(): number {
+    return this.propagation.iteration
   }
 
-  onFinish() {
+  onFinish(): void {
     this.runState = 'finished'
     if (this.config.onFinish) {
       this.config.onFinish()
     }
   }
 
-  onRun() {
+  onRun(): void {
     this.runState = 'running'
     if (this.config.onRun) {
       this.config.onRun()
     }
   }
 
-  resume() {
+  resume(): void {
     if (this.isStopped()) {
       this.propagation.run()
     }
   }
 
-  start() {
+  start(): void {
     if (this.isStopped()) {
       this.propagation.run()
     }
   }
 
-  stop() {
+  stop(): void {
     if (this.isRunning()) {
       this.propagation.stop()
       this.runState = 'stopped'

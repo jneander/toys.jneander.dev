@@ -1,6 +1,7 @@
 import {
   Chromosome,
   Fitness,
+  PropagationRecord,
   randomEntry,
   randomInt,
   range
@@ -16,6 +17,8 @@ import {
   positionHash,
   randomPosition
 } from './util'
+
+const DEFAULT_BOARD_SIZE = 8
 
 const minimumKnightsByBoardSize: {[key: number]: number} = {
   4: 6,
@@ -39,17 +42,14 @@ const minimumKnightsByBoardSize: {[key: number]: number} = {
 
 export default class Controller extends BaseController<Position, number> {
   private _boardSize: number
-  private _knightCount: number
   private _allBoardPositions: Position[]
-  private fitnessMethod: BoardCoverage
+  private _fitnessMethod: BoardCoverage | undefined
 
   constructor() {
     super()
 
     this._boardSize = 8
-    this._knightCount = minimumKnightsByBoardSize[this._boardSize]
     this._allBoardPositions = allPositionsForBoard(this._boardSize)
-    this.fitnessMethod = new BoardCoverage({boardSize: this._boardSize})
 
     this.getInitialState = this.getInitialState.bind(this)
   }
@@ -63,9 +63,8 @@ export default class Controller extends BaseController<Position, number> {
 
   setBoardSize(size: number): void {
     this._boardSize = size
-    this._knightCount = minimumKnightsByBoardSize[this._boardSize]
     this._allBoardPositions = allPositionsForBoard(this._boardSize)
-    this.fitnessMethod = new BoardCoverage({boardSize: this._boardSize})
+    this._fitnessMethod = new BoardCoverage({boardSize: this._boardSize})
     this.randomizeTarget()
   }
 
@@ -79,39 +78,34 @@ export default class Controller extends BaseController<Position, number> {
     return this._allBoardPositions
   }
 
-  protected generateParent(): Chromosome<Position, number> {
+  protected generateParent(): Chromosome<Position> {
     const genes = []
-    while (genes.length < this._knightCount) {
+    while (genes.length < this.knightCount) {
       genes.push(randomPosition(this._boardSize))
     }
 
-    const chromosome = new Chromosome<Position, number>(genes, 0)
-    chromosome.fitness = this.fitnessMethod.getFitness(chromosome)
-    return chromosome
+    return new Chromosome<Position>(genes)
   }
 
-  protected propogationOptions(): PropagationOptions<Position, number> {
+  protected propogationOptions(): PropagationOptions<Position> {
     return {
       mutate: this.mutate.bind(this)
     }
   }
 
-  protected randomTarget(): Chromosome<Position, number> {
-    const target = new Chromosome<Position, number>([], 0)
-    target.fitness = this.fitnessMethod.getTargetFitness()
-    return target
+  protected randomTarget(): PropagationRecord<Position, number> {
+    return {
+      chromosome: new Chromosome<Position>([]),
+      fitness: this.fitnessMethod.getTargetFitness(),
+      iteration: -1
+    }
   }
 
-  protected getFitness(
-    chromosome: Chromosome<Position, number>
-  ): Fitness<number> {
-    return this.getFitness(chromosome)
+  protected getFitness(chromosome: Chromosome<Position>): Fitness<number> {
+    return this.fitnessMethod.getFitness(chromosome)
   }
 
-  private mutate(
-    parent: Chromosome<Position, number>,
-    iteration: number
-  ): Chromosome<Position, number> {
+  private mutate(parent: Chromosome<Position>): Chromosome<Position> {
     let count = randomInt(0, 10) === 0 ? 2 : 1
     const genes = [...parent.genes]
 
@@ -165,7 +159,7 @@ export default class Controller extends BaseController<Position, number> {
           ]
         }
       } else {
-        potentialKnightPositions = [...this._allBoardPositions]
+        potentialKnightPositions = [...this.allBoardPositions]
       }
 
       let indexOfGeneToReplace
@@ -178,9 +172,30 @@ export default class Controller extends BaseController<Position, number> {
       genes[indexOfGeneToReplace] = randomEntry(potentialKnightPositions)
     }
 
-    const chromosome = new Chromosome<Position, number>(genes, iteration)
-    chromosome.fitness = this.fitnessMethod.getFitness(chromosome)
+    return new Chromosome<Position>(genes)
+  }
 
-    return chromosome
+  protected get boardSize() {
+    return this._boardSize || DEFAULT_BOARD_SIZE
+  }
+
+  protected get knightCount() {
+    return minimumKnightsByBoardSize[this.boardSize]
+  }
+
+  protected get allBoardPositions() {
+    if (this._allBoardPositions == null) {
+      this._allBoardPositions = allPositionsForBoard(this.boardSize)
+    }
+
+    return this._allBoardPositions
+  }
+
+  protected get fitnessMethod() {
+    if (this._fitnessMethod == null) {
+      this._fitnessMethod = new BoardCoverage({boardSize: this.boardSize})
+    }
+
+    return this._fitnessMethod
   }
 }

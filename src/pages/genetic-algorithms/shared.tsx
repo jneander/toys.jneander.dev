@@ -1,7 +1,6 @@
-import Link from 'next/link'
 import {ReactNode} from 'react'
 
-import {Breadcrumb, PrimaryLayout} from '../../shared/components'
+import {Breadcrumb, InternalLink, PrimaryLayout} from '../../shared/components'
 
 import styles from './styles.module.css'
 
@@ -38,13 +37,9 @@ export function GeneticAlgorithmNavigation(
 ) {
   return (
     <Breadcrumb>
-      <Link href={`/`}>
-        <a>Home</a>
-      </Link>
+      <InternalLink href="/">Home</InternalLink>
 
-      <Link href={`/genetic-algorithms`}>
-        <a>Genetic Algorithms</a>
-      </Link>
+      <InternalLink href="/genetic-algorithms">Genetic Algorithms</InternalLink>
 
       <span>{props.pageName}</span>
     </Breadcrumb>

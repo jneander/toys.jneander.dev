@@ -1,5 +1,7 @@
 import {ReactNode} from 'react'
 
+import {ExternalLink} from '../commands'
+
 import styles from './styles.module.css'
 
 interface PrimaryLayoutProps {
@@ -12,7 +14,9 @@ export function PrimaryLayout(props: PrimaryLayoutProps) {
       <div className={styles.PrimaryLayoutContent}>{props.children}</div>
 
       <footer className={styles.PrimaryLayoutFooter}>
-        <a href="https://github.com/jneander/cs.jneander.dev">View on Github</a>
+        <ExternalLink href="https://github.com/jneander/cs.jneander.dev">
+          View on Github
+        </ExternalLink>
       </footer>
     </div>
   )

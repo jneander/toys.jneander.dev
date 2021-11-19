@@ -4,7 +4,7 @@ export type PropagationRecordingConfig = {
   allIterations?: boolean
 }
 
-export default class PropagationRecording<GeneType, FitnessValueType> {
+export class PropagationRecording<GeneType, FitnessValueType> {
   private config: PropagationRecordingConfig
 
   private _recording: boolean

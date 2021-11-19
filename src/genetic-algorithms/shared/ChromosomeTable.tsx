@@ -1,12 +1,17 @@
 import {PropagationRecord} from '@jneander/genetics'
 import {ReactNode} from 'react'
 
+import {PropagationTarget} from './types'
+
 import styles from './styles.module.css'
 
 interface RecordRowProps<GeneType, FitnessValueType> {
-  record: PropagationRecord<GeneType, FitnessValueType> | null
   formatFitness: (fitness: FitnessValueType) => ReactNode
   formatGenes: (genes: GeneType[]) => ReactNode
+  record:
+    | PropagationRecord<GeneType, FitnessValueType>
+    | PropagationTarget<GeneType, FitnessValueType>
+    | null
   version: string
 }
 
@@ -28,7 +33,10 @@ function RecordRow<GeneType, FitnessValueType>(
       </td>
 
       <td style={{textAlign: 'right'}}>
-        {record?.iteration! >= 0 && record?.iteration}
+        {record != null &&
+          'iteration' in record! &&
+          record.iteration >= 0 &&
+          record.iteration}
       </td>
     </tr>
   )
@@ -45,12 +53,12 @@ function defaultFormatGenes<GeneType = any>(genes: GeneType[]): ReactNode {
 }
 
 interface ChromosomeTableProps<GeneType, FitnessValueType> {
-  best: PropagationRecord<GeneType, any> | null
-  current: PropagationRecord<GeneType, any> | null
-  first: PropagationRecord<GeneType, any> | null
+  best: PropagationRecord<GeneType, FitnessValueType> | null
+  current: PropagationRecord<GeneType, FitnessValueType> | null
+  first: PropagationRecord<GeneType, FitnessValueType> | null
   formatFitness?: (fitness: FitnessValueType) => ReactNode
   formatGenes?: (genes: GeneType[]) => ReactNode
-  target: PropagationRecord<GeneType, any>
+  target: PropagationTarget<GeneType, FitnessValueType>
 }
 
 export default function ChromosomeTable<GeneType = any, FitnessValueType = any>(

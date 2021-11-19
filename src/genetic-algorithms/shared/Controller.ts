@@ -1,4 +1,4 @@
-import {Chromosome, Fitness, PropagationRecord} from '@jneander/genetics'
+import {Chromosome, Fitness} from '@jneander/genetics'
 import {Store} from '@jneander/utils-state'
 
 import {
@@ -7,7 +7,7 @@ import {
   PropagationListener,
   PropagationRecording
 } from './propagation'
-import {State} from './types'
+import {PropagationTarget, State} from './types'
 
 export default abstract class Controller<GeneType, FitnessValueType> {
   public store: Store<State<GeneType, FitnessValueType>>
@@ -68,7 +68,7 @@ export default abstract class Controller<GeneType, FitnessValueType> {
     this.updateView()
   }
 
-  setTarget(chromosome: PropagationRecord<GeneType, FitnessValueType>): void {
+  setTarget(chromosome: PropagationTarget<GeneType, FitnessValueType>): void {
     this.store.setState({
       target: chromosome
     })
@@ -106,7 +106,7 @@ export default abstract class Controller<GeneType, FitnessValueType> {
     this.updateView()
   }
 
-  target(): PropagationRecord<GeneType, FitnessValueType> {
+  target(): PropagationTarget<GeneType, FitnessValueType> {
     return this.store.getState().target
   }
 
@@ -136,7 +136,7 @@ export default abstract class Controller<GeneType, FitnessValueType> {
   protected abstract propogationOptions(): {
     mutate: ControlledPropagationConfig<GeneType, FitnessValueType>['mutate']
   }
-  protected abstract randomTarget(): PropagationRecord<
+  protected abstract randomTarget(): PropagationTarget<
     GeneType,
     FitnessValueType
   >

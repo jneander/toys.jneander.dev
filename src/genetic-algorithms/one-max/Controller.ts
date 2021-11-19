@@ -2,12 +2,11 @@ import {
   ArrayMatch,
   Chromosome,
   Fitness,
-  PropagationRecord,
   randomChromosome,
   replaceOneGene
 } from '@jneander/genetics'
 
-import {BaseController, PropagationOptions} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
 import TextArray from './TextArray'
 
 const defaultLength = 150
@@ -22,7 +21,7 @@ export default class Controller extends BaseController<string, number> {
 
   protected generateParent(): Chromosome<string> {
     return randomChromosome<string>(
-      this.target().chromosome.genes.length,
+      this.target().chromosome!.genes.length,
       geneSet
     )
   }
@@ -34,19 +33,18 @@ export default class Controller extends BaseController<string, number> {
     }
   }
 
-  protected randomTarget(): PropagationRecord<string, number> {
+  protected randomTarget(): PropagationTarget<string, number> {
     const generator = new TextArray(geneSet)
     const chromosome = generator.generateTargetWithLength(defaultLength)
 
     return {
       chromosome,
-      fitness: this.fitnessMethod.getTargetFitness(chromosome),
-      iteration: -1
+      fitness: this.fitnessMethod.getTargetFitness(chromosome)
     }
   }
 
   protected getFitness(chromosome: Chromosome<string>): Fitness<number> {
-    return this.fitnessMethod.getFitness(chromosome, this.target().chromosome)
+    return this.fitnessMethod.getFitness(chromosome, this.target().chromosome!)
   }
 
   protected get fitnessMethod() {

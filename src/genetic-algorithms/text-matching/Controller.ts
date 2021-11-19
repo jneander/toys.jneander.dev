@@ -2,13 +2,12 @@ import {
   ArrayMatch,
   Chromosome,
   Fitness,
-  PropagationRecord,
   randomChromosome,
   replaceOneGene,
   sampleArray
 } from '@jneander/genetics'
 
-import {BaseController, PropagationOptions} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
 
 const defaultLength = 50
 const geneSet = '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.'.split(
@@ -23,7 +22,7 @@ export default class Controller extends BaseController<string, number> {
   }
 
   protected generateParent(): Chromosome<string> {
-    return randomChromosome(this.target().chromosome.genes.length, geneSet)
+    return randomChromosome(this.target().chromosome!.genes.length, geneSet)
   }
 
   protected propogationOptions(): PropagationOptions<string> {
@@ -32,7 +31,7 @@ export default class Controller extends BaseController<string, number> {
     }
   }
 
-  protected randomTarget(): PropagationRecord<string, number> {
+  protected randomTarget(): PropagationTarget<string, number> {
     const genes = sampleArray(this.geneSet(), defaultLength).sort((a, b) =>
       a > b ? 1 : -1
     )
@@ -41,13 +40,12 @@ export default class Controller extends BaseController<string, number> {
 
     return {
       chromosome,
-      fitness: this.fitnessMethod.getTargetFitness(chromosome),
-      iteration: -1
+      fitness: this.fitnessMethod.getTargetFitness(chromosome)
     }
   }
 
   protected getFitness(chromosome: Chromosome<string>): Fitness<number> {
-    return this.fitnessMethod.getFitness(chromosome, this.target().chromosome)
+    return this.fitnessMethod.getFitness(chromosome, this.target().chromosome!)
   }
 
   protected get fitnessMethod() {

@@ -1,13 +1,12 @@
 import {
   Chromosome,
   Fitness,
-  PropagationRecord,
   randomChromosome,
   range,
   replaceOneGene
 } from '@jneander/genetics'
 
-import {BaseController, PropagationOptions} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
 import FewestAttacks from './FewestAttacks'
 import {QueensState} from './types'
 
@@ -56,12 +55,9 @@ export default class Controller extends BaseController<number, number> {
     }
   }
 
-  // TODO: The target below is meaningless. Use explicit fitness instead of target.
-  protected randomTarget(): PropagationRecord<number, number> {
+  protected randomTarget(): PropagationTarget<number, number> {
     return {
-      chromosome: new Chromosome<number>([]),
-      fitness: this.fitnessMethod.getTargetFitness(),
-      iteration: -1
+      fitness: this.fitnessMethod.getTargetFitness()
     }
   }
 

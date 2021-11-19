@@ -3,14 +3,13 @@ import {
   ArrayOrderFitnessValue,
   Chromosome,
   Fitness,
-  PropagationRecord,
   range,
   sampleArray,
   shuffleArray,
   swapTwoGenes
 } from '@jneander/genetics'
 
-import {BaseController, PropagationOptions} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
 
 const defaultLength = 50
 const maxLength = 100
@@ -27,7 +26,7 @@ export default class Controller extends BaseController<
   }
 
   protected generateParent(): Chromosome<number> {
-    const genes = shuffleArray(this.target().chromosome.genes)
+    const genes = shuffleArray(this.target().chromosome!.genes)
     return new Chromosome<number>(genes)
   }
 
@@ -37,7 +36,7 @@ export default class Controller extends BaseController<
     }
   }
 
-  protected randomTarget(): PropagationRecord<number, ArrayOrderFitnessValue> {
+  protected randomTarget(): PropagationTarget<number, ArrayOrderFitnessValue> {
     const genes = sampleArray(this.geneSet(), defaultLength).sort(
       (a, b) => a - b
     )
@@ -46,8 +45,7 @@ export default class Controller extends BaseController<
 
     return {
       chromosome,
-      fitness: this.fitnessMethod.getTargetFitness(chromosome),
-      iteration: -1
+      fitness: this.fitnessMethod.getTargetFitness(chromosome)
     }
   }
 

@@ -1,14 +1,13 @@
 import {
   Chromosome,
   Fitness,
-  PropagationRecord,
   randomChromosome,
   randomInt,
   replaceOneGene,
   swapTwoGenes
 } from '@jneander/genetics'
 
-import {BaseController, PropagationOptions} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
 import SumProductMatch from './SumProductMatch'
 import {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
@@ -43,15 +42,12 @@ export default class Controller extends BaseController<
     }
   }
 
-  // TODO: The target below is meaningless. Use explicit fitness instead of target.
-  protected randomTarget(): PropagationRecord<
+  protected randomTarget(): PropagationTarget<
     string,
     CardSplittingFitnessValue
   > {
     return {
-      chromosome: new Chromosome<string>([]),
-      fitness: this.fitnessMethod.getTargetFitness(),
-      iteration: -1
+      fitness: this.fitnessMethod.getTargetFitness()
     }
   }
 

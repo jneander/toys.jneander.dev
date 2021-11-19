@@ -1,7 +1,12 @@
-import {Chromosome, PropagationRecord} from '@jneander/genetics'
+import {Chromosome, Fitness, PropagationRecord} from '@jneander/genetics'
 
 export type PropagationOptions<GeneType> = {
   mutate: (chromosome: Chromosome<GeneType>) => Chromosome<GeneType>
+}
+
+export type PropagationTarget<GeneType, FitnessValueType> = {
+  chromosome?: Chromosome<GeneType>
+  fitness: Fitness<FitnessValueType>
 }
 
 export type State<GeneType, FitnessValueType> = {
@@ -13,5 +18,5 @@ export type State<GeneType, FitnessValueType> = {
   isRunning: boolean
   iterationCount: number
   playbackPosition: number
-  target: PropagationRecord<GeneType, FitnessValueType>
+  target: PropagationTarget<GeneType, FitnessValueType>
 }

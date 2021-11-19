@@ -41,15 +41,6 @@ export default abstract class Controller<GeneType, FitnessValueType> {
     this.stop = this.stop.bind(this)
   }
 
-  getInitialState() {
-    return {
-      allIterations: false,
-      isRunning: false,
-      iterationCount: 0,
-      playbackPosition: 1
-    }
-  }
-
   initialize(): void {
     this.randomizeTarget()
   }

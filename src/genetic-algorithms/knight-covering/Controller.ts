@@ -49,15 +49,6 @@ export default class Controller extends BaseController<Position, number> {
 
     this._boardSize = 8
     this._allBoardPositions = allPositionsForBoard(this._boardSize)
-
-    this.getInitialState = this.getInitialState.bind(this)
-  }
-
-  getInitialState() {
-    return {
-      ...super.getInitialState(),
-      boardSize: this._boardSize
-    }
   }
 
   setBoardSize(size: number): void {

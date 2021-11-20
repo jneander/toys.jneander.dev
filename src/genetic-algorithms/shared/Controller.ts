@@ -4,8 +4,12 @@ import {Store} from '@jneander/utils-state'
 import {
   ControlledPropagation,
   ControlledPropagationConfig,
+  PROPAGATION_FINISHED,
+  PROPAGATION_RUNNING,
   PropagationListener,
-  PropagationRecording
+  PropagationRecording,
+  RunState,
+  PROPAGATION_STOPPED
 } from './propagation'
 import {PropagationTarget, State} from './types'
 
@@ -45,13 +49,16 @@ export default abstract class Controller<GeneType, FitnessValueType> {
     this.randomizeTarget()
   }
 
-  onFinish(): void {
-    this.listener.stop()
-    this.updateView()
+  onRunStateChange(runState: RunState): void {
+    if (runState !== PROPAGATION_RUNNING) {
+      this.listener.stop()
+      this.updateView()
+    }
   }
 
   randomizeTarget(): void {
     this.setTarget(this.randomTarget())
+    this.createPropagation()
   }
 
   setPlaybackPosition(playbackPosition: number): void {
@@ -77,11 +84,11 @@ export default abstract class Controller<GeneType, FitnessValueType> {
   }
 
   start(): void {
-    if (this.propagation?.isRunning()) {
+    if (this.propagation?.runState === PROPAGATION_RUNNING) {
       return
     }
 
-    if (this.propagation?.isFinished()) {
+    if (this.propagation?.runState === PROPAGATION_FINISHED) {
       this.createPropagation()
       this.recording.reset()
       this.updateView()
@@ -107,8 +114,8 @@ export default abstract class Controller<GeneType, FitnessValueType> {
       best: this.recording.best(),
       current: this.recording.current(),
       first: this.recording.first(),
-      isRunning: !!this.propagation && this.propagation.isRunning(),
-      iterationCount: this.propagation ? this.propagation.iterationCount() : 0,
+      isRunning: this.propagation?.runState === PROPAGATION_RUNNING,
+      iterationCount: this.propagation?.iterationCount ?? 0,
       playbackPosition: this.recording.playbackPosition(),
       target: this.target(),
       ...this.state()
@@ -136,13 +143,13 @@ export default abstract class Controller<GeneType, FitnessValueType> {
     this.propagation = new ControlledPropagation({
       calculateFitness: this.getFitness.bind(this),
       generateParent: this.generateParent.bind(this),
-      onFinish: this.onFinish.bind(this),
       onImprovement: chromosome => {
         this.recording.addImprovement(chromosome)
       },
       onIteration: chromosome => {
         this.recording.addIteration(chromosome)
       },
+      onRunStateChange: this.onRunStateChange.bind(this),
       optimalFitness: this.target()!.fitness,
       ...this.propogationOptions()
     })

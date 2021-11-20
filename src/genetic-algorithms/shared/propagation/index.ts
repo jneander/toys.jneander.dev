@@ -1,3 +1,5 @@
+export * from './constants'
 export * from './controlled-propagation'
 export * from './propagation-listener'
 export * from './propagation-recording'
+export * from './types'

@@ -13,7 +13,7 @@ import {
 } from './propagation'
 import {PropagationTarget, State} from './types'
 
-export default abstract class Controller<GeneType, FitnessValueType> {
+export abstract class BaseController<GeneType, FitnessValueType> {
   public store: Store<State<GeneType, FitnessValueType>>
 
   private listener: PropagationListener

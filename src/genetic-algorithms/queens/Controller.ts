@@ -7,33 +7,38 @@ import {
 } from '@jneander/genetics'
 
 import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
-import FewestAttacks from './FewestAttacks'
+import {FewestAttacks} from './algorithms'
+import {DEFAULT_BOARD_SIZE} from './constants'
 import {QueensState} from './types'
 
-const DEFAULT_BOARD_SIZE = 8
-
 export default class Controller extends BaseController<number, number> {
-  private _boardSize: number | undefined
+  private _boardSize: number
   private _fitnessMethod: FewestAttacks | undefined
+
+  constructor() {
+    super()
+
+    this._boardSize = DEFAULT_BOARD_SIZE
+  }
 
   setBoardSize(size: number): void {
     this._boardSize = size
-    this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
+    this._fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
     this.randomizeTarget()
   }
 
   protected state(): QueensState {
     return {
-      boardSize: this.boardSize
+      boardSize: this._boardSize
     }
   }
 
   protected geneSet(): number[] {
-    return range(0, this.boardSize)
+    return range(0, this._boardSize)
   }
 
   protected generateParent() {
-    return randomChromosome(this.boardSize * 2, this.geneSet())
+    return randomChromosome(this._boardSize * 2, this.geneSet())
   }
 
   protected propogationOptions(): PropagationOptions<number> {
@@ -52,13 +57,9 @@ export default class Controller extends BaseController<number, number> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 
-  protected get boardSize() {
-    return this._boardSize || DEFAULT_BOARD_SIZE
-  }
-
   protected get fitnessMethod() {
     if (this._fitnessMethod == null) {
-      this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
+      this._fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
     }
 
     return this._fitnessMethod

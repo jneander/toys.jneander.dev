@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 
-import {ChessBoard, KNIGHT_UNICODE} from '../shared'
-import {KnightCoveringChromosome} from './types'
+import {ChessBoard, KNIGHT_UNICODE} from '../../shared'
+import {KnightCoveringChromosome} from '../types'
 
 interface BoardProps {
   chromosome?: KnightCoveringChromosome

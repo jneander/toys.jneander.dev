@@ -1,14 +1,14 @@
 import {useEffect, useMemo} from 'react'
 
-import {useStore} from '../../shared/state'
-import {ExampleControls, Metrics} from '../shared'
+import {useStore} from '../../../shared/state'
+import {ExampleControls, Metrics} from '../../shared'
+import Controller from '../Controller'
 import Board from './Board'
 import Configuration from './Configuration'
-import Controller from './Controller'
 
 import styles from './styles.module.css'
 
-export default function KnightCovering() {
+export function KnightCovering() {
   const controller = useMemo(() => {
     return new Controller()
   }, [])

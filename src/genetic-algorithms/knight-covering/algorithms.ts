@@ -7,7 +7,7 @@ export type FewestAttacksConfig = {
   boardSize: number
 }
 
-export default class FewestAttacks {
+export class FewestAttacks {
   private boardSize: number
 
   constructor({boardSize}: FewestAttacksConfig) {

@@ -7,7 +7,8 @@ import {
 } from '@jneander/genetics'
 
 import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
-import BoardCoverage from './BoardCoverage'
+import {FewestAttacks} from './algorithms'
+import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
 import {KnightCoveringState, Position} from './types'
 import {
   allPositionsForBoard,
@@ -17,44 +18,22 @@ import {
   randomPosition
 } from './util'
 
-const DEFAULT_BOARD_SIZE = 8
-
-const minimumKnightsByBoardSize: {[key: number]: number} = {
-  4: 6,
-  5: 7,
-  6: 8,
-  7: 10,
-  8: 14,
-  9: 18,
-  10: 22,
-  11: 25,
-  12: 28,
-  13: 33,
-  14: 38,
-  15: 45,
-  16: 50,
-  17: 58,
-  18: 62,
-  19: 68,
-  20: 77
-}
-
 export default class Controller extends BaseController<Position, number> {
   private _boardSize: number
   private _allBoardPositions: Position[]
-  private _fitnessMethod: BoardCoverage | undefined
+  private _fitnessMethod: FewestAttacks | undefined
 
   constructor() {
     super()
 
-    this._boardSize = 8
+    this._boardSize = DEFAULT_BOARD_SIZE
     this._allBoardPositions = allPositionsForBoard(this._boardSize)
   }
 
   setBoardSize(size: number): void {
     this._boardSize = size
     this._allBoardPositions = allPositionsForBoard(this._boardSize)
-    this._fitnessMethod = new BoardCoverage({boardSize: this._boardSize})
+    this._fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
     this.randomizeTarget()
   }
 
@@ -171,17 +150,13 @@ export default class Controller extends BaseController<Position, number> {
     return new Chromosome<Position>(genes)
   }
 
-  protected get boardSize() {
-    return this._boardSize || DEFAULT_BOARD_SIZE
-  }
-
   protected get knightCount() {
-    return minimumKnightsByBoardSize[this.boardSize]
+    return minimumKnightsByBoardSize[this._boardSize]
   }
 
   protected get allBoardPositions() {
     if (this._allBoardPositions == null) {
-      this._allBoardPositions = allPositionsForBoard(this.boardSize)
+      this._allBoardPositions = allPositionsForBoard(this._boardSize)
     }
 
     return this._allBoardPositions
@@ -189,7 +164,7 @@ export default class Controller extends BaseController<Position, number> {
 
   protected get fitnessMethod() {
     if (this._fitnessMethod == null) {
-      this._fitnessMethod = new BoardCoverage({boardSize: this.boardSize})
+      this._fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
     }
 
     return this._fitnessMethod

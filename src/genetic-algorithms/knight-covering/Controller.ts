@@ -70,8 +70,16 @@ export default class Controller extends BaseController<Position, number> {
 
   protected generateParent(): Chromosome<Position> {
     const genes = []
+    const usedPositionMap: {[key: string]: boolean} = {}
+
     while (genes.length < this.knightCount) {
-      genes.push(randomPosition(this._boardSize))
+      const position = randomPosition(this._boardSize)
+      const mapKey = `${position.col},${position.row}`
+
+      if (!usedPositionMap[mapKey]) {
+        genes.push(position)
+        usedPositionMap[mapKey] = true
+      }
     }
 
     return new Chromosome<Position>(genes)

@@ -1,1 +1,1 @@
-export {default as Queens} from './Queens'
+export * from './ui'

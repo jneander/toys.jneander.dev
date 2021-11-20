@@ -1,6 +1,7 @@
 import {ChangeEvent} from 'react'
 
-import {NumberInputField} from '../../shared/components'
+import {NumberInputField} from '../../../shared/components'
+import {MAXIMUM_BOARD_SIZE, MINIMUM_BOARD_SIZE} from '../constants'
 
 interface ConfigurationProps {
   boardSize: number
@@ -22,8 +23,8 @@ export default function Configuration(props: ConfigurationProps) {
       <NumberInputField
         disabled={props.disabled}
         labelText="Board Size"
-        max="20"
-        min="4"
+        max={MAXIMUM_BOARD_SIZE}
+        min={MINIMUM_BOARD_SIZE}
         step="1"
         onChange={handleBoardSizeChange}
         value={props.boardSize}

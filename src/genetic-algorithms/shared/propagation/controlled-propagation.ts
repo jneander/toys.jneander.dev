@@ -63,7 +63,7 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
     }
   }
 
-  private iterate(): void {
+  iterate(): void {
     if (this.propagation.hasReachedOptimalFitness) {
       return
     }

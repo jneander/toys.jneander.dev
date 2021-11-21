@@ -10,6 +10,7 @@
 
 .ChromosomeTable {
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .ChromosomeTable caption {
@@ -29,4 +30,8 @@
 
 .ChromosomeTable tbody tr > *:first-child {
   text-align: start;
+}
+
+.ChromosomeCell {
+  word-break: break-all;
 }

@@ -24,7 +24,7 @@ function RecordRow<GeneType, FitnessValueType>(
     <tr>
       <th scope="row">{version}</th>
 
-      <td style={{fontFamily: 'monospace'}}>
+      <td className={styles.ChromosomeCell} style={{fontFamily: 'monospace'}}>
         {record?.chromosome && formatGenes(record.chromosome.genes)}
       </td>
 

@@ -28,7 +28,8 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       isRunning: false,
       iterationCount: 0,
       playbackPosition: 1,
-      target: this.randomTarget()
+      target: this.randomTarget(),
+      ...this.state()
     })
 
     this.listener = new PropagationListener(this.updateView.bind(this))

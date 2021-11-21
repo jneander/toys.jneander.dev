@@ -38,11 +38,11 @@ export function positionFromHash(hash: number): Position {
   return {row, col}
 }
 
-export function randomPosition(boardSize: number) {
+export function randomPosition(boardSize: number): Position {
   return {row: randomInt(0, boardSize), col: randomInt(0, boardSize)}
 }
 
-export function allPositionsForBoard(boardSize: number) {
+export function allPositionsForBoard(boardSize: number): Position[] {
   const positions = []
 
   for (let row = 0; row < boardSize; row++) {

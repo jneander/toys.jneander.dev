@@ -2,16 +2,29 @@ import {
   Chromosome,
   Fitness,
   randomChromosome,
-  range,
   replaceOneGene
 } from '@jneander/genetics'
 
-import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
+import {
+  BaseController,
+  PropagationOptions,
+  PropagationTarget,
+  QUEEN_UNICODE,
+  allPositionsForBoard
+} from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'
-import {QueensState} from './types'
+import {
+  QueensChromosome,
+  QueensFitnessValueType,
+  QueensGene,
+  QueensState
+} from './types'
 
-export default class Controller extends BaseController<number, number> {
+export default class Controller extends BaseController<
+  QueensGene,
+  QueensFitnessValueType
+> {
   private _boardSize: number | undefined
   private _fitnessMethod: FewestAttacks | undefined
 
@@ -27,27 +40,32 @@ export default class Controller extends BaseController<number, number> {
     }
   }
 
-  protected geneSet(): number[] {
-    return range(0, this.boardSize)
+  protected geneSet(): QueensGene[] {
+    return allPositionsForBoard(this.boardSize, QUEEN_UNICODE)
   }
 
-  protected generateParent() {
-    return randomChromosome(this._boardSize * 2, this.geneSet())
+  protected generateParent(): QueensChromosome {
+    return randomChromosome(this.boardSize, this.geneSet())
   }
 
-  protected propogationOptions(): PropagationOptions<number> {
+  protected propogationOptions(): PropagationOptions<QueensGene> {
     return {
       mutate: parent => replaceOneGene(parent, this.geneSet())
     }
   }
 
-  protected randomTarget(): PropagationTarget<number, number> {
+  protected randomTarget(): PropagationTarget<
+    QueensGene,
+    QueensFitnessValueType
+  > {
     return {
       fitness: this.fitnessMethod.getTargetFitness()
     }
   }
 
-  protected getFitness(chromosome: Chromosome<number>): Fitness<number> {
+  protected getFitness(
+    chromosome: Chromosome<QueensGene>
+  ): Fitness<QueensFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 

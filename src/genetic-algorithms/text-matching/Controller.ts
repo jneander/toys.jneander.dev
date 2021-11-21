@@ -32,9 +32,7 @@ export default class Controller extends BaseController<string, number> {
   }
 
   protected randomTarget(): PropagationTarget<string, number> {
-    const genes = sampleArray(this.geneSet(), defaultLength).sort((a, b) =>
-      a > b ? 1 : -1
-    )
+    const genes = sampleArray(this.geneSet(), defaultLength)
 
     const chromosome = new Chromosome<string>(genes)
 

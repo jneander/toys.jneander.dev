@@ -12,29 +12,23 @@ import {DEFAULT_BOARD_SIZE} from './constants'
 import {QueensState} from './types'
 
 export default class Controller extends BaseController<number, number> {
-  private _boardSize: number
+  private _boardSize: number | undefined
   private _fitnessMethod: FewestAttacks | undefined
-
-  constructor() {
-    super()
-
-    this._boardSize = DEFAULT_BOARD_SIZE
-  }
 
   setBoardSize(size: number): void {
     this._boardSize = size
-    this._fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
+    this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
   }
 
   protected state(): QueensState {
     return {
-      boardSize: this._boardSize
+      boardSize: this.boardSize
     }
   }
 
   protected geneSet(): number[] {
-    return range(0, this._boardSize)
+    return range(0, this.boardSize)
   }
 
   protected generateParent() {
@@ -57,9 +51,17 @@ export default class Controller extends BaseController<number, number> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 
-  protected get fitnessMethod() {
+  protected get boardSize(): number {
+    if (this._boardSize == null) {
+      this._boardSize = DEFAULT_BOARD_SIZE
+    }
+
+    return this._boardSize
+  }
+
+  protected get fitnessMethod(): FewestAttacks {
     if (this._fitnessMethod == null) {
-      this._fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
+      this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     }
 
     return this._fitnessMethod

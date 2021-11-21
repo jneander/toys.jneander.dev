@@ -8,8 +8,7 @@ import {
   PROPAGATION_RUNNING,
   PropagationListener,
   PropagationRecording,
-  RunState,
-  PROPAGATION_STOPPED
+  RunState
 } from './propagation'
 import {PropagationTarget, State} from './types'
 
@@ -18,7 +17,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
   private listener: PropagationListener
   private recording: PropagationRecording<GeneType, FitnessValueType>
-  private propagation: ControlledPropagation<GeneType, FitnessValueType> | null
+  private propagation: ControlledPropagation<GeneType, FitnessValueType>
 
   constructor() {
     this.store = new Store<State<GeneType, FitnessValueType>>({
@@ -34,7 +33,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
     this.listener = new PropagationListener(this.updateView.bind(this))
     this.recording = new PropagationRecording()
-    this.propagation = null
+    this.propagation = this.buildPropagation()
 
     this.getFitness = this.getFitness.bind(this)
     this.randomizeTarget = this.randomizeTarget.bind(this)
@@ -46,7 +45,8 @@ export abstract class BaseController<GeneType, FitnessValueType> {
   }
 
   initialize(): void {
-    this.randomizeTarget()
+    this.propagation.iterate()
+    this.updateView()
   }
 
   onRunStateChange(runState: RunState): void {
@@ -58,7 +58,9 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
   randomizeTarget(): void {
     this.setTarget(this.randomTarget())
-    this.createPropagation()
+    this.propagation = this.buildPropagation()
+    this.propagation.iterate()
+    this.updateView()
   }
 
   setPlaybackPosition(playbackPosition: number): void {
@@ -71,25 +73,26 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       target: chromosome
     })
 
-    this.createPropagation()
+    this.propagation = this.buildPropagation()
     this.recording.reset()
     this.updateView()
   }
 
   setRecordAllIterations(allIterations: boolean): void {
-    this.createPropagation()
+    this.propagation = this.buildPropagation()
     this.recording.configure({allIterations})
     this.recording.reset()
+    this.propagation.iterate()
     this.updateView()
   }
 
   start(): void {
-    if (this.propagation?.runState === PROPAGATION_RUNNING) {
+    if (this.propagation.runState === PROPAGATION_RUNNING) {
       return
     }
 
-    if (this.propagation?.runState === PROPAGATION_FINISHED) {
-      this.createPropagation()
+    if (this.propagation.runState === PROPAGATION_FINISHED) {
+      this.propagation = this.buildPropagation()
       this.recording.reset()
       this.updateView()
     }
@@ -139,8 +142,11 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     FitnessValueType
   >
 
-  private createPropagation(): void {
-    this.propagation = new ControlledPropagation({
+  private buildPropagation(): ControlledPropagation<
+    GeneType,
+    FitnessValueType
+  > {
+    return new ControlledPropagation<GeneType, FitnessValueType>({
       calculateFitness: this.getFitness.bind(this),
       generateParent: this.generateParent.bind(this),
       onImprovement: chromosome => {

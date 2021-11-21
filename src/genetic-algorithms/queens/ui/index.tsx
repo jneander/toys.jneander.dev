@@ -1,9 +1,8 @@
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../../shared/state'
-import {ExampleControls, Metrics} from '../../shared'
+import {ChessBoard, ExampleControls, Metrics} from '../../shared'
 import Controller from '../Controller'
-import Board from './Board'
 import Configuration from './Configuration'
 
 import styles from './styles.module.css'
@@ -50,7 +49,10 @@ export function Queens() {
       <Metrics iteration={state.current ? state.current.iteration : 0} />
 
       <div>
-        <Board chromosome={state.current?.chromosome} size={state.boardSize} />
+        <ChessBoard
+          positions={state.current?.chromosome?.genes}
+          size={state.boardSize}
+        />
       </div>
     </div>
   )

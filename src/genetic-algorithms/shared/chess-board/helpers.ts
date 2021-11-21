@@ -1,3 +1,4 @@
+import {EMPTY_PIECE} from './constants'
 import {ChessBoardPosition, ChessBoardTable} from './types'
 
 function buildScaledBoard(size: number): ChessBoardTable {
@@ -6,7 +7,7 @@ function buildScaledBoard(size: number): ChessBoardTable {
   for (let row = 0; row < size; row++) {
     board[row] = []
     for (let col = 0; col < size; col++) {
-      board[row].push('	')
+      board[row].push(EMPTY_PIECE)
     }
   }
 
@@ -29,8 +30,28 @@ function populateBoard(
 
 export function buildPopulatedBoard(
   size: number,
-  positions: ChessBoardPosition[]
+  positions?: ChessBoardPosition[]
 ) {
   const board = buildScaledBoard(size)
+
+  if (positions == null) {
+    return board
+  }
+
   return populateBoard(board, positions)
+}
+
+export function allPositionsForBoard(
+  boardSize: number,
+  piece: string = EMPTY_PIECE
+): ChessBoardPosition[] {
+  const positions = []
+
+  for (let row = 0; row < boardSize; row++) {
+    for (let col = 0; col < boardSize; col++) {
+      positions.push({row, col, piece})
+    }
+  }
+
+  return positions
 }

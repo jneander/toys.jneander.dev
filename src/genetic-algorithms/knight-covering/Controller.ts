@@ -6,32 +6,51 @@ import {
   range
 } from '@jneander/genetics'
 
-import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
+import {
+  BaseController,
+  ChessBoardPosition,
+  KNIGHT_UNICODE,
+  PropagationOptions,
+  PropagationTarget,
+  allPositionsForBoard
+} from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
-import {KnightCoveringState, Position} from './types'
 import {
-  allPositionsForBoard,
   listAttacks,
   positionFromHash,
   positionHash,
   randomPosition
-} from './util'
+} from './helpers'
+import {
+  KnightCoveringFitnessValueType,
+  KnightCoveringGene,
+  KnightCoveringState
+} from './types'
 
-export default class Controller extends BaseController<Position, number> {
+export default class Controller extends BaseController<
+  KnightCoveringGene,
+  KnightCoveringFitnessValueType
+> {
   private _boardSize: number | undefined
-  private _allBoardPositions: Position[]
+  private _allBoardPositions: KnightCoveringGene[]
   private _fitnessMethod: FewestAttacks | undefined
 
   constructor() {
     super()
 
-    this._allBoardPositions = allPositionsForBoard(this.boardSize)
+    this._allBoardPositions = allPositionsForBoard(
+      this.boardSize,
+      KNIGHT_UNICODE
+    )
   }
 
   setBoardSize(size: number): void {
     this._boardSize = size
-    this._allBoardPositions = allPositionsForBoard(this.boardSize)
+    this._allBoardPositions = allPositionsForBoard(
+      this.boardSize,
+      KNIGHT_UNICODE
+    )
     this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
   }
@@ -42,12 +61,12 @@ export default class Controller extends BaseController<Position, number> {
     }
   }
 
-  protected geneSet(): Position[] {
+  protected geneSet(): KnightCoveringGene[] {
     return this._allBoardPositions
   }
 
-  protected generateParent(): Chromosome<Position> {
-    const genes = []
+  protected generateParent(): Chromosome<KnightCoveringGene> {
+    const genes: KnightCoveringGene[] = []
     const usedPositionMap: {[key: string]: boolean} = {}
 
     while (genes.length < this.knightCount) {
@@ -60,28 +79,35 @@ export default class Controller extends BaseController<Position, number> {
       }
     }
 
-    return new Chromosome<Position>(genes)
+    return new Chromosome<KnightCoveringGene>(genes)
   }
 
-  protected propogationOptions(): PropagationOptions<Position> {
+  protected propogationOptions(): PropagationOptions<KnightCoveringGene> {
     return {
       mutate: this.mutate.bind(this)
     }
   }
 
-  protected randomTarget(): PropagationTarget<Position, number> {
+  protected randomTarget(): PropagationTarget<
+    KnightCoveringGene,
+    KnightCoveringFitnessValueType
+  > {
     return {
       fitness: this.fitnessMethod.getTargetFitness()
     }
   }
 
-  protected getFitness(chromosome: Chromosome<Position>): Fitness<number> {
+  protected getFitness(
+    chromosome: Chromosome<KnightCoveringGene>
+  ): Fitness<KnightCoveringFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 
-  private mutate(parent: Chromosome<Position>): Chromosome<Position> {
+  private mutate(
+    chromosome: Chromosome<KnightCoveringGene>
+  ): Chromosome<KnightCoveringGene> {
     let count = randomInt(0, 10) === 0 ? 2 : 1
-    const genes = [...parent.genes]
+    const genes = [...chromosome.genes]
 
     while (count > 0) {
       count--
@@ -102,7 +128,7 @@ export default class Controller extends BaseController<Position, number> {
       }
 
       const knightIndexes = new Set(range(0, genes.length))
-      const unattacked = []
+      const unattacked: ChessBoardPosition[] = []
 
       const positionToKnightIndexArray = Array.from(positionToKnightIndexes)
       for (let i = 0; i < positionToKnightIndexArray.length; i++) {
@@ -120,13 +146,12 @@ export default class Controller extends BaseController<Position, number> {
         }
       }
 
-      let potentialKnightPositions: Position[] = []
+      let potentialKnightPositions: KnightCoveringGene[] = []
       if (unattacked.length) {
         for (let i = 0; i < unattacked.length; i++) {
-          const positionsWhichCanAttackThisPosition = listAttacks(
-            unattacked[i],
-            this.boardSize
-          )
+          const positionsWhichCanAttackThisPosition: ChessBoardPosition[] =
+            listAttacks(unattacked[i], this.boardSize)
+
           potentialKnightPositions = [
             ...potentialKnightPositions,
             ...positionsWhichCanAttackThisPosition
@@ -146,7 +171,7 @@ export default class Controller extends BaseController<Position, number> {
       genes[indexOfGeneToReplace] = randomEntry(potentialKnightPositions)
     }
 
-    return new Chromosome<Position>(genes)
+    return new Chromosome<KnightCoveringGene>(genes)
   }
 
   protected get boardSize(): number {
@@ -161,9 +186,12 @@ export default class Controller extends BaseController<Position, number> {
     return minimumKnightsByBoardSize[this.boardSize]
   }
 
-  protected get allBoardPositions(): Position[] {
+  protected get allBoardPositions(): KnightCoveringGene[] {
     if (this._allBoardPositions == null) {
-      this._allBoardPositions = allPositionsForBoard(this.boardSize)
+      this._allBoardPositions = allPositionsForBoard(
+        this.boardSize,
+        KNIGHT_UNICODE
+      )
     }
 
     return this._allBoardPositions

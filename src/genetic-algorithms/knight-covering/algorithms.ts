@@ -1,7 +1,7 @@
 import {Fitness, NumberFitness} from '@jneander/genetics'
 
-import {KnightCoveringChromosome} from './types'
-import {listAttacks, positionHash} from './util'
+import {listAttacks, positionHash} from './helpers'
+import type {KnightCoveringChromosome} from './types'
 
 export type FewestAttacksConfig = {
   boardSize: number

@@ -24,7 +24,7 @@ function ChessBoardRow({row}: ChessBoardRowProps) {
 }
 
 interface ChessBoardProps {
-  positions: ChessBoardPosition[]
+  positions?: ChessBoardPosition[]
   size: number
 }
 

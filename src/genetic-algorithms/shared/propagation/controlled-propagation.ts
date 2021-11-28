@@ -3,7 +3,7 @@ import {
   PropagationConfig,
   PropagationRecord
 } from '@jneander/genetics'
-import {BoundedLoop} from '@jneander/utils-async'
+import {ControlledLoopSync} from '@jneander/utils-async'
 
 import {
   PROPAGATION_FINISHED,
@@ -19,7 +19,7 @@ export type ControlledPropagationConfig<GeneType, FitnessValueType> =
 
 export class ControlledPropagation<GeneType, FitnessValueType> {
   private config: ControlledPropagationConfig<GeneType, FitnessValueType>
-  private loop: BoundedLoop | null
+  private loop: ControlledLoopSync | null
   private propagation: Propagation<GeneType, FitnessValueType>
   private _runState: RunState
 
@@ -50,7 +50,7 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
   start(): void {
     if (this.runState === PROPAGATION_STOPPED) {
       this.loop =
-        this.loop || new BoundedLoop({loopFn: this.iterate.bind(this)})
+        this.loop || new ControlledLoopSync({loopFn: this.iterate.bind(this)})
       this.loop.start()
       this.updateState(PROPAGATION_RUNNING)
     }

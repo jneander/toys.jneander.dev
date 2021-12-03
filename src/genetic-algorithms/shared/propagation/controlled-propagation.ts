@@ -3,7 +3,7 @@ import {
   PropagationConfig,
   PropagationRecord
 } from '@jneander/genetics'
-import {ControlledLoopSync} from '@jneander/utils-async'
+import {ControlledLoopSync, TimerSync} from '@jneander/utils-async'
 
 import {
   PROPAGATION_FINISHED,
@@ -15,18 +15,19 @@ import {RunState} from './types'
 export type ControlledPropagationConfig<GeneType, FitnessValueType> =
   PropagationConfig<GeneType, FitnessValueType> & {
     onRunStateChange?: (runState: RunState) => void
+    speed: number
   }
 
 export class ControlledPropagation<GeneType, FitnessValueType> {
   private config: ControlledPropagationConfig<GeneType, FitnessValueType>
-  private loop: ControlledLoopSync | null
+  private iterator: ControlledLoopSync | TimerSync | null
   private propagation: Propagation<GeneType, FitnessValueType>
   private _runState: RunState
 
   constructor(config: ControlledPropagationConfig<GeneType, FitnessValueType>) {
-    this.config = config
+    this.config = {...config}
 
-    this.loop = null
+    this.iterator = null
     this.propagation = new Propagation<GeneType, FitnessValueType>(config)
     this._runState = PROPAGATION_STOPPED
   }
@@ -47,18 +48,35 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
     return this.propagation.iteration
   }
 
+  setSpeed(speed: number): void {
+    if (this.config.speed === speed) {
+      return
+    }
+
+    this.config.speed = speed
+
+    if (this.iterator == null) {
+      return
+    }
+
+    this.ensureIterator()
+
+    if (this.runState === PROPAGATION_RUNNING) {
+      this.iterator.start()
+    }
+  }
+
   start(): void {
     if (this.runState === PROPAGATION_STOPPED) {
-      this.loop =
-        this.loop || new ControlledLoopSync({loopFn: this.iterate.bind(this)})
-      this.loop.start()
+      this.ensureIterator()
+      this.iterator!.start()
       this.updateState(PROPAGATION_RUNNING)
     }
   }
 
   stop(): void {
     if (this.runState === PROPAGATION_RUNNING) {
-      this.loop!.stop()
+      this.iterator!.stop()
       this.updateState(PROPAGATION_STOPPED)
     }
   }
@@ -71,8 +89,35 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
     this.propagation.iterate()
 
     if (this.propagation.hasReachedOptimalFitness) {
-      this.loop!.stop()
+      this.iterator!.stop()
       this.updateState(PROPAGATION_FINISHED)
+    }
+  }
+
+  private ensureIterator(): void {
+    if (this.config.speed === 0) {
+      if (this.iterator instanceof ControlledLoopSync) {
+        return
+      }
+
+      this.iterator?.stop()
+      this.iterator = new ControlledLoopSync({
+        loopFn: this.iterate.bind(this)
+      })
+
+      return
+    }
+
+    const targetTickIntervalMs = Math.round(1000 / this.config.speed)
+
+    if (this.iterator instanceof TimerSync) {
+      this.iterator.setTargetTickIntervalMs(targetTickIntervalMs)
+    } else {
+      this.iterator?.stop()
+      this.iterator = new TimerSync({
+        onTick: this.iterate.bind(this),
+        targetTickIntervalMs
+      })
     }
   }
 

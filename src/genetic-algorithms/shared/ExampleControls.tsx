@@ -43,7 +43,7 @@ export default function ExampleControls(props: ExampleControlsProps) {
             checked={props.recordAllIterations}
             disabled={props.playing}
             id="all-iterations-checkbox"
-            labelText="All Iterations"
+            labelText="Record Iterations"
             onChange={handleToggleRecordAllIterations}
           />
         </span>

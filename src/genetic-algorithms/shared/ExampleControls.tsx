@@ -8,7 +8,7 @@ interface ExampleControlsProps {
   onPause: () => void
   onPositionChange: (position: number) => void
   onRefresh: () => void
-  onSetRecordAllIterations?: (record: boolean) => void
+  onSetRecordAllIterations: (record: boolean) => void
   onStart: () => void
   playing: boolean
   rangePosition: number
@@ -24,7 +24,7 @@ export default function ExampleControls(props: ExampleControlsProps) {
   function handleToggleRecordAllIterations(
     event: ChangeEvent<HTMLInputElement>
   ) {
-    props.onSetRecordAllIterations?.(event.target.checked)
+    props.onSetRecordAllIterations(event.target.checked)
   }
 
   return (

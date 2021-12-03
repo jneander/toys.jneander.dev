@@ -27,7 +27,9 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       first: null,
       isRunning: false,
       iterationCount: 0,
+      maxPropagationSpeed: true,
       playbackPosition: 1,
+      propagationSpeed: 1,
       target: this.randomTarget(),
       ...this.state()
     })
@@ -38,6 +40,8 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
     this.getFitness = this.getFitness.bind(this)
     this.randomizeTarget = this.randomizeTarget.bind(this)
+    this.setMaxPropagationSpeed = this.setMaxPropagationSpeed.bind(this)
+    this.setPropagationSpeed = this.setPropagationSpeed.bind(this)
     this.setPlaybackPosition = this.setPlaybackPosition.bind(this)
     this.setRecordAllIterations = this.setRecordAllIterations.bind(this)
     this.state = this.state.bind(this)
@@ -77,6 +81,16 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.propagation = this.buildPropagation()
     this.recording.reset()
     this.updateView()
+  }
+
+  setPropagationSpeed(propagationSpeed: number): void {
+    this.store.setState({propagationSpeed})
+    this.propagation.setSpeed(this.propagationSpeed)
+  }
+
+  setMaxPropagationSpeed(maxPropagationSpeed: boolean): void {
+    this.store.setState({maxPropagationSpeed})
+    this.propagation.setSpeed(this.propagationSpeed)
   }
 
   setRecordAllIterations(allIterations: boolean): void {
@@ -158,7 +172,13 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       },
       onRunStateChange: this.onRunStateChange.bind(this),
       optimalFitness: this.target()!.fitness,
+      speed: this.propagationSpeed,
       ...this.propogationOptions()
     })
+  }
+
+  private get propagationSpeed(): number {
+    const {maxPropagationSpeed, propagationSpeed} = this.store.getState()
+    return maxPropagationSpeed ? 0 : propagationSpeed
   }
 }

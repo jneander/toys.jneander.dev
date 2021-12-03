@@ -17,6 +17,8 @@ export type State<GeneType, FitnessValueType> = {
   first: PropagationRecord<GeneType, FitnessValueType> | null
   isRunning: boolean
   iterationCount: number
+  maxPropagationSpeed: boolean
   playbackPosition: number
+  propagationSpeed: number
   target: PropagationTarget<GeneType, FitnessValueType>
 }

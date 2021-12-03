@@ -1,16 +1,24 @@
 import {ChangeEvent} from 'react'
 
-import {CheckboxInputField, RangeInputField} from '../../shared/components'
+import {
+  CheckboxInputField,
+  NumberInputField,
+  RangeInputField
+} from '../../shared/components'
 
 import styles from './styles.module.css'
 
 interface ExampleControlsProps {
+  maxPropagationSpeed: boolean
   onPause: () => void
   onPositionChange: (position: number) => void
   onRefresh: () => void
+  onSetMaxPropagationSpeed: (maxPropagationSpeed: boolean) => void
+  onSetPropagationSpeed: (propagationSpeed: number) => void
   onSetRecordAllIterations: (record: boolean) => void
   onStart: () => void
   playing: boolean
+  propagationSpeed: number
   rangePosition: number
   rangePositionCount: number
   recordAllIterations: boolean
@@ -19,6 +27,16 @@ interface ExampleControlsProps {
 export default function ExampleControls(props: ExampleControlsProps) {
   function handleRangeChange(event: ChangeEvent<HTMLInputElement>) {
     props.onPositionChange(Number.parseInt(event.target.value, 10))
+  }
+
+  function handleToggleMaxPropagationSpeed(
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    props.onSetMaxPropagationSpeed(event.target.checked)
+  }
+
+  function handleChangePropagationSpeed(event: ChangeEvent<HTMLInputElement>) {
+    props.onSetPropagationSpeed(Number.parseInt(event.target.value, 10))
   }
 
   function handleToggleRecordAllIterations(
@@ -37,6 +55,25 @@ export default function ExampleControls(props: ExampleControlsProps) {
         ) : (
           <button onClick={props.onStart}>Start</button>
         )}
+
+        <span>
+          <NumberInputField
+            labelText="Iterations Per Second"
+            disabled={props.maxPropagationSpeed}
+            max={1000}
+            min={1}
+            onChange={handleChangePropagationSpeed}
+            step={1}
+            value={props.propagationSpeed}
+          />
+        </span>
+
+        <CheckboxInputField
+          checked={props.maxPropagationSpeed}
+          id="max-speed-checkbox"
+          labelText="Max Speed"
+          onChange={handleToggleMaxPropagationSpeed}
+        />
 
         <span>
           <CheckboxInputField

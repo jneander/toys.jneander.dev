@@ -24,12 +24,16 @@ export default function OneMax() {
   return (
     <div className={styles.Container}>
       <ExampleControls
+        maxPropagationSpeed={state.maxPropagationSpeed}
         onPause={controller.stop}
         onPositionChange={handlePositionChange}
         onRefresh={controller.randomizeTarget}
-        onStart={controller.start}
+        onSetMaxPropagationSpeed={controller.setMaxPropagationSpeed}
+        onSetPropagationSpeed={controller.setPropagationSpeed}
         onSetRecordAllIterations={controller.setRecordAllIterations}
+        onStart={controller.start}
         playing={state.isRunning}
+        propagationSpeed={state.propagationSpeed}
         rangePosition={state.playbackPosition}
         rangePositionCount={state.iterationCount}
         recordAllIterations={state.allIterations}

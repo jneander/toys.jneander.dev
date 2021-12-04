@@ -10,6 +10,7 @@ import styles from './styles.module.css'
 
 interface ExampleControlsProps {
   maxPropagationSpeed: boolean
+  onIterate: () => void
   onPause: () => void
   onPositionChange: (position: number) => void
   onRefresh: () => void
@@ -55,6 +56,10 @@ export default function ExampleControls(props: ExampleControlsProps) {
         ) : (
           <button onClick={props.onStart}>Start</button>
         )}
+
+        <button disabled={props.playing} onClick={props.onIterate}>
+          Iterate
+        </button>
 
         <span>
           <NumberInputField

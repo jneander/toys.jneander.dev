@@ -6,6 +6,7 @@ import {
   ControlledPropagationConfig,
   PROPAGATION_FINISHED,
   PROPAGATION_RUNNING,
+  PROPAGATION_STOPPED,
   PropagationListener,
   PropagationRecording,
   RunState
@@ -39,6 +40,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.propagation = this.buildPropagation()
 
     this.getFitness = this.getFitness.bind(this)
+    this.iterate = this.iterate.bind(this)
     this.randomizeTarget = this.randomizeTarget.bind(this)
     this.setMaxPropagationSpeed = this.setMaxPropagationSpeed.bind(this)
     this.setPropagationSpeed = this.setPropagationSpeed.bind(this)
@@ -52,6 +54,13 @@ export abstract class BaseController<GeneType, FitnessValueType> {
   initialize(): void {
     this.propagation.iterate()
     this.updateView()
+  }
+
+  iterate(): void {
+    if (this.propagation.runState === PROPAGATION_STOPPED) {
+      this.propagation.iterate()
+      this.updateView()
+    }
   }
 
   onRunStateChange(runState: RunState): void {

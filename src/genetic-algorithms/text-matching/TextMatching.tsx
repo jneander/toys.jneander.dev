@@ -25,6 +25,7 @@ export default function TextMatching() {
     <div className={styles.Container}>
       <ExampleControls
         maxPropagationSpeed={state.maxPropagationSpeed}
+        onIterate={controller.iterate}
         onPause={controller.stop}
         onPositionChange={handlePositionChange}
         onRefresh={controller.randomizeTarget}

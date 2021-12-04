@@ -18,6 +18,12 @@
   --grey-dark: #c7cdd1;
 }
 
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   padding: 0;

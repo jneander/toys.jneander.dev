@@ -1,17 +1,8 @@
-import {randomInt} from '@jneander/genetics'
-import {HTMLProps, useMemo} from 'react'
+import {HTMLProps} from 'react'
+
+import {useId} from '../utils'
 
 import styles from './styles.module.css'
-
-const idValues =
-  '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-function randomId() {
-  return Array(8)
-    .fill(0)
-    .map(_ => idValues[randomInt(0, idValues.length)])
-    .join('')
-}
 
 interface CheckboxInputFieldProps
   extends Omit<HTMLProps<HTMLInputElement>, 'className' | 'label' | 'type'> {
@@ -21,7 +12,7 @@ interface CheckboxInputFieldProps
 export function CheckboxInputField(props: CheckboxInputFieldProps) {
   const {labelText, ...inputProps} = props
 
-  const id = useMemo(() => props.id ?? randomId(), [props.id])
+  const id = useId(props.id)
 
   return (
     <div className={styles.CheckboxInputField}>

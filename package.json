@@ -13,13 +13,15 @@
     "@jneander/genetics": "^0.7.0",
     "@jneander/utils-async": "^2.1.1",
     "@jneander/utils-state": "^2.0.2",
-    "next": "12.0.3",
+    "next": "^12.0.7",
     "normalize.css": "^8.0.0",
+    "p5": "^1.4.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },
   "devDependencies": {
     "@types/node": "16.11.7",
+    "@types/p5": "^1.3.3",
     "@types/react": "17.0.34",
     "eslint": "7.32.0",
     "eslint-config-next": "12.0.3",

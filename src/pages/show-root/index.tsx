@@ -14,6 +14,10 @@ export function ShowRoot() {
               Genetic Algorithms
             </InternalLink>
           </li>
+
+          <li>
+            <InternalLink href="/simulations">Simulations</InternalLink>
+          </li>
         </ul>
       </main>
     </PrimaryLayout>

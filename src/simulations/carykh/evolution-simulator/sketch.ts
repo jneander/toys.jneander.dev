@@ -3167,7 +3167,7 @@ export default function sketch(p5: p5) {
     if (statusWindow >= -3) {
       drawStatusWindow(prevStatusWindow == -4)
 
-      if (statusWindow >= -3 && !miniSimulation) {
+      if (!miniSimulation) {
         openMiniSimulation()
       }
     }

@@ -1,7 +1,7 @@
 import type p5 from 'p5'
 import type {Color, Font, Graphics} from 'p5'
 
-import {Menu} from './constants'
+import {Activity} from './constants'
 
 export default function sketch(p5: p5) {
   const windowSizeMultiplier = 0.8
@@ -66,7 +66,7 @@ export default function sketch(p5: p5) {
   let timer = 0
   let camX = 0
   let camY = 0
-  let menu: Menu = Menu.Start
+  let activity: Activity = Activity.Start
   let gen = -1
   let sliderX = 1170
   let genSelected = 0
@@ -1688,7 +1688,7 @@ export default function sketch(p5: p5) {
   p5.mouseWheel = (event: WheelEvent) => {
     const delta = event.deltaX
 
-    if (menu === Menu.SimulationRunning) {
+    if (activity === Activity.SimulationRunning) {
       if (delta < 0) {
         camZoom *= 0.9090909
 
@@ -1718,7 +1718,7 @@ export default function sketch(p5: p5) {
     const mY = p5.mouseY / windowSizeMultiplier
 
     if (
-      menu === Menu.GenerationView &&
+      activity === Activity.GenerationView &&
       gen >= 1 &&
       p5.abs(mY - 365) <= 25 &&
       p5.abs(mX - sliderX - 25) <= 25
@@ -1749,16 +1749,16 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function setMenu(m: Menu): void {
-    menu = m
+  function setActivity(m: Activity): void {
+    activity = m
 
-    if (m === Menu.GenerationView) {
+    if (m === Activity.GenerationView) {
       drawGraph(975, 570)
     }
   }
 
   function startASAP(): void {
-    setMenu(Menu.RequestingSimulation)
+    setActivity(Activity.RequestingSimulation)
     creaturesTested = 0
     stepbystep = false
     stepbystepslow = false
@@ -1772,26 +1772,26 @@ export default function sketch(p5: p5) {
     const mY = p5.mouseY / windowSizeMultiplier
 
     if (
-      menu === Menu.Start &&
+      activity === Activity.Start &&
       p5.abs(mX - windowWidth / 2) <= 200 &&
       p5.abs(mY - 400) <= 100
     ) {
-      setMenu(Menu.GenerationView)
+      setActivity(Activity.GenerationView)
     } else if (
-      menu === Menu.GenerationView &&
+      activity === Activity.GenerationView &&
       gen == -1 &&
       p5.abs(mX - 120) <= 100 &&
       p5.abs(mY - 300) <= 50
     ) {
-      setMenu(Menu.GeneratingCreatures)
+      setActivity(Activity.GeneratingCreatures)
     } else if (
-      menu === Menu.GenerationView &&
+      activity === Activity.GenerationView &&
       gen >= 0 &&
       p5.abs(mX - 990) <= 230
     ) {
       if (p5.abs(mY - 40) <= 20) {
         // Do 1 step-by-step generation.
-        setMenu(Menu.RequestingSimulation)
+        setActivity(Activity.RequestingSimulation)
         speed = 1
         creaturesTested = 0
         stepbystep = true
@@ -1800,7 +1800,7 @@ export default function sketch(p5: p5) {
 
       if (p5.abs(mY - 90) <= 20) {
         // Do 1 quick generation.
-        setMenu(Menu.RequestingSimulation)
+        setActivity(Activity.RequestingSimulation)
         creaturesTested = 0
         stepbystep = true
         stepbystepslow = false
@@ -1818,20 +1818,21 @@ export default function sketch(p5: p5) {
         startASAP()
       }
     } else if (
-      menu === Menu.GeneratedCreatures &&
+      activity === Activity.GeneratedCreatures &&
       p5.abs(mX - 1030) <= 130 &&
       p5.abs(mY - 684) <= 20
     ) {
       gen = 0
-      setMenu(Menu.GenerationView)
+      setActivity(Activity.GenerationView)
     } else if (
-      menu === Menu.FinishedStepByStep &&
+      activity === Activity.FinishedStepByStep &&
       p5.abs(mX - 1030) <= 130 &&
       p5.abs(mY - 684) <= 20
     ) {
-      setMenu(Menu.SortingCreatures)
+      setActivity(Activity.SortingCreatures)
     } else if (
-      (menu === Menu.SimulationRunning || menu === Menu.RequestingSimulation) &&
+      (activity === Activity.SimulationRunning ||
+        activity === Activity.RequestingSimulation) &&
       mY >= windowHeight - 40
     ) {
       if (mX < 90) {
@@ -1869,32 +1870,32 @@ export default function sketch(p5: p5) {
           setFitness(i)
         }
 
-        setMenu(Menu.SimulationFinished)
+        setActivity(Activity.SimulationFinished)
       }
     } else if (
-      menu === Menu.SortingCreatures &&
+      activity === Activity.SortingCreatures &&
       mX < 90 &&
       mY >= windowHeight - 40
     ) {
       timer = 100000
     } else if (
-      menu === Menu.SortedCreatures &&
+      activity === Activity.SortedCreatures &&
       p5.abs(mX - 1030) <= 130 &&
       p5.abs(mY - 690) <= 20
     ) {
-      setMenu(Menu.CullingCreatures)
+      setActivity(Activity.CullingCreatures)
     } else if (
-      menu === Menu.CulledCreatures &&
+      activity === Activity.CulledCreatures &&
       p5.abs(mX - 1130) <= 80 &&
       p5.abs(mY - 690) <= 20
     ) {
-      setMenu(Menu.PropagatingCreatures)
+      setActivity(Activity.PropagatingCreatures)
     } else if (
-      menu === Menu.PropagatedCreatures &&
+      activity === Activity.PropagatedCreatures &&
       p5.abs(mX - 1130) <= 80 &&
       p5.abs(mY - 690) <= 20
     ) {
-      setMenu(Menu.GenerationView)
+      setActivity(Activity.GenerationView)
     }
   }
 
@@ -2165,7 +2166,7 @@ export default function sketch(p5: p5) {
     if (statusWindow >= 0) {
       cj = c2[statusWindow]
 
-      if (menu === Menu.FinishedStepByStep) {
+      if (activity === Activity.FinishedStepByStep) {
         const id = (cj.id - 1) % 1000
         x = id % 40
         y = p5.floor(id / 40)
@@ -2291,7 +2292,7 @@ export default function sketch(p5: p5) {
   p5.draw = () => {
     p5.scale(windowSizeMultiplier)
 
-    if (menu === Menu.Start) {
+    if (activity === Activity.Start) {
       p5.background(255)
       p5.fill(100, 200, 100)
       p5.noStroke()
@@ -2299,7 +2300,7 @@ export default function sketch(p5: p5) {
       p5.fill(0)
       p5.text('EVOLUTION!', windowWidth / 2, 200)
       p5.text('START', windowWidth / 2, 430)
-    } else if (menu === Menu.GenerationView) {
+    } else if (activity === Activity.GenerationView) {
       p5.noStroke()
       p5.fill(0)
       p5.background(255, 200, 130)
@@ -2362,7 +2363,7 @@ export default function sketch(p5: p5) {
           startASAP()
         }
       }
-    } else if (menu === Menu.GeneratingCreatures) {
+    } else if (activity === Activity.GeneratingCreatures) {
       p5.background(220, 253, 102)
       p5.push()
       p5.scale(10.0 / scaleToFixBug)
@@ -2443,7 +2444,7 @@ export default function sketch(p5: p5) {
         }
       }
 
-      setMenu(Menu.GeneratedCreatures)
+      setActivity(Activity.GeneratedCreatures)
 
       p5.pop()
       p5.noStroke()
@@ -2458,11 +2459,11 @@ export default function sketch(p5: p5) {
         690
       )
       p5.text('Back', windowWidth - 250, 690)
-    } else if (menu === Menu.RequestingSimulation) {
+    } else if (activity === Activity.RequestingSimulation) {
       setGlobalVariables(c[creaturesTested])
       camZoom = 0.01
 
-      setMenu(Menu.SimulationRunning)
+      setActivity(Activity.SimulationRunning)
 
       if (!stepbystepslow) {
         for (let i = 0; i < 1000; i++) {
@@ -2476,11 +2477,11 @@ export default function sketch(p5: p5) {
           setFitness(i)
         }
 
-        setMenu(Menu.SimulationFinished)
+        setActivity(Activity.SimulationFinished)
       }
     }
 
-    if (menu === Menu.SimulationRunning) {
+    if (activity === Activity.SimulationRunning) {
       // simulate running
 
       if (timer <= 900) {
@@ -2546,11 +2547,11 @@ export default function sketch(p5: p5) {
       }
 
       if (timer >= 1020) {
-        setMenu(Menu.RequestingSimulation)
+        setActivity(Activity.RequestingSimulation)
 
         creaturesTested++
         if (creaturesTested == 1000) {
-          setMenu(Menu.SimulationFinished)
+          setActivity(Activity.SimulationFinished)
         }
 
         camX = 0
@@ -2561,7 +2562,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    if (menu === Menu.SimulationFinished) {
+    if (activity === Activity.SimulationFinished) {
       // sort
 
       c2 = new Array<Creature>(0)
@@ -2626,13 +2627,13 @@ export default function sketch(p5: p5) {
 
       if (stepbystep) {
         drawScreenImage(0)
-        setMenu(Menu.FinishedStepByStep)
+        setActivity(Activity.FinishedStepByStep)
       } else {
-        setMenu(Menu.CullingCreatures)
+        setActivity(Activity.CullingCreatures)
       }
     }
 
-    if (menu === Menu.SortingCreatures) {
+    if (activity === Activity.SortingCreatures) {
       // cool sorting animation
 
       p5.background(220, 253, 102)
@@ -2666,7 +2667,7 @@ export default function sketch(p5: p5) {
 
       if (timer > 60 * p5.PI) {
         drawScreenImage(1)
-        setMenu(Menu.SortedCreatures)
+        setActivity(Activity.SortedCreatures)
       }
     }
 
@@ -2676,24 +2677,27 @@ export default function sketch(p5: p5) {
     prevStatusWindow = statusWindow
 
     if (
-      (menu === Menu.FinishedStepByStep ||
-        menu === Menu.SortingCreatures ||
-        menu === Menu.SortedCreatures ||
-        menu === Menu.CullingCreatures ||
-        menu === Menu.CulledCreatures) &&
+      (activity === Activity.FinishedStepByStep ||
+        activity === Activity.SortingCreatures ||
+        activity === Activity.SortedCreatures ||
+        activity === Activity.CullingCreatures ||
+        activity === Activity.CulledCreatures) &&
       gensToDo == 0 &&
       !drag
     ) {
       if (p5.abs(mX - 639.5) <= 599.5) {
-        if (menu === Menu.FinishedStepByStep && p5.abs(mY - 329) <= 312) {
+        if (
+          activity === Activity.FinishedStepByStep &&
+          p5.abs(mY - 329) <= 312
+        ) {
           statusWindow =
             creaturesInPosition[
               p5.floor((mX - 40) / 30) + p5.floor((mY - 17) / 25) * 40
             ]
         } else if (
-          (menu === Menu.SortedCreatures ||
-            menu === Menu.CullingCreatures ||
-            menu === Menu.CulledCreatures) &&
+          (activity === Activity.SortedCreatures ||
+            activity === Activity.CullingCreatures ||
+            activity === Activity.CulledCreatures) &&
           p5.abs(mY - 354) <= 312
         ) {
           statusWindow =
@@ -2705,7 +2709,7 @@ export default function sketch(p5: p5) {
         statusWindow = -4
       }
     } else if (
-      menu === Menu.GenerationView &&
+      activity === Activity.GenerationView &&
       genSelected >= 1 &&
       gensToDo == 0 &&
       !drag
@@ -2723,7 +2727,7 @@ export default function sketch(p5: p5) {
       statusWindow = -4
     }
 
-    if (menu === Menu.CullingCreatures) {
+    if (activity === Activity.CullingCreatures) {
       // Kill!
 
       for (let j = 0; j < 500; j++) {
@@ -2752,13 +2756,13 @@ export default function sketch(p5: p5) {
 
       if (stepbystep) {
         drawScreenImage(2)
-        setMenu(Menu.CulledCreatures)
+        setActivity(Activity.CulledCreatures)
       } else {
-        setMenu(Menu.PropagatingCreatures)
+        setActivity(Activity.PropagatingCreatures)
       }
     }
 
-    if (menu === Menu.PropagatingCreatures) {
+    if (activity === Activity.PropagatingCreatures) {
       // Reproduce and mutate
 
       justGotBack = true
@@ -2792,22 +2796,22 @@ export default function sketch(p5: p5) {
       gen++
 
       if (stepbystep) {
-        setMenu(Menu.PropagatedCreatures)
+        setActivity(Activity.PropagatedCreatures)
       } else {
-        setMenu(Menu.GenerationView)
+        setActivity(Activity.GenerationView)
       }
     }
 
     if (
-      menu === Menu.FinishedStepByStep ||
-      menu === Menu.SortedCreatures ||
-      menu === Menu.CulledCreatures ||
-      menu === Menu.PropagatedCreatures
+      activity === Activity.FinishedStepByStep ||
+      activity === Activity.SortedCreatures ||
+      activity === Activity.CulledCreatures ||
+      activity === Activity.PropagatedCreatures
     ) {
       p5.image(screenImage, 0, 0, 1280, 720)
     }
 
-    if (menu === Menu.GenerationView || gensToDo >= 1) {
+    if (activity === Activity.GenerationView || gensToDo >= 1) {
       mX = p5.mouseX / windowSizeMultiplier
       mY = p5.mouseY / windowSizeMultiplier
 

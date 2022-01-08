@@ -466,7 +466,6 @@ export default function sketch(p5: p5) {
         newAxon1,
         newAxon2
       )
-      // p5.max(this.m+r()*0.1,0.2),p5.min(p5.max(this.f+r()*0.1,0),1)
     }
   }
 
@@ -794,7 +793,7 @@ export default function sketch(p5: p5) {
           p5.floor(p5.random(0, newNodeCount)),
           p5.floor(p5.random(0, newNodeCount))
         )
-      ) // p5.random(0.1,1),p5.random(0,1)
+      )
 
       let nextClosestNode = 0
       let record = 100000
@@ -2263,25 +2262,12 @@ export default function sketch(p5: p5) {
         py2 += 180
       }
 
-      // py = p5.min(p5.max(py,0),420);
-
       const px2 = p5.min(p5.max(px - 90, 10), 970)
 
       drawpopUpImage()
       p5.image(popUpImage, px2, py2, 300, 300)
 
-      /* p5.fill(255, 255, 255);
-      p5.rect(px2+240, py2+10, 50, 30);
-      p5.rect(px2+10, py2+10, 100, 30);
-      p5.fill(0, 0, 0);
-      p5.textFont(font, 30);
-      p5.textAlign(p5.RIGHT);
-      p5.text(p5.int(simulationTimer/60), px2+285, py2+36);
-      p5.textAlign(p5.LEFT);
-      p5.text(p5.nf(averageX/5.0, 0, 3), px2+15, py2+36); */
-
       drawStats(px2 + 295, py2, 0.45)
-
       simulate()
 
       let shouldBeWatching = statusWindow
@@ -2338,33 +2324,6 @@ export default function sketch(p5: p5) {
 
     p5.textFont(font, 96)
     p5.textAlign(p5.CENTER)
-
-    /*rects.add(new Rectangle(4,-7,9,-3));
-    rects.add(new Rectangle(6,-1,10,10));
-    rects.add(new Rectangle(9.5,-1.5,13,10));
-    rects.add(new Rectangle(12,-2,16,10));
-    rects.add(new Rectangle(15,-2.5,19,10));
-    rects.add(new Rectangle(18,-3,22,10));
-    rects.add(new Rectangle(21,-3.5,25,10));
-    rects.add(new Rectangle(24,-4,28,10));
-    rects.add(new Rectangle(27,-4.5,31,10));
-    rects.add(new Rectangle(30,-5,34,10));
-    rects.add(new Rectangle(33,-5.5,37,10));
-    rects.add(new Rectangle(36,-6,40,10));
-    rects.add(new Rectangle(39,-6.5,100,10));*/
-
-    // rects.add(new Rectangle(-100,-100,100,-2.8));
-    // rects.add(new Rectangle(-100,0,100,100));
-    // Snaking thing below:
-    /*rects.add(new Rectangle(-400,-10,1.5,-1.5));
-    rects.add(new Rectangle(-400,-10,3,-3));
-    rects.add(new Rectangle(-400,-10,4.5,-4.5));
-    rects.add(new Rectangle(-400,-10,6,-6));
-    rects.add(new Rectangle(0.75,-0.75,400,4));
-    rects.add(new Rectangle(2.25,-2.25,400,4));
-    rects.add(new Rectangle(3.75,-3.75,400,4));
-    rects.add(new Rectangle(5.25,-5.25,400,4));
-    rects.add(new Rectangle(-400,-5.25,0,4));*/
   }
 
   p5.draw = () => {
@@ -2941,18 +2900,6 @@ export default function sketch(p5: p5) {
       }
     }
 
-    /* if(menu >= 1){
-    p5.fill(255);
-    p5.rect(0,705,100,15);
-    p5.fill(0);
-    p5.textAlign(p5.LEFT);
-    p5.textFont(font,12);
-    int g = gensToDo;
-    if(gensToDo >= 10000){
-    g = 1000000000-gensToDo;
-    }
-    p5.text(g,2,715);
-    } */
     overallTimer++
   }
 

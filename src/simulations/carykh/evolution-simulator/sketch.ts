@@ -2264,26 +2264,16 @@ export default function sketch(p5: p5) {
     p5.createCanvas(1024, 576)
     p5.ellipseMode(p5.CENTER)
 
-    const beginBar = new Array<number>(barLen)
-    const beginSpecies = new Array<number>(101)
-
-    for (let i = 0; i < barLen; i++) {
-      beginBar[i] = 0
-    }
-
-    for (let i = 0; i < 101; i++) {
-      beginSpecies[i] = 500
-    }
-
     fitnessPercentileHistory.push(new Array(fitnessPercentileCount).fill(0.0))
-    barCounts.push(beginBar)
-    speciesCounts.push(beginSpecies)
+    barCounts.push(new Array(barLen).fill(0))
+    speciesCounts.push(new Array(101).fill(500))
     topSpeciesCounts.push(0)
 
     graphImage = p5.createGraphics(975, 570)
     screenImage = p5.createGraphics(1920, 1080)
     popUpImage = p5.createGraphics(450, 450)
     segBarImage = p5.createGraphics(975, 150)
+
     segBarImage.background(220)
     popUpImage.background(220)
 

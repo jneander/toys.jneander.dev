@@ -85,8 +85,7 @@ export default function sketch(p5: p5) {
   let drag = false
   let justGotBack = false
   let creaturesTested = 0
-  let fontSize = 0
-  let fontSizes = [50, 36, 25, 20, 16, 14, 11, 9]
+  const fontSizes = [50, 36, 25, 20, 16, 14, 11, 9]
   let statusWindow = -4
   let prevStatusWindow = -4
   let overallTimer = 0
@@ -2835,7 +2834,7 @@ export default function sketch(p5: p5) {
           fs = p5.floor(p5.log(selectedGeneration) / p5.log(10))
         }
 
-        fontSize = fontSizes[fs]
+        const fontSize = fontSizes[fs]
 
         p5.textFont(font, fontSize)
         p5.fill(0)

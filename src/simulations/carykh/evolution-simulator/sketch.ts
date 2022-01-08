@@ -127,7 +127,6 @@ export default function sketch(p5: p5) {
   let gravity = 0.005
   let airFriction = 0.95
 
-  let force: number
   let averageX: number
   let averageY: number
   let speed = 1
@@ -508,11 +507,12 @@ export default function sketch(p5: p5) {
       const distance = p5.dist(ni1.x, ni1.y, ni2.x, ni2.y)
       const angle = p5.atan2(ni1.y - ni2.y, ni1.x - ni2.x)
 
-      force = p5.min(p5.max(1 - distance / target, -0.4), 0.4)
+      const force = p5.min(p5.max(1 - distance / target, -0.4), 0.4)
       ni1.vx += (p5.cos(angle) * force * this.rigidity) / ni1.m
       ni1.vy += (p5.sin(angle) * force * this.rigidity) / ni1.m
       ni2.vx -= (p5.cos(angle) * force * this.rigidity) / ni2.m
       ni2.vy -= (p5.sin(angle) * force * this.rigidity) / ni2.m
+
       energy = p5.max(
         energy +
           energyDirection *

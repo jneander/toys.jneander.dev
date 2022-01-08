@@ -82,7 +82,7 @@ export default function sketch(p5: p5) {
   let generationCount = -1
   let sliderX = 1170
   let selectedGeneration = 0
-  let drag = false
+  let draggingSlider = false
   let justGotBack = false
   let creaturesTested = 0
   const fontSizes = [50, 36, 25, 20, 16, 14, 11, 9]
@@ -2112,7 +2112,7 @@ export default function sketch(p5: p5) {
       generationCount >= 1 &&
       generationSlider.isUnderCursor()
     ) {
-      drag = true
+      draggingSlider = true
     }
   }
 
@@ -2154,7 +2154,7 @@ export default function sketch(p5: p5) {
   }
 
   p5.mouseReleased = () => {
-    drag = false
+    draggingSlider = false
     miniSimulation = false
 
     if (activity === Activity.Start && startViewStartButton.isUnderCursor()) {
@@ -2978,7 +2978,7 @@ export default function sketch(p5: p5) {
         activity === Activity.CullingCreatures ||
         activity === Activity.CulledCreatures) &&
       gensToDo == 0 &&
-      !drag
+      !draggingSlider
     ) {
       if (p5.abs(mX - 639.5) <= 599.5) {
         if (
@@ -3007,7 +3007,7 @@ export default function sketch(p5: p5) {
       activity === Activity.GenerationView &&
       selectedGeneration >= 1 &&
       gensToDo == 0 &&
-      !drag
+      !draggingSlider
     ) {
       statusWindow = -4
       if (p5.abs(mY - 250) <= 70) {
@@ -3123,7 +3123,7 @@ export default function sketch(p5: p5) {
           )
         }
 
-        if (drag) {
+        if (draggingSlider) {
           generationSlider.onDrag()
         }
 

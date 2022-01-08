@@ -1,4 +1,4 @@
-export enum Menu {
+export enum Activity {
   Start = 'START',
   GenerationView = 'GENERATION_VIEW',
   GeneratingCreatures = 'GENERATING_CREATURES',

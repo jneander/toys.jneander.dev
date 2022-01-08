@@ -5,6 +5,7 @@ import {Activity} from './constants'
 
 export default function sketch(p5: p5) {
   const CREATURE_COUNT = 1000
+  const FRAME_RATE = 60 // target frames per second
   const FRICTION = 4
   const SEED = 0
   const windowSizeMultiplier = 0.8
@@ -2258,10 +2259,13 @@ export default function sketch(p5: p5) {
   }
 
   p5.setup = () => {
-    p5.frameRate(60)
+    p5.frameRate(FRAME_RATE)
     p5.randomSeed(SEED)
-    p5.noSmooth()
-    p5.createCanvas(1024, 576)
+    // Create a 1024x576 Canvas
+    p5.createCanvas(
+      windowWidth * windowSizeMultiplier,
+      windowHeight * windowSizeMultiplier
+    )
     p5.ellipseMode(p5.CENTER)
 
     fitnessPercentileHistory.push(new Array(fitnessPercentileCount).fill(0.0))
@@ -2804,7 +2808,7 @@ export default function sketch(p5: p5) {
       activity === Activity.CulledCreatures ||
       activity === Activity.PropagatedCreatures
     ) {
-      p5.image(screenImage, 0, 0, 1280, 720)
+      p5.image(screenImage, 0, 0, windowWidth, windowHeight)
     }
 
     if (activity === Activity.GenerationView || gensToDo >= 1) {

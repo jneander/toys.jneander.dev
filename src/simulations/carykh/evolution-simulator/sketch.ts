@@ -4,8 +4,12 @@ import type {Color, Font, Graphics} from 'p5'
 import {Activity} from './constants'
 
 export default function sketch(p5: p5) {
+  const CREATURE_COUNT = 1000
   const windowSizeMultiplier = 0.8
   const SEED = 0
+
+  const lastCreatureIndex = CREATURE_COUNT - 1
+  const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 
   let font: Font
   let percentile: Array<number[]> = []
@@ -81,7 +85,7 @@ export default function sketch(p5: p5) {
   let miniSimulation = false
   let creatureWatching = 0
   let simulationTimer = 0
-  const creaturesInPosition = new Array<number>(1000)
+  const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
   let camZoom = 0.015
   let gravity = 0.005
@@ -1681,7 +1685,7 @@ export default function sketch(p5: p5) {
   let n: Node[] = []
   let m: Muscle[] = []
 
-  const c = new Array<Creature>(1000)
+  const c = new Array<Creature>(CREATURE_COUNT)
 
   let c2: Creature[] = []
 
@@ -1859,7 +1863,7 @@ export default function sketch(p5: p5) {
         timer = 0
         creaturesTested++
 
-        for (let i = creaturesTested; i < 1000; i++) {
+        for (let i = creaturesTested; i < CREATURE_COUNT; i++) {
           setGlobalVariables(c[i])
 
           for (let s = 0; s < 900; s++) {
@@ -1905,15 +1909,15 @@ export default function sketch(p5: p5) {
     screenImage.background(220, 253, 102)
     screenImage.noStroke()
 
-    for (let j = 0; j < 1000; j++) {
+    for (let j = 0; j < CREATURE_COUNT; j++) {
       let cj = c2[j]
       if (stage == 3) {
-        cj = c[cj.id - gen * 1000 - 1001]
+        cj = c[cj.id - gen * CREATURE_COUNT - (CREATURE_COUNT + 1)]
       }
 
       let j2 = j
       if (stage == 0) {
-        j2 = cj.id - gen * 1000 - 1
+        j2 = cj.id - gen * CREATURE_COUNT - 1
         creaturesInPosition[j2] = j
       }
 
@@ -1971,7 +1975,7 @@ export default function sketch(p5: p5) {
       )
       screenImage.text('Reproduce', windowWidth - 150, 700)
 
-      for (let j = 0; j < 1000; j++) {
+      for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
         const x = j % 40
         const y = p5.floor(j / 40) + 1
@@ -2167,7 +2171,7 @@ export default function sketch(p5: p5) {
       cj = c2[statusWindow]
 
       if (activity === Activity.FinishedStepByStep) {
-        const id = (cj.id - 1) % 1000
+        const id = (cj.id - 1) % CREATURE_COUNT
         x = id % 40
         y = p5.floor(id / 40)
       } else {
@@ -2193,7 +2197,7 @@ export default function sketch(p5: p5) {
       py = y
       p5.rect(x, y, 140, 140)
 
-      const ranks = [1000, 500, 1]
+      const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
       rank = ranks[statusWindow + 3]
     }
 
@@ -2315,7 +2319,7 @@ export default function sketch(p5: p5) {
         p5.rect(20, 250, 200, 100)
         p5.fill(0)
         p5.text(
-          'Since there are no creatures yet, create 1000 creatures!',
+          `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
           20,
           160
         )
@@ -2454,7 +2458,7 @@ export default function sketch(p5: p5) {
       p5.textAlign(p5.CENTER)
       p5.textFont(font, 24)
       p5.text(
-        'Here are your 1000 randomly generated creatures!!!',
+        `Here are your ${CREATURE_COUNT} randomly generated creatures!!!`,
         windowWidth / 2 - 200,
         690
       )
@@ -2466,7 +2470,7 @@ export default function sketch(p5: p5) {
       setActivity(Activity.SimulationRunning)
 
       if (!stepbystepslow) {
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < CREATURE_COUNT; i++) {
           setGlobalVariables(c[i])
 
           for (let s = 0; s < 900; s++) {
@@ -2550,7 +2554,7 @@ export default function sketch(p5: p5) {
         setActivity(Activity.RequestingSimulation)
 
         creaturesTested++
-        if (creaturesTested == 1000) {
+        if (creaturesTested == CREATURE_COUNT) {
           setActivity(Activity.SimulationFinished)
         }
 
@@ -2567,7 +2571,7 @@ export default function sketch(p5: p5) {
 
       c2 = new Array<Creature>(0)
 
-      for (let i = 0; i < 1000; i++) {
+      for (let i = 0; i < CREATURE_COUNT; i++) {
         c2.push(c[i])
       }
 
@@ -2578,8 +2582,8 @@ export default function sketch(p5: p5) {
         percentile[gen + 1][i] = c2[p[i]].d
       }
 
-      creatureDatabase.push(c2[999].copyCreature(-1))
-      creatureDatabase.push(c2[499].copyCreature(-1))
+      creatureDatabase.push(c2[lastCreatureIndex].copyCreature(-1))
+      creatureDatabase.push(c2[midCreatureIndex].copyCreature(-1))
       creatureDatabase.push(c2[0].copyCreature(-1))
 
       const beginBar = new Array<number>(barLen)
@@ -2595,7 +2599,7 @@ export default function sketch(p5: p5) {
         beginSpecies[i] = 0
       }
 
-      for (let i = 0; i < 1000; i++) {
+      for (let i = 0; i < CREATURE_COUNT; i++) {
         const bar = p5.floor(c2[i].d * histBarsPerMeter - minBar)
 
         if (bar >= 0 && bar < barLen) {
@@ -2642,9 +2646,9 @@ export default function sketch(p5: p5) {
 
       const transition = 0.5 - 0.5 * p5.cos(p5.min(timer / 60, p5.PI))
 
-      for (let j = 0; j < 1000; j++) {
+      for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
-        const j2 = cj.id - gen * 1000 - 1
+        const j2 = cj.id - gen * CREATURE_COUNT - 1
         const x1 = j2 % 40
         const y1 = p5.floor(j2 / 40)
         const x2 = j % 40
@@ -2731,7 +2735,7 @@ export default function sketch(p5: p5) {
       // Kill!
 
       for (let j = 0; j < 500; j++) {
-        const f = j / 1000
+        const f = j / CREATURE_COUNT
         const rand = (p5.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
 
         slowDies = f <= rand
@@ -2741,9 +2745,9 @@ export default function sketch(p5: p5) {
 
         if (slowDies) {
           j2 = j
-          j3 = 999 - j
+          j3 = lastCreatureIndex - j
         } else {
-          j2 = 999 - j
+          j2 = lastCreatureIndex - j
           j3 = j
         }
 
@@ -2770,25 +2774,26 @@ export default function sketch(p5: p5) {
       for (let j = 0; j < 500; j++) {
         let j2 = j
         if (!c2[j].alive) {
-          j2 = 999 - j
+          j2 = lastCreatureIndex - j
         }
 
         const cj = c2[j2]
-        const cj2 = c2[999 - j2]
+        const cj2 = c2[lastCreatureIndex - j2]
 
-        c2[j2] = cj.copyCreature(cj.id + 1000) // duplicate
-        c2[999 - j2] = cj.modified(cj2.id + 1000) // mutated offspring 1
+        c2[j2] = cj.copyCreature(cj.id + CREATURE_COUNT) // duplicate
+        c2[lastCreatureIndex - j2] = cj.modified(cj2.id + CREATURE_COUNT) // mutated offspring 1
 
-        n = c2[999 - j2].n
-        m = c2[999 - j2].m
+        n = c2[lastCreatureIndex - j2].n
+        m = c2[lastCreatureIndex - j2].m
 
         toStableConfiguration(n.length, m.length)
         adjustToCenter(n.length)
       }
 
-      for (let j = 0; j < 1000; j++) {
+      for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
-        c[cj.id - gen * 1000 - 1001] = cj.copyCreature(-1)
+        c[cj.id - gen * CREATURE_COUNT - (CREATURE_COUNT + 1)] =
+          cj.copyCreature(-1)
       }
 
       drawScreenImage(3)

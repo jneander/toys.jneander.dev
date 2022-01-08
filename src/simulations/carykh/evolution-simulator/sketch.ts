@@ -115,6 +115,406 @@ export default function sketch(p5: p5) {
     return p5.pow(p5.random(-1, 1), 19)
   }
 
+  function rectIsUnderCursor(
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ): boolean {
+    const mX = p5.mouseX / windowSizeMultiplier
+    const mY = p5.mouseY / windowSizeMultiplier
+
+    return mX >= x && mX <= x + width && mY >= y && mY <= y + height
+  }
+
+  abstract class Widget {
+    abstract draw(): void
+    abstract isUnderCursor(): boolean
+  }
+
+  class StartViewStartButton extends Widget {
+    draw(): void {
+      p5.noStroke()
+      p5.fill(100, 200, 100)
+      p5.rect(windowWidth / 2 - 200, 300, 400, 200)
+      p5.fill(0)
+      p5.text('START', windowWidth / 2, 430)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(windowWidth / 2 - 200, 300, 400, 200)
+    }
+
+    onClick(): void {
+      setActivity(Activity.GenerationView)
+    }
+  }
+
+  class GenerationViewCreateButton extends Widget {
+    draw(): void {
+      p5.noStroke()
+      p5.fill(100, 200, 100)
+      p5.rect(20, 250, 200, 100)
+      p5.fill(0)
+      p5.text('CREATE', 56, 312)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(20, 250, 200, 100)
+    }
+
+    onClick(): void {
+      setActivity(Activity.GeneratingCreatures)
+    }
+  }
+
+  class GeneratedCreaturesBackButton extends Widget {
+    draw(): void {
+      p5.noStroke()
+      p5.fill(100, 100, 200)
+      p5.rect(900, 664, 260, 40)
+      p5.fill(0)
+      p5.textAlign(p5.CENTER)
+      p5.textFont(font, 24)
+      p5.text('Back', windowWidth - 250, 690)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(900, 664, 260, 40)
+    }
+
+    onClick(): void {
+      generationCount = 0
+      setActivity(Activity.GenerationView)
+    }
+  }
+
+  class SimulateStepByStepButton extends Widget {
+    draw(): void {
+      p5.noStroke()
+      p5.fill(100, 200, 100)
+      p5.rect(760, 20, 460, 40)
+      p5.fill(0)
+      p5.text('Do 1 step-by-step generation.', 770, 50)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(760, 20, 460, 40)
+    }
+
+    onClick(): void {
+      setActivity(Activity.RequestingSimulation)
+      speed = 1
+      creaturesTested = 0
+      stepbystep = true
+      stepbystepslow = true
+    }
+  }
+
+  class SimulateQuickButton extends Widget {
+    draw(): void {
+      p5.noStroke()
+      p5.fill(100, 200, 100)
+      p5.rect(760, 70, 460, 40)
+      p5.fill(0)
+      p5.text('Do 1 quick generation.', 770, 100)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(760, 70, 460, 40)
+    }
+
+    onClick(): void {
+      setActivity(Activity.RequestingSimulation)
+      creaturesTested = 0
+      stepbystep = true
+      stepbystepslow = false
+    }
+  }
+
+  class SimulateAsapButton extends Widget {
+    draw(): void {
+      p5.noStroke()
+      p5.fill(100, 200, 100)
+      p5.rect(760, 120, 230, 40)
+      p5.fill(0)
+      p5.text('Do 1 gen ASAP.', 770, 150)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(760, 120, 230, 40)
+    }
+
+    onClick(): void {
+      gensToDo = 1
+      startASAP()
+    }
+  }
+
+  class SimulateAlapButton extends Widget {
+    draw(): void {
+      p5.noStroke()
+
+      if (gensToDo >= 2) {
+        p5.fill(128, 255, 128)
+      } else {
+        p5.fill(70, 140, 70)
+      }
+
+      p5.rect(990, 120, 230, 40)
+      p5.fill(0)
+      p5.text('Do gens ALAP.', 1000, 150)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(990, 120, 230, 40)
+    }
+
+    onClick(): void {
+      gensToDo = 1000000000
+      startASAP()
+    }
+  }
+
+  class StepByStepSkipButton extends Widget {
+    draw(): void {
+      p5.fill(0)
+      p5.rect(0, windowHeight - 40, 90, 40)
+      p5.fill(255)
+      p5.textAlign(p5.CENTER)
+      p5.textFont(font, 32)
+      p5.text('SKIP', 45, windowHeight - 8)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(0, windowHeight - 40, 90, 40)
+    }
+
+    onClick(): void {
+      for (let s = timer; s < 900; s++) {
+        simulate()
+      }
+
+      timer = 1021
+    }
+  }
+
+  class StepByStepPlaybackSpeedButton extends Widget {
+    draw(): void {
+      p5.fill(0)
+      p5.rect(120, windowHeight - 40, 240, 40)
+      p5.fill(255)
+      p5.textAlign(p5.CENTER)
+      p5.textFont(font, 32)
+      p5.text('PB speed: x' + speed, 240, windowHeight - 8)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(120, windowHeight - 40, 240, 40)
+    }
+
+    onClick(): void {
+      speed *= 2
+
+      if (speed === 1024) {
+        speed = 900
+      }
+
+      if (speed >= 1800) {
+        speed = 1
+      }
+    }
+  }
+
+  class StepByStepFinishButton extends Widget {
+    draw(): void {
+      p5.fill(0)
+      p5.rect(windowWidth - 120, windowHeight - 40, 120, 40)
+      p5.fill(255)
+      p5.textAlign(p5.CENTER)
+      p5.textFont(font, 32)
+      p5.text('FINISH', windowWidth - 60, windowHeight - 8)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(windowWidth - 120, windowHeight - 40, 120, 40)
+    }
+
+    onClick(): void {
+      for (let s = timer; s < 900; s++) {
+        simulate()
+      }
+
+      timer = 0
+      creaturesTested++
+
+      for (let i = creaturesTested; i < CREATURE_COUNT; i++) {
+        setGlobalVariables(c[i])
+
+        for (let s = 0; s < 900; s++) {
+          simulate()
+        }
+
+        setAverages()
+        setFitness(i)
+      }
+
+      setActivity(Activity.SimulationFinished)
+    }
+  }
+
+  class SortCreaturesButton extends Widget {
+    draw(): void {
+      screenImage.noStroke()
+      screenImage.fill(100, 100, 200)
+      screenImage.rect(900, 664, 260, 40)
+      screenImage.fill(0)
+      screenImage.textAlign(p5.CENTER)
+      screenImage.textFont(font, 24)
+      screenImage.text('Sort', windowWidth - 250, 690)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(900, 664, 260, 40)
+    }
+
+    onClick(): void {
+      setActivity(Activity.SortingCreatures)
+    }
+  }
+
+  class SortingCreaturesSkipButton extends Widget {
+    draw(): void {
+      p5.fill(0)
+      p5.rect(0, windowHeight - 40, 90, 40)
+      p5.fill(255)
+      p5.textAlign(p5.CENTER)
+      p5.textFont(font, 32)
+      p5.text('SKIP', 45, windowHeight - 8)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(0, windowHeight - 40, 90, 40)
+    }
+
+    onClick(): void {
+      timer = 100000
+    }
+  }
+
+  class CullCreaturesButton extends Widget {
+    draw(): void {
+      screenImage.noStroke()
+      screenImage.fill(100, 100, 200)
+      screenImage.rect(900, 670, 260, 40)
+      screenImage.fill(0)
+      screenImage.textAlign(p5.CENTER)
+      screenImage.textFont(font, 24)
+      screenImage.text(
+        `Kill ${Math.floor(CREATURE_COUNT / 2)}`,
+        windowWidth - 250,
+        700
+      )
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(900, 670, 260, 40)
+    }
+
+    onClick(): void {
+      setActivity(Activity.CullingCreatures)
+    }
+  }
+
+  class PropagateCreaturesButton extends Widget {
+    draw(): void {
+      screenImage.noStroke()
+      screenImage.fill(100, 100, 200)
+      screenImage.rect(1050, 670, 160, 40)
+      screenImage.fill(0)
+      screenImage.textAlign(p5.CENTER)
+      screenImage.textFont(font, 24)
+      screenImage.text('Reproduce', windowWidth - 150, 700)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(1050, 670, 160, 40)
+    }
+
+    onClick(): void {
+      setActivity(Activity.PropagatingCreatures)
+    }
+  }
+
+  class PropagatedCreaturesBackButton extends Widget {
+    draw(): void {
+      screenImage.noStroke()
+      screenImage.fill(100, 100, 200)
+      screenImage.rect(1050, 670, 160, 40)
+      screenImage.fill(0)
+      screenImage.textAlign(p5.CENTER)
+      screenImage.textFont(font, 24)
+      screenImage.text('Back', windowWidth - 150, 700)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(1050, 670, 160, 40)
+    }
+
+    onClick(): void {
+      setActivity(Activity.GenerationView)
+    }
+  }
+
+  class GenerationSlider extends Widget {
+    draw(): void {
+      p5.noStroke()
+      p5.textAlign(p5.CENTER)
+      p5.fill(100)
+      p5.rect(760, 340, 460, 50)
+      p5.fill(220)
+      p5.rect(sliderX, 340, 50, 50)
+
+      let fs = 0
+      if (selectedGeneration >= 1) {
+        fs = p5.floor(p5.log(selectedGeneration) / p5.log(10))
+      }
+
+      const fontSize = fontSizes[fs]
+
+      p5.textFont(font, fontSize)
+      p5.fill(0)
+      p5.text(selectedGeneration, sliderX + 25, 366 + fontSize * 0.3333)
+    }
+
+    isUnderCursor(): boolean {
+      return rectIsUnderCursor(sliderX, 340, 50, 50)
+    }
+
+    onDrag(): void {
+      const mX = p5.mouseX / windowSizeMultiplier
+
+      sliderX = p5.min(p5.max(sliderX + (mX - 25 - sliderX) * 0.2, 760), 1170)
+    }
+  }
+
+  const startViewStartButton = new StartViewStartButton()
+  const generationViewCreateButton = new GenerationViewCreateButton()
+  const generatedCreaturesBackButton = new GeneratedCreaturesBackButton()
+  const simulateStepByStepButton = new SimulateStepByStepButton()
+  const simulateQuickButton = new SimulateQuickButton()
+  const simulateAsapButton = new SimulateAsapButton()
+  const simulateAlapButton = new SimulateAlapButton()
+  const generationSlider = new GenerationSlider()
+  const stepByStepSkipButton = new StepByStepSkipButton()
+  const stepByStepPlaybackSpeedButton = new StepByStepPlaybackSpeedButton()
+  const stepByStepFinishButton = new StepByStepFinishButton()
+  const sortCreaturesButton = new SortCreaturesButton()
+  const sortingCreaturesSkipButton = new SortingCreaturesSkipButton()
+  const cullCreaturesButton = new CullCreaturesButton()
+  const propagateCreaturesButton = new PropagateCreaturesButton()
+  const propagatedCreaturesBackButton = new PropagatedCreaturesBackButton()
+
   class Node {
     // FLOAT
     x: number
@@ -1707,14 +2107,10 @@ export default function sketch(p5: p5) {
       gensToDo = 0
     }
 
-    const mX = p5.mouseX / windowSizeMultiplier
-    const mY = p5.mouseY / windowSizeMultiplier
-
     if (
       activity === Activity.GenerationView &&
       generationCount >= 1 &&
-      p5.abs(mY - 365) <= 25 &&
-      p5.abs(mX - sliderX - 25) <= 25
+      generationSlider.isUnderCursor()
     ) {
       drag = true
     }
@@ -1761,134 +2157,65 @@ export default function sketch(p5: p5) {
     drag = false
     miniSimulation = false
 
-    const mX = p5.mouseX / windowSizeMultiplier
-    const mY = p5.mouseY / windowSizeMultiplier
-
-    if (
-      activity === Activity.Start &&
-      p5.abs(mX - windowWidth / 2) <= 200 &&
-      p5.abs(mY - 400) <= 100
-    ) {
-      setActivity(Activity.GenerationView)
+    if (activity === Activity.Start && startViewStartButton.isUnderCursor()) {
+      startViewStartButton.onClick()
     } else if (
       activity === Activity.GenerationView &&
       generationCount == -1 &&
-      p5.abs(mX - 120) <= 100 &&
-      p5.abs(mY - 300) <= 50
+      generationViewCreateButton.isUnderCursor()
     ) {
-      setActivity(Activity.GeneratingCreatures)
-    } else if (
-      activity === Activity.GenerationView &&
-      generationCount >= 0 &&
-      p5.abs(mX - 990) <= 230
-    ) {
-      if (p5.abs(mY - 40) <= 20) {
-        // Do 1 step-by-step generation.
-        setActivity(Activity.RequestingSimulation)
-        speed = 1
-        creaturesTested = 0
-        stepbystep = true
-        stepbystepslow = true
-      }
-
-      if (p5.abs(mY - 90) <= 20) {
-        // Do 1 quick generation.
-        setActivity(Activity.RequestingSimulation)
-        creaturesTested = 0
-        stepbystep = true
-        stepbystepslow = false
-      }
-
-      if (p5.abs(mY - 140) <= 20) {
-        if (mX < 990) {
-          // Do 1 gen ASAP.
-          gensToDo = 1
-        } else {
-          // Do gens ALAP.
-          gensToDo = 1000000000
-        }
-
-        startASAP()
+      generationViewCreateButton.onClick()
+    } else if (activity === Activity.GenerationView && generationCount >= 0) {
+      if (simulateStepByStepButton.isUnderCursor()) {
+        simulateStepByStepButton.onClick()
+      } else if (simulateQuickButton.isUnderCursor()) {
+        simulateQuickButton.onClick()
+      } else if (simulateAsapButton.isUnderCursor()) {
+        simulateAsapButton.onClick()
+      } else if (simulateAlapButton.isUnderCursor()) {
+        simulateAlapButton.onClick()
       }
     } else if (
       activity === Activity.GeneratedCreatures &&
-      p5.abs(mX - 1030) <= 130 &&
-      p5.abs(mY - 684) <= 20
+      generatedCreaturesBackButton.isUnderCursor()
     ) {
-      generationCount = 0
-      setActivity(Activity.GenerationView)
+      generatedCreaturesBackButton.onClick()
     } else if (
       activity === Activity.FinishedStepByStep &&
-      p5.abs(mX - 1030) <= 130 &&
-      p5.abs(mY - 684) <= 20
+      sortCreaturesButton.isUnderCursor()
     ) {
-      setActivity(Activity.SortingCreatures)
+      sortCreaturesButton.onClick()
     } else if (
-      (activity === Activity.SimulationRunning ||
-        activity === Activity.RequestingSimulation) &&
-      mY >= windowHeight - 40
+      activity === Activity.SimulationRunning ||
+      activity === Activity.RequestingSimulation
     ) {
-      if (mX < 90) {
-        for (let s = timer; s < 900; s++) {
-          simulate()
-        }
-
-        timer = 1021
-      } else if (mX >= 120 && mX < 360) {
-        speed *= 2
-
-        if (speed == 1024) {
-          speed = 900
-        }
-
-        if (speed >= 1800) {
-          speed = 1
-        }
-      } else if (mX >= windowWidth - 120) {
-        for (let s = timer; s < 900; s++) {
-          simulate()
-        }
-
-        timer = 0
-        creaturesTested++
-
-        for (let i = creaturesTested; i < CREATURE_COUNT; i++) {
-          setGlobalVariables(c[i])
-
-          for (let s = 0; s < 900; s++) {
-            simulate()
-          }
-
-          setAverages()
-          setFitness(i)
-        }
-
-        setActivity(Activity.SimulationFinished)
+      if (stepByStepSkipButton.isUnderCursor()) {
+        stepByStepSkipButton.onClick()
+      } else if (stepByStepPlaybackSpeedButton.isUnderCursor()) {
+        stepByStepPlaybackSpeedButton.onClick()
+      } else if (stepByStepFinishButton.isUnderCursor()) {
+        stepByStepFinishButton.onClick()
       }
     } else if (
       activity === Activity.SortingCreatures &&
-      mX < 90 &&
-      mY >= windowHeight - 40
+      sortingCreaturesSkipButton.isUnderCursor()
     ) {
-      timer = 100000
+      sortingCreaturesSkipButton.onClick()
     } else if (
       activity === Activity.SortedCreatures &&
-      p5.abs(mX - 1030) <= 130 &&
-      p5.abs(mY - 690) <= 20
+      cullCreaturesButton.isUnderCursor()
     ) {
-      setActivity(Activity.CullingCreatures)
+      cullCreaturesButton.onClick()
     } else if (
       activity === Activity.CulledCreatures &&
-      p5.abs(mX - 1130) <= 80 &&
-      p5.abs(mY - 690) <= 20
+      propagateCreaturesButton.isUnderCursor()
     ) {
-      setActivity(Activity.PropagatingCreatures)
+      propagateCreaturesButton.onClick()
     } else if (
       activity === Activity.PropagatedCreatures &&
-      p5.abs(mX - 1130) <= 80 &&
-      p5.abs(mY - 690) <= 20
+      propagatedCreaturesBackButton.isUnderCursor()
     ) {
-      setActivity(Activity.GenerationView)
+      propagatedCreaturesBackButton.onClick()
     }
   }
 
@@ -1931,16 +2258,14 @@ export default function sketch(p5: p5) {
     screenImage.noStroke()
 
     if (stage == 0) {
-      screenImage.rect(900, 664, 260, 40)
       screenImage.fill(0)
       screenImage.text(
         "All 1,000 creatures have been tested.  Now let's sort them!",
         windowWidth / 2 - 200,
         690
       )
-      screenImage.text('Sort', windowWidth - 250, 690)
+      sortCreaturesButton.draw()
     } else if (stage == 1) {
-      screenImage.rect(900, 670, 260, 40)
       screenImage.fill(0)
       screenImage.text('Fastest creatures at the top!', windowWidth / 2, 30)
       screenImage.text(
@@ -1948,9 +2273,8 @@ export default function sketch(p5: p5) {
         windowWidth / 2 - 200,
         700
       )
-      screenImage.text('Kill 500', windowWidth - 250, 700)
+      cullCreaturesButton.draw()
     } else if (stage == 2) {
-      screenImage.rect(1050, 670, 160, 40)
       screenImage.fill(0)
       screenImage.text(
         'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
@@ -1962,7 +2286,7 @@ export default function sketch(p5: p5) {
         windowWidth / 2 - 130,
         700
       )
-      screenImage.text('Reproduce', windowWidth - 150, 700)
+      propagateCreaturesButton.draw()
 
       for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
@@ -1976,7 +2300,6 @@ export default function sketch(p5: p5) {
         }
       }
     } else if (stage == 3) {
-      screenImage.rect(1050, 670, 160, 40)
       screenImage.fill(0)
       screenImage.text(
         'These are the 1000 creatures of generation #' +
@@ -1990,7 +2313,7 @@ export default function sketch(p5: p5) {
         windowWidth / 2 - 130,
         700
       )
-      screenImage.text('Back', windowWidth - 150, 700)
+      propagatedCreaturesBackButton.draw()
     }
 
     screenImage.pop()
@@ -2278,12 +2601,10 @@ export default function sketch(p5: p5) {
 
     if (activity === Activity.Start) {
       p5.background(255)
-      p5.fill(100, 200, 100)
       p5.noStroke()
-      p5.rect(windowWidth / 2 - 200, 300, 400, 200)
       p5.fill(0)
       p5.text('EVOLUTION!', windowWidth / 2, 200)
-      p5.text('START', windowWidth / 2, 430)
+      startViewStartButton.draw()
     } else if (activity === Activity.GenerationView) {
       p5.noStroke()
       p5.fill(0)
@@ -2295,8 +2616,6 @@ export default function sketch(p5: p5) {
       p5.textFont(font, 28)
 
       if (generationCount == -1) {
-        p5.fill(100, 200, 100)
-        p5.rect(20, 250, 200, 100)
         p5.fill(0)
         p5.text(
           `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
@@ -2304,25 +2623,14 @@ export default function sketch(p5: p5) {
           160
         )
         p5.text('They will be randomly created, and also very simple.', 20, 200)
-        p5.text('CREATE', 56, 312)
+        generationViewCreateButton.draw()
       } else {
-        p5.fill(100, 200, 100)
-        p5.rect(760, 20, 460, 40)
-        p5.rect(760, 70, 460, 40)
-        p5.rect(760, 120, 230, 40)
+        simulateStepByStepButton.draw()
+        simulateQuickButton.draw()
+        simulateAsapButton.draw()
+        simulateAlapButton.draw()
 
-        if (gensToDo >= 2) {
-          p5.fill(128, 255, 128)
-        } else {
-          p5.fill(70, 140, 70)
-        }
-
-        p5.rect(990, 120, 230, 40)
         p5.fill(0)
-        p5.text('Do 1 step-by-step generation.', 770, 50)
-        p5.text('Do 1 quick generation.', 770, 100)
-        p5.text('Do 1 gen ASAP.', 770, 150)
-        p5.text('Do gens ALAP.', 1000, 150)
         p5.text('Median ' + fitnessName, 50, 160)
         p5.textAlign(p5.CENTER)
         p5.textAlign(p5.RIGHT)
@@ -2434,8 +2742,6 @@ export default function sketch(p5: p5) {
 
       p5.pop()
       p5.noStroke()
-      p5.fill(100, 100, 200)
-      p5.rect(900, 664, 260, 40)
       p5.fill(0)
       p5.textAlign(p5.CENTER)
       p5.textFont(font, 24)
@@ -2444,7 +2750,7 @@ export default function sketch(p5: p5) {
         windowWidth / 2 - 200,
         690
       )
-      p5.text('Back', windowWidth - 250, 690)
+      generatedCreaturesBackButton.draw()
     } else if (activity === Activity.RequestingSimulation) {
       setGlobalVariables(c[creaturesTested])
       camZoom = 0.01
@@ -2505,8 +2811,10 @@ export default function sketch(p5: p5) {
         p5.pop()
 
         drawStats(windowWidth - 10, 0, 0.7)
-        drawSkipButton()
-        drawOtherButtons()
+
+        stepByStepSkipButton.draw()
+        stepByStepPlaybackSpeedButton.draw()
+        stepByStepFinishButton.draw()
       }
 
       if (timer == 900) {
@@ -2650,7 +2958,7 @@ export default function sketch(p5: p5) {
         timer += 10
       }
 
-      drawSkipButton()
+      sortingCreaturesSkipButton.draw()
 
       if (timer > 60 * p5.PI) {
         drawScreenImage(1)
@@ -2806,8 +3114,6 @@ export default function sketch(p5: p5) {
       p5.noStroke()
 
       if (generationCount >= 1) {
-        p5.textAlign(p5.CENTER)
-
         if (generationCount >= 5) {
           selectedGeneration =
             p5.round(((sliderX - 760) * (generationCount - 1)) / 410) + 1
@@ -2818,27 +3124,10 @@ export default function sketch(p5: p5) {
         }
 
         if (drag) {
-          sliderX = p5.min(
-            p5.max(sliderX + (mX - 25 - sliderX) * 0.2, 760),
-            1170
-          )
+          generationSlider.onDrag()
         }
 
-        p5.fill(100)
-        p5.rect(760, 340, 460, 50)
-        p5.fill(220)
-        p5.rect(sliderX, 340, 50, 50)
-
-        let fs = 0
-        if (selectedGeneration >= 1) {
-          fs = p5.floor(p5.log(selectedGeneration) / p5.log(10))
-        }
-
-        const fontSize = fontSizes[fs]
-
-        p5.textFont(font, fontSize)
-        p5.fill(0)
-        p5.text(selectedGeneration, sliderX + 25, 366 + fontSize * 0.3333)
+        generationSlider.draw()
       }
 
       if (selectedGeneration >= 1) {
@@ -2921,30 +3210,6 @@ export default function sketch(p5: p5) {
     p5.text('A.N.Nausea: ' + p5.nf(averageNodeNausea, 0, 2) + ' blehs', 0, 224)
 
     p5.pop()
-  }
-
-  function drawSkipButton(): void {
-    p5.fill(0)
-    p5.rect(0, windowHeight - 40, 90, 40)
-    p5.fill(255)
-    p5.textAlign(p5.CENTER)
-    p5.textFont(font, 32)
-    p5.text('SKIP', 45, windowHeight - 8)
-  }
-
-  function drawOtherButtons(): void {
-    p5.fill(0)
-    p5.rect(120, windowHeight - 40, 240, 40)
-    p5.fill(255)
-    p5.textAlign(p5.CENTER)
-    p5.textFont(font, 32)
-    p5.text('PB speed: x' + speed, 240, windowHeight - 8)
-    p5.fill(0)
-    p5.rect(windowWidth - 120, windowHeight - 40, 120, 40)
-    p5.fill(255)
-    p5.textAlign(p5.CENTER)
-    p5.textFont(font, 32)
-    p5.text('FINISH', windowWidth - 60, windowHeight - 8)
   }
 
   function setGlobalVariables(thisCreature: Creature): void {

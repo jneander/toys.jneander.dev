@@ -1,6 +1,7 @@
 import type p5 from 'p5'
 import type {Color, Font, Graphics} from 'p5'
 
+import Rectangle from './Rectangle'
 import {Activity} from './constants'
 
 export default function sketch(p5: p5) {
@@ -113,20 +114,6 @@ export default function sketch(p5: p5) {
 
   function r(): number {
     return p5.pow(p5.random(-1, 1), 19)
-  }
-
-  class Rectangle {
-    x1: number
-    y1: number
-    x2: number
-    y2: number
-
-    constructor(tx1: number, ty1: number, tx2: number, ty2: number) {
-      this.x1 = tx1
-      this.y1 = ty1
-      this.x2 = tx2
-      this.y2 = ty2
-    }
   }
 
   class Node {

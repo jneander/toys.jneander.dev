@@ -1,59 +1,17 @@
 import type p5 from 'p5'
 import type {Color, Font, Graphics} from 'p5'
 
-class ArrayList<T> {
-  private array: T[]
-
-  constructor(length: number = 0) {
-    this.array = new Array(length)
-  }
-
-  add(item: T): void {
-    this.array.push(item)
-  }
-
-  addAll(arrayList: ArrayList<T>): void {
-    this.array = this.array.concat(arrayList.array)
-  }
-
-  remove(index: number): void {
-    this.array.splice(index, 1)
-  }
-
-  clear(): void {
-    this.array = []
-  }
-
-  get(index: number): T {
-    return this.array[index]
-  }
-
-  set(index: number, item: T): void {
-    this.array[index] = item
-  }
-
-  size(): number {
-    return this.array.length
-  }
-
-  clone(): ArrayList<T> {
-    const arrayList = new ArrayList<T>()
-    arrayList.addAll(this)
-    return arrayList
-  }
-}
-
 export default function sketch(p5: p5) {
   const windowSizeMultiplier = 0.8
   const SEED = 0
 
   let font: Font
-  let percentile: ArrayList<number[]> = new ArrayList<number[]>(0)
-  let barCounts: ArrayList<number[]> = new ArrayList<number[]>(0)
-  let speciesCounts: ArrayList<number[]> = new ArrayList<number[]>(0)
-  let topSpeciesCounts: ArrayList<number> = new ArrayList<number>(0)
-  let creatureDatabase: ArrayList<Creature> = new ArrayList<Creature>(0)
-  let rects: ArrayList<Rectangle> = new ArrayList<Rectangle>(0)
+  let percentile: Array<number[]> = []
+  let barCounts: Array<number[]> = []
+  let speciesCounts: Array<number[]> = []
+  let topSpeciesCounts: Array<number> = []
+  let creatureDatabase: Array<Creature> = []
+  let rects: Array<Rectangle> = []
   let graphImage: Graphics
   let screenImage: Graphics
   let popUpImage: Graphics
@@ -269,8 +227,8 @@ export default function sketch(p5: p5) {
         }
       }
 
-      for (let i = 0; i < rects.size(); i++) {
-        const r = rects.get(i)
+      for (let i = 0; i < rects.length; i++) {
+        const r = rects[i]
         let flip = false
         let px, py
 
@@ -358,9 +316,9 @@ export default function sketch(p5: p5) {
       this.prevX = this.x
     }
 
-    doMath(i: number, n: ArrayList<Node>): void {
-      const axonValue1 = n.get(this.axon1).value
-      const axonValue2 = n.get(this.axon2).value
+    doMath(i: number, n: Node[]): void {
+      const axonValue1 = n[this.axon1].value
+      const axonValue2 = n[this.axon2].value
 
       if (this.operation == 0) {
         // constant
@@ -490,19 +448,19 @@ export default function sketch(p5: p5) {
       this.rigidity = trigidity
     }
 
-    applyForce(i: number, n: ArrayList<Node>): void {
+    applyForce(i: number, n: Node[]): void {
       let target = this.previousTarget
 
       if (energyDirection == 1 || energy >= 0.0001) {
-        if (this.axon >= 0 && this.axon < n.size()) {
-          target = this.len * toMuscleUsable(n.get(this.axon).value)
+        if (this.axon >= 0 && this.axon < n.length) {
+          target = this.len * toMuscleUsable(n[this.axon].value)
         } else {
           target = this.len
         }
       }
 
-      const ni1 = n.get(this.c1)
-      const ni2 = n.get(this.c2)
+      const ni1 = n[this.c1]
+      const ni2 = n[this.c2]
 
       const distance = p5.dist(ni1.x, ni1.y, ni2.x, ni2.y)
       const angle = p5.atan2(ni1.y - ni2.y, ni1.x - ni2.x)
@@ -565,8 +523,8 @@ export default function sketch(p5: p5) {
   }
 
   class Creature {
-    n: ArrayList<Node>
-    m: ArrayList<Muscle>
+    n: Node[]
+    m: Array<Muscle>
     d: number
     id: number
     alive: boolean
@@ -575,8 +533,8 @@ export default function sketch(p5: p5) {
 
     constructor(
       tid: number,
-      tn: ArrayList<Node>,
-      tm: ArrayList<Muscle>,
+      tn: Node[],
+      tm: Array<Muscle>,
       td: number,
       talive: boolean,
       tct: number,
@@ -594,29 +552,29 @@ export default function sketch(p5: p5) {
     modified(id: number): Creature {
       const modifiedCreature = new Creature(
         id,
-        new ArrayList<Node>(0),
-        new ArrayList<Muscle>(0),
+        [],
+        [],
         0,
         true,
         this.creatureTimer + r() * 16 * this.mutability,
         p5.min(this.mutability * p5.random(0.8, 1.25), 2)
       )
 
-      for (let i = 0; i < this.n.size(); i++) {
-        modifiedCreature.n.add(
-          this.n.get(i).modifyNode(this.mutability, this.n.size())
+      for (let i = 0; i < this.n.length; i++) {
+        modifiedCreature.n.push(
+          this.n[i].modifyNode(this.mutability, this.n.length)
         )
       }
 
-      for (let i = 0; i < this.m.size(); i++) {
-        modifiedCreature.m.add(
-          this.m.get(i).modifyMuscle(this.n.size(), this.mutability)
+      for (let i = 0; i < this.m.length; i++) {
+        modifiedCreature.m.push(
+          this.m[i].modifyMuscle(this.n.length, this.mutability)
         )
       }
 
       if (
         p5.random(0, 1) < bigMutationChance * this.mutability ||
-        this.n.size() <= 2
+        this.n.length <= 2
       ) {
         // Add a node
         modifiedCreature.addRandomNode()
@@ -629,7 +587,7 @@ export default function sketch(p5: p5) {
 
       if (
         p5.random(0, 1) < bigMutationChance * this.mutability &&
-        modifiedCreature.n.size() >= 4
+        modifiedCreature.n.length >= 4
       ) {
         // Remove a node
         modifiedCreature.removeRandomNode()
@@ -637,7 +595,7 @@ export default function sketch(p5: p5) {
 
       if (
         p5.random(0, 1) < bigMutationChance * this.mutability &&
-        modifiedCreature.m.size() >= 2
+        modifiedCreature.m.length >= 2
       ) {
         // Remove a muscle
         modifiedCreature.removeRandomMuscle()
@@ -651,53 +609,50 @@ export default function sketch(p5: p5) {
     }
 
     checkForOverlap(): void {
-      const bads = new ArrayList<number>()
+      const bads = new Array<number>()
 
-      for (let i = 0; i < this.m.size(); i++) {
-        for (let j = i + 1; j < this.m.size(); j++) {
-          if (
-            this.m.get(i).c1 == this.m.get(j).c1 &&
-            this.m.get(i).c2 == this.m.get(j).c2
-          ) {
-            bads.add(i)
+      for (let i = 0; i < this.m.length; i++) {
+        for (let j = i + 1; j < this.m.length; j++) {
+          if (this.m[i].c1 == this.m[j].c1 && this.m[i].c2 == this.m[j].c2) {
+            bads.push(i)
           } else if (
-            this.m.get(i).c1 == this.m.get(j).c2 &&
-            this.m.get(i).c2 == this.m.get(j).c1
+            this.m[i].c1 == this.m[j].c2 &&
+            this.m[i].c2 == this.m[j].c1
           ) {
-            bads.add(i)
-          } else if (this.m.get(i).c1 == this.m.get(i).c2) {
-            bads.add(i)
+            bads.push(i)
+          } else if (this.m[i].c1 == this.m[i].c2) {
+            bads.push(i)
           }
         }
       }
 
-      for (let i = bads.size() - 1; i >= 0; i--) {
-        const b = bads.get(i) + 0
+      for (let i = bads.length - 1; i >= 0; i--) {
+        const b = bads[i] + 0
 
-        if (b < this.m.size()) {
-          this.m.remove(b)
+        if (b < this.m.length) {
+          this.m.splice(b, 1)
         }
       }
     }
 
     checkForLoneNodes(): void {
-      if (this.n.size() >= 3) {
-        for (let i = 0; i < this.n.size(); i++) {
+      if (this.n.length >= 3) {
+        for (let i = 0; i < this.n.length; i++) {
           let connections = 0
           let connectedTo = -1
 
-          for (let j = 0; j < this.m.size(); j++) {
-            if (this.m.get(j).c1 == i || this.m.get(j).c2 == i) {
+          for (let j = 0; j < this.m.length; j++) {
+            if (this.m[j].c1 == i || this.m[j].c2 == i) {
               connections++
               connectedTo = j
             }
           }
 
           if (connections <= 1) {
-            let newConnectionNode = p5.floor(p5.random(0, this.n.size()))
+            let newConnectionNode = p5.floor(p5.random(0, this.n.length))
 
             while (newConnectionNode == i || newConnectionNode == connectedTo) {
-              newConnectionNode = p5.floor(p5.random(0, this.n.size()))
+              newConnectionNode = p5.floor(p5.random(0, this.n.length))
             }
 
             this.addRandomMuscle(i, newConnectionNode)
@@ -707,28 +662,28 @@ export default function sketch(p5: p5) {
     }
 
     checkForBadAxons(): void {
-      for (let i = 0; i < this.n.size(); i++) {
-        const ni = this.n.get(i)
+      for (let i = 0; i < this.n.length; i++) {
+        const ni = this.n[i]
 
-        if (ni.axon1 >= this.n.size()) {
-          ni.axon1 = p5.int(p5.random(0, this.n.size()))
+        if (ni.axon1 >= this.n.length) {
+          ni.axon1 = p5.int(p5.random(0, this.n.length))
         }
 
-        if (ni.axon2 >= this.n.size()) {
-          ni.axon2 = p5.int(p5.random(0, this.n.size()))
-        }
-      }
-
-      for (let i = 0; i < this.m.size(); i++) {
-        const mi = this.m.get(i)
-
-        if (mi.axon >= this.n.size()) {
-          mi.axon = getNewMuscleAxon(this.n.size())
+        if (ni.axon2 >= this.n.length) {
+          ni.axon2 = p5.int(p5.random(0, this.n.length))
         }
       }
 
-      for (let i = 0; i < this.n.size(); i++) {
-        const ni = this.n.get(i)
+      for (let i = 0; i < this.m.length; i++) {
+        const mi = this.m[i]
+
+        if (mi.axon >= this.n.length) {
+          mi.axon = getNewMuscleAxon(this.n.length)
+        }
+      }
+
+      for (let i = 0; i < this.n.length; i++) {
+        const ni = this.n[i]
         ni.safeInput = operationAxons[ni.operation] == 0
       }
 
@@ -738,16 +693,16 @@ export default function sketch(p5: p5) {
       while (iterations < 1000) {
         didSomething = false
 
-        for (let i = 0; i < this.n.size(); i++) {
-          const ni = this.n.get(i)
+        for (let i = 0; i < this.n.length; i++) {
+          const ni = this.n[i]
 
           if (!ni.safeInput) {
             if (
               (operationAxons[ni.operation] == 1 &&
-                this.n.get(ni.axon1).safeInput) ||
+                this.n[ni.axon1].safeInput) ||
               (operationAxons[ni.operation] == 2 &&
-                this.n.get(ni.axon1).safeInput &&
-                this.n.get(ni.axon2).safeInput)
+                this.n[ni.axon1].safeInput &&
+                this.n[ni.axon2].safeInput)
             ) {
               ni.safeInput = true
               didSomething = true
@@ -760,8 +715,8 @@ export default function sketch(p5: p5) {
         }
       }
 
-      for (let i = 0; i < this.n.size(); i++) {
-        const ni = this.n.get(i)
+      for (let i = 0; i < this.n.length; i++) {
+        const ni = this.n[i]
 
         if (!ni.safeInput) {
           // This node doesn't get its input from a safe place.  CLEANSE IT.
@@ -772,15 +727,15 @@ export default function sketch(p5: p5) {
     }
 
     addRandomNode(): void {
-      const parentNode = p5.floor(p5.random(0, this.n.size()))
+      const parentNode = p5.floor(p5.random(0, this.n.length))
       const ang1 = p5.random(0, 2 * p5.PI)
       const distance = p5.sqrt(p5.random(0, 1))
-      const x = this.n.get(parentNode).x + p5.cos(ang1) * 0.5 * distance
-      const y = this.n.get(parentNode).y + p5.sin(ang1) * 0.5 * distance
+      const x = this.n[parentNode].x + p5.cos(ang1) * 0.5 * distance
+      const y = this.n[parentNode].y + p5.sin(ang1) * 0.5 * distance
 
-      const newNodeCount = this.n.size() + 1
+      const newNodeCount = this.n.length + 1
 
-      this.n.add(
+      this.n.push(
         new Node(
           x,
           y,
@@ -798,10 +753,10 @@ export default function sketch(p5: p5) {
       let nextClosestNode = 0
       let record = 100000
 
-      for (let i = 0; i < this.n.size() - 1; i++) {
+      for (let i = 0; i < this.n.length - 1; i++) {
         if (i != parentNode) {
-          const dx = this.n.get(i).x - x
-          const dy = this.n.get(i).y - y
+          const dx = this.n[i].x - x
+          const dy = this.n[i].y - y
 
           if (p5.sqrt(dx * dx + dy * dy) < record) {
             record = p5.sqrt(dx * dx + dy * dy)
@@ -810,19 +765,19 @@ export default function sketch(p5: p5) {
         }
       }
 
-      this.addRandomMuscle(parentNode, this.n.size() - 1)
-      this.addRandomMuscle(nextClosestNode, this.n.size() - 1)
+      this.addRandomMuscle(parentNode, this.n.length - 1)
+      this.addRandomMuscle(nextClosestNode, this.n.length - 1)
     }
 
     addRandomMuscle(tc1: number, tc2: number): void {
-      const axon = getNewMuscleAxon(this.n.size())
+      const axon = getNewMuscleAxon(this.n.length)
 
       if (tc1 == -1) {
-        tc1 = p5.int(p5.random(0, this.n.size()))
+        tc1 = p5.int(p5.random(0, this.n.length))
         tc2 = tc1
 
-        while (tc2 == tc1 && this.n.size() >= 2) {
-          tc2 = p5.int(p5.random(0, this.n.size()))
+        while (tc2 == tc1 && this.n.length >= 2) {
+          tc2 = p5.int(p5.random(0, this.n.length))
         }
       }
 
@@ -830,56 +785,56 @@ export default function sketch(p5: p5) {
 
       if (tc1 != -1) {
         len = p5.dist(
-          this.n.get(tc1).x,
-          this.n.get(tc1).y,
-          this.n.get(tc2).x,
-          this.n.get(tc2).y
+          this.n[tc1].x,
+          this.n[tc1].y,
+          this.n[tc2].x,
+          this.n[tc2].y
         )
       }
 
-      this.m.add(new Muscle(axon, tc1, tc2, len, p5.random(0.02, 0.08)))
+      this.m.push(new Muscle(axon, tc1, tc2, len, p5.random(0.02, 0.08)))
     }
 
     removeRandomNode(): void {
-      const choice = p5.floor(p5.random(0, this.n.size()))
-      this.n.remove(choice)
+      const choice = p5.floor(p5.random(0, this.n.length))
+      this.n.splice(choice, 1)
 
       let i = 0
 
-      while (i < this.m.size()) {
-        if (this.m.get(i).c1 == choice || this.m.get(i).c2 == choice) {
-          this.m.remove(i)
+      while (i < this.m.length) {
+        if (this.m[i].c1 == choice || this.m[i].c2 == choice) {
+          this.m.splice(i, 1)
         } else {
           i++
         }
       }
 
-      for (let j = 0; j < this.m.size(); j++) {
-        if (this.m.get(j).c1 >= choice) {
-          this.m.get(j).c1--
+      for (let j = 0; j < this.m.length; j++) {
+        if (this.m[j].c1 >= choice) {
+          this.m[j].c1--
         }
 
-        if (this.m.get(j).c2 >= choice) {
-          this.m.get(j).c2--
+        if (this.m[j].c2 >= choice) {
+          this.m[j].c2--
         }
       }
     }
 
     removeRandomMuscle(): void {
-      const choice = p5.floor(p5.random(0, this.m.size()))
-      this.m.remove(choice)
+      const choice = p5.floor(p5.random(0, this.m.length))
+      this.m.splice(choice, 1)
     }
 
     copyCreature(newID: number): Creature {
-      const n2 = new ArrayList<Node>(0)
-      const m2 = new ArrayList<Muscle>(0)
+      const n2 = []
+      const m2 = []
 
-      for (let i = 0; i < this.n.size(); i++) {
-        n2.add(this.n.get(i).copyNode())
+      for (let i = 0; i < this.n.length; i++) {
+        n2.push(this.n[i].copyNode())
       }
 
-      for (let i = 0; i < this.m.size(); i++) {
-        m2.add(this.m.get(i).copyMuscle())
+      for (let i = 0; i < this.m.length; i++) {
+        m2.push(this.m[i].copyMuscle())
       }
 
       if (newID == -1) {
@@ -914,8 +869,8 @@ export default function sketch(p5: p5) {
         )
       }
 
-      for (let i = 0; i < rects.size(); i++) {
-        const r = rects.get(i)
+      for (let i = 0; i < rects.length; i++) {
+        const r = rects[i]
 
         p5.rect(
           r.x1 * scaleToFixBug,
@@ -956,8 +911,8 @@ export default function sketch(p5: p5) {
         )
       }
 
-      for (let i = 0; i < rects.size(); i++) {
-        const r = rects.get(i)
+      for (let i = 0; i < rects.length; i++) {
+        const r = rects[i]
 
         popUpImage.rect(
           r.x1 * scaleToFixBug,
@@ -1083,16 +1038,16 @@ export default function sketch(p5: p5) {
   }
 
   function drawNodeAxons(
-    n: ArrayList<Node>,
+    n: Node[],
     i: number,
     x: number,
     y: number,
     toImage: number
   ): void {
-    const ni = n.get(i)
+    const ni = n[i]
 
     if (operationAxons[ni.operation] >= 1) {
-      const axonSource = n.get(n.get(i).axon1)
+      const axonSource = n[n[i].axon1]
       const point1x = ni.x - ni.m * 0.3 + x
       const point1y = ni.y - ni.m * 0.3 + y
       const point2x = axonSource.x + x
@@ -1102,7 +1057,7 @@ export default function sketch(p5: p5) {
     }
 
     if (operationAxons[ni.operation] == 2) {
-      const axonSource = n.get(n.get(i).axon2)
+      const axonSource = n[n[i].axon2]
       const point1x = ni.x + ni.m * 0.3 + x
       const point1y = ni.y - ni.m * 0.3 + y
       const point2x = axonSource.x + x
@@ -1193,18 +1148,18 @@ export default function sketch(p5: p5) {
 
   function drawMuscle(
     mi: Muscle,
-    n: ArrayList<Node>,
+    n: Node[],
     x: number,
     y: number,
     toImage: number
   ): void {
-    const ni1 = n.get(mi.c1)
-    const ni2 = n.get(mi.c2)
+    const ni1 = n[mi.c1]
+    const ni2 = n[mi.c2]
 
     let w = 0.15
 
-    if (mi.axon >= 0 && mi.axon < n.size()) {
-      w = toMuscleUsable(n.get(mi.axon).value) * 0.15
+    if (mi.axon >= 0 && mi.axon < n.length) {
+      w = toMuscleUsable(n[mi.axon].value) * 0.15
     }
 
     if (toImage == 0) {
@@ -1239,16 +1194,16 @@ export default function sketch(p5: p5) {
 
   function drawMuscleAxons(
     mi: Muscle,
-    n: ArrayList<Node>,
+    n: Node[],
     x: number,
     y: number,
     toImage: number
   ): void {
-    const ni1 = n.get(mi.c1)
-    const ni2 = n.get(mi.c2)
+    const ni1 = n[mi.c1]
+    const ni2 = n[mi.c2]
 
-    if (mi.axon >= 0 && mi.axon < n.size()) {
-      const axonSource = n.get(mi.axon)
+    if (mi.axon >= 0 && mi.axon < n.length) {
+      const axonSource = n[mi.axon]
       const muscleMidX = (ni1.x + ni2.x) * 0.5 + x
       const muscleMidY = (ni1.y + ni2.y) * 0.5 + y
 
@@ -1267,7 +1222,7 @@ export default function sketch(p5: p5) {
         p5.textAlign(p5.CENTER)
         p5.textFont(font, 0.4 * averageMass * scaleToFixBug)
         p5.text(
-          p5.nf(toMuscleUsable(n.get(mi.axon).value), 0, 2),
+          p5.nf(toMuscleUsable(n[mi.axon].value), 0, 2),
           muscleMidX * scaleToFixBug,
           muscleMidY * scaleToFixBug
         )
@@ -1276,7 +1231,7 @@ export default function sketch(p5: p5) {
         screenImage.textAlign(p5.CENTER)
         screenImage.textFont(font, 0.4 * averageMass * scaleToFixBug)
         screenImage.text(
-          p5.nf(toMuscleUsable(n.get(mi.axon).value), 0, 2),
+          p5.nf(toMuscleUsable(n[mi.axon].value), 0, 2),
           muscleMidX * scaleToFixBug,
           muscleMidY * scaleToFixBug
         )
@@ -1285,7 +1240,7 @@ export default function sketch(p5: p5) {
         popUpImage.textAlign(p5.CENTER)
         popUpImage.textFont(font, 0.4 * averageMass * scaleToFixBug)
         popUpImage.text(
-          p5.nf(toMuscleUsable(n.get(mi.axon).value), 0, 2),
+          p5.nf(toMuscleUsable(n[mi.axon].value), 0, 2),
           muscleMidX * scaleToFixBug,
           muscleMidY * scaleToFixBug
         )
@@ -1405,7 +1360,7 @@ export default function sketch(p5: p5) {
 
       p5.line(lineX, 180, lineX, 500 + 180)
 
-      const s = speciesCounts.get(genSelected)
+      const s = speciesCounts[genSelected]
 
       p5.textAlign(p5.LEFT)
       p5.textFont(font, 12)
@@ -1417,7 +1372,7 @@ export default function sketch(p5: p5) {
         if (c >= 25) {
           const y = ((s[i] + s[i - 1]) / 2 / 1000.0) * 100 + 573
 
-          if (i - 1 == topSpeciesCounts.get(genSelected)) {
+          if (i - 1 == topSpeciesCounts[genSelected]) {
             p5.stroke(0)
             p5.strokeWeight(2)
           } else {
@@ -1530,9 +1485,9 @@ export default function sketch(p5: p5) {
       for (let j = 0; j < gen; j++) {
         graphImage.line(
           x + j * genWidth,
-          -percentile.get(j)[k] * meterHeight + zero + y,
+          -percentile[j][k] * meterHeight + zero + y,
           x + (j + 1) * genWidth,
-          -percentile.get(j + 1)[k] * meterHeight + zero + y
+          -percentile[j + 1][k] * meterHeight + zero + y
         )
       }
     }
@@ -1561,19 +1516,19 @@ export default function sketch(p5: p5) {
         segBarImage.beginShape()
         segBarImage.vertex(
           barX1,
-          y + (speciesCounts.get(i)[j] / 1000.0) * graphHeight
+          y + (speciesCounts[i][j] / 1000.0) * graphHeight
         )
         segBarImage.vertex(
           barX1,
-          y + (speciesCounts.get(i)[j + 1] / 1000.0) * graphHeight
+          y + (speciesCounts[i][j + 1] / 1000.0) * graphHeight
         )
         segBarImage.vertex(
           barX2,
-          y + (speciesCounts.get(i2)[j + 1] / 1000.0) * graphHeight
+          y + (speciesCounts[i2][j + 1] / 1000.0) * graphHeight
         )
         segBarImage.vertex(
           barX2,
-          y + (speciesCounts.get(i2)[j] / 1000.0) * graphHeight
+          y + (speciesCounts[i2][j] / 1000.0) * graphHeight
         )
         segBarImage.endShape()
       }
@@ -1586,7 +1541,7 @@ export default function sketch(p5: p5) {
     let record = -sign
 
     for (let i = 0; i < gen; i++) {
-      const toTest = percentile.get(i + 1)[p5.int(14 - sign * 14)]
+      const toTest = percentile[i + 1][p5.int(14 - sign * 14)]
 
       if (toTest * sign > record * sign) {
         record = toTest
@@ -1618,52 +1573,46 @@ export default function sketch(p5: p5) {
     return p5.int(i) + ''
   }
 
-  function quickSort(c: ArrayList<Creature>): ArrayList<Creature> {
-    if (c.size() <= 1) {
+  function quickSort(c: Array<Creature>): Array<Creature> {
+    if (c.length <= 1) {
       return c
-    } else {
-      const less = new ArrayList<Creature>()
-      const more = new ArrayList<Creature>()
-      const equal = new ArrayList<Creature>()
-
-      const c0 = c.get(0)
-      equal.add(c0)
-
-      for (let i = 1; i < c.size(); i++) {
-        const ci = c.get(i)
-
-        if (ci.d == c0.d) {
-          equal.add(ci)
-        } else if (ci.d < c0.d) {
-          less.add(ci)
-        } else {
-          more.add(ci)
-        }
-      }
-
-      const total = new ArrayList<Creature>()
-
-      total.addAll(quickSort(more))
-      total.addAll(equal)
-      total.addAll(quickSort(less))
-
-      return total
     }
+
+    const less = new Array<Creature>()
+    const more = new Array<Creature>()
+    const equal = new Array<Creature>()
+
+    const c0 = c[0]
+    equal.push(c0)
+
+    for (let i = 1; i < c.length; i++) {
+      const ci = c[i]
+
+      if (ci.d == c0.d) {
+        equal.push(ci)
+      } else if (ci.d < c0.d) {
+        less.push(ci)
+      } else {
+        more.push(ci)
+      }
+    }
+
+    return quickSort(more).concat(equal).concat(quickSort(less))
   }
 
   function toStableConfiguration(nodeNum: number, muscleNum: number): void {
     for (let j = 0; j < 200; j++) {
       for (let i = 0; i < muscleNum; i++) {
-        m.get(i).applyForce(i, n)
+        m[i].applyForce(i, n)
       }
 
       for (let i = 0; i < nodeNum; i++) {
-        n.get(i).applyForces()
+        n[i].applyForces()
       }
     }
 
     for (let i = 0; i < nodeNum; i++) {
-      const ni = n.get(i)
+      const ni = n[i]
       ni.vx = 0
       ni.vy = 0
     }
@@ -1674,7 +1623,7 @@ export default function sketch(p5: p5) {
     let lowY = -1000
 
     for (let i = 0; i < nodeNum; i++) {
-      const ni = n.get(i)
+      const ni = n[i]
       avx += ni.x
 
       if (ni.y + ni.m / 2 > lowY) {
@@ -1685,30 +1634,30 @@ export default function sketch(p5: p5) {
     avx /= nodeNum
 
     for (let i = 0; i < nodeNum; i++) {
-      const ni = n.get(i)
+      const ni = n[i]
       ni.x -= avx
       ni.y -= lowY
     }
   }
 
   function simulate(): void {
-    for (let i = 0; i < m.size(); i++) {
-      m.get(i).applyForce(i, n)
+    for (let i = 0; i < m.length; i++) {
+      m[i].applyForce(i, n)
     }
 
-    for (let i = 0; i < n.size(); i++) {
-      const ni = n.get(i)
+    for (let i = 0; i < n.length; i++) {
+      const ni = n[i]
       ni.applyGravity()
       ni.applyForces()
       ni.hitWalls()
       ni.doMath(i, n)
     }
 
-    for (let i = 0; i < n.size(); i++) {
-      n.get(i).realizeMathValues(i)
+    for (let i = 0; i < n.length; i++) {
+      n[i].realizeMathValues(i)
     }
 
-    averageNodeNausea = totalNodeNausea / n.size()
+    averageNodeNausea = totalNodeNausea / n.length
     simulationTimer++
     timer++
   }
@@ -1717,22 +1666,22 @@ export default function sketch(p5: p5) {
     averageX = 0
     averageY = 0
 
-    for (let i = 0; i < n.size(); i++) {
-      const ni = n.get(i)
+    for (let i = 0; i < n.length; i++) {
+      const ni = n[i]
       averageX += ni.x
       averageY += ni.y
     }
 
-    averageX = averageX / n.size()
-    averageY = averageY / n.size()
+    averageX = averageX / n.length
+    averageY = averageY / n.length
   }
 
-  let n = new ArrayList<Node>()
-  let m = new ArrayList<Muscle>()
+  let n: Node[] = []
+  let m: Muscle[] = []
 
   const c = new Array<Creature>(1000)
 
-  let c2 = new ArrayList<Creature>()
+  let c2: Creature[] = []
 
   p5.mouseWheel = (event: WheelEvent) => {
     const delta = event.deltaX
@@ -1786,11 +1735,11 @@ export default function sketch(p5: p5) {
       let cj
 
       if (statusWindow <= -1) {
-        cj = creatureDatabase.get((genSelected - 1) * 3 + statusWindow + 3)
+        cj = creatureDatabase[(genSelected - 1) * 3 + statusWindow + 3]
         id = cj.id
       } else {
         id = statusWindow
-        cj = c2.get(id)
+        cj = c2[id]
       }
 
       setGlobalVariables(cj)
@@ -1943,7 +1892,7 @@ export default function sketch(p5: p5) {
     screenImage.noStroke()
 
     for (let j = 0; j < 1000; j++) {
-      let cj = c2.get(j)
+      let cj = c2[j]
       if (stage == 3) {
         cj = c[cj.id - gen * 1000 - 1001]
       }
@@ -2009,7 +1958,7 @@ export default function sketch(p5: p5) {
       screenImage.text('Reproduce', windowWidth - 150, 700)
 
       for (let j = 0; j < 1000; j++) {
-        const cj = c2.get(j)
+        const cj = c2[j]
         const x = j % 40
         const y = p5.floor(j / 40) + 1
 
@@ -2068,40 +2017,40 @@ export default function sketch(p5: p5) {
     y: number,
     toImage: number
   ): void {
-    for (let i = 0; i < cj.m.size(); i++) {
-      drawMuscle(cj.m.get(i), cj.n, x, y, toImage)
+    for (let i = 0; i < cj.m.length; i++) {
+      drawMuscle(cj.m[i], cj.n, x, y, toImage)
     }
 
-    for (let i = 0; i < cj.n.size(); i++) {
-      drawNode(cj.n.get(i), x, y, toImage)
+    for (let i = 0; i < cj.n.length; i++) {
+      drawNode(cj.n[i], x, y, toImage)
     }
 
-    for (let i = 0; i < cj.m.size(); i++) {
-      drawMuscleAxons(cj.m.get(i), cj.n, x, y, toImage)
+    for (let i = 0; i < cj.m.length; i++) {
+      drawMuscleAxons(cj.m[i], cj.n, x, y, toImage)
     }
 
-    for (let i = 0; i < cj.n.size(); i++) {
+    for (let i = 0; i < cj.n.length; i++) {
       drawNodeAxons(cj.n, i, x, y, toImage)
     }
   }
 
   function drawCreaturePieces(
-    n: ArrayList<Node>,
-    m: ArrayList<Muscle>,
+    n: Node[],
+    m: Array<Muscle>,
     x: number,
     y: number,
     toImage: number
   ): void {
-    for (let i = 0; i < m.size(); i++) {
-      drawMuscle(m.get(i), n, x, y, toImage)
+    for (let i = 0; i < m.length; i++) {
+      drawMuscle(m[i], n, x, y, toImage)
     }
-    for (let i = 0; i < n.size(); i++) {
-      drawNode(n.get(i), x, y, toImage)
+    for (let i = 0; i < n.length; i++) {
+      drawNode(n[i], x, y, toImage)
     }
-    for (let i = 0; i < m.size(); i++) {
-      drawMuscleAxons(m.get(i), n, x, y, toImage)
+    for (let i = 0; i < m.length; i++) {
+      drawMuscleAxons(m[i], n, x, y, toImage)
     }
-    for (let i = 0; i < n.size(); i++) {
+    for (let i = 0; i < n.length; i++) {
       drawNodeAxons(n, i, x, y, toImage)
     }
   }
@@ -2110,8 +2059,8 @@ export default function sketch(p5: p5) {
     let maxH = 1
 
     for (let i = 0; i < barLen; i++) {
-      if (barCounts.get(genSelected)[i] > maxH) {
-        maxH = barCounts.get(genSelected)[i]
+      if (barCounts[genSelected][i] > maxH) {
+        maxH = barCounts[genSelected][i]
       }
     }
 
@@ -2172,12 +2121,12 @@ export default function sketch(p5: p5) {
     p5.noStroke()
 
     for (let i = 0; i < barLen; i++) {
-      const h = p5.min(barCounts.get(genSelected)[i] * multiplier, hh)
+      const h = p5.min(barCounts[genSelected][i] * multiplier, hh)
 
       if (
         i + minBar ==
         p5.floor(
-          percentile.get(p5.min(genSelected, percentile.size() - 1))[14] *
+          percentile[p5.min(genSelected, percentile.length - 1)][14] *
             histBarsPerMeter
         )
       ) {
@@ -2201,7 +2150,7 @@ export default function sketch(p5: p5) {
     p5.noFill()
 
     if (statusWindow >= 0) {
-      cj = c2.get(statusWindow)
+      cj = c2[statusWindow]
 
       if (menu == 7) {
         const id = (cj.id - 1) % 1000
@@ -2223,7 +2172,7 @@ export default function sketch(p5: p5) {
 
       p5.rect(x * 30 + 40, y * 25 + 17, 30, 25)
     } else {
-      cj = creatureDatabase.get((genSelected - 1) * 3 + statusWindow + 3)
+      cj = creatureDatabase[(genSelected - 1) * 3 + statusWindow + 3]
       x = 760 + (statusWindow + 3) * 160
       y = 180
       px = x
@@ -2245,10 +2194,10 @@ export default function sketch(p5: p5) {
     p5.text('Fitness: ' + p5.nf(cj.d, 0, 3), px, py + 36)
     p5.colorMode(p5.HSB, 1)
 
-    const sp = (cj.n.size() % 10) * 10 + (cj.m.size() % 10)
+    const sp = (cj.n.length % 10) * 10 + (cj.m.length % 10)
     p5.fill(getColor(sp, true))
     p5.text(
-      'Species: S' + (cj.n.size() % 10) + '' + (cj.m.size() % 10),
+      'Species: S' + (cj.n.length % 10) + '' + (cj.m.length % 10),
       px,
       py + 48
     )
@@ -2273,7 +2222,7 @@ export default function sketch(p5: p5) {
       let shouldBeWatching = statusWindow
 
       if (statusWindow <= -1) {
-        cj = creatureDatabase.get((genSelected - 1) * 3 + statusWindow + 3)
+        cj = creatureDatabase[(genSelected - 1) * 3 + statusWindow + 3]
         shouldBeWatching = cj.id
       }
 
@@ -2310,10 +2259,10 @@ export default function sketch(p5: p5) {
       beginSpecies[i] = 500
     }
 
-    percentile.add(beginPercentile)
-    barCounts.add(beginBar)
-    speciesCounts.add(beginSpecies)
-    topSpeciesCounts.add(0)
+    percentile.push(beginPercentile)
+    barCounts.push(beginBar)
+    speciesCounts.push(beginSpecies)
+    topSpeciesCounts.push(0)
 
     graphImage = p5.createGraphics(975, 570)
     screenImage = p5.createGraphics(1920, 1080)
@@ -2381,8 +2330,7 @@ export default function sketch(p5: p5) {
         p5.textAlign(p5.RIGHT)
         p5.text(
           p5.round(
-            percentile.get(p5.min(genSelected, percentile.size() - 1))[14] *
-              1000
+            percentile[p5.min(genSelected, percentile.length - 1)][14] * 1000
           ) /
             1000 +
             ' ' +
@@ -2408,14 +2356,14 @@ export default function sketch(p5: p5) {
 
       for (let y = 0; y < 25; y++) {
         for (let x = 0; x < 40; x++) {
-          n.clear()
-          m.clear()
+          n.length = 0
+          m.length = 0
 
           const nodeNum = p5.int(p5.random(3, 6))
           const muscleNum = p5.int(p5.random(nodeNum - 1, nodeNum * 3 - 6))
 
           for (let i = 0; i < nodeNum; i++) {
-            n.add(
+            n.push(
               new Node(
                 p5.random(-1, 1),
                 p5.random(-1, 1),
@@ -2457,7 +2405,7 @@ export default function sketch(p5: p5) {
 
             const len = p5.random(0.5, 1.5)
 
-            m.add(new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08)))
+            m.push(new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08)))
           }
 
           toStableConfiguration(nodeNum, muscleNum)
@@ -2466,8 +2414,8 @@ export default function sketch(p5: p5) {
           const heartbeat = p5.random(40, 80)
           c[y * 40 + x] = new Creature(
             y * 40 + x + 1,
-            n.clone(),
-            m.clone(),
+            [...n],
+            [...m],
             0,
             true,
             heartbeat,
@@ -2603,29 +2551,29 @@ export default function sketch(p5: p5) {
     if (menu == 6) {
       // sort
 
-      c2 = new ArrayList<Creature>(0)
+      c2 = new Array<Creature>(0)
 
       for (let i = 0; i < 1000; i++) {
-        c2.add(c[i])
+        c2.push(c[i])
       }
 
       c2 = quickSort(c2)
 
-      percentile.add(new Array<number>(29))
+      percentile.push(new Array<number>(29))
       for (let i = 0; i < 29; i++) {
-        percentile.get(gen + 1)[i] = c2.get(p[i]).d
+        percentile[gen + 1][i] = c2[p[i]].d
       }
 
-      creatureDatabase.add(c2.get(999).copyCreature(-1))
-      creatureDatabase.add(c2.get(499).copyCreature(-1))
-      creatureDatabase.add(c2.get(0).copyCreature(-1))
+      creatureDatabase.push(c2[999].copyCreature(-1))
+      creatureDatabase.push(c2[499].copyCreature(-1))
+      creatureDatabase.push(c2[0].copyCreature(-1))
 
       const beginBar = new Array<number>(barLen)
       for (let i = 0; i < barLen; i++) {
         beginBar[i] = 0
       }
 
-      barCounts.add(beginBar)
+      barCounts.push(beginBar)
 
       const beginSpecies = new Array<number>(101)
 
@@ -2634,19 +2582,18 @@ export default function sketch(p5: p5) {
       }
 
       for (let i = 0; i < 1000; i++) {
-        const bar = p5.floor(c2.get(i).d * histBarsPerMeter - minBar)
+        const bar = p5.floor(c2[i].d * histBarsPerMeter - minBar)
 
         if (bar >= 0 && bar < barLen) {
-          barCounts.get(gen + 1)[bar]++
+          barCounts[gen + 1][bar]++
         }
 
-        const species =
-          (c2.get(i).n.size() % 10) * 10 + (c2.get(i).m.size() % 10)
+        const species = (c2[i].n.length % 10) * 10 + (c2[i].m.length % 10)
         beginSpecies[species]++
       }
 
-      speciesCounts.add(new Array<number>(101))
-      speciesCounts.get(gen + 1)[0] = 0
+      speciesCounts.push(new Array<number>(101))
+      speciesCounts[gen + 1][0] = 0
 
       let cum = 0
       let record = 0
@@ -2654,7 +2601,7 @@ export default function sketch(p5: p5) {
 
       for (let i = 0; i < 100; i++) {
         cum += beginSpecies[i]
-        speciesCounts.get(gen + 1)[i + 1] = cum
+        speciesCounts[gen + 1][i + 1] = cum
 
         if (beginSpecies[i] > record) {
           record = beginSpecies[i]
@@ -2662,7 +2609,7 @@ export default function sketch(p5: p5) {
         }
       }
 
-      topSpeciesCounts.add(holder)
+      topSpeciesCounts.push(holder)
 
       if (stepbystep) {
         drawScreenImage(0)
@@ -2682,7 +2629,7 @@ export default function sketch(p5: p5) {
       const transition = 0.5 - 0.5 * p5.cos(p5.min(timer / 60, p5.PI))
 
       for (let j = 0; j < 1000; j++) {
-        const cj = c2.get(j)
+        const cj = c2[j]
         const j2 = cj.id - gen * 1000 - 1
         const x1 = j2 % 40
         const y1 = p5.floor(j2 / 40)
@@ -2765,10 +2712,10 @@ export default function sketch(p5: p5) {
           j3 = j
         }
 
-        const cj = c2.get(j2)
+        const cj = c2[j2]
         cj.alive = true
 
-        const ck = c2.get(j3)
+        const ck = c2[j3]
         ck.alive = false
       }
 
@@ -2787,25 +2734,25 @@ export default function sketch(p5: p5) {
 
       for (let j = 0; j < 500; j++) {
         let j2 = j
-        if (!c2.get(j).alive) {
+        if (!c2[j].alive) {
           j2 = 999 - j
         }
 
-        const cj = c2.get(j2)
-        const cj2 = c2.get(999 - j2)
+        const cj = c2[j2]
+        const cj2 = c2[999 - j2]
 
-        c2.set(j2, cj.copyCreature(cj.id + 1000)) // duplicate
-        c2.set(999 - j2, cj.modified(cj2.id + 1000)) // mutated offspring 1
+        c2[j2] = cj.copyCreature(cj.id + 1000) // duplicate
+        c2[999 - j2] = cj.modified(cj2.id + 1000) // mutated offspring 1
 
-        n = c2.get(999 - j2).n
-        m = c2.get(999 - j2).m
+        n = c2[999 - j2].n
+        m = c2[999 - j2].m
 
-        toStableConfiguration(n.size(), m.size())
-        adjustToCenter(n.size())
+        toStableConfiguration(n.length, m.length)
+        adjustToCenter(n.length)
       }
 
       for (let j = 0; j < 1000; j++) {
-        const cj = c2.get(j)
+        const cj = c2[j]
         c[cj.id - gen * 1000 - 1001] = cj.copyCreature(-1)
       }
 
@@ -2875,7 +2822,7 @@ export default function sketch(p5: p5) {
           p5.translate(830 + 160 * k, 290)
           p5.scale(60.0 / scaleToFixBug)
 
-          drawCreature(creatureDatabase.get((genSelected - 1) * 3 + k), 0, 0, 0)
+          drawCreature(creatureDatabase[(genSelected - 1) * 3 + k], 0, 0, 0)
 
           p5.pop()
         }
@@ -2965,15 +2912,15 @@ export default function sketch(p5: p5) {
   }
 
   function setGlobalVariables(thisCreature: Creature): void {
-    n.clear()
-    m.clear()
+    n.length = 0
+    m.length = 0
 
-    for (let i = 0; i < thisCreature.n.size(); i++) {
-      n.add(thisCreature.n.get(i).copyNode())
+    for (let i = 0; i < thisCreature.n.length; i++) {
+      n.push(thisCreature.n[i].copyNode())
     }
 
-    for (let i = 0; i < thisCreature.m.size(); i++) {
-      m.add(thisCreature.m.get(i).copyMuscle())
+    for (let i = 0; i < thisCreature.m.length; i++) {
+      m.push(thisCreature.m[i].copyMuscle())
     }
 
     id = thisCreature.id

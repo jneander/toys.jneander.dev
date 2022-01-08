@@ -5,8 +5,9 @@ import {Activity} from './constants'
 
 export default function sketch(p5: p5) {
   const CREATURE_COUNT = 1000
-  const windowSizeMultiplier = 0.8
+  const FRICTION = 4
   const SEED = 0
+  const windowSizeMultiplier = 0.8
 
   const lastCreatureIndex = CREATURE_COUNT - 1
   const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
@@ -44,7 +45,6 @@ export default function sketch(p5: p5) {
   let fitnessName = 'Distance'
   let baselineEnergy = 0.0
   let energyDirection = 1 // if 1, it'll count up how much energy is used.  if -1, it'll count down from the baseline energy, and when energy hits 0, the creature dies.
-  const FRICTION = 4
   let bigMutationChance = 0.06
   let hazelStairs = -1
 

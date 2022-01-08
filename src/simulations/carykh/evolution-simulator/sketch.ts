@@ -12,8 +12,14 @@ export default function sketch(p5: p5) {
   const lastCreatureIndex = CREATURE_COUNT - 1
   const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 
+  const fitnessPercentileCreatureIndices = [
+    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700,
+    800, 900, 910, 920, 930, 940, 950, 960, 970, 980, 990, 999
+  ]
+  const fitnessPercentileCount = fitnessPercentileCreatureIndices.length
+  const fitnessPercentileHistory: Array<number[]> = []
+
   let font: Font
-  let percentile: Array<number[]> = []
   let barCounts: Array<number[]> = []
   let speciesCounts: Array<number[]> = []
   let topSpeciesCounts: Array<number> = []
@@ -99,10 +105,6 @@ export default function sketch(p5: p5) {
   let stepbystepslow: boolean
   let slowDies: boolean
   let timeShow: number
-  let p = [
-    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700,
-    800, 900, 910, 920, 930, 940, 950, 960, 970, 980, 990, 999
-  ]
 
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
@@ -1464,7 +1466,7 @@ export default function sketch(p5: p5) {
 
     graphImage.stroke(0)
 
-    for (let i = 0; i < 29; i++) {
+    for (let i = 0; i < fitnessPercentileCount; i++) {
       let k
 
       if (i == 28) {
@@ -1491,9 +1493,9 @@ export default function sketch(p5: p5) {
       for (let j = 0; j < gen; j++) {
         graphImage.line(
           x + j * genWidth,
-          -percentile[j][k] * meterHeight + zero + y,
+          -fitnessPercentileHistory[j][k] * meterHeight + zero + y,
           x + (j + 1) * genWidth,
-          -percentile[j + 1][k] * meterHeight + zero + y
+          -fitnessPercentileHistory[j + 1][k] * meterHeight + zero + y
         )
       }
     }
@@ -1547,7 +1549,7 @@ export default function sketch(p5: p5) {
     let record = -sign
 
     for (let i = 0; i < gen; i++) {
-      const toTest = percentile[i + 1][p5.int(14 - sign * 14)]
+      const toTest = fitnessPercentileHistory[i + 1][p5.int(14 - sign * 14)]
 
       if (toTest * sign > record * sign) {
         record = toTest
@@ -2144,8 +2146,9 @@ export default function sketch(p5: p5) {
       if (
         i + minBar ==
         p5.floor(
-          percentile[p5.min(genSelected, percentile.length - 1)][14] *
-            histBarsPerMeter
+          fitnessPercentileHistory[
+            p5.min(genSelected, fitnessPercentileHistory.length - 1)
+          ][14] * histBarsPerMeter
         )
       ) {
         p5.fill(255, 0, 0)
@@ -2261,13 +2264,8 @@ export default function sketch(p5: p5) {
     p5.createCanvas(1024, 576)
     p5.ellipseMode(p5.CENTER)
 
-    const beginPercentile = new Array<number>(29)
     const beginBar = new Array<number>(barLen)
     const beginSpecies = new Array<number>(101)
-
-    for (let i = 0; i < 29; i++) {
-      beginPercentile[i] = 0.0
-    }
 
     for (let i = 0; i < barLen; i++) {
       beginBar[i] = 0
@@ -2277,7 +2275,7 @@ export default function sketch(p5: p5) {
       beginSpecies[i] = 500
     }
 
-    percentile.push(beginPercentile)
+    fitnessPercentileHistory.push(new Array(fitnessPercentileCount).fill(0.0))
     barCounts.push(beginBar)
     speciesCounts.push(beginSpecies)
     topSpeciesCounts.push(0)
@@ -2348,7 +2346,9 @@ export default function sketch(p5: p5) {
         p5.textAlign(p5.RIGHT)
         p5.text(
           p5.round(
-            percentile[p5.min(genSelected, percentile.length - 1)][14] * 1000
+            fitnessPercentileHistory[
+              p5.min(genSelected, fitnessPercentileHistory.length - 1)
+            ][14] * 1000
           ) /
             1000 +
             ' ' +
@@ -2577,9 +2577,10 @@ export default function sketch(p5: p5) {
 
       c2 = quickSort(c2)
 
-      percentile.push(new Array<number>(29))
-      for (let i = 0; i < 29; i++) {
-        percentile[gen + 1][i] = c2[p[i]].d
+      fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
+      for (let i = 0; i < fitnessPercentileCount; i++) {
+        fitnessPercentileHistory[gen + 1][i] =
+          c2[fitnessPercentileCreatureIndices[i]].d
       }
 
       creatureDatabase.push(c2[lastCreatureIndex].copyCreature(-1))

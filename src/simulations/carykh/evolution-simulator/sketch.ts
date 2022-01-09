@@ -555,13 +555,13 @@ export default function sketch(p5: p5) {
       p5.textAlign(p5.CENTER)
       p5.text('#' + rank, px, py + 12)
       p5.text('ID: ' + cj.id, px, py + 24)
-      p5.text('Fitness: ' + p5.nf(cj.d, 0, 3), px, py + 36)
+      p5.text('Fitness: ' + p5.nf(cj.fitness, 0, 3), px, py + 36)
       p5.colorMode(p5.HSB, 1)
 
-      const sp = (cj.n.length % 10) * 10 + (cj.m.length % 10)
+      const sp = (cj.nodes.length % 10) * 10 + (cj.muscles.length % 10)
       p5.fill(getColor(sp, true))
       p5.text(
-        'Species: S' + (cj.n.length % 10) + '' + (cj.m.length % 10),
+        'Species: S' + (cj.nodes.length % 10) + '' + (cj.muscles.length % 10),
         px,
         py + 48
       )
@@ -1011,30 +1011,30 @@ export default function sketch(p5: p5) {
   }
 
   class Creature {
-    n: Node[]
-    m: Array<Muscle>
-    d: number
+    nodes: Node[]
+    muscles: Muscle[]
+    fitness: number
     id: number
     alive: boolean
     creatureTimer: number
     mutability: number
 
     constructor(
-      tid: number,
-      tn: Node[],
-      tm: Array<Muscle>,
-      td: number,
-      talive: boolean,
-      tct: number,
-      tmut: number
+      id: number,
+      nodes: Node[],
+      muscles: Muscle[],
+      fitness: number,
+      alive: boolean,
+      creatureTimer: number,
+      mutability: number
     ) {
-      this.id = tid
-      this.m = tm
-      this.n = tn
-      this.d = td
-      this.alive = talive
-      this.creatureTimer = tct
-      this.mutability = tmut
+      this.id = id
+      this.muscles = muscles
+      this.nodes = nodes
+      this.fitness = fitness
+      this.alive = alive
+      this.creatureTimer = creatureTimer
+      this.mutability = mutability
     }
 
     modified(id: number): Creature {
@@ -1048,21 +1048,21 @@ export default function sketch(p5: p5) {
         p5.min(this.mutability * p5.random(0.8, 1.25), 2)
       )
 
-      for (let i = 0; i < this.n.length; i++) {
-        modifiedCreature.n.push(
-          this.n[i].modifyNode(this.mutability, this.n.length)
+      for (let i = 0; i < this.nodes.length; i++) {
+        modifiedCreature.nodes.push(
+          this.nodes[i].modifyNode(this.mutability, this.nodes.length)
         )
       }
 
-      for (let i = 0; i < this.m.length; i++) {
-        modifiedCreature.m.push(
-          this.m[i].modifyMuscle(this.n.length, this.mutability)
+      for (let i = 0; i < this.muscles.length; i++) {
+        modifiedCreature.muscles.push(
+          this.muscles[i].modifyMuscle(this.nodes.length, this.mutability)
         )
       }
 
       if (
         p5.random(0, 1) < bigMutationChance * this.mutability ||
-        this.n.length <= 2
+        this.nodes.length <= 2
       ) {
         // Add a node
         modifiedCreature.addRandomNode()
@@ -1075,7 +1075,7 @@ export default function sketch(p5: p5) {
 
       if (
         p5.random(0, 1) < bigMutationChance * this.mutability &&
-        modifiedCreature.n.length >= 4
+        modifiedCreature.nodes.length >= 4
       ) {
         // Remove a node
         modifiedCreature.removeRandomNode()
@@ -1083,7 +1083,7 @@ export default function sketch(p5: p5) {
 
       if (
         p5.random(0, 1) < bigMutationChance * this.mutability &&
-        modifiedCreature.m.length >= 2
+        modifiedCreature.muscles.length >= 2
       ) {
         // Remove a muscle
         modifiedCreature.removeRandomMuscle()
@@ -1099,16 +1099,19 @@ export default function sketch(p5: p5) {
     checkForOverlap(): void {
       const bads = new Array<number>()
 
-      for (let i = 0; i < this.m.length; i++) {
-        for (let j = i + 1; j < this.m.length; j++) {
-          if (this.m[i].c1 == this.m[j].c1 && this.m[i].c2 == this.m[j].c2) {
-            bads.push(i)
-          } else if (
-            this.m[i].c1 == this.m[j].c2 &&
-            this.m[i].c2 == this.m[j].c1
+      for (let i = 0; i < this.muscles.length; i++) {
+        for (let j = i + 1; j < this.muscles.length; j++) {
+          if (
+            this.muscles[i].c1 == this.muscles[j].c1 &&
+            this.muscles[i].c2 == this.muscles[j].c2
           ) {
             bads.push(i)
-          } else if (this.m[i].c1 == this.m[i].c2) {
+          } else if (
+            this.muscles[i].c1 == this.muscles[j].c2 &&
+            this.muscles[i].c2 == this.muscles[j].c1
+          ) {
+            bads.push(i)
+          } else if (this.muscles[i].c1 == this.muscles[i].c2) {
             bads.push(i)
           }
         }
@@ -1117,30 +1120,30 @@ export default function sketch(p5: p5) {
       for (let i = bads.length - 1; i >= 0; i--) {
         const b = bads[i] + 0
 
-        if (b < this.m.length) {
-          this.m.splice(b, 1)
+        if (b < this.muscles.length) {
+          this.muscles.splice(b, 1)
         }
       }
     }
 
     checkForLoneNodes(): void {
-      if (this.n.length >= 3) {
-        for (let i = 0; i < this.n.length; i++) {
+      if (this.nodes.length >= 3) {
+        for (let i = 0; i < this.nodes.length; i++) {
           let connections = 0
           let connectedTo = -1
 
-          for (let j = 0; j < this.m.length; j++) {
-            if (this.m[j].c1 == i || this.m[j].c2 == i) {
+          for (let j = 0; j < this.muscles.length; j++) {
+            if (this.muscles[j].c1 == i || this.muscles[j].c2 == i) {
               connections++
               connectedTo = j
             }
           }
 
           if (connections <= 1) {
-            let newConnectionNode = p5.floor(p5.random(0, this.n.length))
+            let newConnectionNode = p5.floor(p5.random(0, this.nodes.length))
 
             while (newConnectionNode == i || newConnectionNode == connectedTo) {
-              newConnectionNode = p5.floor(p5.random(0, this.n.length))
+              newConnectionNode = p5.floor(p5.random(0, this.nodes.length))
             }
 
             this.addRandomMuscle(i, newConnectionNode)
@@ -1150,28 +1153,28 @@ export default function sketch(p5: p5) {
     }
 
     checkForBadAxons(): void {
-      for (let i = 0; i < this.n.length; i++) {
-        const ni = this.n[i]
+      for (let i = 0; i < this.nodes.length; i++) {
+        const ni = this.nodes[i]
 
-        if (ni.axon1 >= this.n.length) {
-          ni.axon1 = p5.int(p5.random(0, this.n.length))
+        if (ni.axon1 >= this.nodes.length) {
+          ni.axon1 = p5.int(p5.random(0, this.nodes.length))
         }
 
-        if (ni.axon2 >= this.n.length) {
-          ni.axon2 = p5.int(p5.random(0, this.n.length))
-        }
-      }
-
-      for (let i = 0; i < this.m.length; i++) {
-        const mi = this.m[i]
-
-        if (mi.axon >= this.n.length) {
-          mi.axon = getNewMuscleAxon(this.n.length)
+        if (ni.axon2 >= this.nodes.length) {
+          ni.axon2 = p5.int(p5.random(0, this.nodes.length))
         }
       }
 
-      for (let i = 0; i < this.n.length; i++) {
-        const ni = this.n[i]
+      for (let i = 0; i < this.muscles.length; i++) {
+        const mi = this.muscles[i]
+
+        if (mi.axon >= this.nodes.length) {
+          mi.axon = getNewMuscleAxon(this.nodes.length)
+        }
+      }
+
+      for (let i = 0; i < this.nodes.length; i++) {
+        const ni = this.nodes[i]
         ni.safeInput = operationAxons[ni.operation] == 0
       }
 
@@ -1181,16 +1184,16 @@ export default function sketch(p5: p5) {
       while (iterations < 1000) {
         didSomething = false
 
-        for (let i = 0; i < this.n.length; i++) {
-          const ni = this.n[i]
+        for (let i = 0; i < this.nodes.length; i++) {
+          const ni = this.nodes[i]
 
           if (!ni.safeInput) {
             if (
               (operationAxons[ni.operation] == 1 &&
-                this.n[ni.axon1].safeInput) ||
+                this.nodes[ni.axon1].safeInput) ||
               (operationAxons[ni.operation] == 2 &&
-                this.n[ni.axon1].safeInput &&
-                this.n[ni.axon2].safeInput)
+                this.nodes[ni.axon1].safeInput &&
+                this.nodes[ni.axon2].safeInput)
             ) {
               ni.safeInput = true
               didSomething = true
@@ -1203,8 +1206,8 @@ export default function sketch(p5: p5) {
         }
       }
 
-      for (let i = 0; i < this.n.length; i++) {
-        const ni = this.n[i]
+      for (let i = 0; i < this.nodes.length; i++) {
+        const ni = this.nodes[i]
 
         if (!ni.safeInput) {
           // This node doesn't get its input from a safe place.  CLEANSE IT.
@@ -1215,15 +1218,15 @@ export default function sketch(p5: p5) {
     }
 
     addRandomNode(): void {
-      const parentNode = p5.floor(p5.random(0, this.n.length))
+      const parentNode = p5.floor(p5.random(0, this.nodes.length))
       const ang1 = p5.random(0, 2 * p5.PI)
       const distance = p5.sqrt(p5.random(0, 1))
-      const x = this.n[parentNode].x + p5.cos(ang1) * 0.5 * distance
-      const y = this.n[parentNode].y + p5.sin(ang1) * 0.5 * distance
+      const x = this.nodes[parentNode].x + p5.cos(ang1) * 0.5 * distance
+      const y = this.nodes[parentNode].y + p5.sin(ang1) * 0.5 * distance
 
-      const newNodeCount = this.n.length + 1
+      const newNodeCount = this.nodes.length + 1
 
-      this.n.push(
+      this.nodes.push(
         new Node(
           x,
           y,
@@ -1241,10 +1244,10 @@ export default function sketch(p5: p5) {
       let nextClosestNode = 0
       let record = 100000
 
-      for (let i = 0; i < this.n.length - 1; i++) {
+      for (let i = 0; i < this.nodes.length - 1; i++) {
         if (i != parentNode) {
-          const dx = this.n[i].x - x
-          const dy = this.n[i].y - y
+          const dx = this.nodes[i].x - x
+          const dy = this.nodes[i].y - y
 
           if (p5.sqrt(dx * dx + dy * dy) < record) {
             record = p5.sqrt(dx * dx + dy * dy)
@@ -1253,19 +1256,19 @@ export default function sketch(p5: p5) {
         }
       }
 
-      this.addRandomMuscle(parentNode, this.n.length - 1)
-      this.addRandomMuscle(nextClosestNode, this.n.length - 1)
+      this.addRandomMuscle(parentNode, this.nodes.length - 1)
+      this.addRandomMuscle(nextClosestNode, this.nodes.length - 1)
     }
 
     addRandomMuscle(tc1: number, tc2: number): void {
-      const axon = getNewMuscleAxon(this.n.length)
+      const axon = getNewMuscleAxon(this.nodes.length)
 
       if (tc1 == -1) {
-        tc1 = p5.int(p5.random(0, this.n.length))
+        tc1 = p5.int(p5.random(0, this.nodes.length))
         tc2 = tc1
 
-        while (tc2 == tc1 && this.n.length >= 2) {
-          tc2 = p5.int(p5.random(0, this.n.length))
+        while (tc2 == tc1 && this.nodes.length >= 2) {
+          tc2 = p5.int(p5.random(0, this.nodes.length))
         }
       }
 
@@ -1273,56 +1276,56 @@ export default function sketch(p5: p5) {
 
       if (tc1 != -1) {
         len = p5.dist(
-          this.n[tc1].x,
-          this.n[tc1].y,
-          this.n[tc2].x,
-          this.n[tc2].y
+          this.nodes[tc1].x,
+          this.nodes[tc1].y,
+          this.nodes[tc2].x,
+          this.nodes[tc2].y
         )
       }
 
-      this.m.push(new Muscle(axon, tc1, tc2, len, p5.random(0.02, 0.08)))
+      this.muscles.push(new Muscle(axon, tc1, tc2, len, p5.random(0.02, 0.08)))
     }
 
     removeRandomNode(): void {
-      const choice = p5.floor(p5.random(0, this.n.length))
-      this.n.splice(choice, 1)
+      const choice = p5.floor(p5.random(0, this.nodes.length))
+      this.nodes.splice(choice, 1)
 
       let i = 0
 
-      while (i < this.m.length) {
-        if (this.m[i].c1 == choice || this.m[i].c2 == choice) {
-          this.m.splice(i, 1)
+      while (i < this.muscles.length) {
+        if (this.muscles[i].c1 == choice || this.muscles[i].c2 == choice) {
+          this.muscles.splice(i, 1)
         } else {
           i++
         }
       }
 
-      for (let j = 0; j < this.m.length; j++) {
-        if (this.m[j].c1 >= choice) {
-          this.m[j].c1--
+      for (let j = 0; j < this.muscles.length; j++) {
+        if (this.muscles[j].c1 >= choice) {
+          this.muscles[j].c1--
         }
 
-        if (this.m[j].c2 >= choice) {
-          this.m[j].c2--
+        if (this.muscles[j].c2 >= choice) {
+          this.muscles[j].c2--
         }
       }
     }
 
     removeRandomMuscle(): void {
-      const choice = p5.floor(p5.random(0, this.m.length))
-      this.m.splice(choice, 1)
+      const choice = p5.floor(p5.random(0, this.muscles.length))
+      this.muscles.splice(choice, 1)
     }
 
     copyCreature(newID: number): Creature {
       const n2 = []
       const m2 = []
 
-      for (let i = 0; i < this.n.length; i++) {
-        n2.push(this.n[i].copyNode())
+      for (let i = 0; i < this.nodes.length; i++) {
+        n2.push(this.nodes[i].copyNode())
       }
 
-      for (let i = 0; i < this.m.length; i++) {
-        m2.push(this.m[i].copyMuscle())
+      for (let i = 0; i < this.muscles.length; i++) {
+        m2.push(this.muscles[i].copyMuscle())
       }
 
       if (newID == -1) {
@@ -1333,7 +1336,7 @@ export default function sketch(p5: p5) {
         newID,
         n2,
         m2,
-        this.d,
+        this.fitness,
         this.alive,
         this.creatureTimer,
         this.mutability
@@ -2076,9 +2079,9 @@ export default function sketch(p5: p5) {
     for (let i = 1; i < c.length; i++) {
       const ci = c[i]
 
-      if (ci.d == c0.d) {
+      if (ci.fitness == c0.fitness) {
         equal.push(ci)
-      } else if (ci.d < c0.d) {
+      } else if (ci.fitness < c0.fitness) {
         less.push(ci)
       } else {
         more.push(ci)
@@ -2426,7 +2429,7 @@ export default function sketch(p5: p5) {
     y: number,
     toImage: number
   ): void {
-    drawCreaturePieces(cj.n, cj.m, x, y, toImage)
+    drawCreaturePieces(cj.nodes, cj.muscles, x, y, toImage)
   }
 
   function drawCreaturePieces(
@@ -2847,7 +2850,7 @@ export default function sketch(p5: p5) {
       fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
       for (let i = 0; i < fitnessPercentileCount; i++) {
         fitnessPercentileHistory[generationCount + 1][i] =
-          c2[fitnessPercentileCreatureIndices[i]].d
+          c2[fitnessPercentileCreatureIndices[i]].fitness
       }
 
       creatureDatabase.push(c2[lastCreatureIndex].copyCreature(-1))
@@ -2868,13 +2871,14 @@ export default function sketch(p5: p5) {
       }
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
-        const bar = p5.floor(c2[i].d * histBarsPerMeter - minBar)
+        const bar = p5.floor(c2[i].fitness * histBarsPerMeter - minBar)
 
         if (bar >= 0 && bar < barLen) {
           barCounts[generationCount + 1][bar]++
         }
 
-        const species = (c2[i].n.length % 10) * 10 + (c2[i].m.length % 10)
+        const species =
+          (c2[i].nodes.length % 10) * 10 + (c2[i].muscles.length % 10)
         beginSpecies[species]++
       }
 
@@ -3068,8 +3072,8 @@ export default function sketch(p5: p5) {
         c2[j2] = cj.copyCreature(cj.id + CREATURE_COUNT) // duplicate
         c2[lastCreatureIndex - j2] = cj.modified(cj2.id + CREATURE_COUNT) // mutated offspring 1
 
-        simulationNodes = c2[lastCreatureIndex - j2].n
-        simulationMuscles = c2[lastCreatureIndex - j2].m
+        simulationNodes = c2[lastCreatureIndex - j2].nodes
+        simulationMuscles = c2[lastCreatureIndex - j2].muscles
 
         stabilizeNodesAndMuscles(
           simulationNodes,
@@ -3237,8 +3241,8 @@ export default function sketch(p5: p5) {
   }
 
   function setGlobalVariables(thisCreature: Creature): void {
-    simulationNodes = thisCreature.n.map(node => node.copyNode())
-    simulationMuscles = thisCreature.m.map(muscle => muscle.copyMuscle())
+    simulationNodes = thisCreature.nodes.map(node => node.copyNode())
+    simulationMuscles = thisCreature.muscles.map(muscle => muscle.copyMuscle())
 
     id = thisCreature.id
     timer = 0
@@ -3252,6 +3256,6 @@ export default function sketch(p5: p5) {
   }
 
   function setFitness(i: number): void {
-    c[i].d = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
+    c[i].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }
 }

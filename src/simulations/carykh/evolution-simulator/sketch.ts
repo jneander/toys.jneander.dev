@@ -1,6 +1,7 @@
 import type p5 from 'p5'
 import type {Color, Font, Graphics} from 'p5'
 
+import Creature from './Creature'
 import Muscle from './Muscle'
 import Node from './Node'
 import Rectangle from './Rectangle'
@@ -1277,57 +1278,6 @@ export default function sketch(p5: p5) {
       return p5.int(p5.random(0, nodeNum))
     } else {
       return -1
-    }
-  }
-
-  class Creature {
-    nodes: Node[]
-    muscles: Muscle[]
-    fitness: number
-    id: number
-    alive: boolean
-    creatureTimer: number
-    mutability: number
-
-    constructor(
-      id: number,
-      nodes: Node[],
-      muscles: Muscle[],
-      fitness: number,
-      alive: boolean,
-      creatureTimer: number,
-      mutability: number
-    ) {
-      this.id = id
-      this.muscles = muscles
-      this.nodes = nodes
-      this.fitness = fitness
-      this.alive = alive
-      this.creatureTimer = creatureTimer
-      this.mutability = mutability
-    }
-
-    clone(newId?: number): Creature {
-      const n2 = []
-      const m2 = []
-
-      for (let i = 0; i < this.nodes.length; i++) {
-        n2.push(this.nodes[i].clone())
-      }
-
-      for (let i = 0; i < this.muscles.length; i++) {
-        m2.push(this.muscles[i].clone())
-      }
-
-      return new Creature(
-        newId != null ? newId : this.id,
-        n2,
-        m2,
-        this.fitness,
-        this.alive,
-        this.creatureTimer,
-        this.mutability
-      )
     }
   }
 

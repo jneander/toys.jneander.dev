@@ -141,6 +141,38 @@ export default function sketch(p5: p5) {
   let stepByStepSlow: boolean
 
   class Simulation {
+    applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
+      let target = muscle.previousTarget
+
+      if (muscle.axon >= 0 && muscle.axon < nodes.length) {
+        target = muscle.len * toMuscleUsable(nodes[muscle.axon].value)
+      } else {
+        target = muscle.len
+      }
+
+      const ni1 = nodes[muscle.c1]
+      const ni2 = nodes[muscle.c2]
+
+      const distance = p5.dist(ni1.x, ni1.y, ni2.x, ni2.y)
+      const angle = p5.atan2(ni1.y - ni2.y, ni1.x - ni2.x)
+
+      const force = p5.min(p5.max(1 - distance / target, -0.4), 0.4)
+      ni1.vx += (p5.cos(angle) * force * muscle.rigidity) / ni1.m
+      ni1.vy += (p5.sin(angle) * force * muscle.rigidity) / ni1.m
+      ni2.vx -= (p5.cos(angle) * force * muscle.rigidity) / ni2.m
+      ni2.vy -= (p5.sin(angle) * force * muscle.rigidity) / ni2.m
+
+      simulationState.creature.energyUsed = p5.max(
+        simulationState.creature.energyUsed +
+          p5.abs(muscle.previousTarget - target) *
+            muscle.rigidity *
+            ENERGY_UNIT,
+        0
+      )
+
+      muscle.previousTarget = target
+    }
+
     applyForcesToNode(node: Node): void {
       node.vx *= AIR_FRICTION
       node.vy *= AIR_FRICTION
@@ -263,6 +295,36 @@ export default function sketch(p5: p5) {
 
       node.prevY = node.y
       node.prevX = node.x
+    }
+
+    modifyMuscle(
+      muscle: Muscle,
+      nodeCount: number,
+      mutability: number
+    ): Muscle {
+      let newc1 = muscle.c1
+      let newc2 = muscle.c2
+      let newAxon = muscle.axon
+
+      if (p5.random(0, 1) < bigMutationChance * mutability) {
+        newc1 = p5.int(p5.random(0, nodeCount))
+      }
+
+      if (p5.random(0, 1) < bigMutationChance * mutability) {
+        newc2 = p5.int(p5.random(0, nodeCount))
+      }
+
+      if (p5.random(0, 1) < bigMutationChance * mutability) {
+        newAxon = getNewMuscleAxon(nodeCount)
+      }
+
+      const newR = p5.min(
+        p5.max(muscle.rigidity * (1 + r() * 0.9 * mutability), 0.01),
+        0.08
+      )
+      const newLen = p5.min(p5.max(muscle.len + r() * mutability, 0.4), 1.25)
+
+      return new Muscle(newAxon, newc1, newc2, newLen, newR)
     }
 
     modifyNode(node: Node, mutability: number, nodeNum: number): Node {
@@ -934,64 +996,8 @@ export default function sketch(p5: p5) {
       this.rigidity = trigidity
     }
 
-    applyForce(n: Node[]): void {
-      let target = this.previousTarget
-
-      if (this.axon >= 0 && this.axon < n.length) {
-        target = this.len * toMuscleUsable(n[this.axon].value)
-      } else {
-        target = this.len
-      }
-
-      const ni1 = n[this.c1]
-      const ni2 = n[this.c2]
-
-      const distance = p5.dist(ni1.x, ni1.y, ni2.x, ni2.y)
-      const angle = p5.atan2(ni1.y - ni2.y, ni1.x - ni2.x)
-
-      const force = p5.min(p5.max(1 - distance / target, -0.4), 0.4)
-      ni1.vx += (p5.cos(angle) * force * this.rigidity) / ni1.m
-      ni1.vy += (p5.sin(angle) * force * this.rigidity) / ni1.m
-      ni2.vx -= (p5.cos(angle) * force * this.rigidity) / ni2.m
-      ni2.vy -= (p5.sin(angle) * force * this.rigidity) / ni2.m
-
-      simulationState.creature.energyUsed = p5.max(
-        simulationState.creature.energyUsed +
-          p5.abs(this.previousTarget - target) * this.rigidity * ENERGY_UNIT,
-        0
-      )
-
-      this.previousTarget = target
-    }
-
     clone(): Muscle {
       return new Muscle(this.axon, this.c1, this.c2, this.len, this.rigidity)
-    }
-
-    modifyMuscle(nodeNum: number, mutability: number): Muscle {
-      let newc1 = this.c1
-      let newc2 = this.c2
-      let newAxon = this.axon
-
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newc1 = p5.int(p5.random(0, nodeNum))
-      }
-
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newc2 = p5.int(p5.random(0, nodeNum))
-      }
-
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newAxon = getNewMuscleAxon(nodeNum)
-      }
-
-      const newR = p5.min(
-        p5.max(this.rigidity * (1 + r() * 0.9 * mutability), 0.01),
-        0.08
-      )
-      const newLen = p5.min(p5.max(this.len + r() * mutability, 0.4), 1.25)
-
-      return new Muscle(newAxon, newc1, newc2, newLen, newR)
     }
   }
 
@@ -1052,9 +1058,12 @@ export default function sketch(p5: p5) {
       }
 
       for (let i = 0; i < this.muscles.length; i++) {
-        modifiedCreature.muscles.push(
-          this.muscles[i].modifyMuscle(this.nodes.length, this.mutability)
+        const muscle = simulation.modifyMuscle(
+          this.muscles[i],
+          this.nodes.length,
+          this.mutability
         )
+        modifiedCreature.muscles.push(muscle)
       }
 
       if (
@@ -2105,7 +2114,7 @@ export default function sketch(p5: p5) {
   ): void {
     for (let j = 0; j < 200; j++) {
       for (let i = 0; i < muscleCount; i++) {
-        muscles[i].applyForce(nodes)
+        simulation.applyForceToMuscle(muscles[i], nodes)
       }
 
       for (let i = 0; i < nodeCount; i++) {
@@ -2144,9 +2153,8 @@ export default function sketch(p5: p5) {
 
   function simulate(): void {
     for (let i = 0; i < simulationState.creature.muscles.length; i++) {
-      simulationState.creature.muscles[i].applyForce(
-        simulationState.creature.nodes
-      )
+      const {muscles, nodes} = simulationState.creature
+      simulation.applyForceToMuscle(muscles[i], nodes)
     }
 
     for (let i = 0; i < simulationState.creature.nodes.length; i++) {

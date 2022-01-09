@@ -498,6 +498,94 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class StatusWindowView extends Widget {
+    draw(): void {
+      let x, y, px, py
+      let rank = statusWindow + 1
+
+      let cj
+
+      p5.stroke(p5.abs((overallTimer % 30) - 15) * 17)
+      p5.strokeWeight(3)
+      p5.noFill()
+
+      if (statusWindow >= 0) {
+        cj = c2[statusWindow]
+
+        if (activity === Activity.FinishedStepByStep) {
+          const id = (cj.id - 1) % CREATURE_COUNT
+          x = id % 40
+          y = p5.floor(id / 40)
+        } else {
+          x = statusWindow % 40
+          y = p5.floor(statusWindow / 40) + 1
+        }
+
+        px = x * 30 + 55
+        py = y * 25 + 10
+
+        if (px <= 1140) {
+          px += 80
+        } else {
+          px -= 80
+        }
+
+        p5.rect(x * 30 + 40, y * 25 + 17, 30, 25)
+      } else {
+        cj = creatureDatabase[(selectedGeneration - 1) * 3 + statusWindow + 3]
+        x = 760 + (statusWindow + 3) * 160
+        y = 180
+        px = x
+        py = y
+        p5.rect(x, y, 140, 140)
+
+        const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
+        rank = ranks[statusWindow + 3]
+      }
+
+      p5.noStroke()
+      p5.fill(255)
+      p5.rect(px - 60, py, 120, 52)
+      p5.fill(0)
+      p5.textFont(font, 12)
+      p5.textAlign(p5.CENTER)
+      p5.text('#' + rank, px, py + 12)
+      p5.text('ID: ' + cj.id, px, py + 24)
+      p5.text('Fitness: ' + p5.nf(cj.d, 0, 3), px, py + 36)
+      p5.colorMode(p5.HSB, 1)
+
+      const sp = (cj.n.length % 10) * 10 + (cj.m.length % 10)
+      p5.fill(getColor(sp, true))
+      p5.text(
+        'Species: S' + (cj.n.length % 10) + '' + (cj.m.length % 10),
+        px,
+        py + 48
+      )
+      p5.colorMode(p5.RGB, 255)
+
+      if (showPopupSimulation) {
+        this.drawPopupSimulation(px, py)
+      }
+    }
+
+    private drawPopupSimulation(px: number, py: number): void {
+      let py2 = py - 125
+      if (py >= 360) {
+        py2 -= 180
+      } else {
+        py2 += 180
+      }
+
+      const px2 = p5.min(p5.max(px - 90, 10), 970)
+
+      drawpopUpImage()
+      p5.image(popUpImage, px2, py2, 300, 300)
+
+      drawStats(px2 + 295, py2, 0.45)
+      simulate()
+    }
+  }
+
   const startViewStartButton = new StartViewStartButton()
   const generationViewCreateButton = new GenerationViewCreateButton()
   const generatedCreaturesBackButton = new GeneratedCreaturesBackButton()
@@ -514,6 +602,7 @@ export default function sketch(p5: p5) {
   const cullCreaturesButton = new CullCreaturesButton()
   const propagateCreaturesButton = new PropagateCreaturesButton()
   const propagatedCreaturesBackButton = new PropagatedCreaturesBackButton()
+  const statusWindowView = new StatusWindowView()
 
   class Node {
     // FLOAT
@@ -2451,88 +2540,6 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function drawStatusWindow(): void {
-    let x, y, px, py
-    let rank = statusWindow + 1
-
-    let cj
-
-    p5.stroke(p5.abs((overallTimer % 30) - 15) * 17)
-    p5.strokeWeight(3)
-    p5.noFill()
-
-    if (statusWindow >= 0) {
-      cj = c2[statusWindow]
-
-      if (activity === Activity.FinishedStepByStep) {
-        const id = (cj.id - 1) % CREATURE_COUNT
-        x = id % 40
-        y = p5.floor(id / 40)
-      } else {
-        x = statusWindow % 40
-        y = p5.floor(statusWindow / 40) + 1
-      }
-
-      px = x * 30 + 55
-      py = y * 25 + 10
-
-      if (px <= 1140) {
-        px += 80
-      } else {
-        px -= 80
-      }
-
-      p5.rect(x * 30 + 40, y * 25 + 17, 30, 25)
-    } else {
-      cj = creatureDatabase[(selectedGeneration - 1) * 3 + statusWindow + 3]
-      x = 760 + (statusWindow + 3) * 160
-      y = 180
-      px = x
-      py = y
-      p5.rect(x, y, 140, 140)
-
-      const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
-      rank = ranks[statusWindow + 3]
-    }
-
-    p5.noStroke()
-    p5.fill(255)
-    p5.rect(px - 60, py, 120, 52)
-    p5.fill(0)
-    p5.textFont(font, 12)
-    p5.textAlign(p5.CENTER)
-    p5.text('#' + rank, px, py + 12)
-    p5.text('ID: ' + cj.id, px, py + 24)
-    p5.text('Fitness: ' + p5.nf(cj.d, 0, 3), px, py + 36)
-    p5.colorMode(p5.HSB, 1)
-
-    const sp = (cj.n.length % 10) * 10 + (cj.m.length % 10)
-    p5.fill(getColor(sp, true))
-    p5.text(
-      'Species: S' + (cj.n.length % 10) + '' + (cj.m.length % 10),
-      px,
-      py + 48
-    )
-    p5.colorMode(p5.RGB, 255)
-
-    if (showPopupSimulation) {
-      let py2 = py - 125
-      if (py >= 360) {
-        py2 -= 180
-      } else {
-        py2 += 180
-      }
-
-      const px2 = p5.min(p5.max(px - 90, 10), 970)
-
-      drawpopUpImage()
-      p5.image(popUpImage, px2, py2, 300, 300)
-
-      drawStats(px2 + 295, py2, 0.45)
-      simulate()
-    }
-  }
-
   p5.preload = () => {
     font = p5.loadFont('/fonts/Helvetica-Bold.otf')
   }
@@ -3153,7 +3160,7 @@ export default function sketch(p5: p5) {
     }
 
     if (statusWindow >= -3) {
-      drawStatusWindow()
+      statusWindowView.draw()
     }
 
     overallTimer++

@@ -6,6 +6,7 @@ import Muscle from './Muscle'
 import Node from './Node'
 import Rectangle from './Rectangle'
 import {Activity} from './constants'
+import {dist2d, toInt} from './math'
 
 type SimulationCameraState = {
   x: number
@@ -181,18 +182,18 @@ export default function sketch(p5: p5) {
       const ni1 = nodes[muscle.c1]
       const ni2 = nodes[muscle.c2]
 
-      const distance = p5.dist(ni1.x, ni1.y, ni2.x, ni2.y)
-      const angle = p5.atan2(ni1.y - ni2.y, ni1.x - ni2.x)
+      const distance = dist2d(ni1.x, ni1.y, ni2.x, ni2.y)
+      const angle = Math.atan2(ni1.y - ni2.y, ni1.x - ni2.x)
 
-      const force = p5.min(p5.max(1 - distance / target, -0.4), 0.4)
-      ni1.vx += (p5.cos(angle) * force * muscle.rigidity) / ni1.m
-      ni1.vy += (p5.sin(angle) * force * muscle.rigidity) / ni1.m
-      ni2.vx -= (p5.cos(angle) * force * muscle.rigidity) / ni2.m
-      ni2.vy -= (p5.sin(angle) * force * muscle.rigidity) / ni2.m
+      const force = Math.min(Math.max(1 - distance / target, -0.4), 0.4)
+      ni1.vx += (Math.cos(angle) * force * muscle.rigidity) / ni1.m
+      ni1.vy += (Math.sin(angle) * force * muscle.rigidity) / ni1.m
+      ni2.vx -= (Math.cos(angle) * force * muscle.rigidity) / ni2.m
+      ni2.vy -= (Math.sin(angle) * force * muscle.rigidity) / ni2.m
 
-      simulationState.creature.energyUsed = p5.max(
+      simulationState.creature.energyUsed = Math.max(
         simulationState.creature.energyUsed +
-          p5.abs(muscle.previousTarget - target) *
+          Math.abs(muscle.previousTarget - target) *
             muscle.rigidity *
             ENERGY_UNIT,
         0
@@ -206,7 +207,7 @@ export default function sketch(p5: p5) {
       node.vy *= AIR_FRICTION
       node.y += node.vy
       node.x += node.vx
-      const acc = p5.dist(node.vx, node.vy, node.pvx, node.pvy)
+      const acc = dist2d(node.vx, node.vy, node.pvx, node.pvy)
       simulationState.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
       node.pvx = node.vx
       node.pvy = node.vy
@@ -227,8 +228,8 @@ export default function sketch(p5: p5) {
       if (node.y > node.prevY && hazelStairs >= 0) {
         const bottomPointNow = node.y + node.m / 2
         const bottomPointPrev = node.prevY + node.m / 2
-        const levelNow = p5.int(p5.ceil(bottomPointNow / hazelStairs))
-        const levelPrev = p5.int(p5.ceil(bottomPointPrev / hazelStairs))
+        const levelNow = toInt(Math.ceil(bottomPointNow / hazelStairs))
+        const levelPrev = toInt(Math.ceil(bottomPointPrev / hazelStairs))
 
         if (levelNow > levelPrev) {
           const groundLevel = levelPrev * hazelStairs
@@ -242,8 +243,8 @@ export default function sketch(p5: p5) {
         let px, py
 
         if (
-          p5.abs(node.x - (r.x1 + r.x2) / 2) <= (r.x2 - r.x1 + node.m) / 2 &&
-          p5.abs(node.y - (r.y1 + r.y2) / 2) <= (r.y2 - r.y1 + node.m) / 2
+          Math.abs(node.x - (r.x1 + r.x2) / 2) <= (r.x2 - r.x1 + node.m) / 2 &&
+          Math.abs(node.y - (r.y1 + r.y2) / 2) <= (r.y2 - r.y1 + node.m) / 2
         ) {
           if (
             node.x >= r.x1 &&
@@ -289,12 +290,12 @@ export default function sketch(p5: p5) {
             }
           }
 
-          const distance = p5.dist(node.x, node.y, px, py)
+          const distance = dist2d(node.x, node.y, px, py)
           let rad = node.m / 2
-          let wallAngle = p5.atan2(py - node.y, px - node.x)
+          let wallAngle = Math.atan2(py - node.y, px - node.x)
 
           if (flip) {
-            wallAngle += p5.PI
+            wallAngle += Math.PI
           }
 
           if (distance < rad || flip) {
@@ -310,13 +311,13 @@ export default function sketch(p5: p5) {
             node.x = (node.x - px) * multi + px
             node.y = (node.y - py) * multi + py
 
-            const veloAngle = p5.atan2(node.vy, node.vx)
-            const veloMag = p5.dist(0, 0, node.vx, node.vy)
+            const veloAngle = Math.atan2(node.vy, node.vx)
+            const veloMag = dist2d(0, 0, node.vx, node.vy)
             const relAngle = veloAngle - wallAngle
-            const relY = p5.sin(relAngle) * veloMag * dif * FRICTION
+            const relY = Math.sin(relAngle) * veloMag * dif * FRICTION
 
-            node.vx = -p5.sin(relAngle) * relY
-            node.vy = p5.cos(relAngle) * relY
+            node.vx = -Math.sin(relAngle) * relY
+            node.vy = Math.cos(relAngle) * relY
           }
         }
       }
@@ -333,7 +334,7 @@ export default function sketch(p5: p5) {
         0,
         true,
         creature.creatureTimer + r() * 16 * creature.mutability,
-        p5.min(creature.mutability * p5.random(0.8, 1.25), 2)
+        Math.min(creature.mutability * p5.random(0.8, 1.25), 2)
       )
 
       for (let i = 0; i < creature.nodes.length; i++) {
@@ -399,22 +400,25 @@ export default function sketch(p5: p5) {
       let newAxon = muscle.axon
 
       if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newc1 = p5.int(p5.random(0, nodeCount))
+        newc1 = toInt(p5.random(0, nodeCount))
       }
 
       if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newc2 = p5.int(p5.random(0, nodeCount))
+        newc2 = toInt(p5.random(0, nodeCount))
       }
 
       if (p5.random(0, 1) < bigMutationChance * mutability) {
         newAxon = getNewMuscleAxon(nodeCount)
       }
 
-      const newR = p5.min(
-        p5.max(muscle.rigidity * (1 + r() * 0.9 * mutability), 0.01),
+      const newR = Math.min(
+        Math.max(muscle.rigidity * (1 + r() * 0.9 * mutability), 0.01),
         0.08
       )
-      const newLen = p5.min(p5.max(muscle.len + r() * mutability, 0.4), 1.25)
+      const newLen = Math.min(
+        Math.max(muscle.len + r() * mutability, 0.4),
+        1.25
+      )
 
       return new Muscle(newAxon, newc1, newc2, newLen, newR)
     }
@@ -424,7 +428,7 @@ export default function sketch(p5: p5) {
       const newY = node.y + r() * 0.5 * mutability
       let newM = node.m + r() * 0.1 * mutability
 
-      newM = p5.min(p5.max(newM, 0.3), 0.5)
+      newM = Math.min(Math.max(newM, 0.3), 0.5)
       newM = 0.4
 
       let newV = node.value * (1 + r() * 0.2 * mutability)
@@ -433,13 +437,13 @@ export default function sketch(p5: p5) {
       let newAxon2 = node.axon2
 
       if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newOperation = p5.int(p5.random(0, operationCount))
+        newOperation = toInt(p5.random(0, operationCount))
       }
       if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newAxon1 = p5.int(p5.random(0, nodeNum))
+        newAxon1 = toInt(p5.random(0, nodeNum))
       }
       if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newAxon2 = p5.int(p5.random(0, nodeNum))
+        newAxon2 = toInt(p5.random(0, nodeNum))
       }
 
       if (newOperation == 1) {
@@ -459,7 +463,7 @@ export default function sketch(p5: p5) {
         0,
         0,
         newM,
-        p5.min(p5.max(node.f + r() * 0.1 * mutability, 0), 1),
+        Math.min(Math.max(node.f + r() * 0.1 * mutability, 0), 1),
         newV,
         newOperation,
         newAxon1,
@@ -499,10 +503,10 @@ export default function sketch(p5: p5) {
         node.valueToBe = axonValue2 === 0 ? 0 : axonValue1 % axonValue2
       } else if (node.operation == 9) {
         // sin
-        node.valueToBe = p5.sin(axonValue1)
+        node.valueToBe = Math.sin(axonValue1)
       } else if (node.operation == 10) {
         // sig
-        node.valueToBe = 1 / (1 + p5.pow(2.71828182846, -axonValue1))
+        node.valueToBe = 1 / (1 + Math.pow(2.71828182846, -axonValue1))
       } else if (node.operation == 11) {
         // pressure
         node.valueToBe = node.pressure
@@ -516,11 +520,11 @@ export default function sketch(p5: p5) {
     }
 
     addRandomNode(creature: Creature): void {
-      const parentNode = p5.floor(p5.random(0, creature.nodes.length))
-      const ang1 = p5.random(0, 2 * p5.PI)
-      const distance = p5.sqrt(p5.random(0, 1))
-      const x = creature.nodes[parentNode].x + p5.cos(ang1) * 0.5 * distance
-      const y = creature.nodes[parentNode].y + p5.sin(ang1) * 0.5 * distance
+      const parentNode = Math.floor(p5.random(0, creature.nodes.length))
+      const ang1 = p5.random(0, 2 * Math.PI)
+      const distance = Math.sqrt(p5.random(0, 1))
+      const x = creature.nodes[parentNode].x + Math.cos(ang1) * 0.5 * distance
+      const y = creature.nodes[parentNode].y + Math.sin(ang1) * 0.5 * distance
 
       const newNodeCount = creature.nodes.length + 1
 
@@ -533,9 +537,9 @@ export default function sketch(p5: p5) {
           0.4,
           p5.random(0, 1),
           p5.random(0, 1),
-          p5.floor(p5.random(0, operationCount)),
-          p5.floor(p5.random(0, newNodeCount)),
-          p5.floor(p5.random(0, newNodeCount))
+          Math.floor(p5.random(0, operationCount)),
+          Math.floor(p5.random(0, newNodeCount)),
+          Math.floor(p5.random(0, newNodeCount))
         )
       )
 
@@ -547,8 +551,8 @@ export default function sketch(p5: p5) {
           const dx = creature.nodes[i].x - x
           const dy = creature.nodes[i].y - y
 
-          if (p5.sqrt(dx * dx + dy * dy) < record) {
-            record = p5.sqrt(dx * dx + dy * dy)
+          if (Math.sqrt(dx * dx + dy * dy) < record) {
+            record = Math.sqrt(dx * dx + dy * dy)
             nextClosestNode = i
           }
         }
@@ -562,18 +566,18 @@ export default function sketch(p5: p5) {
       const axon = getNewMuscleAxon(creature.nodes.length)
 
       if (tc1 == -1) {
-        tc1 = p5.int(p5.random(0, creature.nodes.length))
+        tc1 = toInt(p5.random(0, creature.nodes.length))
         tc2 = tc1
 
         while (tc2 == tc1 && creature.nodes.length >= 2) {
-          tc2 = p5.int(p5.random(0, creature.nodes.length))
+          tc2 = toInt(p5.random(0, creature.nodes.length))
         }
       }
 
       let len = p5.random(0.5, 1.5)
 
       if (tc1 != -1) {
-        len = p5.dist(
+        len = dist2d(
           creature.nodes[tc1].x,
           creature.nodes[tc1].y,
           creature.nodes[tc2].x,
@@ -587,7 +591,7 @@ export default function sketch(p5: p5) {
     }
 
     removeRandomNode(creature: Creature): void {
-      const choice = p5.floor(p5.random(0, creature.nodes.length))
+      const choice = Math.floor(p5.random(0, creature.nodes.length))
       creature.nodes.splice(choice, 1)
 
       let i = 0
@@ -615,7 +619,7 @@ export default function sketch(p5: p5) {
     }
 
     removeRandomMuscle(creature: Creature): void {
-      const choice = p5.floor(p5.random(0, creature.muscles.length))
+      const choice = Math.floor(p5.random(0, creature.muscles.length))
       creature.muscles.splice(choice, 1)
     }
 
@@ -663,12 +667,14 @@ export default function sketch(p5: p5) {
           }
 
           if (connections <= 1) {
-            let newConnectionNode = p5.floor(
+            let newConnectionNode = Math.floor(
               p5.random(0, creature.nodes.length)
             )
 
             while (newConnectionNode == i || newConnectionNode == connectedTo) {
-              newConnectionNode = p5.floor(p5.random(0, creature.nodes.length))
+              newConnectionNode = Math.floor(
+                p5.random(0, creature.nodes.length)
+              )
             }
 
             this.addRandomMuscle(creature, i, newConnectionNode)
@@ -682,11 +688,11 @@ export default function sketch(p5: p5) {
         const ni = creature.nodes[i]
 
         if (ni.axon1 >= creature.nodes.length) {
-          ni.axon1 = p5.int(p5.random(0, creature.nodes.length))
+          ni.axon1 = toInt(p5.random(0, creature.nodes.length))
         }
 
         if (ni.axon2 >= creature.nodes.length) {
-          ni.axon2 = p5.int(p5.random(0, creature.nodes.length))
+          ni.axon2 = toInt(p5.random(0, creature.nodes.length))
         }
       }
 
@@ -770,7 +776,7 @@ export default function sketch(p5: p5) {
   }
 
   function r(): number {
-    return p5.pow(p5.random(-1, 1), 19)
+    return Math.pow(p5.random(-1, 1), 19)
   }
 
   function getCursorPosition(): {mX: number; mY: number} {
@@ -1139,7 +1145,7 @@ export default function sketch(p5: p5) {
 
       let fs = 0
       if (selectedGeneration >= 1) {
-        fs = p5.floor(p5.log(selectedGeneration) / p5.log(10))
+        fs = Math.floor(Math.log(selectedGeneration) / Math.log(10))
       }
 
       const fontSize = FONT_SIZES[fs]
@@ -1155,7 +1161,10 @@ export default function sketch(p5: p5) {
 
     onDrag(): void {
       const {mX} = getCursorPosition()
-      sliderX = p5.min(p5.max(sliderX + (mX - 25 - sliderX) * 0.2, 760), 1170)
+      sliderX = Math.min(
+        Math.max(sliderX + (mX - 25 - sliderX) * 0.2, 760),
+        1170
+      )
     }
   }
 
@@ -1166,7 +1175,7 @@ export default function sketch(p5: p5) {
 
       let cj
 
-      p5.stroke(p5.abs((p5.frameCount % 30) - 15) * 17) // oscillate between 0–255
+      p5.stroke(Math.abs((p5.frameCount % 30) - 15) * 17) // oscillate between 0–255
       p5.strokeWeight(3)
       p5.noFill()
 
@@ -1176,10 +1185,10 @@ export default function sketch(p5: p5) {
         if (appState.currentActivityId === Activity.FinishedStepByStep) {
           const id = (cj.id - 1) % CREATURE_COUNT
           x = id % 40
-          y = p5.floor(id / 40)
+          y = Math.floor(id / 40)
         } else {
           x = statusWindow % 40
-          y = p5.floor(statusWindow / 40) + 1
+          y = Math.floor(statusWindow / 40) + 1
         }
 
         px = x * 30 + 55
@@ -1237,7 +1246,7 @@ export default function sketch(p5: p5) {
         py2 += 180
       }
 
-      const px2 = p5.min(p5.max(px - 90, 10), 970)
+      const px2 = Math.min(Math.max(px - 90, 10), 970)
 
       simulationState.camera.zoom = 0.009
 
@@ -1301,7 +1310,7 @@ export default function sketch(p5: p5) {
 
   function getNewMuscleAxon(nodeNum: number): number {
     if (p5.random(0, 1) < 0.5) {
-      return p5.int(p5.random(0, nodeNum))
+      return toInt(p5.random(0, nodeNum))
     } else {
       return -1
     }
@@ -1310,7 +1319,7 @@ export default function sketch(p5: p5) {
   function drawGround(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
-    const stairDrawStart = p5.max(1, p5.int(-averageY / hazelStairs) - 10)
+    const stairDrawStart = Math.max(1, toInt(-averageY / hazelStairs) - 10)
 
     if (toImage == 0) {
       p5.noStroke()
@@ -1402,10 +1411,10 @@ export default function sketch(p5: p5) {
   }
 
   function drawNode(ni: Node, x: number, y: number, toImage: number): void {
-    let c = p5.color(512 - p5.int(ni.f * 512), 0, 0)
+    let c = p5.color(512 - toInt(ni.f * 512), 0, 0)
 
     if (ni.f <= 0.5) {
-      c = p5.color(255, 255 - p5.int(ni.f * 512), 255 - p5.int(ni.f * 512))
+      c = p5.color(255, 255 - toInt(ni.f * 512), 255 - toInt(ni.f * 512))
     }
 
     if (toImage == 0) {
@@ -1533,7 +1542,7 @@ export default function sketch(p5: p5) {
     toImage: number
   ): void {
     const arrowHeadSize = 0.1
-    const angle = p5.atan2(y2 - y1, x2 - x1)
+    const angle = Math.atan2(y2 - y1, x2 - x1)
 
     if (toImage == 0) {
       p5.stroke(AXON_COLOR)
@@ -1547,14 +1556,14 @@ export default function sketch(p5: p5) {
       p5.line(
         x1 * scaleToFixBug,
         y1 * scaleToFixBug,
-        (x1 + p5.cos(angle + p5.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
-        (y1 + p5.sin(angle + p5.PI * 0.25) * arrowHeadSize) * scaleToFixBug
+        (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
+        (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug
       )
       p5.line(
         x1 * scaleToFixBug,
         y1 * scaleToFixBug,
-        (x1 + p5.cos(angle + p5.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
-        (y1 + p5.sin(angle + p5.PI * 1.75) * arrowHeadSize) * scaleToFixBug
+        (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
+        (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug
       )
       p5.noStroke()
     } else if (toImage == 1) {
@@ -1569,14 +1578,14 @@ export default function sketch(p5: p5) {
       screenImage.line(
         x1 * scaleToFixBug,
         y1 * scaleToFixBug,
-        (x1 + p5.cos(angle + p5.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
-        (y1 + p5.sin(angle + p5.PI * 0.25) * arrowHeadSize) * scaleToFixBug
+        (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
+        (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug
       )
       screenImage.line(
         x1 * scaleToFixBug,
         y1 * scaleToFixBug,
-        (x1 + p5.cos(angle + p5.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
-        (y1 + p5.sin(angle + p5.PI * 1.75) * arrowHeadSize) * scaleToFixBug
+        (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
+        (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug
       )
       popUpImage.noStroke()
     } else if (toImage == 2) {
@@ -1591,14 +1600,14 @@ export default function sketch(p5: p5) {
       popUpImage.line(
         x1 * scaleToFixBug,
         y1 * scaleToFixBug,
-        (x1 + p5.cos(angle + p5.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
-        (y1 + p5.sin(angle + p5.PI * 0.25) * arrowHeadSize) * scaleToFixBug
+        (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
+        (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug
       )
       popUpImage.line(
         x1 * scaleToFixBug,
         y1 * scaleToFixBug,
-        (x1 + p5.cos(angle + p5.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
-        (y1 + p5.sin(angle + p5.PI * 1.75) * arrowHeadSize) * scaleToFixBug
+        (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
+        (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug
       )
       popUpImage.noStroke()
     }
@@ -1707,12 +1716,12 @@ export default function sketch(p5: p5) {
   }
 
   function toMuscleUsable(f: number): number {
-    return p5.min(p5.max(f, 0.5), 1.5)
+    return Math.min(Math.max(f, 0.5), 1.5)
   }
 
   function drawPosts(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
-    const startPostY = p5.min(-8, p5.int(averageY / 4) * 4 - 4)
+    const startPostY = Math.min(-8, toInt(averageY / 4) * 4 - 4)
 
     if (toImage == 0) {
       p5.noStroke()
@@ -1721,8 +1730,8 @@ export default function sketch(p5: p5) {
 
       for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
         for (
-          let i = p5.int(averageX / 5 - 5);
-          i <= p5.int(averageX / 5 + 5);
+          let i = toInt(averageX / 5 - 5);
+          i <= toInt(averageX / 5 + 5);
           i++
         ) {
           p5.fill(255)
@@ -1754,8 +1763,8 @@ export default function sketch(p5: p5) {
 
       for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
         for (
-          let i = p5.int(averageX / 5 - 5);
-          i <= p5.int(averageX / 5 + 5);
+          let i = toInt(averageX / 5 - 5);
+          i <= toInt(averageX / 5 + 5);
           i++
         ) {
           popUpImage.fill(255)
@@ -1800,7 +1809,7 @@ export default function sketch(p5: p5) {
     p5.endShape(p5.CLOSE)
     p5.fill(255)
     p5.text(
-      p5.round(x * 2) / 10 + ' m',
+      Math.round(x * 2) / 10 + ' m',
       x * scaleToFixBug,
       -3.91 * scaleToFixBug
     )
@@ -1843,7 +1852,7 @@ export default function sketch(p5: p5) {
           p5.colorMode(p5.HSB, 1.0)
           p5.fill(getColor(i - 1, true))
           p5.text(
-            'S' + p5.floor((i - 1) / 10) + '' + ((i - 1) % 10) + ': ' + c,
+            'S' + Math.floor((i - 1) / 10) + '' + ((i - 1) % 10) + ': ' + c,
             lineX + 5,
             y + 11
           )
@@ -1864,7 +1873,7 @@ export default function sketch(p5: p5) {
     }
 
     let light = 1.0
-    if (p5.abs(col - 0.333) <= 0.18 && adjust) {
+    if (Math.abs(col - 0.333) <= 0.18 && adjust) {
       light = 0.7
     }
 
@@ -1877,9 +1886,9 @@ export default function sketch(p5: p5) {
     if (generationCount >= 1) {
       drawLines(
         90,
-        p5.int(graphHeight * 0.05),
+        toInt(graphHeight * 0.05),
         graphWidth - 90,
-        p5.int(graphHeight * 0.9)
+        toInt(graphHeight * 0.9)
       )
       drawSegBars(90, 0, graphWidth - 90, 150)
     }
@@ -1906,7 +1915,7 @@ export default function sketch(p5: p5) {
     graphImage.textAlign(p5.RIGHT)
 
     for (
-      let i = p5.ceil((worst - (best - worst) / 18.0) / unit) * unit;
+      let i = Math.ceil((worst - (best - worst) / 18.0) / unit) * unit;
       i < best + (best - worst) / 18.0;
       i += unit
     ) {
@@ -1967,10 +1976,10 @@ export default function sketch(p5: p5) {
     segBarImage.background(0, 0, 0.5)
 
     const genWidth = graphWidth / generationCount
-    const gensPerBar = p5.floor(generationCount / 500) + 1
+    const gensPerBar = Math.floor(generationCount / 500) + 1
 
     for (let i = 0; i < generationCount; i += gensPerBar) {
-      const i2 = p5.min(i + gensPerBar, generationCount)
+      const i2 = Math.min(i + gensPerBar, generationCount)
       const barX1 = x + i * genWidth
       const barX2 = x + i2 * genWidth
 
@@ -2004,7 +2013,7 @@ export default function sketch(p5: p5) {
     let record = -sign
 
     for (let i = 0; i < generationCount; i++) {
-      const toTest = fitnessPercentileHistory[i + 1][p5.int(14 - sign * 14)]
+      const toTest = fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
 
       if (toTest * sign > record * sign) {
         record = toTest
@@ -2015,17 +2024,17 @@ export default function sketch(p5: p5) {
   }
 
   function setUnit(best: number, worst: number): number {
-    const unit2 = (3 * p5.log(best - worst)) / p5.log(10) - 2
+    const unit2 = (3 * Math.log(best - worst)) / Math.log(10) - 2
 
     if ((unit2 + 90) % 3 < 1) {
-      return p5.pow(10, p5.floor(unit2 / 3))
+      return Math.pow(10, Math.floor(unit2 / 3))
     }
 
     if ((unit2 + 90) % 3 < 2) {
-      return p5.pow(10, p5.floor((unit2 - 1) / 3)) * 2
+      return Math.pow(10, Math.floor((unit2 - 1) / 3)) * 2
     }
 
-    return p5.pow(10, p5.floor((unit2 - 2) / 3)) * 5
+    return Math.pow(10, Math.floor((unit2 - 2) / 3)) * 5
   }
 
   function showUnit(i: number, unit: number): String {
@@ -2033,7 +2042,7 @@ export default function sketch(p5: p5) {
       return p5.nf(i, 0, 2) + ''
     }
 
-    return p5.int(i) + ''
+    return toInt(i) + ''
   }
 
   function quickSort(c: Array<Creature>): Array<Creature> {
@@ -2273,7 +2282,7 @@ export default function sketch(p5: p5) {
 
       const x = j2 % 40
 
-      let y = p5.floor(j2 / 40)
+      let y = Math.floor(j2 / 40)
       if (stage >= 1) {
         y++
       }
@@ -2325,7 +2334,7 @@ export default function sketch(p5: p5) {
       for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
         const x = j % 40
-        const y = p5.floor(j / 40) + 1
+        const y = Math.floor(j / 40) + 1
 
         if (cj.alive) {
           drawCreature(cj, x * 30 + 55, y * 25 + 40, 0)
@@ -2449,13 +2458,13 @@ export default function sketch(p5: p5) {
     p5.noStroke()
 
     for (let i = 0; i < barLen; i++) {
-      const h = p5.min(barCounts[selectedGeneration][i] * multiplier, hh)
+      const h = Math.min(barCounts[selectedGeneration][i] * multiplier, hh)
 
       if (
         i + minBar ==
-        p5.floor(
+        Math.floor(
           fitnessPercentileHistory[
-            p5.min(selectedGeneration, fitnessPercentileHistory.length - 1)
+            Math.min(selectedGeneration, fitnessPercentileHistory.length - 1)
           ][14] * histBarsPerMeter
         )
       ) {
@@ -2515,7 +2524,7 @@ export default function sketch(p5: p5) {
       p5.textFont(font, 32)
       p5.textAlign(p5.LEFT)
       p5.textFont(font, 96)
-      p5.text('Generation ' + p5.max(selectedGeneration, 0), 20, 100)
+      p5.text('Generation ' + Math.max(selectedGeneration, 0), 20, 100)
       p5.textFont(font, 28)
 
       if (generationCount == -1) {
@@ -2538,9 +2547,9 @@ export default function sketch(p5: p5) {
         p5.textAlign(p5.CENTER)
         p5.textAlign(p5.RIGHT)
         p5.text(
-          p5.round(
+          Math.round(
             fitnessPercentileHistory[
-              p5.min(selectedGeneration, fitnessPercentileHistory.length - 1)
+              Math.min(selectedGeneration, fitnessPercentileHistory.length - 1)
             ][14] * 1000
           ) /
             1000 +
@@ -2570,8 +2579,8 @@ export default function sketch(p5: p5) {
           const nodes: Node[] = []
           const muscles: Muscle[] = []
 
-          const nodeNum = p5.int(p5.random(3, 6))
-          const muscleNum = p5.int(p5.random(nodeNum - 1, nodeNum * 3 - 6))
+          const nodeNum = toInt(p5.random(3, 6))
+          const muscleNum = toInt(p5.random(nodeNum - 1, nodeNum * 3 - 6))
 
           for (let i = 0; i < nodeNum; i++) {
             nodes.push(
@@ -2583,9 +2592,9 @@ export default function sketch(p5: p5) {
                 0.4,
                 p5.random(0, 1),
                 p5.random(0, 1),
-                p5.floor(p5.random(0, operationCount)),
-                p5.floor(p5.random(0, nodeNum)),
-                p5.floor(p5.random(0, nodeNum))
+                Math.floor(p5.random(0, operationCount)),
+                Math.floor(p5.random(0, nodeNum)),
+                Math.floor(p5.random(0, nodeNum))
               )
             ) // replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
           }
@@ -2600,11 +2609,11 @@ export default function sketch(p5: p5) {
               tc1 = i
               tc2 = i + 1
             } else {
-              tc1 = p5.int(p5.random(0, nodeNum))
+              tc1 = toInt(p5.random(0, nodeNum))
               tc2 = tc1
 
               while (tc2 == tc1) {
-                tc2 = p5.int(p5.random(0, nodeNum))
+                tc2 = toInt(p5.random(0, nodeNum))
               }
             }
 
@@ -2808,7 +2817,7 @@ export default function sketch(p5: p5) {
       }
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
-        const bar = p5.floor(c2[i].fitness * histBarsPerMeter - minBar)
+        const bar = Math.floor(c2[i].fitness * histBarsPerMeter - minBar)
 
         if (bar >= 0 && bar < barLen) {
           barCounts[generationCount + 1][bar]++
@@ -2854,15 +2863,15 @@ export default function sketch(p5: p5) {
       p5.scale(10.0 / scaleToFixBug)
 
       const transition =
-        0.5 - 0.5 * p5.cos(p5.min(appState.viewTimer / 60, p5.PI))
+        0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
 
       for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
         const j2 = cj.id - generationCount * CREATURE_COUNT - 1
         const x1 = j2 % 40
-        const y1 = p5.floor(j2 / 40)
+        const y1 = Math.floor(j2 / 40)
         const x2 = j % 40
-        const y2 = p5.floor(j / 40) + 1
+        const y2 = Math.floor(j / 40) + 1
         const x3 = inter(x1, x2, transition)
         const y3 = inter(y1, y2, transition)
 
@@ -2879,7 +2888,7 @@ export default function sketch(p5: p5) {
 
       sortingCreaturesSkipButton.draw()
 
-      if (appState.viewTimer > 60 * p5.PI) {
+      if (appState.viewTimer > 60 * Math.PI) {
         drawScreenImage(1)
         setActivity(Activity.SortedCreatures)
       }
@@ -2903,23 +2912,23 @@ export default function sketch(p5: p5) {
 
       let idOfCreatureUnderCursor: number | null = null
 
-      if (p5.abs(mX - 639.5) <= 599.5) {
+      if (Math.abs(mX - 639.5) <= 599.5) {
         if (
           appState.currentActivityId === Activity.FinishedStepByStep &&
-          p5.abs(mY - 329) <= 312
+          Math.abs(mY - 329) <= 312
         ) {
           idOfCreatureUnderCursor =
             creaturesInPosition[
-              p5.floor((mX - 40) / 30) + p5.floor((mY - 17) / 25) * 40
+              Math.floor((mX - 40) / 30) + Math.floor((mY - 17) / 25) * 40
             ]
         } else if (
           (appState.currentActivityId === Activity.SortedCreatures ||
             appState.currentActivityId === Activity.CullingCreatures ||
             appState.currentActivityId === Activity.CulledCreatures) &&
-          p5.abs(mY - 354) <= 312
+          Math.abs(mY - 354) <= 312
         ) {
           idOfCreatureUnderCursor =
-            p5.floor((mX - 40) / 30) + p5.floor((mY - 42) / 25) * 40
+            Math.floor((mX - 40) / 30) + Math.floor((mY - 42) / 25) * 40
         }
       }
 
@@ -2941,12 +2950,12 @@ export default function sketch(p5: p5) {
 
       let worstMedianOrBest: number | null = null
 
-      if (p5.abs(mY - 250) <= 70) {
-        if (p5.abs(mX - 990) <= 230) {
+      if (Math.abs(mY - 250) <= 70) {
+        if (Math.abs(mX - 990) <= 230) {
           const modX = (mX - 760) % 160
 
           if (modX < 140) {
-            worstMedianOrBest = p5.floor((mX - 760) / 160) - 3
+            worstMedianOrBest = Math.floor((mX - 760) / 160) - 3
           }
         }
       }
@@ -2965,7 +2974,7 @@ export default function sketch(p5: p5) {
 
       for (let i = 0; i < 500; i++) {
         const fitnessRankSurvivalChance = i / CREATURE_COUNT
-        const cullingThreshold = (p5.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
+        const cullingThreshold = (Math.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
 
         let survivingCreatureIndex
         let culledCreatureIndex
@@ -3053,9 +3062,9 @@ export default function sketch(p5: p5) {
       if (generationCount >= 1) {
         if (generationCount >= 5) {
           selectedGeneration =
-            p5.round(((sliderX - 760) * (generationCount - 1)) / 410) + 1
+            Math.round(((sliderX - 760) * (generationCount - 1)) / 410) + 1
         } else {
-          selectedGeneration = p5.round(
+          selectedGeneration = Math.round(
             ((sliderX - 760) * generationCount) / 410
           )
         }
@@ -3151,13 +3160,13 @@ export default function sketch(p5: p5) {
 
     let timeShow: number
     if (simulationState.speed > 60) {
-      timeShow = p5.int((appState.viewTimer + creaturesTested * 37) / 60) % 15
+      timeShow = toInt((appState.viewTimer + creaturesTested * 37) / 60) % 15
     } else {
       timeShow = appState.viewTimer / 60
     }
 
     p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
-    p5.text('Playback Speed: x' + p5.max(1, simulationState.speed), 0, 96)
+    p5.text('Playback Speed: x' + Math.max(1, simulationState.speed), 0, 96)
 
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 

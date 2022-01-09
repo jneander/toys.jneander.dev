@@ -298,6 +298,70 @@ export default function sketch(p5: p5) {
       node.prevX = node.x
     }
 
+    modifyCreature(creature: Creature, id: number): Creature {
+      const modifiedCreature = new Creature(
+        id,
+        [],
+        [],
+        0,
+        true,
+        creature.creatureTimer + r() * 16 * creature.mutability,
+        p5.min(creature.mutability * p5.random(0.8, 1.25), 2)
+      )
+
+      for (let i = 0; i < creature.nodes.length; i++) {
+        modifiedCreature.nodes.push(
+          this.modifyNode(
+            creature.nodes[i],
+            creature.mutability,
+            creature.nodes.length
+          )
+        )
+      }
+
+      for (let i = 0; i < creature.muscles.length; i++) {
+        const muscle = this.modifyMuscle(
+          creature.muscles[i],
+          creature.nodes.length,
+          creature.mutability
+        )
+        modifiedCreature.muscles.push(muscle)
+      }
+
+      if (
+        p5.random(0, 1) < bigMutationChance * creature.mutability ||
+        creature.nodes.length <= 2
+      ) {
+        // Add a node
+        this.addRandomNode(modifiedCreature)
+      }
+
+      if (p5.random(0, 1) < bigMutationChance * creature.mutability) {
+        // Add a muscle
+        this.addRandomMuscle(modifiedCreature, -1, -1)
+      }
+
+      if (
+        p5.random(0, 1) < bigMutationChance * creature.mutability &&
+        modifiedCreature.nodes.length >= 4
+      ) {
+        // Remove a node
+        this.removeRandomNode(modifiedCreature)
+      }
+
+      if (
+        p5.random(0, 1) < bigMutationChance * creature.mutability &&
+        modifiedCreature.muscles.length >= 2
+      ) {
+        // Remove a muscle
+        this.removeRandomMuscle(modifiedCreature)
+      }
+
+      this.resolveCreatureIssues(modifiedCreature)
+
+      return modifiedCreature
+    }
+
     modifyMuscle(
       muscle: Muscle,
       nodeCount: number,
@@ -415,6 +479,239 @@ export default function sketch(p5: p5) {
       } else if (node.operation == 11) {
         // pressure
         node.valueToBe = node.pressure
+      }
+    }
+
+    resolveCreatureIssues(creature: Creature): void {
+      this.resolveCreatureMuscleOverlap(creature)
+      this.resolveCreatureLoneNodes(creature)
+      this.resolveCreatureBadAxons(creature)
+    }
+
+    addRandomNode(creature: Creature): void {
+      const parentNode = p5.floor(p5.random(0, creature.nodes.length))
+      const ang1 = p5.random(0, 2 * p5.PI)
+      const distance = p5.sqrt(p5.random(0, 1))
+      const x = creature.nodes[parentNode].x + p5.cos(ang1) * 0.5 * distance
+      const y = creature.nodes[parentNode].y + p5.sin(ang1) * 0.5 * distance
+
+      const newNodeCount = creature.nodes.length + 1
+
+      creature.nodes.push(
+        new Node(
+          x,
+          y,
+          0,
+          0,
+          0.4,
+          p5.random(0, 1),
+          p5.random(0, 1),
+          p5.floor(p5.random(0, operationCount)),
+          p5.floor(p5.random(0, newNodeCount)),
+          p5.floor(p5.random(0, newNodeCount))
+        )
+      )
+
+      let nextClosestNode = 0
+      let record = 100000
+
+      for (let i = 0; i < creature.nodes.length - 1; i++) {
+        if (i != parentNode) {
+          const dx = creature.nodes[i].x - x
+          const dy = creature.nodes[i].y - y
+
+          if (p5.sqrt(dx * dx + dy * dy) < record) {
+            record = p5.sqrt(dx * dx + dy * dy)
+            nextClosestNode = i
+          }
+        }
+      }
+
+      this.addRandomMuscle(creature, parentNode, creature.nodes.length - 1)
+      this.addRandomMuscle(creature, nextClosestNode, creature.nodes.length - 1)
+    }
+
+    addRandomMuscle(creature: Creature, tc1: number, tc2: number): void {
+      const axon = getNewMuscleAxon(creature.nodes.length)
+
+      if (tc1 == -1) {
+        tc1 = p5.int(p5.random(0, creature.nodes.length))
+        tc2 = tc1
+
+        while (tc2 == tc1 && creature.nodes.length >= 2) {
+          tc2 = p5.int(p5.random(0, creature.nodes.length))
+        }
+      }
+
+      let len = p5.random(0.5, 1.5)
+
+      if (tc1 != -1) {
+        len = p5.dist(
+          creature.nodes[tc1].x,
+          creature.nodes[tc1].y,
+          creature.nodes[tc2].x,
+          creature.nodes[tc2].y
+        )
+      }
+
+      creature.muscles.push(
+        new Muscle(axon, tc1, tc2, len, p5.random(0.02, 0.08))
+      )
+    }
+
+    removeRandomNode(creature: Creature): void {
+      const choice = p5.floor(p5.random(0, creature.nodes.length))
+      creature.nodes.splice(choice, 1)
+
+      let i = 0
+
+      while (i < creature.muscles.length) {
+        if (
+          creature.muscles[i].c1 == choice ||
+          creature.muscles[i].c2 == choice
+        ) {
+          creature.muscles.splice(i, 1)
+        } else {
+          i++
+        }
+      }
+
+      for (let j = 0; j < creature.muscles.length; j++) {
+        if (creature.muscles[j].c1 >= choice) {
+          creature.muscles[j].c1--
+        }
+
+        if (creature.muscles[j].c2 >= choice) {
+          creature.muscles[j].c2--
+        }
+      }
+    }
+
+    removeRandomMuscle(creature: Creature): void {
+      const choice = p5.floor(p5.random(0, creature.muscles.length))
+      creature.muscles.splice(choice, 1)
+    }
+
+    private resolveCreatureMuscleOverlap(creature: Creature): void {
+      const bads = []
+
+      for (let i = 0; i < creature.muscles.length; i++) {
+        for (let j = i + 1; j < creature.muscles.length; j++) {
+          if (
+            creature.muscles[i].c1 == creature.muscles[j].c1 &&
+            creature.muscles[i].c2 == creature.muscles[j].c2
+          ) {
+            bads.push(i)
+          } else if (
+            creature.muscles[i].c1 == creature.muscles[j].c2 &&
+            creature.muscles[i].c2 == creature.muscles[j].c1
+          ) {
+            bads.push(i)
+          } else if (creature.muscles[i].c1 == creature.muscles[i].c2) {
+            bads.push(i)
+          }
+        }
+      }
+
+      for (let i = bads.length - 1; i >= 0; i--) {
+        const b = bads[i] + 0
+
+        if (b < creature.muscles.length) {
+          creature.muscles.splice(b, 1)
+        }
+      }
+    }
+
+    private resolveCreatureLoneNodes(creature: Creature): void {
+      if (creature.nodes.length >= 3) {
+        for (let i = 0; i < creature.nodes.length; i++) {
+          let connections = 0
+          let connectedTo = -1
+
+          for (let j = 0; j < creature.muscles.length; j++) {
+            if (creature.muscles[j].c1 == i || creature.muscles[j].c2 == i) {
+              connections++
+              connectedTo = j
+            }
+          }
+
+          if (connections <= 1) {
+            let newConnectionNode = p5.floor(
+              p5.random(0, creature.nodes.length)
+            )
+
+            while (newConnectionNode == i || newConnectionNode == connectedTo) {
+              newConnectionNode = p5.floor(p5.random(0, creature.nodes.length))
+            }
+
+            this.addRandomMuscle(creature, i, newConnectionNode)
+          }
+        }
+      }
+    }
+
+    private resolveCreatureBadAxons(creature: Creature): void {
+      for (let i = 0; i < creature.nodes.length; i++) {
+        const ni = creature.nodes[i]
+
+        if (ni.axon1 >= creature.nodes.length) {
+          ni.axon1 = p5.int(p5.random(0, creature.nodes.length))
+        }
+
+        if (ni.axon2 >= creature.nodes.length) {
+          ni.axon2 = p5.int(p5.random(0, creature.nodes.length))
+        }
+      }
+
+      for (let i = 0; i < creature.muscles.length; i++) {
+        const mi = creature.muscles[i]
+
+        if (mi.axon >= creature.nodes.length) {
+          mi.axon = getNewMuscleAxon(creature.nodes.length)
+        }
+      }
+
+      for (let i = 0; i < creature.nodes.length; i++) {
+        const ni = creature.nodes[i]
+        ni.safeInput = operationAxons[ni.operation] == 0
+      }
+
+      let iterations = 0
+      let didSomething = false
+
+      while (iterations < 1000) {
+        didSomething = false
+
+        for (let i = 0; i < creature.nodes.length; i++) {
+          const ni = creature.nodes[i]
+
+          if (!ni.safeInput) {
+            if (
+              (operationAxons[ni.operation] == 1 &&
+                creature.nodes[ni.axon1].safeInput) ||
+              (operationAxons[ni.operation] == 2 &&
+                creature.nodes[ni.axon1].safeInput &&
+                creature.nodes[ni.axon2].safeInput)
+            ) {
+              ni.safeInput = true
+              didSomething = true
+            }
+          }
+        }
+
+        if (!didSomething) {
+          iterations = 10000
+        }
+      }
+
+      for (let i = 0; i < creature.nodes.length; i++) {
+        const ni = creature.nodes[i]
+
+        if (!ni.safeInput) {
+          // This node doesn't get its input from a safe place.  CLEANSE IT.
+          ni.operation = 0
+          ni.value = p5.random(0, 1)
+        }
       }
     }
 
@@ -1008,292 +1305,6 @@ export default function sketch(p5: p5) {
       this.alive = alive
       this.creatureTimer = creatureTimer
       this.mutability = mutability
-    }
-
-    modified(id: number): Creature {
-      const modifiedCreature = new Creature(
-        id,
-        [],
-        [],
-        0,
-        true,
-        this.creatureTimer + r() * 16 * this.mutability,
-        p5.min(this.mutability * p5.random(0.8, 1.25), 2)
-      )
-
-      for (let i = 0; i < this.nodes.length; i++) {
-        modifiedCreature.nodes.push(
-          simulation.modifyNode(
-            this.nodes[i],
-            this.mutability,
-            this.nodes.length
-          )
-        )
-      }
-
-      for (let i = 0; i < this.muscles.length; i++) {
-        const muscle = simulation.modifyMuscle(
-          this.muscles[i],
-          this.nodes.length,
-          this.mutability
-        )
-        modifiedCreature.muscles.push(muscle)
-      }
-
-      if (
-        p5.random(0, 1) < bigMutationChance * this.mutability ||
-        this.nodes.length <= 2
-      ) {
-        // Add a node
-        modifiedCreature.addRandomNode()
-      }
-
-      if (p5.random(0, 1) < bigMutationChance * this.mutability) {
-        // Add a muscle
-        modifiedCreature.addRandomMuscle(-1, -1)
-      }
-
-      if (
-        p5.random(0, 1) < bigMutationChance * this.mutability &&
-        modifiedCreature.nodes.length >= 4
-      ) {
-        // Remove a node
-        modifiedCreature.removeRandomNode()
-      }
-
-      if (
-        p5.random(0, 1) < bigMutationChance * this.mutability &&
-        modifiedCreature.muscles.length >= 2
-      ) {
-        // Remove a muscle
-        modifiedCreature.removeRandomMuscle()
-      }
-
-      modifiedCreature.checkForOverlap()
-      modifiedCreature.checkForLoneNodes()
-      modifiedCreature.checkForBadAxons()
-
-      return modifiedCreature
-    }
-
-    checkForOverlap(): void {
-      const bads = new Array<number>()
-
-      for (let i = 0; i < this.muscles.length; i++) {
-        for (let j = i + 1; j < this.muscles.length; j++) {
-          if (
-            this.muscles[i].c1 == this.muscles[j].c1 &&
-            this.muscles[i].c2 == this.muscles[j].c2
-          ) {
-            bads.push(i)
-          } else if (
-            this.muscles[i].c1 == this.muscles[j].c2 &&
-            this.muscles[i].c2 == this.muscles[j].c1
-          ) {
-            bads.push(i)
-          } else if (this.muscles[i].c1 == this.muscles[i].c2) {
-            bads.push(i)
-          }
-        }
-      }
-
-      for (let i = bads.length - 1; i >= 0; i--) {
-        const b = bads[i] + 0
-
-        if (b < this.muscles.length) {
-          this.muscles.splice(b, 1)
-        }
-      }
-    }
-
-    checkForLoneNodes(): void {
-      if (this.nodes.length >= 3) {
-        for (let i = 0; i < this.nodes.length; i++) {
-          let connections = 0
-          let connectedTo = -1
-
-          for (let j = 0; j < this.muscles.length; j++) {
-            if (this.muscles[j].c1 == i || this.muscles[j].c2 == i) {
-              connections++
-              connectedTo = j
-            }
-          }
-
-          if (connections <= 1) {
-            let newConnectionNode = p5.floor(p5.random(0, this.nodes.length))
-
-            while (newConnectionNode == i || newConnectionNode == connectedTo) {
-              newConnectionNode = p5.floor(p5.random(0, this.nodes.length))
-            }
-
-            this.addRandomMuscle(i, newConnectionNode)
-          }
-        }
-      }
-    }
-
-    checkForBadAxons(): void {
-      for (let i = 0; i < this.nodes.length; i++) {
-        const ni = this.nodes[i]
-
-        if (ni.axon1 >= this.nodes.length) {
-          ni.axon1 = p5.int(p5.random(0, this.nodes.length))
-        }
-
-        if (ni.axon2 >= this.nodes.length) {
-          ni.axon2 = p5.int(p5.random(0, this.nodes.length))
-        }
-      }
-
-      for (let i = 0; i < this.muscles.length; i++) {
-        const mi = this.muscles[i]
-
-        if (mi.axon >= this.nodes.length) {
-          mi.axon = getNewMuscleAxon(this.nodes.length)
-        }
-      }
-
-      for (let i = 0; i < this.nodes.length; i++) {
-        const ni = this.nodes[i]
-        ni.safeInput = operationAxons[ni.operation] == 0
-      }
-
-      let iterations = 0
-      let didSomething = false
-
-      while (iterations < 1000) {
-        didSomething = false
-
-        for (let i = 0; i < this.nodes.length; i++) {
-          const ni = this.nodes[i]
-
-          if (!ni.safeInput) {
-            if (
-              (operationAxons[ni.operation] == 1 &&
-                this.nodes[ni.axon1].safeInput) ||
-              (operationAxons[ni.operation] == 2 &&
-                this.nodes[ni.axon1].safeInput &&
-                this.nodes[ni.axon2].safeInput)
-            ) {
-              ni.safeInput = true
-              didSomething = true
-            }
-          }
-        }
-
-        if (!didSomething) {
-          iterations = 10000
-        }
-      }
-
-      for (let i = 0; i < this.nodes.length; i++) {
-        const ni = this.nodes[i]
-
-        if (!ni.safeInput) {
-          // This node doesn't get its input from a safe place.  CLEANSE IT.
-          ni.operation = 0
-          ni.value = p5.random(0, 1)
-        }
-      }
-    }
-
-    addRandomNode(): void {
-      const parentNode = p5.floor(p5.random(0, this.nodes.length))
-      const ang1 = p5.random(0, 2 * p5.PI)
-      const distance = p5.sqrt(p5.random(0, 1))
-      const x = this.nodes[parentNode].x + p5.cos(ang1) * 0.5 * distance
-      const y = this.nodes[parentNode].y + p5.sin(ang1) * 0.5 * distance
-
-      const newNodeCount = this.nodes.length + 1
-
-      this.nodes.push(
-        new Node(
-          x,
-          y,
-          0,
-          0,
-          0.4,
-          p5.random(0, 1),
-          p5.random(0, 1),
-          p5.floor(p5.random(0, operationCount)),
-          p5.floor(p5.random(0, newNodeCount)),
-          p5.floor(p5.random(0, newNodeCount))
-        )
-      )
-
-      let nextClosestNode = 0
-      let record = 100000
-
-      for (let i = 0; i < this.nodes.length - 1; i++) {
-        if (i != parentNode) {
-          const dx = this.nodes[i].x - x
-          const dy = this.nodes[i].y - y
-
-          if (p5.sqrt(dx * dx + dy * dy) < record) {
-            record = p5.sqrt(dx * dx + dy * dy)
-            nextClosestNode = i
-          }
-        }
-      }
-
-      this.addRandomMuscle(parentNode, this.nodes.length - 1)
-      this.addRandomMuscle(nextClosestNode, this.nodes.length - 1)
-    }
-
-    addRandomMuscle(tc1: number, tc2: number): void {
-      const axon = getNewMuscleAxon(this.nodes.length)
-
-      if (tc1 == -1) {
-        tc1 = p5.int(p5.random(0, this.nodes.length))
-        tc2 = tc1
-
-        while (tc2 == tc1 && this.nodes.length >= 2) {
-          tc2 = p5.int(p5.random(0, this.nodes.length))
-        }
-      }
-
-      let len = p5.random(0.5, 1.5)
-
-      if (tc1 != -1) {
-        len = p5.dist(
-          this.nodes[tc1].x,
-          this.nodes[tc1].y,
-          this.nodes[tc2].x,
-          this.nodes[tc2].y
-        )
-      }
-
-      this.muscles.push(new Muscle(axon, tc1, tc2, len, p5.random(0.02, 0.08)))
-    }
-
-    removeRandomNode(): void {
-      const choice = p5.floor(p5.random(0, this.nodes.length))
-      this.nodes.splice(choice, 1)
-
-      let i = 0
-
-      while (i < this.muscles.length) {
-        if (this.muscles[i].c1 == choice || this.muscles[i].c2 == choice) {
-          this.muscles.splice(i, 1)
-        } else {
-          i++
-        }
-      }
-
-      for (let j = 0; j < this.muscles.length; j++) {
-        if (this.muscles[j].c1 >= choice) {
-          this.muscles[j].c1--
-        }
-
-        if (this.muscles[j].c2 >= choice) {
-          this.muscles[j].c2--
-        }
-      }
-    }
-
-    removeRandomMuscle(): void {
-      const choice = p5.floor(p5.random(0, this.muscles.length))
-      this.muscles.splice(choice, 1)
     }
 
     clone(newId?: number): Creature {
@@ -2663,7 +2674,7 @@ export default function sketch(p5: p5) {
           adjustNodesToCenter(nodes, nodeNum)
 
           const heartbeat = p5.random(40, 80)
-          c[y * 40 + x] = new Creature(
+          const creature = new Creature(
             y * 40 + x + 1,
             nodes,
             muscles,
@@ -2673,11 +2684,11 @@ export default function sketch(p5: p5) {
             1.0
           )
 
-          drawCreature(c[y * 40 + x], x * 3 + 5.5, y * 2.5 + 3, 0)
+          c[y * 40 + x] = creature
 
-          c[y * 40 + x].checkForOverlap()
-          c[y * 40 + x].checkForLoneNodes()
-          c[y * 40 + x].checkForBadAxons()
+          drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, 0)
+
+          simulation.resolveCreatureIssues(creature)
         }
       }
 
@@ -3044,7 +3055,10 @@ export default function sketch(p5: p5) {
         const cj2 = c2[lastCreatureIndex - j2]
 
         c2[j2] = cj.clone(cj.id + CREATURE_COUNT)
-        c2[lastCreatureIndex - j2] = cj.modified(cj2.id + CREATURE_COUNT) // mutated offspring 1
+        c2[lastCreatureIndex - j2] = simulation.modifyCreature(
+          cj,
+          cj2.id + CREATURE_COUNT
+        ) // mutated offspring 1
 
         const nodes = c2[lastCreatureIndex - j2].nodes
         const muscles = c2[lastCreatureIndex - j2].muscles

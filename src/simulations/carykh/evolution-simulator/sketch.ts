@@ -130,7 +130,6 @@ export default function sketch(p5: p5) {
 
   abstract class Widget {
     abstract draw(): void
-    abstract isUnderCursor(): boolean
   }
 
   class StartViewStartButton extends Widget {

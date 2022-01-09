@@ -77,7 +77,7 @@ export default function sketch(p5: p5) {
   let windowWidth = 1280
   let windowHeight = 720
   let timer = 0
-  let activity: Activity = Activity.Start
+  let currentActivityId: Activity = Activity.Start
   let generationCount = -1
   let sliderX = 1170
   let selectedGeneration = 0
@@ -514,7 +514,7 @@ export default function sketch(p5: p5) {
       if (statusWindow >= 0) {
         cj = c2[statusWindow]
 
-        if (activity === Activity.FinishedStepByStep) {
+        if (currentActivityId === Activity.FinishedStepByStep) {
           const id = (cj.id - 1) % CREATURE_COUNT
           x = id % 40
           y = p5.floor(id / 40)
@@ -2215,7 +2215,7 @@ export default function sketch(p5: p5) {
   p5.mouseWheel = (event: WheelEvent) => {
     const delta = event.deltaX
 
-    if (activity === Activity.SimulationRunning) {
+    if (currentActivityId === Activity.SimulationRunning) {
       if (delta < 0) {
         simulationState.camera.zoom *= 0.9090909
 
@@ -2242,7 +2242,7 @@ export default function sketch(p5: p5) {
     }
 
     if (
-      activity === Activity.GenerationView &&
+      currentActivityId === Activity.GenerationView &&
       generationCount >= 1 &&
       generationSlider.isUnderCursor()
     ) {
@@ -2251,7 +2251,7 @@ export default function sketch(p5: p5) {
   }
 
   function setActivity(m: Activity): void {
-    activity = m
+    currentActivityId = m
 
     if (m === Activity.GenerationView) {
       drawGraph(975, 570)
@@ -2270,15 +2270,21 @@ export default function sketch(p5: p5) {
     // When the popup simulation is running, mouse clicks will stop it.
     showPopupSimulation = false
 
-    if (activity === Activity.Start && startViewStartButton.isUnderCursor()) {
+    if (
+      currentActivityId === Activity.Start &&
+      startViewStartButton.isUnderCursor()
+    ) {
       startViewStartButton.onClick()
     } else if (
-      activity === Activity.GenerationView &&
+      currentActivityId === Activity.GenerationView &&
       generationCount == -1 &&
       generationViewCreateButton.isUnderCursor()
     ) {
       generationViewCreateButton.onClick()
-    } else if (activity === Activity.GenerationView && generationCount >= 0) {
+    } else if (
+      currentActivityId === Activity.GenerationView &&
+      generationCount >= 0
+    ) {
       if (simulateStepByStepButton.isUnderCursor()) {
         simulateStepByStepButton.onClick()
       } else if (simulateQuickButton.isUnderCursor()) {
@@ -2289,18 +2295,18 @@ export default function sketch(p5: p5) {
         simulateAlapButton.onClick()
       }
     } else if (
-      activity === Activity.GeneratedCreatures &&
+      currentActivityId === Activity.GeneratedCreatures &&
       generatedCreaturesBackButton.isUnderCursor()
     ) {
       generatedCreaturesBackButton.onClick()
     } else if (
-      activity === Activity.FinishedStepByStep &&
+      currentActivityId === Activity.FinishedStepByStep &&
       sortCreaturesButton.isUnderCursor()
     ) {
       sortCreaturesButton.onClick()
     } else if (
-      activity === Activity.SimulationRunning ||
-      activity === Activity.RequestingSimulation
+      currentActivityId === Activity.SimulationRunning ||
+      currentActivityId === Activity.RequestingSimulation
     ) {
       if (stepByStepSkipButton.isUnderCursor()) {
         stepByStepSkipButton.onClick()
@@ -2310,22 +2316,22 @@ export default function sketch(p5: p5) {
         stepByStepFinishButton.onClick()
       }
     } else if (
-      activity === Activity.SortingCreatures &&
+      currentActivityId === Activity.SortingCreatures &&
       sortingCreaturesSkipButton.isUnderCursor()
     ) {
       sortingCreaturesSkipButton.onClick()
     } else if (
-      activity === Activity.SortedCreatures &&
+      currentActivityId === Activity.SortedCreatures &&
       cullCreaturesButton.isUnderCursor()
     ) {
       cullCreaturesButton.onClick()
     } else if (
-      activity === Activity.CulledCreatures &&
+      currentActivityId === Activity.CulledCreatures &&
       propagateCreaturesButton.isUnderCursor()
     ) {
       propagateCreaturesButton.onClick()
     } else if (
-      activity === Activity.PropagatedCreatures &&
+      currentActivityId === Activity.PropagatedCreatures &&
       propagatedCreaturesBackButton.isUnderCursor()
     ) {
       propagatedCreaturesBackButton.onClick()
@@ -2581,13 +2587,13 @@ export default function sketch(p5: p5) {
   p5.draw = () => {
     p5.scale(WINDOW_SIZE_MULTIPLIER)
 
-    if (activity === Activity.Start) {
+    if (currentActivityId === Activity.Start) {
       p5.background(255)
       p5.noStroke()
       p5.fill(0)
       p5.text('EVOLUTION!', windowWidth / 2, 200)
       startViewStartButton.draw()
-    } else if (activity === Activity.GenerationView) {
+    } else if (currentActivityId === Activity.GenerationView) {
       p5.noStroke()
       p5.fill(0)
       p5.background(255, 200, 130)
@@ -2639,7 +2645,7 @@ export default function sketch(p5: p5) {
           startASAP()
         }
       }
-    } else if (activity === Activity.GeneratingCreatures) {
+    } else if (currentActivityId === Activity.GeneratingCreatures) {
       p5.background(220, 253, 102)
       p5.push()
       p5.scale(10.0 / scaleToFixBug)
@@ -2735,7 +2741,7 @@ export default function sketch(p5: p5) {
         690
       )
       generatedCreaturesBackButton.draw()
-    } else if (activity === Activity.RequestingSimulation) {
+    } else if (currentActivityId === Activity.RequestingSimulation) {
       setGlobalVariables(c[creaturesTested])
       simulationState.camera.zoom = 0.01
 
@@ -2758,7 +2764,7 @@ export default function sketch(p5: p5) {
 
     const {averageX, averageY} = getNodesAverage(simulationNodes)
 
-    if (activity === Activity.SimulationRunning) {
+    if (currentActivityId === Activity.SimulationRunning) {
       // simulate running
 
       if (timer <= 900) {
@@ -2844,7 +2850,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    if (activity === Activity.SimulationFinished) {
+    if (currentActivityId === Activity.SimulationFinished) {
       // sort
 
       c2 = new Array<Creature>(0)
@@ -2917,7 +2923,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    if (activity === Activity.SortingCreatures) {
+    if (currentActivityId === Activity.SortingCreatures) {
       // cool sorting animation
 
       p5.background(220, 253, 102)
@@ -2958,11 +2964,11 @@ export default function sketch(p5: p5) {
     const {mX, mY} = getCursorPosition()
 
     if (
-      (activity === Activity.FinishedStepByStep ||
-        activity === Activity.SortingCreatures ||
-        activity === Activity.SortedCreatures ||
-        activity === Activity.CullingCreatures ||
-        activity === Activity.CulledCreatures) &&
+      (currentActivityId === Activity.FinishedStepByStep ||
+        currentActivityId === Activity.SortingCreatures ||
+        currentActivityId === Activity.SortedCreatures ||
+        currentActivityId === Activity.CullingCreatures ||
+        currentActivityId === Activity.CulledCreatures) &&
       gensToDo == 0 &&
       !draggingSlider
     ) {
@@ -2975,7 +2981,7 @@ export default function sketch(p5: p5) {
 
       if (p5.abs(mX - 639.5) <= 599.5) {
         if (
-          activity === Activity.FinishedStepByStep &&
+          currentActivityId === Activity.FinishedStepByStep &&
           p5.abs(mY - 329) <= 312
         ) {
           idOfCreatureUnderCursor =
@@ -2983,9 +2989,9 @@ export default function sketch(p5: p5) {
               p5.floor((mX - 40) / 30) + p5.floor((mY - 17) / 25) * 40
             ]
         } else if (
-          (activity === Activity.SortedCreatures ||
-            activity === Activity.CullingCreatures ||
-            activity === Activity.CulledCreatures) &&
+          (currentActivityId === Activity.SortedCreatures ||
+            currentActivityId === Activity.CullingCreatures ||
+            currentActivityId === Activity.CulledCreatures) &&
           p5.abs(mY - 354) <= 312
         ) {
           idOfCreatureUnderCursor =
@@ -2999,7 +3005,7 @@ export default function sketch(p5: p5) {
         clearPopupSimulation()
       }
     } else if (
-      activity === Activity.GenerationView &&
+      currentActivityId === Activity.GenerationView &&
       selectedGeneration >= 1 &&
       gensToDo == 0 &&
       !draggingSlider
@@ -3030,7 +3036,7 @@ export default function sketch(p5: p5) {
       clearPopupSimulation()
     }
 
-    if (activity === Activity.CullingCreatures) {
+    if (currentActivityId === Activity.CullingCreatures) {
       // Cull Creatures
 
       for (let i = 0; i < 500; i++) {
@@ -3063,7 +3069,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    if (activity === Activity.PropagatingCreatures) {
+    if (currentActivityId === Activity.PropagatingCreatures) {
       // Reproduce and mutate
 
       for (let j = 0; j < 500; j++) {
@@ -3103,15 +3109,15 @@ export default function sketch(p5: p5) {
     }
 
     if (
-      activity === Activity.FinishedStepByStep ||
-      activity === Activity.SortedCreatures ||
-      activity === Activity.CulledCreatures ||
-      activity === Activity.PropagatedCreatures
+      currentActivityId === Activity.FinishedStepByStep ||
+      currentActivityId === Activity.SortedCreatures ||
+      currentActivityId === Activity.CulledCreatures ||
+      currentActivityId === Activity.PropagatedCreatures
     ) {
       p5.image(screenImage, 0, 0, windowWidth, windowHeight)
     }
 
-    if (activity === Activity.GenerationView || gensToDo >= 1) {
+    if (currentActivityId === Activity.GenerationView || gensToDo >= 1) {
       p5.noStroke()
 
       if (generationCount >= 1) {

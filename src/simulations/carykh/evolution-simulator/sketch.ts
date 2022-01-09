@@ -582,7 +582,29 @@ export default function sketch(p5: p5) {
 
       const px2 = p5.min(p5.max(px - 90, 10), 970)
 
-      drawpopUpImage()
+      camZoom = 0.009
+      setAverages()
+      camX += (averageX - camX) * 0.1
+      camY += (averageY - camY) * 0.1
+
+      popUpImage.push()
+      popUpImage.translate(225, 225)
+      popUpImage.scale(1.0 / camZoom / scaleToFixBug)
+      popUpImage.translate(-camX * scaleToFixBug, -camY * scaleToFixBug)
+
+      if (simulationTimer < 900) {
+        popUpImage.background(120, 200, 255)
+      } else {
+        popUpImage.background(60, 100, 128)
+      }
+
+      drawPosts(2)
+      drawGround(2)
+      drawCreaturePieces(simulationNodes, simulationMuscles, 0, 0, 2)
+
+      popUpImage.noStroke()
+      popUpImage.pop()
+
       p5.image(popUpImage, px2, py2, 300, 300)
 
       drawStats(px2 + 295, py2, 0.45)
@@ -2397,30 +2419,6 @@ export default function sketch(p5: p5) {
     }
 
     screenImage.pop()
-  }
-
-  function drawpopUpImage(): void {
-    camZoom = 0.009
-    setAverages()
-    camX += (averageX - camX) * 0.1
-    camY += (averageY - camY) * 0.1
-
-    popUpImage.push()
-    popUpImage.translate(225, 225)
-    popUpImage.scale(1.0 / camZoom / scaleToFixBug)
-    popUpImage.translate(-camX * scaleToFixBug, -camY * scaleToFixBug)
-
-    if (simulationTimer < 900) {
-      popUpImage.background(120, 200, 255)
-    } else {
-      popUpImage.background(60, 100, 128)
-    }
-
-    drawPosts(2)
-    drawGround(2)
-    drawCreaturePieces(simulationNodes, simulationMuscles, 0, 0, 2)
-    popUpImage.noStroke()
-    popUpImage.pop()
   }
 
   function drawCreature(

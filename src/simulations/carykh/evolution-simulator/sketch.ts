@@ -5,11 +5,22 @@ import Rectangle from './Rectangle'
 import {Activity} from './constants'
 
 export default function sketch(p5: p5) {
+  const AIR_FRICTION = 0.95
+  const AXON_COLOR = p5.color(255, 255, 0)
   const CREATURE_COUNT = 1000
+  const ENERGY_UNIT = 20
+  const FITNESS_LABEL = 'Distance'
+  const FITNESS_UNIT_LABEL = 'm'
+  const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
   const FRAME_RATE = 60 // target frames per second
   const FRICTION = 4
+  const GRAVITY = 0.005
+  const NAUSEA_UNIT = 5
+  const NODE_TEXT_LINE_MULTIPLIER_Y1 = -0.08 // These are for the lines of text on each node.
+  const NODE_TEXT_LINE_MULTIPLIER_Y2 = 0.35
+  const PRESSURE_UNIT = 500.0 / 2.37
   const SEED = 0
-  const windowSizeMultiplier = 0.8
+  const WINDOW_SIZE_MULTIPLIER = 0.8
 
   const lastCreatureIndex = CREATURE_COUNT - 1
   const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
@@ -49,15 +60,10 @@ export default function sketch(p5: p5) {
   ]
   let operationAxons = [0, 0, 0, 0, 2, 2, 2, 2, 2, 1, 1, 0]
   let operationCount = 12
-  let fitnessUnit = 'm'
-  let fitnessName = 'Distance'
   let baselineEnergy = 0.0
   let bigMutationChance = 0.06
   let hazelStairs = -1
 
-  let pressureUnit = 500.0 / 2.37
-  let energyUnit = 20
-  let nauseaUnit = 5
   let minBar = -10
   let maxBar = 100
   let barLen = maxBar - minBar
@@ -68,10 +74,6 @@ export default function sketch(p5: p5) {
   let averageNodeNausea = 0
   let totalNodeNausea = 0
 
-  let lineY1 = -0.08 // These are for the lines of text on each node.
-  let lineY2 = 0.35
-  let axonColor = p5.color(255, 255, 0)
-
   let windowWidth = 1280
   let windowHeight = 720
   let timer = 0
@@ -81,7 +83,6 @@ export default function sketch(p5: p5) {
   let selectedGeneration = 0
   let draggingSlider = false
   let creaturesTested = 0
-  const fontSizes = [50, 36, 25, 20, 16, 14, 11, 9]
 
   let showPopupSimulation = false
   let popupSimulationCreatureId: number | null
@@ -99,9 +100,6 @@ export default function sketch(p5: p5) {
     }
   }
 
-  let gravity = 0.005
-  let airFriction = 0.95
-
   let speed = 1
   let id: number
   let stepbystep: boolean
@@ -118,8 +116,8 @@ export default function sketch(p5: p5) {
   }
 
   function getCursorPosition(): {mX: number; mY: number} {
-    const mX = p5.mouseX / windowSizeMultiplier
-    const mY = p5.mouseY / windowSizeMultiplier
+    const mX = p5.mouseX / WINDOW_SIZE_MULTIPLIER
+    const mY = p5.mouseY / WINDOW_SIZE_MULTIPLIER
 
     return {mX, mY}
   }
@@ -486,7 +484,7 @@ export default function sketch(p5: p5) {
         fs = p5.floor(p5.log(selectedGeneration) / p5.log(10))
       }
 
-      const fontSize = fontSizes[fs]
+      const fontSize = FONT_SIZES[fs]
 
       p5.textFont(font, fontSize)
       p5.fill(0)
@@ -688,23 +686,23 @@ export default function sketch(p5: p5) {
     }
 
     applyForces(): void {
-      this.vx *= airFriction
-      this.vy *= airFriction
+      this.vx *= AIR_FRICTION
+      this.vy *= AIR_FRICTION
       this.y += this.vy
       this.x += this.vx
       const acc = p5.dist(this.vx, this.vy, this.pvx, this.pvy)
-      totalNodeNausea += acc * acc * nauseaUnit
+      totalNodeNausea += acc * acc * NAUSEA_UNIT
       this.pvx = this.vx
       this.pvy = this.vy
     }
 
     applyGravity(): void {
-      this.vy += gravity
+      this.vy += GRAVITY
     }
 
     pressAgainstGround(groundY: number): void {
       const dif = this.y - (groundY - this.m / 2)
-      this.pressure += dif * pressureUnit
+      this.pressure += dif * PRESSURE_UNIT
       this.y = groundY - this.m / 2
       this.vy = 0
       this.x -= this.vx * this.f
@@ -806,7 +804,7 @@ export default function sketch(p5: p5) {
           if (distance < rad || flip) {
             dif = rad - distance
 
-            this.pressure += dif * pressureUnit
+            this.pressure += dif * PRESSURE_UNIT
             let multi = rad / distance
 
             if (flip) {
@@ -986,7 +984,7 @@ export default function sketch(p5: p5) {
 
       energy = p5.max(
         energy +
-          p5.abs(this.previousTarget - target) * this.rigidity * energyUnit,
+          p5.abs(this.previousTarget - target) * this.rigidity * ENERGY_UNIT,
         0
       )
 
@@ -1488,12 +1486,12 @@ export default function sketch(p5: p5) {
       p5.text(
         p5.nf(ni.value, 0, 2),
         (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * lineY2 + y) * scaleToFixBug
+        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
       )
       p5.text(
         operationNames[ni.operation],
         (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * lineY1 + y) * scaleToFixBug
+        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
       )
     } else if (toImage == 1) {
       screenImage.fill(c)
@@ -1516,12 +1514,12 @@ export default function sketch(p5: p5) {
       screenImage.text(
         p5.nf(ni.value, 0, 2),
         (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * lineY2 + y) * scaleToFixBug
+        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
       )
       screenImage.text(
         operationNames[ni.operation],
         (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * lineY1 + y) * scaleToFixBug
+        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
       )
     } else if (toImage == 2) {
       popUpImage.fill(c)
@@ -1544,12 +1542,12 @@ export default function sketch(p5: p5) {
       popUpImage.text(
         p5.nf(ni.value, 0, 2),
         (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * lineY2 + y) * scaleToFixBug
+        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
       )
       popUpImage.text(
         operationNames[ni.operation],
         (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * lineY1 + y) * scaleToFixBug
+        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
       )
     }
   }
@@ -1595,7 +1593,7 @@ export default function sketch(p5: p5) {
     const angle = p5.atan2(y2 - y1, x2 - x1)
 
     if (toImage == 0) {
-      p5.stroke(axonColor)
+      p5.stroke(AXON_COLOR)
       p5.strokeWeight(0.03 * scaleToFixBug)
       p5.line(
         x1 * scaleToFixBug,
@@ -1617,7 +1615,7 @@ export default function sketch(p5: p5) {
       )
       p5.noStroke()
     } else if (toImage == 1) {
-      screenImage.stroke(axonColor)
+      screenImage.stroke(AXON_COLOR)
       screenImage.strokeWeight(0.03 * scaleToFixBug)
       screenImage.line(
         x1 * scaleToFixBug,
@@ -1639,7 +1637,7 @@ export default function sketch(p5: p5) {
       )
       popUpImage.noStroke()
     } else if (toImage == 2) {
-      popUpImage.stroke(axonColor)
+      popUpImage.stroke(AXON_COLOR)
       popUpImage.strokeWeight(0.03 * scaleToFixBug)
       popUpImage.line(
         x1 * scaleToFixBug,
@@ -1735,7 +1733,7 @@ export default function sketch(p5: p5) {
       const averageMass = (ni1.m + ni2.m) * 0.5
 
       if (toImage == 0) {
-        p5.fill(axonColor)
+        p5.fill(AXON_COLOR)
         p5.textAlign(p5.CENTER)
         p5.textFont(font, 0.4 * averageMass * scaleToFixBug)
         p5.text(
@@ -1744,7 +1742,7 @@ export default function sketch(p5: p5) {
           muscleMidY * scaleToFixBug
         )
       } else if (toImage == 1) {
-        screenImage.fill(axonColor)
+        screenImage.fill(AXON_COLOR)
         screenImage.textAlign(p5.CENTER)
         screenImage.textFont(font, 0.4 * averageMass * scaleToFixBug)
         screenImage.text(
@@ -1753,7 +1751,7 @@ export default function sketch(p5: p5) {
           muscleMidY * scaleToFixBug
         )
       } else if (toImage == 2) {
-        popUpImage.fill(axonColor)
+        popUpImage.fill(AXON_COLOR)
         popUpImage.textAlign(p5.CENTER)
         popUpImage.textFont(font, 0.4 * averageMass * scaleToFixBug)
         popUpImage.text(
@@ -1971,7 +1969,11 @@ export default function sketch(p5: p5) {
     ) {
       const lineY = y - i * meterHeight + zero
       graphImage.line(x, lineY, graphWidth + x, lineY)
-      graphImage.text(showUnit(i, unit) + ' ' + fitnessUnit, x - 5, lineY + 4)
+      graphImage.text(
+        showUnit(i, unit) + ' ' + FITNESS_UNIT_LABEL,
+        x - 5,
+        lineY + 4
+      )
     }
 
     graphImage.stroke(0)
@@ -2555,8 +2557,8 @@ export default function sketch(p5: p5) {
     p5.randomSeed(SEED)
     // Create a 1024x576 Canvas
     p5.createCanvas(
-      windowWidth * windowSizeMultiplier,
-      windowHeight * windowSizeMultiplier
+      windowWidth * WINDOW_SIZE_MULTIPLIER,
+      windowHeight * WINDOW_SIZE_MULTIPLIER
     )
     p5.ellipseMode(p5.CENTER)
 
@@ -2578,7 +2580,7 @@ export default function sketch(p5: p5) {
   }
 
   p5.draw = () => {
-    p5.scale(windowSizeMultiplier)
+    p5.scale(WINDOW_SIZE_MULTIPLIER)
 
     if (activity === Activity.Start) {
       p5.background(255)
@@ -2612,7 +2614,7 @@ export default function sketch(p5: p5) {
         simulateAlapButton.draw()
 
         p5.fill(0)
-        p5.text('Median ' + fitnessName, 50, 160)
+        p5.text('Median ' + FITNESS_LABEL, 50, 160)
         p5.textAlign(p5.CENTER)
         p5.textAlign(p5.RIGHT)
         p5.text(
@@ -2623,7 +2625,7 @@ export default function sketch(p5: p5) {
           ) /
             1000 +
             ' ' +
-            fitnessUnit,
+            FITNESS_UNIT_LABEL,
           700,
           160
         )
@@ -2814,9 +2816,9 @@ export default function sketch(p5: p5) {
           p5.fill(255, 0, 0)
           p5.textAlign(p5.CENTER)
           p5.textFont(font, 96)
-          p5.text("Creature's " + fitnessName + ':', windowWidth / 2, 300)
+          p5.text("Creature's " + FITNESS_LABEL + ':', windowWidth / 2, 300)
           p5.text(
-            p5.nf(averageX * 0.2, 0, 2) + ' ' + fitnessUnit,
+            p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
             windowWidth / 2,
             400
           )

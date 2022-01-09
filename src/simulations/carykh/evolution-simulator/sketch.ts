@@ -116,14 +116,20 @@ export default function sketch(p5: p5) {
     return p5.pow(p5.random(-1, 1), 19)
   }
 
+  function getCursorPosition(): {mX: number; mY: number} {
+    const mX = p5.mouseX / windowSizeMultiplier
+    const mY = p5.mouseY / windowSizeMultiplier
+
+    return {mX, mY}
+  }
+
   function rectIsUnderCursor(
     x: number,
     y: number,
     width: number,
     height: number
   ): boolean {
-    const mX = p5.mouseX / windowSizeMultiplier
-    const mY = p5.mouseY / windowSizeMultiplier
+    const {mX, mY} = getCursorPosition()
 
     return mX >= x && mX <= x + width && mY >= y && mY <= y + height
   }
@@ -492,8 +498,7 @@ export default function sketch(p5: p5) {
     }
 
     onDrag(): void {
-      const mX = p5.mouseX / windowSizeMultiplier
-
+      const {mX} = getCursorPosition()
       sliderX = p5.min(p5.max(sliderX + (mX - 25 - sliderX) * 0.2, 760), 1170)
     }
   }
@@ -2941,8 +2946,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    let mX = p5.mouseX / windowSizeMultiplier
-    let mY = p5.mouseY / windowSizeMultiplier
+    const {mX, mY} = getCursorPosition()
 
     if (
       (activity === Activity.FinishedStepByStep ||
@@ -3103,9 +3107,6 @@ export default function sketch(p5: p5) {
     }
 
     if (activity === Activity.GenerationView || gensToDo >= 1) {
-      mX = p5.mouseX / windowSizeMultiplier
-      mY = p5.mouseY / windowSizeMultiplier
-
       p5.noStroke()
 
       if (generationCount >= 1) {

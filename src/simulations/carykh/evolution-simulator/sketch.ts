@@ -143,6 +143,32 @@ export default function sketch(p5: p5) {
   let stepByStepSlow: boolean
 
   class Simulation {
+    advance(): void {
+      for (let i = 0; i < simulationState.creature.muscles.length; i++) {
+        const {muscles, nodes} = simulationState.creature
+        this.applyForceToMuscle(muscles[i], nodes)
+      }
+
+      for (let i = 0; i < simulationState.creature.nodes.length; i++) {
+        const ni = simulationState.creature.nodes[i]
+        this.applyGravityToNode(ni)
+        this.applyForcesToNode(ni)
+        this.applyCollisionsToNode(ni)
+        this.processNodeAxons(ni, simulationState.creature.nodes)
+      }
+
+      for (let i = 0; i < simulationState.creature.nodes.length; i++) {
+        simulationState.creature.nodes[i].realizeMathValues()
+      }
+
+      simulationState.creature.averageNodeNausea =
+        simulationState.creature.totalNodeNausea /
+        simulationState.creature.nodes.length
+
+      simulationState.timer++
+      appState.viewTimer++
+    }
+
     applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
       let target = muscle.previousTarget
 
@@ -929,7 +955,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       for (let s = appState.viewTimer; s < 900; s++) {
-        simulate()
+        simulation.advance()
       }
 
       appState.viewTimer = 1021
@@ -979,7 +1005,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       for (let s = appState.viewTimer; s < 900; s++) {
-        simulate()
+        simulation.advance()
       }
 
       appState.viewTimer = 0
@@ -989,7 +1015,7 @@ export default function sketch(p5: p5) {
         setSimulationState(c[i])
 
         for (let s = 0; s < 900; s++) {
-          simulate()
+          simulation.advance()
         }
 
         setFitness(i)
@@ -1251,7 +1277,7 @@ export default function sketch(p5: p5) {
       p5.image(popUpImage, px2, py2, 300, 300)
 
       drawStats(px2 + 295, py2, 0.45)
-      simulate()
+      simulation.advance()
     }
   }
 
@@ -2082,31 +2108,6 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function simulate(): void {
-    for (let i = 0; i < simulationState.creature.muscles.length; i++) {
-      const {muscles, nodes} = simulationState.creature
-      simulation.applyForceToMuscle(muscles[i], nodes)
-    }
-
-    for (let i = 0; i < simulationState.creature.nodes.length; i++) {
-      const ni = simulationState.creature.nodes[i]
-      simulation.applyGravityToNode(ni)
-      simulation.applyForcesToNode(ni)
-      simulation.applyCollisionsToNode(ni)
-      simulation.processNodeAxons(ni, simulationState.creature.nodes)
-    }
-
-    for (let i = 0; i < simulationState.creature.nodes.length; i++) {
-      simulationState.creature.nodes[i].realizeMathValues()
-    }
-
-    simulationState.creature.averageNodeNausea =
-      simulationState.creature.totalNodeNausea /
-      simulationState.creature.nodes.length
-    simulationState.timer++
-    appState.viewTimer++
-  }
-
   function getNodesAverage(nodes: Node[]): {
     averageX: number
     averageY: number
@@ -2666,7 +2667,7 @@ export default function sketch(p5: p5) {
           setSimulationState(c[i])
 
           for (let s = 0; s < 900; s++) {
-            simulate()
+            simulation.advance()
           }
 
           setFitness(i)
@@ -2686,7 +2687,7 @@ export default function sketch(p5: p5) {
 
         for (let s = 0; s < simulationState.speed; s++) {
           if (appState.viewTimer < 900) {
-            simulate()
+            simulation.advance()
           }
         }
 

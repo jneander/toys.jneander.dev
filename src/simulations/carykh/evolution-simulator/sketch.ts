@@ -76,8 +76,6 @@ export default function sketch(p5: p5) {
   let windowWidth = 1280
   let windowHeight = 720
   let timer = 0
-  let camX = 0
-  let camY = 0
   let activity: Activity = Activity.Start
   let generationCount = -1
   let sliderX = 1170
@@ -94,7 +92,14 @@ export default function sketch(p5: p5) {
   let simulationTimer = 0
   const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
-  let camZoom = 0.015
+  const simulationState = {
+    camera: {
+      x: 0,
+      y: 0,
+      zoom: 0.015
+    }
+  }
+
   let gravity = 0.005
   let airFriction = 0.95
 
@@ -579,16 +584,19 @@ export default function sketch(p5: p5) {
 
       const px2 = p5.min(p5.max(px - 90, 10), 970)
 
-      camZoom = 0.009
+      simulationState.camera.zoom = 0.009
 
       const {averageX, averageY} = getNodesAverage(simulationNodes)
-      camX += (averageX - camX) * 0.1
-      camY += (averageY - camY) * 0.1
+      simulationState.camera.x += (averageX - simulationState.camera.x) * 0.1
+      simulationState.camera.y += (averageY - simulationState.camera.y) * 0.1
 
       popUpImage.push()
       popUpImage.translate(225, 225)
-      popUpImage.scale(1.0 / camZoom / scaleToFixBug)
-      popUpImage.translate(-camX * scaleToFixBug, -camY * scaleToFixBug)
+      popUpImage.scale(1.0 / simulationState.camera.zoom / scaleToFixBug)
+      popUpImage.translate(
+        -simulationState.camera.x * scaleToFixBug,
+        -simulationState.camera.y * scaleToFixBug
+      )
 
       if (simulationTimer < 900) {
         popUpImage.background(120, 200, 255)
@@ -1375,10 +1383,11 @@ export default function sketch(p5: p5) {
 
       if (haveGround) {
         p5.rect(
-          (camX - camZoom * 800.0) * scaleToFixBug,
+          (simulationState.camera.x - simulationState.camera.zoom * 800.0) *
+            scaleToFixBug,
           0 * scaleToFixBug,
-          camZoom * 1600.0 * scaleToFixBug,
-          camZoom * 900.0 * scaleToFixBug
+          simulationState.camera.zoom * 1600.0 * scaleToFixBug,
+          simulationState.camera.zoom * 900.0 * scaleToFixBug
         )
       }
 
@@ -1417,10 +1426,11 @@ export default function sketch(p5: p5) {
 
       if (haveGround) {
         popUpImage.rect(
-          (camX - camZoom * 300.0) * scaleToFixBug,
+          (simulationState.camera.x - simulationState.camera.zoom * 300.0) *
+            scaleToFixBug,
           0 * scaleToFixBug,
-          camZoom * 600.0 * scaleToFixBug,
-          camZoom * 600.0 * scaleToFixBug
+          simulationState.camera.zoom * 600.0 * scaleToFixBug,
+          simulationState.camera.zoom * 600.0 * scaleToFixBug
         )
       }
 
@@ -2212,18 +2222,18 @@ export default function sketch(p5: p5) {
 
     if (activity === Activity.SimulationRunning) {
       if (delta < 0) {
-        camZoom *= 0.9090909
+        simulationState.camera.zoom *= 0.9090909
 
-        if (camZoom < 0.002) {
-          camZoom = 0.002
+        if (simulationState.camera.zoom < 0.002) {
+          simulationState.camera.zoom = 0.002
         }
 
         p5.textFont(font, postFontSize)
       } else if (delta > 0) {
-        camZoom *= 1.1
+        simulationState.camera.zoom *= 1.1
 
-        if (camZoom > 0.1) {
-          camZoom = 0.1
+        if (simulationState.camera.zoom > 0.1) {
+          simulationState.camera.zoom = 0.1
         }
 
         p5.textFont(font, postFontSize)
@@ -2732,7 +2742,7 @@ export default function sketch(p5: p5) {
       generatedCreaturesBackButton.draw()
     } else if (activity === Activity.RequestingSimulation) {
       setGlobalVariables(c[creaturesTested])
-      camZoom = 0.01
+      simulationState.camera.zoom = 0.01
 
       setActivity(Activity.SimulationRunning)
 
@@ -2767,19 +2777,24 @@ export default function sketch(p5: p5) {
 
         if (speed < 30) {
           for (let s = 0; s < speed; s++) {
-            camX += (averageX - camX) * 0.06
-            camY += (averageY - camY) * 0.06
+            simulationState.camera.x +=
+              (averageX - simulationState.camera.x) * 0.06
+            simulationState.camera.y +=
+              (averageY - simulationState.camera.y) * 0.06
           }
         } else {
-          camX = averageX
-          camY = averageY
+          simulationState.camera.x = averageX
+          simulationState.camera.y = averageY
         }
 
         p5.push()
 
         p5.translate(p5.width / 2.0, p5.height / 2.0)
-        p5.scale(1.0 / camZoom / scaleToFixBug)
-        p5.translate(-camX * scaleToFixBug, -camY * scaleToFixBug)
+        p5.scale(1.0 / simulationState.camera.zoom / scaleToFixBug)
+        p5.translate(
+          -simulationState.camera.x * scaleToFixBug,
+          -simulationState.camera.y * scaleToFixBug
+        )
 
         drawPosts(0)
         drawGround(0)
@@ -2826,7 +2841,7 @@ export default function sketch(p5: p5) {
           setActivity(Activity.SimulationFinished)
         }
 
-        camX = 0
+        simulationState.camera.x = 0
       }
 
       if (timer >= 900) {
@@ -3241,9 +3256,9 @@ export default function sketch(p5: p5) {
 
     id = thisCreature.id
     timer = 0
-    camZoom = 0.01
-    camX = 0
-    camY = 0
+    simulationState.camera.zoom = 0.01
+    simulationState.camera.x = 0
+    simulationState.camera.y = 0
     simulationTimer = 0
     energy = baselineEnergy
     totalNodeNausea = 0

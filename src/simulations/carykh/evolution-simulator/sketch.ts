@@ -100,6 +100,8 @@ export default function sketch(p5: p5) {
     averageNodeNausea: number
     energyUsed: number
     id: number
+    muscles: Muscle[]
+    nodes: Node[]
     totalNodeNausea: number
   }
 
@@ -121,15 +123,14 @@ export default function sketch(p5: p5) {
       averageNodeNausea: 0,
       energyUsed: 0,
       id: 0,
+      muscles: [],
+      nodes: [],
       totalNodeNausea: 0
     },
 
     speed: 1,
     timer: 0
   }
-
-  let simulationNodes: Node[] = []
-  let simulationMuscles: Muscle[] = []
 
   const c = new Array<Creature>(CREATURE_COUNT)
 
@@ -614,7 +615,9 @@ export default function sketch(p5: p5) {
 
       simulationState.camera.zoom = 0.009
 
-      const {averageX, averageY} = getNodesAverage(simulationNodes)
+      const {averageX, averageY} = getNodesAverage(
+        simulationState.creature.nodes
+      )
       simulationState.camera.x += (averageX - simulationState.camera.x) * 0.1
       simulationState.camera.y += (averageY - simulationState.camera.y) * 0.1
 
@@ -634,7 +637,13 @@ export default function sketch(p5: p5) {
 
       drawPosts(2)
       drawGround(2)
-      drawCreaturePieces(simulationNodes, simulationMuscles, 0, 0, 2)
+      drawCreaturePieces(
+        simulationState.creature.nodes,
+        simulationState.creature.muscles,
+        0,
+        0,
+        2
+      )
 
       popUpImage.noStroke()
       popUpImage.pop()
@@ -1396,7 +1405,7 @@ export default function sketch(p5: p5) {
   }
 
   function drawGround(toImage: number): void {
-    const {averageX, averageY} = getNodesAverage(simulationNodes)
+    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
     const stairDrawStart = p5.max(1, p5.int(-averageY / hazelStairs) - 10)
 
@@ -1799,7 +1808,7 @@ export default function sketch(p5: p5) {
   }
 
   function drawPosts(toImage: number): void {
-    const {averageX, averageY} = getNodesAverage(simulationNodes)
+    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
     const startPostY = p5.min(-8, p5.int(averageY / 4) * 4 - 4)
 
     if (toImage == 0) {
@@ -2197,24 +2206,27 @@ export default function sketch(p5: p5) {
   }
 
   function simulate(): void {
-    for (let i = 0; i < simulationMuscles.length; i++) {
-      simulationMuscles[i].applyForce(simulationNodes)
+    for (let i = 0; i < simulationState.creature.muscles.length; i++) {
+      simulationState.creature.muscles[i].applyForce(
+        simulationState.creature.nodes
+      )
     }
 
-    for (let i = 0; i < simulationNodes.length; i++) {
-      const ni = simulationNodes[i]
+    for (let i = 0; i < simulationState.creature.nodes.length; i++) {
+      const ni = simulationState.creature.nodes[i]
       ni.applyGravity()
       ni.applyForces()
       ni.hitWalls()
-      ni.doMath(simulationNodes)
+      ni.doMath(simulationState.creature.nodes)
     }
 
-    for (let i = 0; i < simulationNodes.length; i++) {
-      simulationNodes[i].realizeMathValues()
+    for (let i = 0; i < simulationState.creature.nodes.length; i++) {
+      simulationState.creature.nodes[i].realizeMathValues()
     }
 
     simulationState.creature.averageNodeNausea =
-      simulationState.creature.totalNodeNausea / simulationNodes.length
+      simulationState.creature.totalNodeNausea /
+      simulationState.creature.nodes.length
     simulationState.timer++
     appState.viewTimer++
   }
@@ -2788,7 +2800,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    const {averageX, averageY} = getNodesAverage(simulationNodes)
+    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
     if (appState.currentActivityId === Activity.SimulationRunning) {
       // simulate running
@@ -2825,7 +2837,13 @@ export default function sketch(p5: p5) {
 
         drawPosts(0)
         drawGround(0)
-        drawCreaturePieces(simulationNodes, simulationMuscles, 0, 0, 0)
+        drawCreaturePieces(
+          simulationState.creature.nodes,
+          simulationState.creature.muscles,
+          0,
+          0,
+          0
+        )
         drawArrow(averageX)
 
         p5.pop()
@@ -3261,7 +3279,7 @@ export default function sketch(p5: p5) {
     p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
     p5.text('Playback Speed: x' + p5.max(1, simulationState.speed), 0, 96)
 
-    const {averageX, averageY} = getNodesAverage(simulationNodes)
+    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
     p5.text('X: ' + p5.nf(averageX / 5.0, 0, 2) + '', 0, 128)
     p5.text('Y: ' + p5.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
@@ -3284,8 +3302,10 @@ export default function sketch(p5: p5) {
   }
 
   function setSimulationState(simulationCreature: Creature): void {
-    simulationNodes = simulationCreature.nodes.map(node => node.copyNode())
-    simulationMuscles = simulationCreature.muscles.map(muscle =>
+    simulationState.creature.nodes = simulationCreature.nodes.map(node =>
+      node.copyNode()
+    )
+    simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
       muscle.copyMuscle()
     )
 
@@ -3301,7 +3321,7 @@ export default function sketch(p5: p5) {
   }
 
   function setFitness(i: number): void {
-    const {averageX} = getNodesAverage(simulationNodes)
+    const {averageX} = getNodesAverage(simulationState.creature.nodes)
     c[i].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }
 }

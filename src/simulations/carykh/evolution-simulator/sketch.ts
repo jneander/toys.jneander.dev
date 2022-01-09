@@ -2421,21 +2421,7 @@ export default function sketch(p5: p5) {
     y: number,
     toImage: number
   ): void {
-    for (let i = 0; i < cj.m.length; i++) {
-      drawMuscle(cj.m[i], cj.n, x, y, toImage)
-    }
-
-    for (let i = 0; i < cj.n.length; i++) {
-      drawNode(cj.n[i], x, y, toImage)
-    }
-
-    for (let i = 0; i < cj.m.length; i++) {
-      drawMuscleAxons(cj.m[i], cj.n, x, y, toImage)
-    }
-
-    for (let i = 0; i < cj.n.length; i++) {
-      drawNodeAxons(cj.n, i, x, y, toImage)
-    }
+    drawCreaturePieces(cj.n, cj.m, x, y, toImage)
   }
 
   function drawCreaturePieces(

@@ -2091,16 +2091,16 @@ export default function sketch(p5: p5) {
   function toStableConfiguration(nodeNum: number, muscleNum: number): void {
     for (let j = 0; j < 200; j++) {
       for (let i = 0; i < muscleNum; i++) {
-        m[i].applyForce(i, n)
+        simulationMuscles[i].applyForce(i, simulationNodes)
       }
 
       for (let i = 0; i < nodeNum; i++) {
-        n[i].applyForces()
+        simulationNodes[i].applyForces()
       }
     }
 
     for (let i = 0; i < nodeNum; i++) {
-      const ni = n[i]
+      const ni = simulationNodes[i]
       ni.vx = 0
       ni.vy = 0
     }
@@ -2111,7 +2111,7 @@ export default function sketch(p5: p5) {
     let lowY = -1000
 
     for (let i = 0; i < nodeNum; i++) {
-      const ni = n[i]
+      const ni = simulationNodes[i]
       avx += ni.x
 
       if (ni.y + ni.m / 2 > lowY) {
@@ -2122,30 +2122,30 @@ export default function sketch(p5: p5) {
     avx /= nodeNum
 
     for (let i = 0; i < nodeNum; i++) {
-      const ni = n[i]
+      const ni = simulationNodes[i]
       ni.x -= avx
       ni.y -= lowY
     }
   }
 
   function simulate(): void {
-    for (let i = 0; i < m.length; i++) {
-      m[i].applyForce(i, n)
+    for (let i = 0; i < simulationMuscles.length; i++) {
+      simulationMuscles[i].applyForce(i, simulationNodes)
     }
 
-    for (let i = 0; i < n.length; i++) {
-      const ni = n[i]
+    for (let i = 0; i < simulationNodes.length; i++) {
+      const ni = simulationNodes[i]
       ni.applyGravity()
       ni.applyForces()
       ni.hitWalls()
-      ni.doMath(i, n)
+      ni.doMath(i, simulationNodes)
     }
 
-    for (let i = 0; i < n.length; i++) {
-      n[i].realizeMathValues(i)
+    for (let i = 0; i < simulationNodes.length; i++) {
+      simulationNodes[i].realizeMathValues(i)
     }
 
-    averageNodeNausea = totalNodeNausea / n.length
+    averageNodeNausea = totalNodeNausea / simulationNodes.length
     simulationTimer++
     timer++
   }
@@ -2154,18 +2154,18 @@ export default function sketch(p5: p5) {
     averageX = 0
     averageY = 0
 
-    for (let i = 0; i < n.length; i++) {
-      const ni = n[i]
+    for (let i = 0; i < simulationNodes.length; i++) {
+      const ni = simulationNodes[i]
       averageX += ni.x
       averageY += ni.y
     }
 
-    averageX = averageX / n.length
-    averageY = averageY / n.length
+    averageX = averageX / simulationNodes.length
+    averageY = averageY / simulationNodes.length
   }
 
-  let n: Node[] = []
-  let m: Muscle[] = []
+  let simulationNodes: Node[] = []
+  let simulationMuscles: Muscle[] = []
 
   const c = new Array<Creature>(CREATURE_COUNT)
 
@@ -2410,7 +2410,7 @@ export default function sketch(p5: p5) {
 
     drawPosts(2)
     drawGround(2)
-    drawCreaturePieces(n, m, 0, 0, 2)
+    drawCreaturePieces(simulationNodes, simulationMuscles, 0, 0, 2)
     popUpImage.noStroke()
     popUpImage.pop()
   }
@@ -2629,14 +2629,14 @@ export default function sketch(p5: p5) {
 
       for (let y = 0; y < 25; y++) {
         for (let x = 0; x < 40; x++) {
-          n.length = 0
-          m.length = 0
+          simulationNodes.length = 0
+          simulationMuscles.length = 0
 
           const nodeNum = p5.int(p5.random(3, 6))
           const muscleNum = p5.int(p5.random(nodeNum - 1, nodeNum * 3 - 6))
 
           for (let i = 0; i < nodeNum; i++) {
-            n.push(
+            simulationNodes.push(
               new Node(
                 p5.random(-1, 1),
                 p5.random(-1, 1),
@@ -2678,7 +2678,9 @@ export default function sketch(p5: p5) {
 
             const len = p5.random(0.5, 1.5)
 
-            m.push(new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08)))
+            simulationMuscles.push(
+              new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08))
+            )
           }
 
           toStableConfiguration(nodeNum, muscleNum)
@@ -2687,8 +2689,8 @@ export default function sketch(p5: p5) {
           const heartbeat = p5.random(40, 80)
           c[y * 40 + x] = new Creature(
             y * 40 + x + 1,
-            [...n],
-            [...m],
+            [...simulationNodes],
+            [...simulationMuscles],
             0,
             true,
             heartbeat,
@@ -2770,7 +2772,7 @@ export default function sketch(p5: p5) {
 
         drawPosts(0)
         drawGround(0)
-        drawCreaturePieces(n, m, 0, 0, 0)
+        drawCreaturePieces(simulationNodes, simulationMuscles, 0, 0, 0)
         drawArrow(averageX)
 
         p5.pop()
@@ -3056,11 +3058,11 @@ export default function sketch(p5: p5) {
         c2[j2] = cj.copyCreature(cj.id + CREATURE_COUNT) // duplicate
         c2[lastCreatureIndex - j2] = cj.modified(cj2.id + CREATURE_COUNT) // mutated offspring 1
 
-        n = c2[lastCreatureIndex - j2].n
-        m = c2[lastCreatureIndex - j2].m
+        simulationNodes = c2[lastCreatureIndex - j2].n
+        simulationMuscles = c2[lastCreatureIndex - j2].m
 
-        toStableConfiguration(n.length, m.length)
-        adjustToCenter(n.length)
+        toStableConfiguration(simulationNodes.length, simulationMuscles.length)
+        adjustToCenter(simulationNodes.length)
       }
 
       for (let j = 0; j < CREATURE_COUNT; j++) {
@@ -3220,15 +3222,15 @@ export default function sketch(p5: p5) {
   }
 
   function setGlobalVariables(thisCreature: Creature): void {
-    n.length = 0
-    m.length = 0
+    simulationNodes.length = 0
+    simulationMuscles.length = 0
 
     for (let i = 0; i < thisCreature.n.length; i++) {
-      n.push(thisCreature.n[i].copyNode())
+      simulationNodes.push(thisCreature.n[i].copyNode())
     }
 
     for (let i = 0; i < thisCreature.m.length; i++) {
-      m.push(thisCreature.m[i].copyMuscle())
+      simulationMuscles.push(thisCreature.m[i].copyMuscle())
     }
 
     id = thisCreature.id

@@ -7,6 +7,28 @@ import Node from './Node'
 import Rectangle from './Rectangle'
 import {Activity} from './constants'
 
+type SimulationCameraState = {
+  x: number
+  y: number
+  zoom: number
+}
+
+type SimulationCreatureState = {
+  averageNodeNausea: number
+  energyUsed: number
+  id: number
+  muscles: Muscle[]
+  nodes: Node[]
+  totalNodeNausea: number
+}
+
+type SimulationState = {
+  camera: SimulationCameraState
+  creature: SimulationCreatureState
+  speed: number
+  timer: number
+}
+
 export default function sketch(p5: p5) {
   const AIR_FRICTION = 0.95
   const AXON_COLOR = p5.color(255, 255, 0)
@@ -91,28 +113,6 @@ export default function sketch(p5: p5) {
     currentActivityId: Activity.Start,
     showPopupSimulation: false,
     viewTimer: 0
-  }
-
-  type SimulationCameraState = {
-    x: number
-    y: number
-    zoom: number
-  }
-
-  type SimulationCreatureState = {
-    averageNodeNausea: number
-    energyUsed: number
-    id: number
-    muscles: Muscle[]
-    nodes: Node[]
-    totalNodeNausea: number
-  }
-
-  type SimulationState = {
-    camera: SimulationCameraState
-    creature: SimulationCreatureState
-    speed: number
-    timer: number
   }
 
   const simulationState: SimulationState = {

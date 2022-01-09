@@ -89,7 +89,6 @@ export default function sketch(p5: p5) {
 
   let statusWindow = -4
   let overallTimer = 0
-  let simulationTimer = 0
   const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
   const simulationState = {
@@ -97,7 +96,9 @@ export default function sketch(p5: p5) {
       x: 0,
       y: 0,
       zoom: 0.015
-    }
+    },
+
+    timer: 0
   }
 
   let speed = 1
@@ -595,7 +596,7 @@ export default function sketch(p5: p5) {
         -simulationState.camera.y * scaleToFixBug
       )
 
-      if (simulationTimer < 900) {
+      if (simulationState.timer < 900) {
         popUpImage.background(120, 200, 255)
       } else {
         popUpImage.background(60, 100, 128)
@@ -837,7 +838,7 @@ export default function sketch(p5: p5) {
         // constant
       } else if (this.operation == 1) {
         // time
-        this.valueToBe = simulationTimer / 60.0
+        this.valueToBe = simulationState.timer / 60.0
       } else if (this.operation == 2) {
         // x - coordinate
         this.valueToBe = this.x * 0.2
@@ -2183,7 +2184,7 @@ export default function sketch(p5: p5) {
     }
 
     averageNodeNausea = totalNodeNausea / simulationNodes.length
-    simulationTimer++
+    simulationState.timer++
     timer++
   }
 
@@ -3191,7 +3192,7 @@ export default function sketch(p5: p5) {
       popupSimulationCreatureId !== targetCreatureId ||
       popupCurrentlyClosed
     ) {
-      simulationTimer = 0
+      simulationState.timer = 0
 
       if (gensToDo == 0) {
         // The full simulation is not running, so the popup simulation can be shown.
@@ -3246,7 +3247,7 @@ export default function sketch(p5: p5) {
     simulationState.camera.zoom = 0.01
     simulationState.camera.x = 0
     simulationState.camera.y = 0
-    simulationTimer = 0
+    simulationState.timer = 0
     energy = baselineEnergy
     totalNodeNausea = 0
     averageNodeNausea = 0

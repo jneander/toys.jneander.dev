@@ -139,6 +139,244 @@ export default function sketch(p5: p5) {
   let stepByStep: boolean
   let stepByStepSlow: boolean
 
+  class Simulation {
+    applyForcesToNode(node: Node): void {
+      node.vx *= AIR_FRICTION
+      node.vy *= AIR_FRICTION
+      node.y += node.vy
+      node.x += node.vx
+      const acc = p5.dist(node.vx, node.vy, node.pvx, node.pvy)
+      simulationState.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
+      node.pvx = node.vx
+      node.pvy = node.vy
+    }
+
+    applyGravityToNode(node: Node): void {
+      node.vy += GRAVITY
+    }
+
+    applyCollisionsToNode(node: Node): void {
+      node.pressure = 0
+      let dif = node.y + node.m / 2
+
+      if (dif >= 0 && haveGround) {
+        this.pressNodeAgainstGround(node, 0)
+      }
+
+      if (node.y > node.prevY && hazelStairs >= 0) {
+        const bottomPointNow = node.y + node.m / 2
+        const bottomPointPrev = node.prevY + node.m / 2
+        const levelNow = p5.int(p5.ceil(bottomPointNow / hazelStairs))
+        const levelPrev = p5.int(p5.ceil(bottomPointPrev / hazelStairs))
+
+        if (levelNow > levelPrev) {
+          const groundLevel = levelPrev * hazelStairs
+          this.pressNodeAgainstGround(node, groundLevel)
+        }
+      }
+
+      for (let i = 0; i < rects.length; i++) {
+        const r = rects[i]
+        let flip = false
+        let px, py
+
+        if (
+          p5.abs(node.x - (r.x1 + r.x2) / 2) <= (r.x2 - r.x1 + node.m) / 2 &&
+          p5.abs(node.y - (r.y1 + r.y2) / 2) <= (r.y2 - r.y1 + node.m) / 2
+        ) {
+          if (
+            node.x >= r.x1 &&
+            node.x < r.x2 &&
+            node.y >= r.y1 &&
+            node.y < r.y2
+          ) {
+            const d1 = node.x - r.x1
+            const d2 = r.x2 - node.x
+            const d3 = node.y - r.y1
+            const d4 = r.y2 - node.y
+
+            if (d1 < d2 && d1 < d3 && d1 < d4) {
+              px = r.x1
+              py = node.y
+            } else if (d2 < d3 && d2 < d4) {
+              px = r.x2
+              py = node.y
+            } else if (d3 < d4) {
+              px = node.x
+              py = r.y1
+            } else {
+              px = node.x
+              py = r.y2
+            }
+
+            flip = true
+          } else {
+            if (node.x < r.x1) {
+              px = r.x1
+            } else if (node.x < r.x2) {
+              px = node.x
+            } else {
+              px = r.x2
+            }
+
+            if (node.y < r.y1) {
+              py = r.y1
+            } else if (node.y < r.y2) {
+              py = node.y
+            } else {
+              py = r.y2
+            }
+          }
+
+          const distance = p5.dist(node.x, node.y, px, py)
+          let rad = node.m / 2
+          let wallAngle = p5.atan2(py - node.y, px - node.x)
+
+          if (flip) {
+            wallAngle += p5.PI
+          }
+
+          if (distance < rad || flip) {
+            dif = rad - distance
+
+            node.pressure += dif * PRESSURE_UNIT
+            let multi = rad / distance
+
+            if (flip) {
+              multi = -multi
+            }
+
+            node.x = (node.x - px) * multi + px
+            node.y = (node.y - py) * multi + py
+
+            const veloAngle = p5.atan2(node.vy, node.vx)
+            const veloMag = p5.dist(0, 0, node.vx, node.vy)
+            const relAngle = veloAngle - wallAngle
+            const relY = p5.sin(relAngle) * veloMag * dif * FRICTION
+
+            node.vx = -p5.sin(relAngle) * relY
+            node.vy = p5.cos(relAngle) * relY
+          }
+        }
+      }
+
+      node.prevY = node.y
+      node.prevX = node.x
+    }
+
+    modifyNode(node: Node, mutability: number, nodeNum: number): Node {
+      const newX = node.x + r() * 0.5 * mutability
+      const newY = node.y + r() * 0.5 * mutability
+      let newM = node.m + r() * 0.1 * mutability
+
+      newM = p5.min(p5.max(newM, 0.3), 0.5)
+      newM = 0.4
+
+      let newV = node.value * (1 + r() * 0.2 * mutability)
+      let newOperation = node.operation
+      let newAxon1 = node.axon1
+      let newAxon2 = node.axon2
+
+      if (p5.random(0, 1) < bigMutationChance * mutability) {
+        newOperation = p5.int(p5.random(0, operationCount))
+      }
+      if (p5.random(0, 1) < bigMutationChance * mutability) {
+        newAxon1 = p5.int(p5.random(0, nodeNum))
+      }
+      if (p5.random(0, 1) < bigMutationChance * mutability) {
+        newAxon2 = p5.int(p5.random(0, nodeNum))
+      }
+
+      if (newOperation == 1) {
+        // time
+        newV = 0
+      } else if (newOperation == 2) {
+        // x - coordinate
+        newV = newX * 0.2
+      } else if (newOperation == 3) {
+        // node.y - coordinate
+        newV = -newY * 0.2
+      }
+
+      return new Node(
+        newX,
+        newY,
+        0,
+        0,
+        newM,
+        p5.min(p5.max(node.f + r() * 0.1 * mutability, 0), 1),
+        newV,
+        newOperation,
+        newAxon1,
+        newAxon2
+      )
+    }
+
+    processNodeAxons(node: Node, nodes: Node[]): void {
+      const axonValue1 = nodes[node.axon1].value
+      const axonValue2 = nodes[node.axon2].value
+
+      if (node.operation == 0) {
+        // constant
+      } else if (node.operation == 1) {
+        // time
+        node.valueToBe = simulationState.timer / 60.0
+      } else if (node.operation == 2) {
+        // x - coordinate
+        node.valueToBe = node.x * 0.2
+      } else if (node.operation == 3) {
+        // node.y - coordinate
+        node.valueToBe = -node.y * 0.2
+      } else if (node.operation == 4) {
+        // plus
+        node.valueToBe = axonValue1 + axonValue2
+      } else if (node.operation == 5) {
+        // minus
+        node.valueToBe = axonValue1 - axonValue2
+      } else if (node.operation == 6) {
+        // times
+        node.valueToBe = axonValue1 * axonValue2
+      } else if (node.operation == 7) {
+        // divide
+        node.valueToBe = axonValue2 === 0 ? 0 : axonValue1 / axonValue2
+      } else if (node.operation == 8) {
+        // modulus
+        node.valueToBe = axonValue2 === 0 ? 0 : axonValue1 % axonValue2
+      } else if (node.operation == 9) {
+        // sin
+        node.valueToBe = p5.sin(axonValue1)
+      } else if (node.operation == 10) {
+        // sig
+        node.valueToBe = 1 / (1 + p5.pow(2.71828182846, -axonValue1))
+      } else if (node.operation == 11) {
+        // pressure
+        node.valueToBe = node.pressure
+      }
+    }
+
+    private pressNodeAgainstGround(node: Node, groundY: number): void {
+      const dif = node.y - (groundY - node.m / 2)
+      node.pressure += dif * PRESSURE_UNIT
+      node.y = groundY - node.m / 2
+      node.vy = 0
+      node.x -= node.vx * node.f
+
+      if (node.vx > 0) {
+        node.vx -= node.f * dif * FRICTION
+        if (node.vx < 0) {
+          node.vx = 0
+        }
+      } else {
+        node.vx += node.f * dif * FRICTION
+        if (node.vx > 0) {
+          node.vx = 0
+        }
+      }
+    }
+  }
+
+  const simulation = new Simulation()
+
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
   }
@@ -725,192 +963,6 @@ export default function sketch(p5: p5) {
       this.safeInput = false
     }
 
-    applyForces(): void {
-      this.vx *= AIR_FRICTION
-      this.vy *= AIR_FRICTION
-      this.y += this.vy
-      this.x += this.vx
-      const acc = p5.dist(this.vx, this.vy, this.pvx, this.pvy)
-      simulationState.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
-      this.pvx = this.vx
-      this.pvy = this.vy
-    }
-
-    applyGravity(): void {
-      this.vy += GRAVITY
-    }
-
-    pressAgainstGround(groundY: number): void {
-      const dif = this.y - (groundY - this.m / 2)
-      this.pressure += dif * PRESSURE_UNIT
-      this.y = groundY - this.m / 2
-      this.vy = 0
-      this.x -= this.vx * this.f
-
-      if (this.vx > 0) {
-        this.vx -= this.f * dif * FRICTION
-        if (this.vx < 0) {
-          this.vx = 0
-        }
-      } else {
-        this.vx += this.f * dif * FRICTION
-        if (this.vx > 0) {
-          this.vx = 0
-        }
-      }
-    }
-
-    hitWalls(): void {
-      this.pressure = 0
-      let dif = this.y + this.m / 2
-
-      if (dif >= 0 && haveGround) {
-        this.pressAgainstGround(0)
-      }
-
-      if (this.y > this.prevY && hazelStairs >= 0) {
-        const bottomPointNow = this.y + this.m / 2
-        const bottomPointPrev = this.prevY + this.m / 2
-        const levelNow = p5.int(p5.ceil(bottomPointNow / hazelStairs))
-        const levelPrev = p5.int(p5.ceil(bottomPointPrev / hazelStairs))
-
-        if (levelNow > levelPrev) {
-          const groundLevel = levelPrev * hazelStairs
-          this.pressAgainstGround(groundLevel)
-        }
-      }
-
-      for (let i = 0; i < rects.length; i++) {
-        const r = rects[i]
-        let flip = false
-        let px, py
-
-        if (
-          p5.abs(this.x - (r.x1 + r.x2) / 2) <= (r.x2 - r.x1 + this.m) / 2 &&
-          p5.abs(this.y - (r.y1 + r.y2) / 2) <= (r.y2 - r.y1 + this.m) / 2
-        ) {
-          if (
-            this.x >= r.x1 &&
-            this.x < r.x2 &&
-            this.y >= r.y1 &&
-            this.y < r.y2
-          ) {
-            const d1 = this.x - r.x1
-            const d2 = r.x2 - this.x
-            const d3 = this.y - r.y1
-            const d4 = r.y2 - this.y
-
-            if (d1 < d2 && d1 < d3 && d1 < d4) {
-              px = r.x1
-              py = this.y
-            } else if (d2 < d3 && d2 < d4) {
-              px = r.x2
-              py = this.y
-            } else if (d3 < d4) {
-              px = this.x
-              py = r.y1
-            } else {
-              px = this.x
-              py = r.y2
-            }
-
-            flip = true
-          } else {
-            if (this.x < r.x1) {
-              px = r.x1
-            } else if (this.x < r.x2) {
-              px = this.x
-            } else {
-              px = r.x2
-            }
-
-            if (this.y < r.y1) {
-              py = r.y1
-            } else if (this.y < r.y2) {
-              py = this.y
-            } else {
-              py = r.y2
-            }
-          }
-
-          const distance = p5.dist(this.x, this.y, px, py)
-          let rad = this.m / 2
-          let wallAngle = p5.atan2(py - this.y, px - this.x)
-
-          if (flip) {
-            wallAngle += p5.PI
-          }
-
-          if (distance < rad || flip) {
-            dif = rad - distance
-
-            this.pressure += dif * PRESSURE_UNIT
-            let multi = rad / distance
-
-            if (flip) {
-              multi = -multi
-            }
-
-            this.x = (this.x - px) * multi + px
-            this.y = (this.y - py) * multi + py
-
-            const veloAngle = p5.atan2(this.vy, this.vx)
-            const veloMag = p5.dist(0, 0, this.vx, this.vy)
-            const relAngle = veloAngle - wallAngle
-            const relY = p5.sin(relAngle) * veloMag * dif * FRICTION
-
-            this.vx = -p5.sin(relAngle) * relY
-            this.vy = p5.cos(relAngle) * relY
-          }
-        }
-      }
-
-      this.prevY = this.y
-      this.prevX = this.x
-    }
-
-    doMath(n: Node[]): void {
-      const axonValue1 = n[this.axon1].value
-      const axonValue2 = n[this.axon2].value
-
-      if (this.operation == 0) {
-        // constant
-      } else if (this.operation == 1) {
-        // time
-        this.valueToBe = simulationState.timer / 60.0
-      } else if (this.operation == 2) {
-        // x - coordinate
-        this.valueToBe = this.x * 0.2
-      } else if (this.operation == 3) {
-        // this.y - coordinate
-        this.valueToBe = -this.y * 0.2
-      } else if (this.operation == 4) {
-        // plus
-        this.valueToBe = axonValue1 + axonValue2
-      } else if (this.operation == 5) {
-        // minus
-        this.valueToBe = axonValue1 - axonValue2
-      } else if (this.operation == 6) {
-        // times
-        this.valueToBe = axonValue1 * axonValue2
-      } else if (this.operation == 7) {
-        // divide
-        this.valueToBe = axonValue2 === 0 ? 0 : axonValue1 / axonValue2
-      } else if (this.operation == 8) {
-        // modulus
-        this.valueToBe = axonValue2 === 0 ? 0 : axonValue1 % axonValue2
-      } else if (this.operation == 9) {
-        // sin
-        this.valueToBe = p5.sin(axonValue1)
-      } else if (this.operation == 10) {
-        // sig
-        this.valueToBe = 1 / (1 + p5.pow(2.71828182846, -axonValue1))
-      } else if (this.operation == 11) {
-        // pressure
-        this.valueToBe = this.pressure
-      }
-    }
-
     realizeMathValues(): void {
       this.value = this.valueToBe
     }
@@ -927,54 +979,6 @@ export default function sketch(p5: p5) {
         this.operation,
         this.axon1,
         this.axon2
-      )
-    }
-
-    modifyNode(mutability: number, nodeNum: number): Node {
-      const newX = this.x + r() * 0.5 * mutability
-      const newY = this.y + r() * 0.5 * mutability
-      let newM = this.m + r() * 0.1 * mutability
-
-      newM = p5.min(p5.max(newM, 0.3), 0.5)
-      newM = 0.4
-
-      let newV = this.value * (1 + r() * 0.2 * mutability)
-      let newOperation = this.operation
-      let newAxon1 = this.axon1
-      let newAxon2 = this.axon2
-
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newOperation = p5.int(p5.random(0, operationCount))
-      }
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newAxon1 = p5.int(p5.random(0, nodeNum))
-      }
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newAxon2 = p5.int(p5.random(0, nodeNum))
-      }
-
-      if (newOperation == 1) {
-        // time
-        newV = 0
-      } else if (newOperation == 2) {
-        // x - coordinate
-        newV = newX * 0.2
-      } else if (newOperation == 3) {
-        // this.y - coordinate
-        newV = -newY * 0.2
-      }
-
-      return new Node(
-        newX,
-        newY,
-        0,
-        0,
-        newM,
-        p5.min(p5.max(this.f + r() * 0.1 * mutability, 0), 1),
-        newV,
-        newOperation,
-        newAxon1,
-        newAxon2
       )
     }
   }
@@ -1110,7 +1114,11 @@ export default function sketch(p5: p5) {
 
       for (let i = 0; i < this.nodes.length; i++) {
         modifiedCreature.nodes.push(
-          this.nodes[i].modifyNode(this.mutability, this.nodes.length)
+          simulation.modifyNode(
+            this.nodes[i],
+            this.mutability,
+            this.nodes.length
+          )
         )
       }
 
@@ -2172,7 +2180,7 @@ export default function sketch(p5: p5) {
       }
 
       for (let i = 0; i < nodeCount; i++) {
-        nodes[i].applyForces()
+        simulation.applyForcesToNode(nodes[i])
       }
     }
 
@@ -2214,10 +2222,10 @@ export default function sketch(p5: p5) {
 
     for (let i = 0; i < simulationState.creature.nodes.length; i++) {
       const ni = simulationState.creature.nodes[i]
-      ni.applyGravity()
-      ni.applyForces()
-      ni.hitWalls()
-      ni.doMath(simulationState.creature.nodes)
+      simulation.applyGravityToNode(ni)
+      simulation.applyForcesToNode(ni)
+      simulation.applyCollisionsToNode(ni)
+      simulation.processNodeAxons(ni, simulationState.creature.nodes)
     }
 
     for (let i = 0; i < simulationState.creature.nodes.length; i++) {

@@ -88,7 +88,6 @@ export default function sketch(p5: p5) {
   let popupSimulationCreatureId: number | null
 
   let statusWindow = -4
-  let overallTimer = 0
   const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
   const simulationState = {
@@ -509,7 +508,7 @@ export default function sketch(p5: p5) {
 
       let cj
 
-      p5.stroke(p5.abs((overallTimer % 30) - 15) * 17)
+      p5.stroke(p5.abs((p5.frameCount % 30) - 15) * 17) // oscillate between 0–255
       p5.strokeWeight(3)
       p5.noFill()
 
@@ -3168,8 +3167,6 @@ export default function sketch(p5: p5) {
     if (statusWindow >= -3) {
       statusWindowView.draw()
     }
-
-    overallTimer++
   }
 
   function setPopupSimulationCreatureId(id: number): void {

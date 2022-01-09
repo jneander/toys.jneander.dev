@@ -90,7 +90,27 @@ export default function sketch(p5: p5) {
     viewTimer: 0
   }
 
-  const simulationState = {
+  type SimulationCameraState = {
+    x: number
+    y: number
+    zoom: number
+  }
+
+  type SimulationCreatureState = {
+    averageNodeNausea: number
+    energyUsed: number
+    id: number
+    totalNodeNausea: number
+  }
+
+  type SimulationState = {
+    camera: SimulationCameraState
+    creature: SimulationCreatureState
+    speed: number
+    timer: number
+  }
+
+  const simulationState: SimulationState = {
     camera: {
       x: 0,
       y: 0,

@@ -2637,14 +2637,14 @@ export default function sketch(p5: p5) {
 
       for (let y = 0; y < 25; y++) {
         for (let x = 0; x < 40; x++) {
-          simulationNodes.length = 0
-          simulationMuscles.length = 0
+          const nodes: Node[] = []
+          const muscles: Muscle[] = []
 
           const nodeNum = p5.int(p5.random(3, 6))
           const muscleNum = p5.int(p5.random(nodeNum - 1, nodeNum * 3 - 6))
 
           for (let i = 0; i < nodeNum; i++) {
-            simulationNodes.push(
+            nodes.push(
               new Node(
                 p5.random(-1, 1),
                 p5.random(-1, 1),
@@ -2686,24 +2686,19 @@ export default function sketch(p5: p5) {
 
             const len = p5.random(0.5, 1.5)
 
-            simulationMuscles.push(
+            muscles.push(
               new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08))
             )
           }
 
-          stabilizeNodesAndMuscles(
-            simulationNodes,
-            simulationMuscles,
-            nodeNum,
-            muscleNum
-          )
-          adjustNodesToCenter(simulationNodes, nodeNum)
+          stabilizeNodesAndMuscles(nodes, muscles, nodeNum, muscleNum)
+          adjustNodesToCenter(nodes, nodeNum)
 
           const heartbeat = p5.random(40, 80)
           c[y * 40 + x] = new Creature(
             y * 40 + x + 1,
-            [...simulationNodes],
-            [...simulationMuscles],
+            nodes,
+            muscles,
             0,
             true,
             heartbeat,
@@ -3072,16 +3067,11 @@ export default function sketch(p5: p5) {
         c2[j2] = cj.copyCreature(cj.id + CREATURE_COUNT) // duplicate
         c2[lastCreatureIndex - j2] = cj.modified(cj2.id + CREATURE_COUNT) // mutated offspring 1
 
-        simulationNodes = c2[lastCreatureIndex - j2].nodes
-        simulationMuscles = c2[lastCreatureIndex - j2].muscles
+        const nodes = c2[lastCreatureIndex - j2].nodes
+        const muscles = c2[lastCreatureIndex - j2].muscles
 
-        stabilizeNodesAndMuscles(
-          simulationNodes,
-          simulationMuscles,
-          simulationNodes.length,
-          simulationMuscles.length
-        )
-        adjustNodesToCenter(simulationNodes, simulationNodes.length)
+        stabilizeNodesAndMuscles(nodes, muscles, nodes.length, muscles.length)
+        adjustNodesToCenter(nodes, nodes.length)
       }
 
       for (let j = 0; j < CREATURE_COUNT; j++) {

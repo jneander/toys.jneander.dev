@@ -83,14 +83,14 @@ export default function sketch(p5: p5) {
   let draggingSlider = false
   let creaturesTested = 0
 
-  let showPopupSimulation = false
   let popupSimulationCreatureId: number | null
 
   let statusWindow = -4
   const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
   const appState = {
-    currentActivityId: Activity.Start
+    currentActivityId: Activity.Start,
+    showPopupSimulation: false
   }
 
   const simulationState = {
@@ -568,7 +568,7 @@ export default function sketch(p5: p5) {
       )
       p5.colorMode(p5.RGB, 255)
 
-      if (showPopupSimulation) {
+      if (appState.showPopupSimulation) {
         this.drawPopupSimulation(px, py)
       }
     }
@@ -2271,7 +2271,7 @@ export default function sketch(p5: p5) {
   p5.mouseReleased = () => {
     draggingSlider = false
     // When the popup simulation is running, mouse clicks will stop it.
-    showPopupSimulation = false
+    appState.showPopupSimulation = false
 
     if (
       appState.currentActivityId === Activity.Start &&
@@ -3202,7 +3202,7 @@ export default function sketch(p5: p5) {
 
       if (gensToDo == 0) {
         // The full simulation is not running, so the popup simulation can be shown.
-        showPopupSimulation = true
+        appState.showPopupSimulation = true
 
         setGlobalVariables(creature)
         popupSimulationCreatureId = targetCreatureId

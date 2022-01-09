@@ -2111,12 +2111,12 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function adjustToCenter(nodeNum: number): void {
+  function adjustNodesToCenter(nodes: Node[], nodeCount: number): void {
     let avx = 0
     let lowY = -1000
 
-    for (let i = 0; i < nodeNum; i++) {
-      const ni = simulationNodes[i]
+    for (let i = 0; i < nodeCount; i++) {
+      const ni = nodes[i]
       avx += ni.x
 
       if (ni.y + ni.m / 2 > lowY) {
@@ -2124,10 +2124,10 @@ export default function sketch(p5: p5) {
       }
     }
 
-    avx /= nodeNum
+    avx /= nodeCount
 
-    for (let i = 0; i < nodeNum; i++) {
-      const ni = simulationNodes[i]
+    for (let i = 0; i < nodeCount; i++) {
+      const ni = nodes[i]
       ni.x -= avx
       ni.y -= lowY
     }
@@ -2694,7 +2694,7 @@ export default function sketch(p5: p5) {
             nodeNum,
             muscleNum
           )
-          adjustToCenter(nodeNum)
+          adjustNodesToCenter(simulationNodes, nodeNum)
 
           const heartbeat = p5.random(40, 80)
           c[y * 40 + x] = new Creature(
@@ -3077,7 +3077,7 @@ export default function sketch(p5: p5) {
           simulationNodes.length,
           simulationMuscles.length
         )
-        adjustToCenter(simulationNodes.length)
+        adjustNodesToCenter(simulationNodes, simulationNodes.length)
       }
 
       for (let j = 0; j < CREATURE_COUNT; j++) {

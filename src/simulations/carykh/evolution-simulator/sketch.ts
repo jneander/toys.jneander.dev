@@ -136,8 +136,8 @@ export default function sketch(p5: p5) {
 
   let c2: Creature[] = []
 
-  let stepbystep: boolean
-  let stepbystepslow: boolean
+  let stepByStep: boolean
+  let stepByStepSlow: boolean
 
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
@@ -243,8 +243,8 @@ export default function sketch(p5: p5) {
       setActivity(Activity.RequestingSimulation)
       simulationState.speed = 1
       creaturesTested = 0
-      stepbystep = true
-      stepbystepslow = true
+      stepByStep = true
+      stepByStepSlow = true
     }
   }
 
@@ -264,8 +264,8 @@ export default function sketch(p5: p5) {
     onClick(): void {
       setActivity(Activity.RequestingSimulation)
       creaturesTested = 0
-      stepbystep = true
-      stepbystepslow = false
+      stepByStep = true
+      stepByStepSlow = false
     }
   }
 
@@ -2299,8 +2299,8 @@ export default function sketch(p5: p5) {
   function startASAP(): void {
     setActivity(Activity.RequestingSimulation)
     creaturesTested = 0
-    stepbystep = false
-    stepbystepslow = false
+    stepByStep = false
+    stepByStepSlow = false
   }
 
   p5.mouseReleased = () => {
@@ -2785,7 +2785,7 @@ export default function sketch(p5: p5) {
 
       setActivity(Activity.SimulationRunning)
 
-      if (!stepbystepslow) {
+      if (!stepByStepSlow) {
         for (let i = 0; i < CREATURE_COUNT; i++) {
           setSimulationState(c[i])
 
@@ -2961,7 +2961,7 @@ export default function sketch(p5: p5) {
 
       topSpeciesCounts.push(holder)
 
-      if (stepbystep) {
+      if (stepByStep) {
         drawScreenImage(0)
         setActivity(Activity.FinishedStepByStep)
       } else {
@@ -2994,7 +2994,7 @@ export default function sketch(p5: p5) {
 
       p5.pop()
 
-      if (stepbystepslow) {
+      if (stepByStepSlow) {
         appState.viewTimer += 2
       } else {
         appState.viewTimer += 10
@@ -3108,7 +3108,7 @@ export default function sketch(p5: p5) {
         culledCreature.alive = false
       }
 
-      if (stepbystep) {
+      if (stepByStep) {
         drawScreenImage(2)
         setActivity(Activity.CulledCreatures)
       } else {
@@ -3148,7 +3148,7 @@ export default function sketch(p5: p5) {
 
       generationCount++
 
-      if (stepbystep) {
+      if (stepByStep) {
         setActivity(Activity.PropagatedCreatures)
       } else {
         setActivity(Activity.GenerationView)

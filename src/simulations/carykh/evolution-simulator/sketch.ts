@@ -100,6 +100,7 @@ export default function sketch(p5: p5) {
     creature: {
       averageNodeNausea: 0,
       energyUsed: 0,
+      id: 0,
       totalNodeNausea: 0
     },
 
@@ -107,7 +108,6 @@ export default function sketch(p5: p5) {
     timer: 0
   }
 
-  let id: number
   let stepbystep: boolean
   let stepbystepslow: boolean
   let timeShow: number
@@ -3230,7 +3230,7 @@ export default function sketch(p5: p5) {
 
     p5.translate(x, y)
     p5.scale(size)
-    p5.text('Creature ID: ' + id, 0, 32)
+    p5.text('Creature ID: ' + simulationState.creature.id, 0, 32)
 
     if (simulationState.speed > 60) {
       timeShow = p5.int((appState.viewTimer + creaturesTested * 37) / 60) % 15
@@ -3267,8 +3267,8 @@ export default function sketch(p5: p5) {
     simulationNodes = thisCreature.nodes.map(node => node.copyNode())
     simulationMuscles = thisCreature.muscles.map(muscle => muscle.copyMuscle())
 
-    id = thisCreature.id
     appState.viewTimer = 0
+    simulationState.creature.id = thisCreature.id
     simulationState.camera.zoom = 0.01
     simulationState.camera.x = 0
     simulationState.camera.y = 0

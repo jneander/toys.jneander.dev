@@ -98,8 +98,6 @@ export default function sketch(p5: p5) {
   let gravity = 0.005
   let airFriction = 0.95
 
-  let averageX: number
-  let averageY: number
   let speed = 1
   let id: number
   let stepbystep: boolean
@@ -360,7 +358,6 @@ export default function sketch(p5: p5) {
           simulate()
         }
 
-        setAverages()
         setFitness(i)
       }
 
@@ -583,7 +580,8 @@ export default function sketch(p5: p5) {
       const px2 = p5.min(p5.max(px - 90, 10), 970)
 
       camZoom = 0.009
-      setAverages()
+
+      const {averageX, averageY} = getNodesAverage(simulationNodes)
       camX += (averageX - camX) * 0.1
       camY += (averageY - camY) * 0.1
 
@@ -1367,6 +1365,8 @@ export default function sketch(p5: p5) {
   }
 
   function drawGround(toImage: number): void {
+    const {averageX, averageY} = getNodesAverage(simulationNodes)
+
     const stairDrawStart = p5.max(1, p5.int(-averageY / hazelStairs) - 10)
 
     if (toImage == 0) {
@@ -1766,6 +1766,7 @@ export default function sketch(p5: p5) {
   }
 
   function drawPosts(toImage: number): void {
+    const {averageX, averageY} = getNodesAverage(simulationNodes)
     const startPostY = p5.min(-8, p5.int(averageY / 4) * 4 - 4)
 
     if (toImage == 0) {
@@ -2180,18 +2181,23 @@ export default function sketch(p5: p5) {
     timer++
   }
 
-  function setAverages(): void {
-    averageX = 0
-    averageY = 0
+  function getNodesAverage(nodes: Node[]): {
+    averageX: number
+    averageY: number
+  } {
+    let averageX = 0
+    let averageY = 0
 
-    for (let i = 0; i < simulationNodes.length; i++) {
-      const ni = simulationNodes[i]
+    for (let i = 0; i < nodes.length; i++) {
+      const ni = nodes[i]
       averageX += ni.x
       averageY += ni.y
     }
 
-    averageX = averageX / simulationNodes.length
-    averageY = averageY / simulationNodes.length
+    averageX = averageX / nodes.length
+    averageY = averageY / nodes.length
+
+    return {averageX, averageY}
   }
 
   let simulationNodes: Node[] = []
@@ -2738,13 +2744,14 @@ export default function sketch(p5: p5) {
             simulate()
           }
 
-          setAverages()
           setFitness(i)
         }
 
         setActivity(Activity.SimulationFinished)
       }
     }
+
+    const {averageX, averageY} = getNodesAverage(simulationNodes)
 
     if (activity === Activity.SimulationRunning) {
       // simulate running
@@ -2757,8 +2764,6 @@ export default function sketch(p5: p5) {
             simulate()
           }
         }
-
-        setAverages()
 
         if (speed < 30) {
           for (let s = 0; s < speed; s++) {
@@ -3216,6 +3221,8 @@ export default function sketch(p5: p5) {
       extraWord = 'left'
     }
 
+    const {averageX, averageY} = getNodesAverage(simulationNodes)
+
     p5.text('X: ' + p5.nf(averageX / 5.0, 0, 2) + '', 0, 128)
     p5.text('Y: ' + p5.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
     p5.text(
@@ -3244,6 +3251,7 @@ export default function sketch(p5: p5) {
   }
 
   function setFitness(i: number): void {
+    const {averageX} = getNodesAverage(simulationNodes)
     c[i].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }
 }

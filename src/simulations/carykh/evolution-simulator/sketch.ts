@@ -833,7 +833,7 @@ export default function sketch(p5: p5) {
       this.prevX = this.x
     }
 
-    doMath(i: number, n: Node[]): void {
+    doMath(n: Node[]): void {
       const axonValue1 = n[this.axon1].value
       const axonValue2 = n[this.axon2].value
 
@@ -875,7 +875,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    realizeMathValues(i: number): void {
+    realizeMathValues(): void {
       this.value = this.valueToBe
     }
 
@@ -965,7 +965,7 @@ export default function sketch(p5: p5) {
       this.rigidity = trigidity
     }
 
-    applyForce(i: number, n: Node[]): void {
+    applyForce(n: Node[]): void {
       let target = this.previousTarget
 
       if (this.axon >= 0 && this.axon < n.length) {
@@ -2132,7 +2132,7 @@ export default function sketch(p5: p5) {
   ): void {
     for (let j = 0; j < 200; j++) {
       for (let i = 0; i < muscleCount; i++) {
-        muscles[i].applyForce(i, nodes)
+        muscles[i].applyForce(nodes)
       }
 
       for (let i = 0; i < nodeCount; i++) {
@@ -2171,7 +2171,7 @@ export default function sketch(p5: p5) {
 
   function simulate(): void {
     for (let i = 0; i < simulationMuscles.length; i++) {
-      simulationMuscles[i].applyForce(i, simulationNodes)
+      simulationMuscles[i].applyForce(simulationNodes)
     }
 
     for (let i = 0; i < simulationNodes.length; i++) {
@@ -2179,11 +2179,11 @@ export default function sketch(p5: p5) {
       ni.applyGravity()
       ni.applyForces()
       ni.hitWalls()
-      ni.doMath(i, simulationNodes)
+      ni.doMath(simulationNodes)
     }
 
     for (let i = 0; i < simulationNodes.length; i++) {
-      simulationNodes[i].realizeMathValues(i)
+      simulationNodes[i].realizeMathValues()
     }
 
     simulationState.creature.averageNodeNausea =

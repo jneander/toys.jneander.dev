@@ -52,7 +52,6 @@ export default function sketch(p5: p5) {
   let fitnessUnit = 'm'
   let fitnessName = 'Distance'
   let baselineEnergy = 0.0
-  let energyDirection = 1 // if 1, it'll count up how much energy is used.  if -1, it'll count down from the baseline energy, and when energy hits 0, the creature dies.
   let bigMutationChance = 0.06
   let hazelStairs = -1
 
@@ -967,12 +966,10 @@ export default function sketch(p5: p5) {
     applyForce(i: number, n: Node[]): void {
       let target = this.previousTarget
 
-      if (energyDirection == 1 || energy >= 0.0001) {
-        if (this.axon >= 0 && this.axon < n.length) {
-          target = this.len * toMuscleUsable(n[this.axon].value)
-        } else {
-          target = this.len
-        }
+      if (this.axon >= 0 && this.axon < n.length) {
+        target = this.len * toMuscleUsable(n[this.axon].value)
+      } else {
+        target = this.len
       }
 
       const ni1 = n[this.c1]
@@ -989,10 +986,7 @@ export default function sketch(p5: p5) {
 
       energy = p5.max(
         energy +
-          energyDirection *
-            p5.abs(this.previousTarget - target) *
-            this.rigidity *
-            energyUnit,
+          p5.abs(this.previousTarget - target) * this.rigidity * energyUnit,
         0
       )
 
@@ -3231,20 +3225,11 @@ export default function sketch(p5: p5) {
     p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
     p5.text('Playback Speed: x' + p5.max(1, speed), 0, 96)
 
-    let extraWord = 'used'
-    if (energyDirection == -1) {
-      extraWord = 'left'
-    }
-
     const {averageX, averageY} = getNodesAverage(simulationNodes)
 
     p5.text('X: ' + p5.nf(averageX / 5.0, 0, 2) + '', 0, 128)
     p5.text('Y: ' + p5.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
-    p5.text(
-      'Energy ' + extraWord + ': ' + p5.nf(energy, 0, 2) + ' yums',
-      0,
-      192
-    )
+    p5.text('Energy used: ' + p5.nf(energy, 0, 2) + ' yums', 0, 192)
     p5.text('A.N.Nausea: ' + p5.nf(averageNodeNausea, 0, 2) + ' blehs', 0, 224)
 
     p5.pop()

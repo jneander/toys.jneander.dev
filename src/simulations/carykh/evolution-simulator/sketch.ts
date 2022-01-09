@@ -3237,16 +3237,8 @@ export default function sketch(p5: p5) {
   }
 
   function setGlobalVariables(thisCreature: Creature): void {
-    simulationNodes.length = 0
-    simulationMuscles.length = 0
-
-    for (let i = 0; i < thisCreature.n.length; i++) {
-      simulationNodes.push(thisCreature.n[i].copyNode())
-    }
-
-    for (let i = 0; i < thisCreature.m.length; i++) {
-      simulationMuscles.push(thisCreature.m[i].copyMuscle())
-    }
+    simulationNodes = thisCreature.n.map(node => node.copyNode())
+    simulationMuscles = thisCreature.m.map(muscle => muscle.copyMuscle())
 
     id = thisCreature.id
     timer = 0

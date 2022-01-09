@@ -104,7 +104,6 @@ export default function sketch(p5: p5) {
   let id: number
   let stepbystep: boolean
   let stepbystepslow: boolean
-  let slowDies: boolean
   let timeShow: number
 
   function inter(a: number, b: number, offset: number): number {
@@ -3032,30 +3031,28 @@ export default function sketch(p5: p5) {
     }
 
     if (activity === Activity.CullingCreatures) {
-      // Kill!
+      // Cull Creatures
 
-      for (let j = 0; j < 500; j++) {
-        const f = j / CREATURE_COUNT
-        const rand = (p5.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
+      for (let i = 0; i < 500; i++) {
+        const fitnessRankSurvivalChance = i / CREATURE_COUNT
+        const cullingThreshold = (p5.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
 
-        slowDies = f <= rand
+        let survivingCreatureIndex
+        let culledCreatureIndex
 
-        let j2
-        let j3
-
-        if (slowDies) {
-          j2 = j
-          j3 = lastCreatureIndex - j
+        if (fitnessRankSurvivalChance <= cullingThreshold) {
+          survivingCreatureIndex = i
+          culledCreatureIndex = lastCreatureIndex - i
         } else {
-          j2 = lastCreatureIndex - j
-          j3 = j
+          survivingCreatureIndex = lastCreatureIndex - i
+          culledCreatureIndex = i
         }
 
-        const cj = c2[j2]
-        cj.alive = true
+        const survivingCreature = c2[survivingCreatureIndex]
+        survivingCreature.alive = true
 
-        const ck = c2[j3]
-        ck.alive = false
+        const culledCreature = c2[culledCreatureIndex]
+        culledCreature.alive = false
       }
 
       if (stepbystep) {

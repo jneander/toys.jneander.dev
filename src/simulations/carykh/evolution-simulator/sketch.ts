@@ -97,10 +97,10 @@ export default function sketch(p5: p5) {
       zoom: 0.015
     },
 
+    speed: 1,
     timer: 0
   }
 
-  let speed = 1
   let id: number
   let stepbystep: boolean
   let stepbystepslow: boolean
@@ -209,7 +209,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       setActivity(Activity.RequestingSimulation)
-      speed = 1
+      simulationState.speed = 1
       creaturesTested = 0
       stepbystep = true
       stepbystepslow = true
@@ -311,7 +311,7 @@ export default function sketch(p5: p5) {
       p5.fill(255)
       p5.textAlign(p5.CENTER)
       p5.textFont(font, 32)
-      p5.text('PB speed: x' + speed, 240, windowHeight - 8)
+      p5.text('PB speed: x' + simulationState.speed, 240, windowHeight - 8)
     }
 
     isUnderCursor(): boolean {
@@ -319,14 +319,14 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      speed *= 2
+      simulationState.speed *= 2
 
-      if (speed === 1024) {
-        speed = 900
+      if (simulationState.speed === 1024) {
+        simulationState.speed = 900
       }
 
-      if (speed >= 1800) {
-        speed = 1
+      if (simulationState.speed >= 1800) {
+        simulationState.speed = 1
       }
     }
   }
@@ -2765,14 +2765,14 @@ export default function sketch(p5: p5) {
       if (timer <= 900) {
         p5.background(120, 200, 255)
 
-        for (let s = 0; s < speed; s++) {
+        for (let s = 0; s < simulationState.speed; s++) {
           if (timer < 900) {
             simulate()
           }
         }
 
-        if (speed < 30) {
-          for (let s = 0; s < speed; s++) {
+        if (simulationState.speed < 30) {
+          for (let s = 0; s < simulationState.speed; s++) {
             simulationState.camera.x +=
               (averageX - simulationState.camera.x) * 0.06
             simulationState.camera.y +=
@@ -2807,7 +2807,7 @@ export default function sketch(p5: p5) {
       }
 
       if (timer == 900) {
-        if (speed < 30) {
+        if (simulationState.speed < 30) {
           p5.noStroke()
           p5.fill(0, 0, 0, 130)
           p5.rect(0, 0, windowWidth, windowHeight)
@@ -2841,7 +2841,7 @@ export default function sketch(p5: p5) {
       }
 
       if (timer >= 900) {
-        timer += speed
+        timer += simulationState.speed
       }
     }
 
@@ -3216,14 +3216,14 @@ export default function sketch(p5: p5) {
     p5.scale(size)
     p5.text('Creature ID: ' + id, 0, 32)
 
-    if (speed > 60) {
+    if (simulationState.speed > 60) {
       timeShow = p5.int((timer + creaturesTested * 37) / 60) % 15
     } else {
       timeShow = timer / 60
     }
 
     p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
-    p5.text('Playback Speed: x' + p5.max(1, speed), 0, 96)
+    p5.text('Playback Speed: x' + p5.max(1, simulationState.speed), 0, 96)
 
     const {averageX, averageY} = getNodesAverage(simulationNodes)
 

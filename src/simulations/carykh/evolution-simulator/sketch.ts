@@ -2088,19 +2088,24 @@ export default function sketch(p5: p5) {
     return quickSort(more).concat(equal).concat(quickSort(less))
   }
 
-  function toStableConfiguration(nodeNum: number, muscleNum: number): void {
+  function stabilizeNodesAndMuscles(
+    nodes: Node[],
+    muscles: Muscle[],
+    nodeCount: number,
+    muscleCount: number
+  ): void {
     for (let j = 0; j < 200; j++) {
-      for (let i = 0; i < muscleNum; i++) {
-        simulationMuscles[i].applyForce(i, simulationNodes)
+      for (let i = 0; i < muscleCount; i++) {
+        muscles[i].applyForce(i, nodes)
       }
 
-      for (let i = 0; i < nodeNum; i++) {
-        simulationNodes[i].applyForces()
+      for (let i = 0; i < nodeCount; i++) {
+        nodes[i].applyForces()
       }
     }
 
-    for (let i = 0; i < nodeNum; i++) {
-      const ni = simulationNodes[i]
+    for (let i = 0; i < nodeCount; i++) {
+      const ni = nodes[i]
       ni.vx = 0
       ni.vy = 0
     }
@@ -2683,7 +2688,12 @@ export default function sketch(p5: p5) {
             )
           }
 
-          toStableConfiguration(nodeNum, muscleNum)
+          stabilizeNodesAndMuscles(
+            simulationNodes,
+            simulationMuscles,
+            nodeNum,
+            muscleNum
+          )
           adjustToCenter(nodeNum)
 
           const heartbeat = p5.random(40, 80)
@@ -3061,7 +3071,12 @@ export default function sketch(p5: p5) {
         simulationNodes = c2[lastCreatureIndex - j2].n
         simulationMuscles = c2[lastCreatureIndex - j2].m
 
-        toStableConfiguration(simulationNodes.length, simulationMuscles.length)
+        stabilizeNodesAndMuscles(
+          simulationNodes,
+          simulationMuscles,
+          simulationNodes.length,
+          simulationMuscles.length
+        )
         adjustToCenter(simulationNodes.length)
       }
 

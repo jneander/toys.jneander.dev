@@ -1296,7 +1296,7 @@ export default function sketch(p5: p5) {
       this.muscles.splice(choice, 1)
     }
 
-    copyCreature(newID: number): Creature {
+    clone(newId?: number): Creature {
       const n2 = []
       const m2 = []
 
@@ -1308,12 +1308,8 @@ export default function sketch(p5: p5) {
         m2.push(this.muscles[i].clone())
       }
 
-      if (newID == -1) {
-        newID = this.id
-      }
-
       return new Creature(
-        newID,
+        newId != null ? newId : this.id,
         n2,
         m2,
         this.fitness,
@@ -2832,9 +2828,9 @@ export default function sketch(p5: p5) {
           c2[fitnessPercentileCreatureIndices[i]].fitness
       }
 
-      creatureDatabase.push(c2[lastCreatureIndex].copyCreature(-1))
-      creatureDatabase.push(c2[midCreatureIndex].copyCreature(-1))
-      creatureDatabase.push(c2[0].copyCreature(-1))
+      creatureDatabase.push(c2[lastCreatureIndex].clone())
+      creatureDatabase.push(c2[midCreatureIndex].clone())
+      creatureDatabase.push(c2[0].clone())
 
       const beginBar = new Array<number>(barLen)
       for (let i = 0; i < barLen; i++) {
@@ -3047,7 +3043,7 @@ export default function sketch(p5: p5) {
         const cj = c2[j2]
         const cj2 = c2[lastCreatureIndex - j2]
 
-        c2[j2] = cj.copyCreature(cj.id + CREATURE_COUNT) // duplicate
+        c2[j2] = cj.clone(cj.id + CREATURE_COUNT)
         c2[lastCreatureIndex - j2] = cj.modified(cj2.id + CREATURE_COUNT) // mutated offspring 1
 
         const nodes = c2[lastCreatureIndex - j2].nodes
@@ -3060,7 +3056,7 @@ export default function sketch(p5: p5) {
       for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
         c[cj.id - generationCount * CREATURE_COUNT - (CREATURE_COUNT + 1)] =
-          cj.copyCreature(-1)
+          cj.clone()
       }
 
       drawScreenImage(3)

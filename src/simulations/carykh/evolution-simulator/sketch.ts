@@ -110,7 +110,6 @@ export default function sketch(p5: p5) {
 
   let stepbystep: boolean
   let stepbystepslow: boolean
-  let timeShow: number
 
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
@@ -3232,6 +3231,7 @@ export default function sketch(p5: p5) {
     p5.scale(size)
     p5.text('Creature ID: ' + simulationState.creature.id, 0, 32)
 
+    let timeShow: number
     if (simulationState.speed > 60) {
       timeShow = p5.int((appState.viewTimer + creaturesTested * 37) / 60) % 15
     } else {

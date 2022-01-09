@@ -915,7 +915,7 @@ export default function sketch(p5: p5) {
       this.value = this.valueToBe
     }
 
-    copyNode(): Node {
+    clone(): Node {
       return new Node(
         this.x,
         this.y,
@@ -1031,7 +1031,7 @@ export default function sketch(p5: p5) {
       this.previousTarget = target
     }
 
-    copyMuscle(): Muscle {
+    clone(): Muscle {
       return new Muscle(this.axon, this.c1, this.c2, this.len, this.rigidity)
     }
 
@@ -1381,11 +1381,11 @@ export default function sketch(p5: p5) {
       const m2 = []
 
       for (let i = 0; i < this.nodes.length; i++) {
-        n2.push(this.nodes[i].copyNode())
+        n2.push(this.nodes[i].clone())
       }
 
       for (let i = 0; i < this.muscles.length; i++) {
-        m2.push(this.muscles[i].copyMuscle())
+        m2.push(this.muscles[i].clone())
       }
 
       if (newID == -1) {
@@ -3303,10 +3303,10 @@ export default function sketch(p5: p5) {
 
   function setSimulationState(simulationCreature: Creature): void {
     simulationState.creature.nodes = simulationCreature.nodes.map(node =>
-      node.copyNode()
+      node.clone()
     )
     simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
-      muscle.copyMuscle()
+      muscle.clone()
     )
 
     appState.viewTimer = 0

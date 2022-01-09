@@ -108,6 +108,13 @@ export default function sketch(p5: p5) {
     timer: 0
   }
 
+  let simulationNodes: Node[] = []
+  let simulationMuscles: Muscle[] = []
+
+  const c = new Array<Creature>(CREATURE_COUNT)
+
+  let c2: Creature[] = []
+
   let stepbystep: boolean
   let stepbystepslow: boolean
 
@@ -2210,13 +2217,6 @@ export default function sketch(p5: p5) {
 
     return {averageX, averageY}
   }
-
-  let simulationNodes: Node[] = []
-  let simulationMuscles: Muscle[] = []
-
-  const c = new Array<Creature>(CREATURE_COUNT)
-
-  let c2: Creature[] = []
 
   p5.mouseWheel = (event: WheelEvent) => {
     const delta = event.deltaX

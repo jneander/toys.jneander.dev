@@ -83,7 +83,6 @@ export default function sketch(p5: p5) {
   let sliderX = 1170
   let selectedGeneration = 0
   let draggingSlider = false
-  let justGotBack = false
   let creaturesTested = 0
   const fontSizes = [50, 36, 25, 20, 16, 14, 11, 9]
 
@@ -3059,8 +3058,6 @@ export default function sketch(p5: p5) {
     if (activity === Activity.PropagatingCreatures) {
       // Reproduce and mutate
 
-      justGotBack = true
-
       for (let j = 0; j < 500; j++) {
         let j2 = j
         if (!c2[j].alive) {
@@ -3153,10 +3150,6 @@ export default function sketch(p5: p5) {
         p5.text('Worst Creature', 830, 310)
         p5.text('Median Creature', 990, 310)
         p5.text('Best Creature', 1150, 310)
-      }
-
-      if (justGotBack) {
-        justGotBack = false
       }
     }
 

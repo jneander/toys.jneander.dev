@@ -73,7 +73,6 @@ export default function sketch(p5: p5) {
 
   let windowWidth = 1280
   let windowHeight = 720
-  let timer = 0
   let generationCount = -1
   let sliderX = 1170
   let selectedGeneration = 0
@@ -87,7 +86,8 @@ export default function sketch(p5: p5) {
 
   const appState = {
     currentActivityId: Activity.Start,
-    showPopupSimulation: false
+    showPopupSimulation: false,
+    viewTimer: 0
   }
 
   const simulationState = {
@@ -301,11 +301,11 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      for (let s = timer; s < 900; s++) {
+      for (let s = appState.viewTimer; s < 900; s++) {
         simulate()
       }
 
-      timer = 1021
+      appState.viewTimer = 1021
     }
   }
 
@@ -351,11 +351,11 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      for (let s = timer; s < 900; s++) {
+      for (let s = appState.viewTimer; s < 900; s++) {
         simulate()
       }
 
-      timer = 0
+      appState.viewTimer = 0
       creaturesTested++
 
       for (let i = creaturesTested; i < CREATURE_COUNT; i++) {
@@ -407,7 +407,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      timer = 100000
+      appState.viewTimer = 100000
     }
   }
 
@@ -2190,7 +2190,7 @@ export default function sketch(p5: p5) {
     simulationState.creature.averageNodeNausea =
       simulationState.creature.totalNodeNausea / simulationNodes.length
     simulationState.timer++
-    timer++
+    appState.viewTimer++
   }
 
   function getNodesAverage(nodes: Node[]): {
@@ -2373,7 +2373,7 @@ export default function sketch(p5: p5) {
       drawCreature(cj, x * 3 + 5.5, y * 2.5 + 4, 1)
     }
 
-    timer = 0
+    appState.viewTimer = 0
     screenImage.pop()
     screenImage.push()
     screenImage.scale(1.5)
@@ -2774,11 +2774,11 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === Activity.SimulationRunning) {
       // simulate running
 
-      if (timer <= 900) {
+      if (appState.viewTimer <= 900) {
         p5.background(120, 200, 255)
 
         for (let s = 0; s < simulationState.speed; s++) {
-          if (timer < 900) {
+          if (appState.viewTimer < 900) {
             simulate()
           }
         }
@@ -2818,8 +2818,9 @@ export default function sketch(p5: p5) {
         stepByStepFinishButton.draw()
       }
 
-      if (timer == 900) {
+      if (appState.viewTimer == 900) {
         if (simulationState.speed < 30) {
+          // When the simulation speed is slow enough, display the creature's fitness.
           p5.noStroke()
           p5.fill(0, 0, 0, 130)
           p5.rect(0, 0, windowWidth, windowHeight)
@@ -2835,13 +2836,14 @@ export default function sketch(p5: p5) {
             400
           )
         } else {
-          timer = 1020
+          // When the simulation speed is too fast, skip ahead to next simulation using the timer.
+          appState.viewTimer = 1020
         }
 
         setFitness(creaturesTested)
       }
 
-      if (timer >= 1020) {
+      if (appState.viewTimer >= 1020) {
         setActivity(Activity.RequestingSimulation)
 
         creaturesTested++
@@ -2852,8 +2854,8 @@ export default function sketch(p5: p5) {
         simulationState.camera.x = 0
       }
 
-      if (timer >= 900) {
-        timer += simulationState.speed
+      if (appState.viewTimer >= 900) {
+        appState.viewTimer += simulationState.speed
       }
     }
 
@@ -2937,7 +2939,8 @@ export default function sketch(p5: p5) {
       p5.push()
       p5.scale(10.0 / scaleToFixBug)
 
-      const transition = 0.5 - 0.5 * p5.cos(p5.min(timer / 60, p5.PI))
+      const transition =
+        0.5 - 0.5 * p5.cos(p5.min(appState.viewTimer / 60, p5.PI))
 
       for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
@@ -2955,14 +2958,14 @@ export default function sketch(p5: p5) {
       p5.pop()
 
       if (stepbystepslow) {
-        timer += 2
+        appState.viewTimer += 2
       } else {
-        timer += 10
+        appState.viewTimer += 10
       }
 
       sortingCreaturesSkipButton.draw()
 
-      if (timer > 60 * p5.PI) {
+      if (appState.viewTimer > 60 * p5.PI) {
         drawScreenImage(1)
         setActivity(Activity.SortedCreatures)
       }
@@ -3230,9 +3233,9 @@ export default function sketch(p5: p5) {
     p5.text('Creature ID: ' + id, 0, 32)
 
     if (simulationState.speed > 60) {
-      timeShow = p5.int((timer + creaturesTested * 37) / 60) % 15
+      timeShow = p5.int((appState.viewTimer + creaturesTested * 37) / 60) % 15
     } else {
-      timeShow = timer / 60
+      timeShow = appState.viewTimer / 60
     }
 
     p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
@@ -3265,7 +3268,7 @@ export default function sketch(p5: p5) {
     simulationMuscles = thisCreature.muscles.map(muscle => muscle.copyMuscle())
 
     id = thisCreature.id
-    timer = 0
+    appState.viewTimer = 0
     simulationState.camera.zoom = 0.01
     simulationState.camera.x = 0
     simulationState.camera.y = 0

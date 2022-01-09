@@ -86,11 +86,12 @@ export default function sketch(p5: p5) {
   let justGotBack = false
   let creaturesTested = 0
   const fontSizes = [50, 36, 25, 20, 16, 14, 11, 9]
+
+  let showPopupSimulation = false
+  let popupSimulationCreatureId: number | null
+
   let statusWindow = -4
-  let prevStatusWindow = -4
   let overallTimer = 0
-  let miniSimulation = false
-  let creatureWatching = 0
   let simulationTimer = 0
   const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
@@ -2116,28 +2117,6 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function openMiniSimulation(): void {
-    simulationTimer = 0
-
-    if (gensToDo == 0) {
-      miniSimulation = true
-
-      let id
-      let cj
-
-      if (statusWindow <= -1) {
-        cj = creatureDatabase[(selectedGeneration - 1) * 3 + statusWindow + 3]
-        id = cj.id
-      } else {
-        id = statusWindow
-        cj = c2[id]
-      }
-
-      setGlobalVariables(cj)
-      creatureWatching = id
-    }
-  }
-
   function setActivity(m: Activity): void {
     activity = m
 
@@ -2155,7 +2134,8 @@ export default function sketch(p5: p5) {
 
   p5.mouseReleased = () => {
     draggingSlider = false
-    miniSimulation = false
+    // When the popup simulation is running, mouse clicks will stop it.
+    showPopupSimulation = false
 
     if (activity === Activity.Start && startViewStartButton.isUnderCursor()) {
       startViewStartButton.onClick()
@@ -2472,7 +2452,7 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function drawStatusWindow(isFirstFrame: boolean): void {
+  function drawStatusWindow(): void {
     let x, y, px, py
     let rank = statusWindow + 1
 
@@ -2536,7 +2516,7 @@ export default function sketch(p5: p5) {
     )
     p5.colorMode(p5.RGB, 255)
 
-    if (miniSimulation) {
+    if (showPopupSimulation) {
       let py2 = py - 125
       if (py >= 360) {
         py2 -= 180
@@ -2551,17 +2531,6 @@ export default function sketch(p5: p5) {
 
       drawStats(px2 + 295, py2, 0.45)
       simulate()
-
-      let shouldBeWatching = statusWindow
-
-      if (statusWindow <= -1) {
-        cj = creatureDatabase[(selectedGeneration - 1) * 3 + statusWindow + 3]
-        shouldBeWatching = cj.id
-      }
-
-      if (creatureWatching != shouldBeWatching || isFirstFrame) {
-        openMiniSimulation()
-      }
     }
   }
 
@@ -2969,8 +2938,6 @@ export default function sketch(p5: p5) {
     let mX = p5.mouseX / windowSizeMultiplier
     let mY = p5.mouseY / windowSizeMultiplier
 
-    prevStatusWindow = statusWindow
-
     if (
       (activity === Activity.FinishedStepByStep ||
         activity === Activity.SortingCreatures ||
@@ -2980,12 +2947,19 @@ export default function sketch(p5: p5) {
       gensToDo == 0 &&
       !draggingSlider
     ) {
+      /*
+       * When the cursor is over any of the creature tiles, the popup simulation
+       * will be displayed for the associated creature.
+       */
+
+      let idOfCreatureUnderCursor: number | null = null
+
       if (p5.abs(mX - 639.5) <= 599.5) {
         if (
           activity === Activity.FinishedStepByStep &&
           p5.abs(mY - 329) <= 312
         ) {
-          statusWindow =
+          idOfCreatureUnderCursor =
             creaturesInPosition[
               p5.floor((mX - 40) / 30) + p5.floor((mY - 17) / 25) * 40
             ]
@@ -2995,13 +2969,15 @@ export default function sketch(p5: p5) {
             activity === Activity.CulledCreatures) &&
           p5.abs(mY - 354) <= 312
         ) {
-          statusWindow =
+          idOfCreatureUnderCursor =
             p5.floor((mX - 40) / 30) + p5.floor((mY - 42) / 25) * 40
-        } else {
-          statusWindow = -4
         }
+      }
+
+      if (idOfCreatureUnderCursor != null) {
+        setPopupSimulationCreatureId(idOfCreatureUnderCursor)
       } else {
-        statusWindow = -4
+        clearPopupSimulation()
       }
     } else if (
       activity === Activity.GenerationView &&
@@ -3009,17 +2985,30 @@ export default function sketch(p5: p5) {
       gensToDo == 0 &&
       !draggingSlider
     ) {
-      statusWindow = -4
+      /*
+       * When the cursor is over the worst, median, or best creature, the popup
+       * simulation will be displayed for that creature.
+       */
+
+      let worstMedianOrBest: number | null = null
+
       if (p5.abs(mY - 250) <= 70) {
         if (p5.abs(mX - 990) <= 230) {
           const modX = (mX - 760) % 160
+
           if (modX < 140) {
-            statusWindow = p5.floor((mX - 760) / 160) - 3
+            worstMedianOrBest = p5.floor((mX - 760) / 160) - 3
           }
         }
       }
+
+      if (worstMedianOrBest != null) {
+        setPopupSimulationCreatureId(worstMedianOrBest)
+      } else {
+        clearPopupSimulation()
+      }
     } else {
-      statusWindow = -4
+      clearPopupSimulation()
     }
 
     if (activity === Activity.CullingCreatures) {
@@ -3165,14 +3154,46 @@ export default function sketch(p5: p5) {
     }
 
     if (statusWindow >= -3) {
-      drawStatusWindow(prevStatusWindow == -4)
-
-      if (!miniSimulation) {
-        openMiniSimulation()
-      }
+      drawStatusWindow()
     }
 
     overallTimer++
+  }
+
+  function setPopupSimulationCreatureId(id: number): void {
+    const popupCurrentlyClosed = statusWindow == -4
+    statusWindow = id
+
+    let creature: Creature
+    let targetCreatureId: number
+
+    if (statusWindow <= -1) {
+      creature =
+        creatureDatabase[(selectedGeneration - 1) * 3 + statusWindow + 3]
+      targetCreatureId = creature.id
+    } else {
+      targetCreatureId = statusWindow
+      creature = c2[id]
+    }
+
+    if (
+      popupSimulationCreatureId !== targetCreatureId ||
+      popupCurrentlyClosed
+    ) {
+      simulationTimer = 0
+
+      if (gensToDo == 0) {
+        // The full simulation is not running, so the popup simulation can be shown.
+        showPopupSimulation = true
+
+        setGlobalVariables(creature)
+        popupSimulationCreatureId = targetCreatureId
+      }
+    }
+  }
+
+  function clearPopupSimulation(): void {
+    statusWindow = -4
   }
 
   function drawStats(x: number, y: number, size: number): void {

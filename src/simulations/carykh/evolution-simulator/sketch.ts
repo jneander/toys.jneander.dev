@@ -70,9 +70,6 @@ export default function sketch(p5: p5) {
   let gensToDo = 0
   let postFontSize = 0.96
   let scaleToFixBug = 1000
-  let energy = 0
-  let averageNodeNausea = 0
-  let totalNodeNausea = 0
 
   let windowWidth = 1280
   let windowHeight = 720
@@ -98,6 +95,12 @@ export default function sketch(p5: p5) {
       x: 0,
       y: 0,
       zoom: 0.015
+    },
+
+    creature: {
+      averageNodeNausea: 0,
+      energyUsed: 0,
+      totalNodeNausea: 0
     },
 
     speed: 1,
@@ -693,7 +696,7 @@ export default function sketch(p5: p5) {
       this.y += this.vy
       this.x += this.vx
       const acc = p5.dist(this.vx, this.vy, this.pvx, this.pvy)
-      totalNodeNausea += acc * acc * NAUSEA_UNIT
+      simulationState.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
       this.pvx = this.vx
       this.pvy = this.vy
     }
@@ -984,8 +987,8 @@ export default function sketch(p5: p5) {
       ni2.vx -= (p5.cos(angle) * force * this.rigidity) / ni2.m
       ni2.vy -= (p5.sin(angle) * force * this.rigidity) / ni2.m
 
-      energy = p5.max(
-        energy +
+      simulationState.creature.energyUsed = p5.max(
+        simulationState.creature.energyUsed +
           p5.abs(this.previousTarget - target) * this.rigidity * ENERGY_UNIT,
         0
       )
@@ -2184,7 +2187,8 @@ export default function sketch(p5: p5) {
       simulationNodes[i].realizeMathValues(i)
     }
 
-    averageNodeNausea = totalNodeNausea / simulationNodes.length
+    simulationState.creature.averageNodeNausea =
+      simulationState.creature.totalNodeNausea / simulationNodes.length
     simulationState.timer++
     timer++
   }
@@ -3238,8 +3242,20 @@ export default function sketch(p5: p5) {
 
     p5.text('X: ' + p5.nf(averageX / 5.0, 0, 2) + '', 0, 128)
     p5.text('Y: ' + p5.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
-    p5.text('Energy used: ' + p5.nf(energy, 0, 2) + ' yums', 0, 192)
-    p5.text('A.N.Nausea: ' + p5.nf(averageNodeNausea, 0, 2) + ' blehs', 0, 224)
+    p5.text(
+      'Energy used: ' +
+        p5.nf(simulationState.creature.energyUsed, 0, 2) +
+        ' yums',
+      0,
+      192
+    )
+    p5.text(
+      'A.N.Nausea: ' +
+        p5.nf(simulationState.creature.averageNodeNausea, 0, 2) +
+        ' blehs',
+      0,
+      224
+    )
 
     p5.pop()
   }
@@ -3254,9 +3270,9 @@ export default function sketch(p5: p5) {
     simulationState.camera.x = 0
     simulationState.camera.y = 0
     simulationState.timer = 0
-    energy = baselineEnergy
-    totalNodeNausea = 0
-    averageNodeNausea = 0
+    simulationState.creature.energyUsed = baselineEnergy
+    simulationState.creature.totalNodeNausea = 0
+    simulationState.creature.averageNodeNausea = 0
   }
 
   function setFitness(i: number): void {

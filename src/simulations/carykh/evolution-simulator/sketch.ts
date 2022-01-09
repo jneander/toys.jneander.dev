@@ -359,7 +359,7 @@ export default function sketch(p5: p5) {
       creaturesTested++
 
       for (let i = creaturesTested; i < CREATURE_COUNT; i++) {
-        setGlobalVariables(c[i])
+        setSimulationState(c[i])
 
         for (let s = 0; s < 900; s++) {
           simulate()
@@ -2749,14 +2749,14 @@ export default function sketch(p5: p5) {
       )
       generatedCreaturesBackButton.draw()
     } else if (appState.currentActivityId === Activity.RequestingSimulation) {
-      setGlobalVariables(c[creaturesTested])
+      setSimulationState(c[creaturesTested])
       simulationState.camera.zoom = 0.01
 
       setActivity(Activity.SimulationRunning)
 
       if (!stepbystepslow) {
         for (let i = 0; i < CREATURE_COUNT; i++) {
-          setGlobalVariables(c[i])
+          setSimulationState(c[i])
 
           for (let s = 0; s < 900; s++) {
             simulate()
@@ -3211,7 +3211,7 @@ export default function sketch(p5: p5) {
         // The full simulation is not running, so the popup simulation can be shown.
         appState.showPopupSimulation = true
 
-        setGlobalVariables(creature)
+        setSimulationState(creature)
         popupSimulationCreatureId = targetCreatureId
       }
     }
@@ -3263,12 +3263,14 @@ export default function sketch(p5: p5) {
     p5.pop()
   }
 
-  function setGlobalVariables(thisCreature: Creature): void {
-    simulationNodes = thisCreature.nodes.map(node => node.copyNode())
-    simulationMuscles = thisCreature.muscles.map(muscle => muscle.copyMuscle())
+  function setSimulationState(simulationCreature: Creature): void {
+    simulationNodes = simulationCreature.nodes.map(node => node.copyNode())
+    simulationMuscles = simulationCreature.muscles.map(muscle =>
+      muscle.copyMuscle()
+    )
 
     appState.viewTimer = 0
-    simulationState.creature.id = thisCreature.id
+    simulationState.creature.id = simulationCreature.id
     simulationState.camera.zoom = 0.01
     simulationState.camera.x = 0
     simulationState.camera.y = 0

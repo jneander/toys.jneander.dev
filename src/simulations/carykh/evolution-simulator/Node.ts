@@ -1,3 +1,5 @@
+import {NodeOperationId} from './node-operations'
+
 export default class Node {
   // FLOAT
   x: number
@@ -15,9 +17,11 @@ export default class Node {
   pressure: number
 
   // INT
-  operation: number
   axon1: number
   axon2: number
+
+  // ENUM
+  operation: NodeOperationId
 
   safeInput: boolean
 
@@ -29,7 +33,7 @@ export default class Node {
     tm: number,
     tf: number,
     val: number,
-    op: number,
+    op: NodeOperationId,
     a1: number,
     a2: number
   ) {

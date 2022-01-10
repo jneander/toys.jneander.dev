@@ -7,6 +7,12 @@ import Node from './Node'
 import Rectangle from './Rectangle'
 import {Activity} from './constants'
 import {dist2d, toInt} from './math'
+import {
+  AXON_COUNT_BY_NODE_OPERATION_ID,
+  NODE_OPERATION_IDS,
+  NODE_OPERATION_LABELS_BY_ID,
+  NodeOperationId
+} from './node-operations'
 
 type SimulationCameraState = {
   x: number
@@ -70,22 +76,7 @@ export default function sketch(p5: p5) {
   let segBarImage: Graphics
   let haveGround = true
   let histBarsPerMeter = 5
-  let operationNames = [
-    '#',
-    'time',
-    'px',
-    'py',
-    '+',
-    '-',
-    '*',
-    '÷',
-    '%',
-    'sin',
-    'sig',
-    'pres'
-  ]
-  let operationAxons = [0, 0, 0, 0, 2, 2, 2, 2, 2, 1, 1, 0]
-  let operationCount = 12
+
   let baselineEnergy = 0.0
   let bigMutationChance = 0.06
   let hazelStairs = -1
@@ -142,6 +133,11 @@ export default function sketch(p5: p5) {
 
   let stepByStep: boolean
   let stepByStepSlow: boolean
+
+  function randomArrayValue<T>(array: T[]): T {
+    const randomIndex = Math.floor(p5.random(0, array.length))
+    return array[randomIndex]
+  }
 
   class Simulation {
     advance(): void {
@@ -437,7 +433,7 @@ export default function sketch(p5: p5) {
       let newAxon2 = node.axon2
 
       if (p5.random(0, 1) < bigMutationChance * mutability) {
-        newOperation = toInt(p5.random(0, operationCount))
+        newOperation = randomArrayValue(NODE_OPERATION_IDS)
       }
       if (p5.random(0, 1) < bigMutationChance * mutability) {
         newAxon1 = toInt(p5.random(0, nodeNum))
@@ -446,13 +442,13 @@ export default function sketch(p5: p5) {
         newAxon2 = toInt(p5.random(0, nodeNum))
       }
 
-      if (newOperation == 1) {
+      if (newOperation === NodeOperationId.TimeInSeconds) {
         // time
         newV = 0
-      } else if (newOperation == 2) {
+      } else if (newOperation == NodeOperationId.NodePositionXFifthed) {
         // x - coordinate
         newV = newX * 0.2
-      } else if (newOperation == 3) {
+      } else if (newOperation == NodeOperationId.NegativeNodePositionYFifthed) {
         // node.y - coordinate
         newV = -newY * 0.2
       }
@@ -475,39 +471,41 @@ export default function sketch(p5: p5) {
       const axonValue1 = nodes[node.axon1].value
       const axonValue2 = nodes[node.axon2].value
 
-      if (node.operation == 0) {
+      if (node.operation === NodeOperationId.Constant) {
         // constant
-      } else if (node.operation == 1) {
+      } else if (node.operation === NodeOperationId.TimeInSeconds) {
         // time
         node.valueToBe = simulationState.timer / 60.0
-      } else if (node.operation == 2) {
+      } else if (node.operation === NodeOperationId.NodePositionXFifthed) {
         // x - coordinate
         node.valueToBe = node.x * 0.2
-      } else if (node.operation == 3) {
+      } else if (
+        node.operation === NodeOperationId.NegativeNodePositionYFifthed
+      ) {
         // node.y - coordinate
         node.valueToBe = -node.y * 0.2
-      } else if (node.operation == 4) {
+      } else if (node.operation === NodeOperationId.AddAxons) {
         // plus
         node.valueToBe = axonValue1 + axonValue2
-      } else if (node.operation == 5) {
+      } else if (node.operation === NodeOperationId.SubtractAxon2FromAxon1) {
         // minus
         node.valueToBe = axonValue1 - axonValue2
-      } else if (node.operation == 6) {
+      } else if (node.operation === NodeOperationId.MultiplyAxons) {
         // times
         node.valueToBe = axonValue1 * axonValue2
-      } else if (node.operation == 7) {
+      } else if (node.operation === NodeOperationId.DivideAxon2FromAxon1) {
         // divide
         node.valueToBe = axonValue2 === 0 ? 0 : axonValue1 / axonValue2
-      } else if (node.operation == 8) {
+      } else if (node.operation === NodeOperationId.ModuloAxon1WithAxon2) {
         // modulus
         node.valueToBe = axonValue2 === 0 ? 0 : axonValue1 % axonValue2
-      } else if (node.operation == 9) {
+      } else if (node.operation === NodeOperationId.SineOfAxon1) {
         // sin
         node.valueToBe = Math.sin(axonValue1)
-      } else if (node.operation == 10) {
+      } else if (node.operation === NodeOperationId.SigmoidOfAxon1) {
         // sig
         node.valueToBe = 1 / (1 + Math.pow(2.71828182846, -axonValue1))
-      } else if (node.operation == 11) {
+      } else if (node.operation === NodeOperationId.NodePressure) {
         // pressure
         node.valueToBe = node.pressure
       }
@@ -537,7 +535,7 @@ export default function sketch(p5: p5) {
           0.4,
           p5.random(0, 1),
           p5.random(0, 1),
-          Math.floor(p5.random(0, operationCount)),
+          randomArrayValue(NODE_OPERATION_IDS),
           Math.floor(p5.random(0, newNodeCount)),
           Math.floor(p5.random(0, newNodeCount))
         )
@@ -706,7 +704,7 @@ export default function sketch(p5: p5) {
 
       for (let i = 0; i < creature.nodes.length; i++) {
         const ni = creature.nodes[i]
-        ni.safeInput = operationAxons[ni.operation] == 0
+        ni.safeInput = AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] === 0
       }
 
       let iterations = 0
@@ -720,9 +718,9 @@ export default function sketch(p5: p5) {
 
           if (!ni.safeInput) {
             if (
-              (operationAxons[ni.operation] == 1 &&
+              (AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] === 1 &&
                 creature.nodes[ni.axon1].safeInput) ||
-              (operationAxons[ni.operation] == 2 &&
+              (AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] === 2 &&
                 creature.nodes[ni.axon1].safeInput &&
                 creature.nodes[ni.axon2].safeInput)
             ) {
@@ -742,7 +740,7 @@ export default function sketch(p5: p5) {
 
         if (!ni.safeInput) {
           // This node doesn't get its input from a safe place.  CLEANSE IT.
-          ni.operation = 0
+          ni.operation = NodeOperationId.Constant
           ni.value = p5.random(0, 1)
         }
       }
@@ -1441,7 +1439,7 @@ export default function sketch(p5: p5) {
         (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
       )
       p5.text(
-        operationNames[ni.operation],
+        NODE_OPERATION_LABELS_BY_ID[ni.operation],
         (ni.x + x) * scaleToFixBug,
         (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
       )
@@ -1469,7 +1467,7 @@ export default function sketch(p5: p5) {
         (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
       )
       screenImage.text(
-        operationNames[ni.operation],
+        NODE_OPERATION_LABELS_BY_ID[ni.operation],
         (ni.x + x) * scaleToFixBug,
         (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
       )
@@ -1497,7 +1495,7 @@ export default function sketch(p5: p5) {
         (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
       )
       popUpImage.text(
-        operationNames[ni.operation],
+        NODE_OPERATION_LABELS_BY_ID[ni.operation],
         (ni.x + x) * scaleToFixBug,
         (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
       )
@@ -1513,7 +1511,7 @@ export default function sketch(p5: p5) {
   ): void {
     const ni = n[i]
 
-    if (operationAxons[ni.operation] >= 1) {
+    if (AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] >= 1) {
       const axonSource = n[n[i].axon1]
       const point1x = ni.x - ni.m * 0.3 + x
       const point1y = ni.y - ni.m * 0.3 + y
@@ -1523,7 +1521,7 @@ export default function sketch(p5: p5) {
       drawSingleAxon(point1x, point1y, point2x, point2y, toImage)
     }
 
-    if (operationAxons[ni.operation] == 2) {
+    if (AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] === 2) {
       const axonSource = n[n[i].axon2]
       const point1x = ni.x + ni.m * 0.3 + x
       const point1y = ni.y - ni.m * 0.3 + y
@@ -2592,7 +2590,7 @@ export default function sketch(p5: p5) {
                 0.4,
                 p5.random(0, 1),
                 p5.random(0, 1),
-                Math.floor(p5.random(0, operationCount)),
+                randomArrayValue(NODE_OPERATION_IDS),
                 Math.floor(p5.random(0, nodeNum)),
                 Math.floor(p5.random(0, nodeNum))
               )

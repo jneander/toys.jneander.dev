@@ -133,8 +133,8 @@ export default class Simulation {
 
     for (let i = 0; i < nodes.length; i++) {
       const ni = nodes[i]
-      ni.vx = 0
-      ni.vy = 0
+      ni.velocityX = 0
+      ni.velocityY = 0
     }
   }
 
@@ -144,10 +144,10 @@ export default class Simulation {
 
     for (let i = 0; i < nodes.length; i++) {
       const ni = nodes[i]
-      avx += ni.x
+      avx += ni.positionX
 
-      if (ni.y + ni.m / 2 > lowY) {
-        lowY = ni.y + ni.m / 2
+      if (ni.positionY + ni.mass / 2 > lowY) {
+        lowY = ni.positionY + ni.mass / 2
       }
     }
 
@@ -155,8 +155,8 @@ export default class Simulation {
 
     for (let i = 0; i < nodes.length; i++) {
       const ni = nodes[i]
-      ni.x -= avx
-      ni.y -= lowY
+      ni.positionX -= avx
+      ni.positionY -= lowY
     }
   }
 
@@ -172,14 +172,22 @@ export default class Simulation {
     const ni1 = nodes[muscle.c1]
     const ni2 = nodes[muscle.c2]
 
-    const distance = dist2d(ni1.x, ni1.y, ni2.x, ni2.y)
-    const angle = Math.atan2(ni1.y - ni2.y, ni1.x - ni2.x)
+    const distance = dist2d(
+      ni1.positionX,
+      ni1.positionY,
+      ni2.positionX,
+      ni2.positionY
+    )
+    const angle = Math.atan2(
+      ni1.positionY - ni2.positionY,
+      ni1.positionX - ni2.positionX
+    )
 
     const force = Math.min(Math.max(1 - distance / target, -0.4), 0.4)
-    ni1.vx += (Math.cos(angle) * force * muscle.rigidity) / ni1.m
-    ni1.vy += (Math.sin(angle) * force * muscle.rigidity) / ni1.m
-    ni2.vx -= (Math.cos(angle) * force * muscle.rigidity) / ni2.m
-    ni2.vy -= (Math.sin(angle) * force * muscle.rigidity) / ni2.m
+    ni1.velocityX += (Math.cos(angle) * force * muscle.rigidity) / ni1.mass
+    ni1.velocityY += (Math.sin(angle) * force * muscle.rigidity) / ni1.mass
+    ni2.velocityX -= (Math.cos(angle) * force * muscle.rigidity) / ni2.mass
+    ni2.velocityY -= (Math.sin(angle) * force * muscle.rigidity) / ni2.mass
 
     this.state.creature.energyUsed = Math.max(
       this.state.creature.energyUsed +
@@ -193,31 +201,39 @@ export default class Simulation {
   }
 
   applyForcesToNode(node: Node): void {
-    node.vx *= AIR_FRICTION
-    node.vy *= AIR_FRICTION
-    node.y += node.vy
-    node.x += node.vx
-    const acc = dist2d(node.vx, node.vy, node.pvx, node.pvy)
+    node.velocityX *= AIR_FRICTION
+    node.velocityY *= AIR_FRICTION
+    node.positionY += node.velocityY
+    node.positionX += node.velocityX
+    const acc = dist2d(
+      node.velocityX,
+      node.velocityY,
+      node.previousVelocityX,
+      node.previousVelocityY
+    )
     this.state.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
-    node.pvx = node.vx
-    node.pvy = node.vy
+    node.previousVelocityX = node.velocityX
+    node.previousVelocityY = node.velocityY
   }
 
   applyGravityToNode(node: Node): void {
-    node.vy += GRAVITY
+    node.velocityY += GRAVITY
   }
 
   applyCollisionsToNode(node: Node): void {
     node.pressure = 0
-    let dif = node.y + node.m / 2
+    let dif = node.positionY + node.mass / 2
 
     if (dif >= 0) {
       this.pressNodeAgainstGround(node, 0)
     }
 
-    if (node.y > node.prevY && this.config.hazelStairs >= 0) {
-      const bottomPointNow = node.y + node.m / 2
-      const bottomPointPrev = node.prevY + node.m / 2
+    if (
+      node.positionY > node.previousPositionY &&
+      this.config.hazelStairs >= 0
+    ) {
+      const bottomPointNow = node.positionY + node.mass / 2
+      const bottomPointPrev = node.previousPositionY + node.mass / 2
       const levelNow = Math.ceil(bottomPointNow / this.config.hazelStairs)
       const levelPrev = Math.ceil(bottomPointPrev / this.config.hazelStairs)
 
@@ -227,8 +243,8 @@ export default class Simulation {
       }
     }
 
-    node.prevY = node.y
-    node.prevX = node.x
+    node.previousPositionY = node.positionY
+    node.previousPositionX = node.positionX
   }
 
   modifyCreature(creature: Creature, id: number): Creature {
@@ -330,9 +346,11 @@ export default class Simulation {
   }
 
   modifyNode(node: Node, mutability: number, nodeNum: number): Node {
-    const newX = node.x + this.reducedRandomForMutation() * 0.5 * mutability
-    const newY = node.y + this.reducedRandomForMutation() * 0.5 * mutability
-    let newM = node.m + this.reducedRandomForMutation() * 0.1 * mutability
+    const newX =
+      node.positionX + this.reducedRandomForMutation() * 0.5 * mutability
+    const newY =
+      node.positionY + this.reducedRandomForMutation() * 0.5 * mutability
+    let newM = node.mass + this.reducedRandomForMutation() * 0.1 * mutability
 
     newM = Math.min(Math.max(newM, 0.3), 0.5)
     newM = 0.4
@@ -372,7 +390,7 @@ export default class Simulation {
       newM,
       Math.min(
         Math.max(
-          node.f + this.reducedRandomForMutation() * 0.1 * mutability,
+          node.friction + this.reducedRandomForMutation() * 0.1 * mutability,
           0
         ),
         1
@@ -395,12 +413,12 @@ export default class Simulation {
       node.valueToBe = this.state.timer / 60.0
     } else if (node.operation === NodeOperationId.NodePositionXFifthed) {
       // x - coordinate
-      node.valueToBe = node.x * 0.2
+      node.valueToBe = node.positionX * 0.2
     } else if (
       node.operation === NodeOperationId.NegativeNodePositionYFifthed
     ) {
       // node.y - coordinate
-      node.valueToBe = -node.y * 0.2
+      node.valueToBe = -node.positionY * 0.2
     } else if (node.operation === NodeOperationId.AddAxons) {
       // plus
       node.valueToBe = axonValue1 + axonValue2
@@ -432,8 +450,10 @@ export default class Simulation {
     const parentNode = this.randomInt(0, creature.nodes.length)
     const ang1 = this.randomFloat(0, 2 * Math.PI)
     const distance = Math.sqrt(this.randomFloat(0, 1))
-    const x = creature.nodes[parentNode].x + Math.cos(ang1) * 0.5 * distance
-    const y = creature.nodes[parentNode].y + Math.sin(ang1) * 0.5 * distance
+    const x =
+      creature.nodes[parentNode].positionX + Math.cos(ang1) * 0.5 * distance
+    const y =
+      creature.nodes[parentNode].positionY + Math.sin(ang1) * 0.5 * distance
 
     const newNodeCount = creature.nodes.length + 1
 
@@ -457,8 +477,8 @@ export default class Simulation {
 
     for (let i = 0; i < creature.nodes.length - 1; i++) {
       if (i != parentNode) {
-        const dx = creature.nodes[i].x - x
-        const dy = creature.nodes[i].y - y
+        const dx = creature.nodes[i].positionX - x
+        const dy = creature.nodes[i].positionY - y
 
         if (Math.sqrt(dx * dx + dy * dy) < record) {
           record = Math.sqrt(dx * dx + dy * dy)
@@ -490,10 +510,10 @@ export default class Simulation {
 
     if (tc1 != -1) {
       len = dist2d(
-        creature.nodes[tc1].x,
-        creature.nodes[tc1].y,
-        creature.nodes[tc2].x,
-        creature.nodes[tc2].y
+        creature.nodes[tc1].positionX,
+        creature.nodes[tc1].positionY,
+        creature.nodes[tc2].positionX,
+        creature.nodes[tc2].positionY
       )
     }
 
@@ -663,21 +683,21 @@ export default class Simulation {
   }
 
   private pressNodeAgainstGround(node: Node, groundY: number): void {
-    const dif = node.y - (groundY - node.m / 2)
+    const dif = node.positionY - (groundY - node.mass / 2)
     node.pressure += dif * PRESSURE_UNIT
-    node.y = groundY - node.m / 2
-    node.vy = 0
-    node.x -= node.vx * node.f
+    node.positionY = groundY - node.mass / 2
+    node.velocityY = 0
+    node.positionX -= node.velocityX * node.friction
 
-    if (node.vx > 0) {
-      node.vx -= node.f * dif * FRICTION
-      if (node.vx < 0) {
-        node.vx = 0
+    if (node.velocityX > 0) {
+      node.velocityX -= node.friction * dif * FRICTION
+      if (node.velocityX < 0) {
+        node.velocityX = 0
       }
     } else {
-      node.vx += node.f * dif * FRICTION
-      if (node.vx > 0) {
-        node.vx = 0
+      node.velocityX += node.friction * dif * FRICTION
+      if (node.velocityX > 0) {
+        node.velocityX = 0
       }
     }
   }

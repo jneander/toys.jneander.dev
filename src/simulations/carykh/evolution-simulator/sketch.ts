@@ -733,95 +733,105 @@ export default function sketch(p5: p5) {
   }
 
   function drawNode(ni: Node, x: number, y: number, toImage: number): void {
-    let c = p5.color(512 - toInt(ni.f * 512), 0, 0)
+    let c = p5.color(512 - toInt(ni.friction * 512), 0, 0)
 
-    if (ni.f <= 0.5) {
-      c = p5.color(255, 255 - toInt(ni.f * 512), 255 - toInt(ni.f * 512))
+    if (ni.friction <= 0.5) {
+      c = p5.color(
+        255,
+        255 - toInt(ni.friction * 512),
+        255 - toInt(ni.friction * 512)
+      )
     }
 
     if (toImage == 0) {
       p5.fill(c)
       p5.noStroke()
       p5.ellipse(
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + y) * scaleToFixBug,
-        ni.m * scaleToFixBug,
-        ni.m * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + y) * scaleToFixBug,
+        ni.mass * scaleToFixBug,
+        ni.mass * scaleToFixBug
       )
 
-      if (ni.f >= 0.5) {
+      if (ni.friction >= 0.5) {
         p5.fill(255)
       } else {
         p5.fill(0)
       }
 
       p5.textAlign(p5.CENTER)
-      p5.textFont(font, 0.4 * ni.m * scaleToFixBug)
+      p5.textFont(font, 0.4 * ni.mass * scaleToFixBug)
       p5.text(
         p5.nf(ni.value, 0, 2),
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
+          scaleToFixBug
       )
       p5.text(
         NODE_OPERATION_LABELS_BY_ID[ni.operation],
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
+          scaleToFixBug
       )
     } else if (toImage == 1) {
       screenImage.fill(c)
       screenImage.noStroke()
       screenImage.ellipse(
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + y) * scaleToFixBug,
-        ni.m * scaleToFixBug,
-        ni.m * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + y) * scaleToFixBug,
+        ni.mass * scaleToFixBug,
+        ni.mass * scaleToFixBug
       )
 
-      if (ni.f >= 0.5) {
+      if (ni.friction >= 0.5) {
         screenImage.fill(255)
       } else {
         screenImage.fill(0)
       }
 
       screenImage.textAlign(p5.CENTER)
-      screenImage.textFont(font, 0.4 * ni.m * scaleToFixBug)
+      screenImage.textFont(font, 0.4 * ni.mass * scaleToFixBug)
       screenImage.text(
         p5.nf(ni.value, 0, 2),
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
+          scaleToFixBug
       )
       screenImage.text(
         NODE_OPERATION_LABELS_BY_ID[ni.operation],
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
+          scaleToFixBug
       )
     } else if (toImage == 2) {
       popUpImage.fill(c)
       popUpImage.noStroke()
       popUpImage.ellipse(
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + y) * scaleToFixBug,
-        ni.m * scaleToFixBug,
-        ni.m * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + y) * scaleToFixBug,
+        ni.mass * scaleToFixBug,
+        ni.mass * scaleToFixBug
       )
 
-      if (ni.f >= 0.5) {
+      if (ni.friction >= 0.5) {
         popUpImage.fill(255)
       } else {
         popUpImage.fill(0)
       }
 
       popUpImage.textAlign(p5.CENTER)
-      popUpImage.textFont(font, 0.4 * ni.m * scaleToFixBug)
+      popUpImage.textFont(font, 0.4 * ni.mass * scaleToFixBug)
       popUpImage.text(
         p5.nf(ni.value, 0, 2),
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
+          scaleToFixBug
       )
       popUpImage.text(
         NODE_OPERATION_LABELS_BY_ID[ni.operation],
-        (ni.x + x) * scaleToFixBug,
-        (ni.y + ni.m * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * scaleToFixBug
+        (ni.positionX + x) * scaleToFixBug,
+        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
+          scaleToFixBug
       )
     }
   }
@@ -837,20 +847,20 @@ export default function sketch(p5: p5) {
 
     if (AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] >= 1) {
       const axonSource = n[n[i].axon1]
-      const point1x = ni.x - ni.m * 0.3 + x
-      const point1y = ni.y - ni.m * 0.3 + y
-      const point2x = axonSource.x + x
-      const point2y = axonSource.y + axonSource.m * 0.5 + y
+      const point1x = ni.positionX - ni.mass * 0.3 + x
+      const point1y = ni.positionY - ni.mass * 0.3 + y
+      const point2x = axonSource.positionX + x
+      const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
 
       drawSingleAxon(point1x, point1y, point2x, point2y, toImage)
     }
 
     if (AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] === 2) {
       const axonSource = n[n[i].axon2]
-      const point1x = ni.x + ni.m * 0.3 + x
-      const point1y = ni.y - ni.m * 0.3 + y
-      const point2x = axonSource.x + x
-      const point2y = axonSource.y + axonSource.m * 0.5 + y
+      const point1x = ni.positionX + ni.mass * 0.3 + x
+      const point1y = ni.positionY - ni.mass * 0.3 + y
+      const point2x = axonSource.positionX + x
+      const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
 
       drawSingleAxon(point1x, point1y, point2x, point2y, toImage)
     }
@@ -955,28 +965,28 @@ export default function sketch(p5: p5) {
       p5.strokeWeight(w * scaleToFixBug)
       p5.stroke(70, 35, 0, mi.rigidity * 3000)
       p5.line(
-        (ni1.x + x) * scaleToFixBug,
-        (ni1.y + y) * scaleToFixBug,
-        (ni2.x + x) * scaleToFixBug,
-        (ni2.y + y) * scaleToFixBug
+        (ni1.positionX + x) * scaleToFixBug,
+        (ni1.positionY + y) * scaleToFixBug,
+        (ni2.positionX + x) * scaleToFixBug,
+        (ni2.positionY + y) * scaleToFixBug
       )
     } else if (toImage == 1) {
       screenImage.strokeWeight(w * scaleToFixBug)
       screenImage.stroke(70, 35, 0, mi.rigidity * 3000)
       screenImage.line(
-        (ni1.x + x) * scaleToFixBug,
-        (ni1.y + y) * scaleToFixBug,
-        (ni2.x + x) * scaleToFixBug,
-        (ni2.y + y) * scaleToFixBug
+        (ni1.positionX + x) * scaleToFixBug,
+        (ni1.positionY + y) * scaleToFixBug,
+        (ni2.positionX + x) * scaleToFixBug,
+        (ni2.positionY + y) * scaleToFixBug
       )
     } else if (toImage == 2) {
       popUpImage.strokeWeight(w * scaleToFixBug)
       popUpImage.stroke(70, 35, 0, mi.rigidity * 3000)
       popUpImage.line(
-        (ni1.x + x) * scaleToFixBug,
-        (ni1.y + y) * scaleToFixBug,
-        (ni2.x + x) * scaleToFixBug,
-        (ni2.y + y) * scaleToFixBug
+        (ni1.positionX + x) * scaleToFixBug,
+        (ni1.positionY + y) * scaleToFixBug,
+        (ni2.positionX + x) * scaleToFixBug,
+        (ni2.positionY + y) * scaleToFixBug
       )
     }
   }
@@ -993,18 +1003,18 @@ export default function sketch(p5: p5) {
 
     if (mi.axon >= 0 && mi.axon < n.length) {
       const axonSource = n[mi.axon]
-      const muscleMidX = (ni1.x + ni2.x) * 0.5 + x
-      const muscleMidY = (ni1.y + ni2.y) * 0.5 + y
+      const muscleMidX = (ni1.positionX + ni2.positionX) * 0.5 + x
+      const muscleMidY = (ni1.positionY + ni2.positionY) * 0.5 + y
 
       drawSingleAxon(
         muscleMidX,
         muscleMidY,
-        axonSource.x + x,
-        axonSource.y + axonSource.m * 0.5 + y,
+        axonSource.positionX + x,
+        axonSource.positionY + axonSource.mass * 0.5 + y,
         toImage
       )
 
-      const averageMass = (ni1.m + ni2.m) * 0.5
+      const averageMass = (ni1.mass + ni2.mass) * 0.5
 
       if (toImage == 0) {
         p5.fill(AXON_COLOR)
@@ -1372,8 +1382,8 @@ export default function sketch(p5: p5) {
 
     for (let i = 0; i < nodes.length; i++) {
       const ni = nodes[i]
-      averageX += ni.x
-      averageY += ni.y
+      averageX += ni.positionX
+      averageY += ni.positionY
     }
 
     averageX = averageX / nodes.length

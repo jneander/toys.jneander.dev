@@ -25,6 +25,9 @@ export default function sketch(p5: p5) {
   const SEED = 0
   const WINDOW_SIZE_MULTIPLIER = 0.8
 
+  const windowWidth = 1280
+  const windowHeight = 720
+
   const lastCreatureIndex = CREATURE_COUNT - 1
   const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 
@@ -52,8 +55,6 @@ export default function sketch(p5: p5) {
   let postFontSize = 0.96
   let scaleToFixBug = 1000
 
-  let windowWidth = 1280
-  let windowHeight = 720
   let generationCount = -1
   let sliderX = 1170
   let selectedGeneration = 0

@@ -1,3 +1,7 @@
+import {
+  MAX_MUSCLE_LENGTH_INCLUSIVE,
+  MIN_MUSCLE_LENGTH_INCLUSIVE
+} from './constants'
 import {NodeOperationId} from './node-operations'
 
 export default class Node {
@@ -56,7 +60,10 @@ export default class Node {
 
   getClampedValue(): number {
     // Return this node's value clamped to the range usable by muscles.
-    return Math.min(Math.max(this.value, 0.5), 1.5)
+    return Math.min(
+      Math.max(this.value, MIN_MUSCLE_LENGTH_INCLUSIVE),
+      MAX_MUSCLE_LENGTH_INCLUSIVE
+    )
   }
 
   realizeMathValues(): void {

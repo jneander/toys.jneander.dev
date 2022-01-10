@@ -37,8 +37,8 @@ export default class Simulation {
     const nodes: Node[] = []
     const muscles: Muscle[] = []
 
-    const nodeNum = toInt(this.randomFloat(3, 6))
-    const muscleNum = toInt(this.randomFloat(nodeNum - 1, nodeNum * 3 - 6))
+    const nodeNum = this.randomInt(3, 6)
+    const muscleNum = this.randomInt(nodeNum - 1, nodeNum * 3 - 6)
 
     for (let i = 0; i < nodeNum; i++) {
       nodes.push(
@@ -51,8 +51,8 @@ export default class Simulation {
           this.randomFloat(0, 1),
           this.randomFloat(0, 1),
           randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
-          Math.floor(this.randomFloat(0, nodeNum)),
-          Math.floor(this.randomFloat(0, nodeNum))
+          this.randomInt(0, nodeNum),
+          this.randomInt(0, nodeNum)
         )
       ) // replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
     }
@@ -67,11 +67,11 @@ export default class Simulation {
         tc1 = i
         tc2 = i + 1
       } else {
-        tc1 = toInt(this.randomFloat(0, nodeNum))
+        tc1 = this.randomInt(0, nodeNum)
         tc2 = tc1
 
         while (tc2 == tc1) {
-          tc2 = toInt(this.randomFloat(0, nodeNum))
+          tc2 = this.randomInt(0, nodeNum)
         }
       }
 
@@ -218,12 +218,8 @@ export default class Simulation {
     if (node.y > node.prevY && this.config.hazelStairs >= 0) {
       const bottomPointNow = node.y + node.m / 2
       const bottomPointPrev = node.prevY + node.m / 2
-      const levelNow = toInt(
-        Math.ceil(bottomPointNow / this.config.hazelStairs)
-      )
-      const levelPrev = toInt(
-        Math.ceil(bottomPointPrev / this.config.hazelStairs)
-      )
+      const levelNow = Math.ceil(bottomPointNow / this.config.hazelStairs)
+      const levelPrev = Math.ceil(bottomPointPrev / this.config.hazelStairs)
 
       if (levelNow > levelPrev) {
         const groundLevel = levelPrev * this.config.hazelStairs
@@ -306,11 +302,11 @@ export default class Simulation {
     let newAxon = muscle.axon
 
     if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-      newc1 = toInt(this.randomFloat(0, nodeCount))
+      newc1 = this.randomInt(0, nodeCount)
     }
 
     if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-      newc2 = toInt(this.randomFloat(0, nodeCount))
+      newc2 = this.randomInt(0, nodeCount)
     }
 
     if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
@@ -351,10 +347,10 @@ export default class Simulation {
       newOperation = randomArrayValue(NODE_OPERATION_IDS, this.randomInt)
     }
     if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-      newAxon1 = toInt(this.randomFloat(0, nodeNum))
+      newAxon1 = this.randomInt(0, nodeNum)
     }
     if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-      newAxon2 = toInt(this.randomFloat(0, nodeNum))
+      newAxon2 = this.randomInt(0, nodeNum)
     }
 
     if (newOperation === NodeOperationId.TimeInSeconds) {
@@ -433,7 +429,7 @@ export default class Simulation {
   }
 
   addRandomNode(creature: Creature): void {
-    const parentNode = Math.floor(this.randomFloat(0, creature.nodes.length))
+    const parentNode = this.randomInt(0, creature.nodes.length)
     const ang1 = this.randomFloat(0, 2 * Math.PI)
     const distance = Math.sqrt(this.randomFloat(0, 1))
     const x = creature.nodes[parentNode].x + Math.cos(ang1) * 0.5 * distance
@@ -451,8 +447,8 @@ export default class Simulation {
         this.randomFloat(0, 1),
         this.randomFloat(0, 1),
         randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
-        Math.floor(this.randomFloat(0, newNodeCount)),
-        Math.floor(this.randomFloat(0, newNodeCount))
+        this.randomInt(0, newNodeCount),
+        this.randomInt(0, newNodeCount)
       )
     )
 
@@ -479,11 +475,11 @@ export default class Simulation {
     const axon = this.getNewMuscleAxon(creature.nodes.length)
 
     if (tc1 == -1) {
-      tc1 = toInt(this.randomFloat(0, creature.nodes.length))
+      tc1 = this.randomInt(0, creature.nodes.length)
       tc2 = tc1
 
       while (tc2 == tc1 && creature.nodes.length >= 2) {
-        tc2 = toInt(this.randomFloat(0, creature.nodes.length))
+        tc2 = this.randomInt(0, creature.nodes.length)
       }
     }
 
@@ -507,7 +503,7 @@ export default class Simulation {
   }
 
   removeRandomNode(creature: Creature): void {
-    const choice = Math.floor(this.randomFloat(0, creature.nodes.length))
+    const choice = this.randomInt(0, creature.nodes.length)
     creature.nodes.splice(choice, 1)
 
     let i = 0
@@ -535,7 +531,7 @@ export default class Simulation {
   }
 
   removeRandomMuscle(creature: Creature): void {
-    const choice = Math.floor(this.randomFloat(0, creature.muscles.length))
+    const choice = this.randomInt(0, creature.muscles.length)
     creature.muscles.splice(choice, 1)
   }
 
@@ -589,14 +585,10 @@ export default class Simulation {
         }
 
         if (connections <= 1) {
-          let newConnectionNode = Math.floor(
-            this.randomFloat(0, creature.nodes.length)
-          )
+          let newConnectionNode = this.randomInt(0, creature.nodes.length)
 
           while (newConnectionNode == i || newConnectionNode == connectedTo) {
-            newConnectionNode = Math.floor(
-              this.randomFloat(0, creature.nodes.length)
-            )
+            newConnectionNode = this.randomInt(0, creature.nodes.length)
           }
 
           this.addRandomMuscle(creature, i, newConnectionNode)
@@ -610,11 +602,11 @@ export default class Simulation {
       const ni = creature.nodes[i]
 
       if (ni.axon1 >= creature.nodes.length) {
-        ni.axon1 = toInt(this.randomFloat(0, creature.nodes.length))
+        ni.axon1 = this.randomInt(0, creature.nodes.length)
       }
 
       if (ni.axon2 >= creature.nodes.length) {
-        ni.axon2 = toInt(this.randomFloat(0, creature.nodes.length))
+        ni.axon2 = this.randomInt(0, creature.nodes.length)
       }
     }
 
@@ -696,7 +688,7 @@ export default class Simulation {
 
   private getNewMuscleAxon(nodeNum: number): number {
     if (this.randomFloat(0, 1) < 0.5) {
-      return toInt(this.randomFloat(0, nodeNum))
+      return this.randomInt(0, nodeNum)
     } else {
       return -1
     }
@@ -707,6 +699,6 @@ export default class Simulation {
   }
 
   private randomInt(minInclusive: number, maxExclusive: number): number {
-    return Math.floor(this.randomFloat(minInclusive, maxExclusive))
+    return toInt(this.randomFloat(minInclusive, maxExclusive))
   }
 }

@@ -125,7 +125,13 @@ export default function sketch(p5: p5) {
   let stepByStepSlow: boolean
 
   class Simulation {
-    constructor() {
+    config: SimulationConfig
+    state: SimulationState
+
+    constructor(state: SimulationState, config: SimulationConfig) {
+      this.config = config
+      this.state = state
+
       this.randomFloat = this.randomFloat.bind(this)
       this.randomInt = this.randomInt.bind(this)
     }
@@ -194,28 +200,27 @@ export default function sketch(p5: p5) {
     }
 
     advance(): void {
-      for (let i = 0; i < simulationState.creature.muscles.length; i++) {
-        const {muscles, nodes} = simulationState.creature
+      for (let i = 0; i < this.state.creature.muscles.length; i++) {
+        const {muscles, nodes} = this.state.creature
         this.applyForceToMuscle(muscles[i], nodes)
       }
 
-      for (let i = 0; i < simulationState.creature.nodes.length; i++) {
-        const ni = simulationState.creature.nodes[i]
+      for (let i = 0; i < this.state.creature.nodes.length; i++) {
+        const ni = this.state.creature.nodes[i]
         this.applyGravityToNode(ni)
         this.applyForcesToNode(ni)
         this.applyCollisionsToNode(ni)
-        this.processNodeAxons(ni, simulationState.creature.nodes)
+        this.processNodeAxons(ni, this.state.creature.nodes)
       }
 
-      for (let i = 0; i < simulationState.creature.nodes.length; i++) {
-        simulationState.creature.nodes[i].realizeMathValues()
+      for (let i = 0; i < this.state.creature.nodes.length; i++) {
+        this.state.creature.nodes[i].realizeMathValues()
       }
 
-      simulationState.creature.averageNodeNausea =
-        simulationState.creature.totalNodeNausea /
-        simulationState.creature.nodes.length
+      this.state.creature.averageNodeNausea =
+        this.state.creature.totalNodeNausea / this.state.creature.nodes.length
 
-      simulationState.timer++
+      this.state.timer++
     }
 
     stabilizeNodesAndMuscles(nodes: Node[], muscles: Muscle[]): void {
@@ -279,8 +284,8 @@ export default function sketch(p5: p5) {
       ni2.vx -= (Math.cos(angle) * force * muscle.rigidity) / ni2.m
       ni2.vy -= (Math.sin(angle) * force * muscle.rigidity) / ni2.m
 
-      simulationState.creature.energyUsed = Math.max(
-        simulationState.creature.energyUsed +
+      this.state.creature.energyUsed = Math.max(
+        this.state.creature.energyUsed +
           Math.abs(muscle.previousTarget - target) *
             muscle.rigidity *
             ENERGY_UNIT,
@@ -296,7 +301,7 @@ export default function sketch(p5: p5) {
       node.y += node.vy
       node.x += node.vx
       const acc = dist2d(node.vx, node.vy, node.pvx, node.pvy)
-      simulationState.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
+      this.state.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
       node.pvx = node.vx
       node.pvy = node.vy
     }
@@ -313,18 +318,18 @@ export default function sketch(p5: p5) {
         this.pressNodeAgainstGround(node, 0)
       }
 
-      if (node.y > node.prevY && simulationConfig.hazelStairs >= 0) {
+      if (node.y > node.prevY && this.config.hazelStairs >= 0) {
         const bottomPointNow = node.y + node.m / 2
         const bottomPointPrev = node.prevY + node.m / 2
         const levelNow = toInt(
-          Math.ceil(bottomPointNow / simulationConfig.hazelStairs)
+          Math.ceil(bottomPointNow / this.config.hazelStairs)
         )
         const levelPrev = toInt(
-          Math.ceil(bottomPointPrev / simulationConfig.hazelStairs)
+          Math.ceil(bottomPointPrev / this.config.hazelStairs)
         )
 
         if (levelNow > levelPrev) {
-          const groundLevel = levelPrev * simulationConfig.hazelStairs
+          const groundLevel = levelPrev * this.config.hazelStairs
           this.pressNodeAgainstGround(node, groundLevel)
         }
       }
@@ -501,7 +506,7 @@ export default function sketch(p5: p5) {
         // constant
       } else if (node.operation === NodeOperationId.TimeInSeconds) {
         // time
-        node.valueToBe = simulationState.timer / 60.0
+        node.valueToBe = this.state.timer / 60.0
       } else if (node.operation === NodeOperationId.NodePositionXFifthed) {
         // x - coordinate
         node.valueToBe = node.x * 0.2
@@ -808,7 +813,7 @@ export default function sketch(p5: p5) {
     }
 
     private randomFloat(minInclusive: number, maxExclusive: number): number {
-      return simulationConfig.randomFloatFn(minInclusive, maxExclusive)
+      return this.config.randomFloatFn(minInclusive, maxExclusive)
     }
 
     private randomInt(minInclusive: number, maxExclusive: number): number {
@@ -816,7 +821,7 @@ export default function sketch(p5: p5) {
     }
   }
 
-  const simulation = new Simulation()
+  const simulation = new Simulation(simulationState, simulationConfig)
 
   function advanceSimulation(): void {
     simulation.advance()

@@ -122,11 +122,11 @@ export default function sketch(p5: p5) {
   let stepByStep: boolean
   let stepByStepSlow: boolean
 
-  function randomInt(minInclusive: number, maxExclusive: number): number {
-    return Math.floor(p5.random(minInclusive, maxExclusive))
-  }
-
   class Simulation {
+    constructor() {
+      this.randomInt = this.randomInt.bind(this)
+    }
+
     generateCreature(id: number): Creature {
       const nodes: Node[] = []
       const muscles: Muscle[] = []
@@ -144,7 +144,7 @@ export default function sketch(p5: p5) {
             0.4,
             p5.random(0, 1),
             p5.random(0, 1),
-            randomArrayValue(NODE_OPERATION_IDS, randomInt),
+            randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
             Math.floor(p5.random(0, nodeNum)),
             Math.floor(p5.random(0, nodeNum))
           )
@@ -448,7 +448,7 @@ export default function sketch(p5: p5) {
       let newAxon2 = node.axon2
 
       if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-        newOperation = randomArrayValue(NODE_OPERATION_IDS, randomInt)
+        newOperation = randomArrayValue(NODE_OPERATION_IDS, this.randomInt)
       }
       if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newAxon1 = toInt(p5.random(0, nodeNum))
@@ -550,7 +550,7 @@ export default function sketch(p5: p5) {
           0.4,
           p5.random(0, 1),
           p5.random(0, 1),
-          randomArrayValue(NODE_OPERATION_IDS, randomInt),
+          randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
           Math.floor(p5.random(0, newNodeCount)),
           Math.floor(p5.random(0, newNodeCount))
         )
@@ -800,6 +800,10 @@ export default function sketch(p5: p5) {
       } else {
         return -1
       }
+    }
+
+    private randomInt(minInclusive: number, maxExclusive: number): number {
+      return Math.floor(p5.random(minInclusive, maxExclusive))
     }
   }
 

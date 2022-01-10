@@ -5,7 +5,7 @@ import Creature from './Creature'
 import Muscle from './Muscle'
 import Node from './Node'
 import Simulation from './Simulation'
-import {Activity} from './constants'
+import {Activity, CreatureGridViewType} from './constants'
 import {toInt} from './math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -1518,7 +1518,7 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function drawScreenImage(stage: number): void {
+  function drawScreenImage(creatureGridViewType: CreatureGridViewType): void {
     screenImage.push()
     screenImage.scale(15.0 / scaleToFixBug)
     screenImage.background(220, 253, 102)
@@ -1526,13 +1526,13 @@ export default function sketch(p5: p5) {
 
     for (let j = 0; j < CREATURE_COUNT; j++) {
       let cj = c2[j]
-      if (stage == 3) {
+      if (creatureGridViewType === CreatureGridViewType.PropagatedCreatures) {
         const index = indexOfCreatureInLatestGeneration(cj.id)
         cj = creaturesInLatestGeneration[index]
       }
 
       let j2 = j
-      if (stage == 0) {
+      if (creatureGridViewType === CreatureGridViewType.SimulationFinished) {
         j2 = cj.id - generationCount * CREATURE_COUNT - 1
         creaturesInPosition[j2] = j
       }
@@ -1540,7 +1540,7 @@ export default function sketch(p5: p5) {
       const x = j2 % 40
 
       let y = Math.floor(j2 / 40)
-      if (stage >= 1) {
+      if (creatureGridViewType !== CreatureGridViewType.SimulationFinished) {
         y++
       }
 
@@ -1557,7 +1557,7 @@ export default function sketch(p5: p5) {
     screenImage.fill(100, 100, 200)
     screenImage.noStroke()
 
-    if (stage == 0) {
+    if (creatureGridViewType === CreatureGridViewType.SimulationFinished) {
       screenImage.fill(0)
       screenImage.text(
         "All 1,000 creatures have been tested.  Now let's sort them!",
@@ -1565,7 +1565,7 @@ export default function sketch(p5: p5) {
         690
       )
       sortCreaturesButton.draw()
-    } else if (stage == 1) {
+    } else if (creatureGridViewType === CreatureGridViewType.SortedCreatures) {
       screenImage.fill(0)
       screenImage.text('Fastest creatures at the top!', windowWidth / 2, 30)
       screenImage.text(
@@ -1574,7 +1574,7 @@ export default function sketch(p5: p5) {
         700
       )
       cullCreaturesButton.draw()
-    } else if (stage == 2) {
+    } else if (creatureGridViewType === CreatureGridViewType.CulledCreatures) {
       screenImage.fill(0)
       screenImage.text(
         'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
@@ -1599,7 +1599,9 @@ export default function sketch(p5: p5) {
           screenImage.rect(x * 30 + 40, y * 25 + 17, 30, 25)
         }
       }
-    } else if (stage == 3) {
+    } else if (
+      creatureGridViewType === CreatureGridViewType.PropagatedCreatures
+    ) {
       screenImage.fill(0)
       screenImage.text(
         'These are the 1000 creatures of generation #' +
@@ -2034,7 +2036,7 @@ export default function sketch(p5: p5) {
       appState.topSpeciesCounts.push(holder)
 
       if (stepByStep) {
-        drawScreenImage(0)
+        drawScreenImage(CreatureGridViewType.SimulationFinished)
         setActivity(Activity.FinishedStepByStep)
       } else {
         setActivity(Activity.CullingCreatures)
@@ -2075,7 +2077,7 @@ export default function sketch(p5: p5) {
       sortingCreaturesSkipButton.draw()
 
       if (appState.viewTimer > 60 * Math.PI) {
-        drawScreenImage(1)
+        drawScreenImage(CreatureGridViewType.SortedCreatures)
         setActivity(Activity.SortedCreatures)
       }
     }
@@ -2181,7 +2183,7 @@ export default function sketch(p5: p5) {
       }
 
       if (stepByStep) {
-        drawScreenImage(2)
+        drawScreenImage(CreatureGridViewType.CulledCreatures)
         setActivity(Activity.CulledCreatures)
       } else {
         setActivity(Activity.PropagatingCreatures)
@@ -2228,7 +2230,7 @@ export default function sketch(p5: p5) {
         creaturesInLatestGeneration[index] = cj.clone()
       }
 
-      drawScreenImage(3)
+      drawScreenImage(CreatureGridViewType.PropagatedCreatures)
 
       generationCount++
 

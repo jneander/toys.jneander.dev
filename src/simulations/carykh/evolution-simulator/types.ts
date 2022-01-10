@@ -3,6 +3,7 @@ import type Node from './Node'
 
 export type SimulationConfig = {
   hazelStairs: number
+  randomFloatFn: RandomNumberFn
 }
 
 export type SimulationCameraState = {

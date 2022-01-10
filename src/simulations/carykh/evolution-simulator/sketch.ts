@@ -88,7 +88,9 @@ export default function sketch(p5: p5) {
   }
 
   const simulationConfig: SimulationConfig = {
-    hazelStairs: -1
+    hazelStairs: -1,
+    randomFloatFn: (minInclusive: number, maxExclusive: number) =>
+      p5.random(minInclusive, maxExclusive)
   }
 
   const simulationState: SimulationState = {

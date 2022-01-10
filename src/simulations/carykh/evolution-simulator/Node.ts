@@ -6,16 +6,16 @@ import {NodeOperationId} from './node-operations'
 
 export default class Node {
   // FLOAT
-  x: number
-  y: number
-  vx: number
-  vy: number
-  prevX: number
-  prevY: number
-  pvx: number
-  pvy: number
-  m: number
-  f: number
+  positionX: number
+  positionY: number
+  velocityX: number
+  velocityY: number
+  previousPositionX: number
+  previousPositionY: number
+  previousVelocityX: number
+  previousVelocityY: number
+  mass: number
+  friction: number
   value: number
   valueToBe: number
   pressure: number
@@ -30,29 +30,29 @@ export default class Node {
   safeInput: boolean
 
   constructor(
-    tx: number,
-    ty: number,
-    tvx: number,
-    tvy: number,
-    tm: number,
-    tf: number,
-    val: number,
-    op: NodeOperationId,
-    a1: number,
-    a2: number
+    positionX: number,
+    positionY: number,
+    velocityX: number,
+    velocityY: number,
+    mass: number,
+    friction: number,
+    value: number,
+    operationId: NodeOperationId,
+    axon1: number,
+    axon2: number
   ) {
-    this.prevX = this.x = tx
-    this.prevY = this.y = ty
-    this.pvx = this.vx = tvx
-    this.pvy = this.vy = tvy
+    this.previousPositionX = this.positionX = positionX
+    this.previousPositionY = this.positionY = positionY
+    this.previousVelocityX = this.velocityX = velocityX
+    this.previousVelocityY = this.velocityY = velocityY
 
-    this.m = tm
-    this.f = tf
+    this.mass = mass
+    this.friction = friction
 
-    this.value = this.valueToBe = val
-    this.operation = op
-    this.axon1 = a1
-    this.axon2 = a2
+    this.value = this.valueToBe = value
+    this.operation = operationId
+    this.axon1 = axon1
+    this.axon2 = axon2
     this.pressure = 0
 
     this.safeInput = false
@@ -72,12 +72,12 @@ export default class Node {
 
   clone(): Node {
     return new Node(
-      this.x,
-      this.y,
+      this.positionX,
+      this.positionY,
       0,
       0,
-      this.m,
-      this.f,
+      this.mass,
+      this.friction,
       this.value,
       this.operation,
       this.axon1,

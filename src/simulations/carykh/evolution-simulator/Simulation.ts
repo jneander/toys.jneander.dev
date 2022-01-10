@@ -10,6 +10,7 @@ import {
   MAX_MUSCLE_LENGTH_INCLUSIVE,
   MIN_MUSCLE_LENGTH_INCLUSIVE,
   NAUSEA_UNIT,
+  NODE_MASS_DEFAULT,
   PRESSURE_UNIT
 } from './constants'
 import {randomArrayValue} from './helpers'
@@ -47,14 +48,14 @@ export default class Simulation {
           this.randomFloat(-1, 1),
           0,
           0,
-          0.4,
+          NODE_MASS_DEFAULT,
           this.randomFloat(0, 1),
           this.randomFloat(0, 1),
           randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
           this.randomInt(0, nodeNum),
           this.randomInt(0, nodeNum)
         )
-      ) // replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
+      )
     }
 
     for (let i = 0; i < muscleNum; i++) {
@@ -350,10 +351,6 @@ export default class Simulation {
       node.positionX + this.reducedRandomForMutation() * 0.5 * mutability
     const newY =
       node.positionY + this.reducedRandomForMutation() * 0.5 * mutability
-    let newM = node.mass + this.reducedRandomForMutation() * 0.1 * mutability
-
-    newM = Math.min(Math.max(newM, 0.3), 0.5)
-    newM = 0.4
 
     let newV =
       node.value * (1 + this.reducedRandomForMutation() * 0.2 * mutability)
@@ -387,7 +384,7 @@ export default class Simulation {
       newY,
       0,
       0,
-      newM,
+      NODE_MASS_DEFAULT,
       Math.min(
         Math.max(
           node.friction + this.reducedRandomForMutation() * 0.1 * mutability,
@@ -463,7 +460,7 @@ export default class Simulation {
         y,
         0,
         0,
-        0.4,
+        NODE_MASS_DEFAULT,
         this.randomFloat(0, 1),
         this.randomFloat(0, 1),
         randomArrayValue(NODE_OPERATION_IDS, this.randomInt),

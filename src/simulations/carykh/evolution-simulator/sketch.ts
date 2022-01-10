@@ -1007,7 +1007,7 @@ export default function sketch(p5: p5) {
           simulation.advance()
         }
 
-        setFitness(i)
+        setFitnessOfSimulationCreature()
       }
 
       setActivity(Activity.SimulationFinished)
@@ -2540,7 +2540,7 @@ export default function sketch(p5: p5) {
             simulation.advance()
           }
 
-          setFitness(i)
+          setFitnessOfSimulationCreature()
         }
 
         setActivity(Activity.SimulationFinished)
@@ -2624,7 +2624,7 @@ export default function sketch(p5: p5) {
           appState.viewTimer = 1020
         }
 
-        setFitness(creaturesTested)
+        setFitnessOfSimulationCreature()
       }
 
       if (appState.viewTimer >= 1020) {
@@ -3075,8 +3075,11 @@ export default function sketch(p5: p5) {
     simulationState.creature.averageNodeNausea = 0
   }
 
-  function setFitness(i: number): void {
-    const {averageX} = getNodesAverage(simulationState.creature.nodes)
-    creaturesInLatestGeneration[i].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
+  function setFitnessOfSimulationCreature(): void {
+    const {id, nodes} = simulationState.creature
+    const {averageX} = getNodesAverage(nodes)
+    const index = indexOfCreatureInLatestGeneration(id)
+
+    creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }
 }

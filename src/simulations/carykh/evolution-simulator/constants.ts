@@ -1,3 +1,11 @@
+export const AIR_FRICTION = 0.95
+export const BIG_MUTATION_CHANCE = 0.06
+export const ENERGY_UNIT = 20
+export const FRICTION = 4
+export const GRAVITY = 0.005
+export const NAUSEA_UNIT = 5
+export const PRESSURE_UNIT = 500.0 / 2.37
+
 export enum Activity {
   Start = 'START',
   GenerationView = 'GENERATION_VIEW',

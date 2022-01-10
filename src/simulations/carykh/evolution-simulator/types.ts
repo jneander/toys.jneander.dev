@@ -1,6 +1,10 @@
 import type Muscle from './Muscle'
 import type Node from './Node'
 
+export type SimulationConfig = {
+  hazelStairs: number
+}
+
 export type SimulationCameraState = {
   x: number
   y: number

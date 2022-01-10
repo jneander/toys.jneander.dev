@@ -9,6 +9,8 @@ export const PRESSURE_UNIT = 500.0 / 2.37
 export const MAX_MUSCLE_LENGTH_INCLUSIVE = 1.5
 export const MIN_MUSCLE_LENGTH_INCLUSIVE = 0.5
 
+export const NODE_MASS_DEFAULT = 0.4
+
 export enum Activity {
   Start = 'START',
   GenerationView = 'GENERATION_VIEW',

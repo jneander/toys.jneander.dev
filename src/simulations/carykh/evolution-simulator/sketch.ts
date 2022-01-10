@@ -4,7 +4,6 @@ import type {Color, Font, Graphics} from 'p5'
 import Creature from './Creature'
 import Muscle from './Muscle'
 import Node from './Node'
-import Rectangle from './Rectangle'
 import {Activity} from './constants'
 import {dist2d, toInt} from './math'
 import {
@@ -69,7 +68,6 @@ export default function sketch(p5: p5) {
   let speciesCounts: Array<number[]> = []
   let topSpeciesCounts: Array<number> = []
   let creatureDatabase: Array<Creature> = []
-  let rects: Array<Rectangle> = []
   let graphImage: Graphics
   let screenImage: Graphics
   let popUpImage: Graphics
@@ -230,91 +228,6 @@ export default function sketch(p5: p5) {
         if (levelNow > levelPrev) {
           const groundLevel = levelPrev * hazelStairs
           this.pressNodeAgainstGround(node, groundLevel)
-        }
-      }
-
-      for (let i = 0; i < rects.length; i++) {
-        const r = rects[i]
-        let flip = false
-        let px, py
-
-        if (
-          Math.abs(node.x - (r.x1 + r.x2) / 2) <= (r.x2 - r.x1 + node.m) / 2 &&
-          Math.abs(node.y - (r.y1 + r.y2) / 2) <= (r.y2 - r.y1 + node.m) / 2
-        ) {
-          if (
-            node.x >= r.x1 &&
-            node.x < r.x2 &&
-            node.y >= r.y1 &&
-            node.y < r.y2
-          ) {
-            const d1 = node.x - r.x1
-            const d2 = r.x2 - node.x
-            const d3 = node.y - r.y1
-            const d4 = r.y2 - node.y
-
-            if (d1 < d2 && d1 < d3 && d1 < d4) {
-              px = r.x1
-              py = node.y
-            } else if (d2 < d3 && d2 < d4) {
-              px = r.x2
-              py = node.y
-            } else if (d3 < d4) {
-              px = node.x
-              py = r.y1
-            } else {
-              px = node.x
-              py = r.y2
-            }
-
-            flip = true
-          } else {
-            if (node.x < r.x1) {
-              px = r.x1
-            } else if (node.x < r.x2) {
-              px = node.x
-            } else {
-              px = r.x2
-            }
-
-            if (node.y < r.y1) {
-              py = r.y1
-            } else if (node.y < r.y2) {
-              py = node.y
-            } else {
-              py = r.y2
-            }
-          }
-
-          const distance = dist2d(node.x, node.y, px, py)
-          let rad = node.m / 2
-          let wallAngle = Math.atan2(py - node.y, px - node.x)
-
-          if (flip) {
-            wallAngle += Math.PI
-          }
-
-          if (distance < rad || flip) {
-            dif = rad - distance
-
-            node.pressure += dif * PRESSURE_UNIT
-            let multi = rad / distance
-
-            if (flip) {
-              multi = -multi
-            }
-
-            node.x = (node.x - px) * multi + px
-            node.y = (node.y - py) * multi + py
-
-            const veloAngle = Math.atan2(node.vy, node.vx)
-            const veloMag = dist2d(0, 0, node.vx, node.vy)
-            const relAngle = veloAngle - wallAngle
-            const relY = Math.sin(relAngle) * veloMag * dif * FRICTION
-
-            node.vx = -Math.sin(relAngle) * relY
-            node.vy = Math.cos(relAngle) * relY
-          }
         }
       }
 
@@ -1333,17 +1246,6 @@ export default function sketch(p5: p5) {
         )
       }
 
-      for (let i = 0; i < rects.length; i++) {
-        const r = rects[i]
-
-        p5.rect(
-          r.x1 * scaleToFixBug,
-          r.y1 * scaleToFixBug,
-          (r.x2 - r.x1) * scaleToFixBug,
-          (r.y2 - r.y1) * scaleToFixBug
-        )
-      }
-
       if (hazelStairs > 0) {
         for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
           p5.fill(255, 255, 255, 128)
@@ -1373,17 +1275,6 @@ export default function sketch(p5: p5) {
           0 * scaleToFixBug,
           simulationState.camera.zoom * 600.0 * scaleToFixBug,
           simulationState.camera.zoom * 600.0 * scaleToFixBug
-        )
-      }
-
-      for (let i = 0; i < rects.length; i++) {
-        const r = rects[i]
-
-        popUpImage.rect(
-          r.x1 * scaleToFixBug,
-          r.y1 * scaleToFixBug,
-          (r.x2 - r.x1) * scaleToFixBug,
-          (r.y2 - r.y1) * scaleToFixBug
         )
       }
 

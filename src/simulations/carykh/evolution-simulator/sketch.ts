@@ -111,7 +111,11 @@ export default function sketch(p5: p5) {
     timer: 0
   }
 
-  const c = new Array<Creature>(CREATURE_COUNT)
+  const creaturesInLatestGeneration = new Array<Creature>(CREATURE_COUNT)
+
+  function indexOfCreatureInLatestGeneration(creatureId: number): number {
+    return (creatureId - 1) % CREATURE_COUNT
+  }
 
   let c2: Creature[] = []
 
@@ -997,7 +1001,7 @@ export default function sketch(p5: p5) {
       creaturesTested++
 
       for (let i = creaturesTested; i < CREATURE_COUNT; i++) {
-        setSimulationState(c[i])
+        setSimulationState(creaturesInLatestGeneration[i])
 
         for (let s = 0; s < 900; s++) {
           simulation.advance()
@@ -2194,7 +2198,8 @@ export default function sketch(p5: p5) {
     for (let j = 0; j < CREATURE_COUNT; j++) {
       let cj = c2[j]
       if (stage == 3) {
-        cj = c[cj.id - generationCount * CREATURE_COUNT - (CREATURE_COUNT + 1)]
+        const index = indexOfCreatureInLatestGeneration(cj.id)
+        cj = creaturesInLatestGeneration[index]
       }
 
       let j2 = j
@@ -2502,7 +2507,7 @@ export default function sketch(p5: p5) {
           const index = y * 40 + x
           const creature = simulation.generateCreature(index + 1)
 
-          c[index] = creature
+          creaturesInLatestGeneration[index] = creature
 
           drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, 0)
         }
@@ -2522,14 +2527,14 @@ export default function sketch(p5: p5) {
       )
       generatedCreaturesBackButton.draw()
     } else if (appState.currentActivityId === Activity.RequestingSimulation) {
-      setSimulationState(c[creaturesTested])
+      setSimulationState(creaturesInLatestGeneration[creaturesTested])
       simulationState.camera.zoom = 0.01
 
       setActivity(Activity.SimulationRunning)
 
       if (!stepByStepSlow) {
         for (let i = 0; i < CREATURE_COUNT; i++) {
-          setSimulationState(c[i])
+          setSimulationState(creaturesInLatestGeneration[i])
 
           for (let s = 0; s < 900; s++) {
             simulation.advance()
@@ -2641,7 +2646,7 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === Activity.SimulationFinished) {
       // sort
 
-      c2 = [...c].sort(
+      c2 = [...creaturesInLatestGeneration].sort(
         (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
       )
 
@@ -2890,8 +2895,8 @@ export default function sketch(p5: p5) {
 
       for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
-        c[cj.id - generationCount * CREATURE_COUNT - (CREATURE_COUNT + 1)] =
-          cj.clone()
+        const index = indexOfCreatureInLatestGeneration(cj.id)
+        creaturesInLatestGeneration[index] = cj.clone()
       }
 
       drawScreenImage(3)
@@ -3072,6 +3077,6 @@ export default function sketch(p5: p5) {
 
   function setFitness(i: number): void {
     const {averageX} = getNodesAverage(simulationState.creature.nodes)
-    c[i].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
+    creaturesInLatestGeneration[i].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }
 }

@@ -22,7 +22,7 @@ import {
   NODE_OPERATION_LABELS_BY_ID,
   NodeOperationId
 } from './node-operations'
-import {SimulationState} from './types'
+import {SimulationConfig, SimulationState} from './types'
 
 export default function sketch(p5: p5) {
   const AXON_COLOR = p5.color(255, 255, 0)
@@ -59,7 +59,6 @@ export default function sketch(p5: p5) {
   let histBarsPerMeter = 5
 
   let baselineEnergy = 0.0
-  let hazelStairs = -1
 
   let minBar = -10
   let maxBar = 100
@@ -85,6 +84,10 @@ export default function sketch(p5: p5) {
     currentActivityId: Activity.Start,
     showPopupSimulation: false,
     viewTimer: 0
+  }
+
+  const simulationConfig: SimulationConfig = {
+    hazelStairs: -1
   }
 
   const simulationState: SimulationState = {
@@ -200,14 +203,18 @@ export default function sketch(p5: p5) {
         this.pressNodeAgainstGround(node, 0)
       }
 
-      if (node.y > node.prevY && hazelStairs >= 0) {
+      if (node.y > node.prevY && simulationConfig.hazelStairs >= 0) {
         const bottomPointNow = node.y + node.m / 2
         const bottomPointPrev = node.prevY + node.m / 2
-        const levelNow = toInt(Math.ceil(bottomPointNow / hazelStairs))
-        const levelPrev = toInt(Math.ceil(bottomPointPrev / hazelStairs))
+        const levelNow = toInt(
+          Math.ceil(bottomPointNow / simulationConfig.hazelStairs)
+        )
+        const levelPrev = toInt(
+          Math.ceil(bottomPointPrev / simulationConfig.hazelStairs)
+        )
 
         if (levelNow > levelPrev) {
-          const groundLevel = levelPrev * hazelStairs
+          const groundLevel = levelPrev * simulationConfig.hazelStairs
           this.pressNodeAgainstGround(node, groundLevel)
         }
       }
@@ -1226,7 +1233,10 @@ export default function sketch(p5: p5) {
   function drawGround(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
-    const stairDrawStart = Math.max(1, toInt(-averageY / hazelStairs) - 10)
+    const stairDrawStart = Math.max(
+      1,
+      toInt(-averageY / simulationConfig.hazelStairs) - 10
+    )
 
     if (toImage == 0) {
       p5.noStroke()
@@ -1242,21 +1252,21 @@ export default function sketch(p5: p5) {
         )
       }
 
-      if (hazelStairs > 0) {
+      if (simulationConfig.hazelStairs > 0) {
         for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
           p5.fill(255, 255, 255, 128)
           p5.rect(
             (averageX - 20) * scaleToFixBug,
-            -hazelStairs * i * scaleToFixBug,
+            -simulationConfig.hazelStairs * i * scaleToFixBug,
             40 * scaleToFixBug,
-            hazelStairs * 0.3 * scaleToFixBug
+            simulationConfig.hazelStairs * 0.3 * scaleToFixBug
           )
           p5.fill(255, 255, 255, 255)
           p5.rect(
             (averageX - 20) * scaleToFixBug,
-            -hazelStairs * i * scaleToFixBug,
+            -simulationConfig.hazelStairs * i * scaleToFixBug,
             40 * scaleToFixBug,
-            hazelStairs * 0.15 * scaleToFixBug
+            simulationConfig.hazelStairs * 0.15 * scaleToFixBug
           )
         }
       }
@@ -1274,21 +1284,21 @@ export default function sketch(p5: p5) {
         )
       }
 
-      if (hazelStairs > 0) {
+      if (simulationConfig.hazelStairs > 0) {
         for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
           popUpImage.fill(255, 255, 255, 128)
           popUpImage.rect(
             (averageX - 20) * scaleToFixBug,
-            -hazelStairs * i * scaleToFixBug,
+            -simulationConfig.hazelStairs * i * scaleToFixBug,
             40 * scaleToFixBug,
-            hazelStairs * 0.3 * scaleToFixBug
+            simulationConfig.hazelStairs * 0.3 * scaleToFixBug
           )
           popUpImage.fill(255, 255, 255, 255)
           popUpImage.rect(
             (averageX - 20) * scaleToFixBug,
-            -hazelStairs * i * scaleToFixBug,
+            -simulationConfig.hazelStairs * i * scaleToFixBug,
             40 * scaleToFixBug,
-            hazelStairs * 0.15 * scaleToFixBug
+            simulationConfig.hazelStairs * 0.15 * scaleToFixBug
           )
         }
       }

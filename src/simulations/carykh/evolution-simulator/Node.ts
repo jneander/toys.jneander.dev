@@ -54,6 +54,11 @@ export default class Node {
     this.safeInput = false
   }
 
+  getClampedValue(): number {
+    // Return this node's value clamped to the range usable by muscles.
+    return Math.min(Math.max(this.value, 0.5), 1.5)
+  }
+
   realizeMathValues(): void {
     this.value = this.valueToBe
   }

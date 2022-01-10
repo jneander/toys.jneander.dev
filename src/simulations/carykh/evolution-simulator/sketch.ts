@@ -149,7 +149,7 @@ export default function sketch(p5: p5) {
       let target = muscle.previousTarget
 
       if (muscle.axon >= 0 && muscle.axon < nodes.length) {
-        target = muscle.len * toMuscleUsable(nodes[muscle.axon].value)
+        target = muscle.len * nodes[muscle.axon].getClampedValue()
       } else {
         target = muscle.len
       }
@@ -1511,7 +1511,7 @@ export default function sketch(p5: p5) {
     let w = 0.15
 
     if (mi.axon >= 0 && mi.axon < n.length) {
-      w = toMuscleUsable(n[mi.axon].value) * 0.15
+      w = n[mi.axon].getClampedValue() * 0.15
     }
 
     if (toImage == 0) {
@@ -1574,7 +1574,7 @@ export default function sketch(p5: p5) {
         p5.textAlign(p5.CENTER)
         p5.textFont(font, 0.4 * averageMass * scaleToFixBug)
         p5.text(
-          p5.nf(toMuscleUsable(n[mi.axon].value), 0, 2),
+          p5.nf(n[mi.axon].getClampedValue(), 0, 2),
           muscleMidX * scaleToFixBug,
           muscleMidY * scaleToFixBug
         )
@@ -1583,7 +1583,7 @@ export default function sketch(p5: p5) {
         screenImage.textAlign(p5.CENTER)
         screenImage.textFont(font, 0.4 * averageMass * scaleToFixBug)
         screenImage.text(
-          p5.nf(toMuscleUsable(n[mi.axon].value), 0, 2),
+          p5.nf(n[mi.axon].getClampedValue(), 0, 2),
           muscleMidX * scaleToFixBug,
           muscleMidY * scaleToFixBug
         )
@@ -1592,16 +1592,12 @@ export default function sketch(p5: p5) {
         popUpImage.textAlign(p5.CENTER)
         popUpImage.textFont(font, 0.4 * averageMass * scaleToFixBug)
         popUpImage.text(
-          p5.nf(toMuscleUsable(n[mi.axon].value), 0, 2),
+          p5.nf(n[mi.axon].getClampedValue(), 0, 2),
           muscleMidX * scaleToFixBug,
           muscleMidY * scaleToFixBug
         )
       }
     }
-  }
-
-  function toMuscleUsable(f: number): number {
-    return Math.min(Math.max(f, 0.5), 1.5)
   }
 
   function drawPosts(toImage: number): void {

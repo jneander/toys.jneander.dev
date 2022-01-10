@@ -121,6 +121,64 @@ export default function sketch(p5: p5) {
   }
 
   class Simulation {
+    generateCreature(id: number): Creature {
+      const nodes: Node[] = []
+      const muscles: Muscle[] = []
+
+      const nodeNum = toInt(p5.random(3, 6))
+      const muscleNum = toInt(p5.random(nodeNum - 1, nodeNum * 3 - 6))
+
+      for (let i = 0; i < nodeNum; i++) {
+        nodes.push(
+          new Node(
+            p5.random(-1, 1),
+            p5.random(-1, 1),
+            0,
+            0,
+            0.4,
+            p5.random(0, 1),
+            p5.random(0, 1),
+            randomArrayValue(NODE_OPERATION_IDS, randomInt),
+            Math.floor(p5.random(0, nodeNum)),
+            Math.floor(p5.random(0, nodeNum))
+          )
+        ) // replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
+      }
+
+      for (let i = 0; i < muscleNum; i++) {
+        const taxon = getNewMuscleAxon(nodeNum)
+
+        let tc1 = 0
+        let tc2 = 0
+
+        if (i < nodeNum - 1) {
+          tc1 = i
+          tc2 = i + 1
+        } else {
+          tc1 = toInt(p5.random(0, nodeNum))
+          tc2 = tc1
+
+          while (tc2 == tc1) {
+            tc2 = toInt(p5.random(0, nodeNum))
+          }
+        }
+
+        const len = p5.random(0.5, 1.5)
+
+        muscles.push(new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08)))
+      }
+
+      stabilizeNodesAndMuscles(nodes, muscles, nodeNum, muscleNum)
+      adjustNodesToCenter(nodes, nodeNum)
+
+      const heartbeat = p5.random(40, 80)
+      const creature = new Creature(id, nodes, muscles, 0, true, heartbeat, 1.0)
+
+      this.resolveCreatureIssues(creature)
+
+      return creature
+    }
+
     advance(): void {
       for (let i = 0; i < simulationState.creature.muscles.length; i++) {
         const {muscles, nodes} = simulationState.creature
@@ -426,12 +484,6 @@ export default function sketch(p5: p5) {
       }
     }
 
-    resolveCreatureIssues(creature: Creature): void {
-      this.resolveCreatureMuscleOverlap(creature)
-      this.resolveCreatureLoneNodes(creature)
-      this.resolveCreatureBadAxons(creature)
-    }
-
     addRandomNode(creature: Creature): void {
       const parentNode = Math.floor(p5.random(0, creature.nodes.length))
       const ang1 = p5.random(0, 2 * Math.PI)
@@ -534,6 +586,12 @@ export default function sketch(p5: p5) {
     removeRandomMuscle(creature: Creature): void {
       const choice = Math.floor(p5.random(0, creature.muscles.length))
       creature.muscles.splice(choice, 1)
+    }
+
+    private resolveCreatureIssues(creature: Creature): void {
+      this.resolveCreatureMuscleOverlap(creature)
+      this.resolveCreatureLoneNodes(creature)
+      this.resolveCreatureBadAxons(creature)
     }
 
     private resolveCreatureMuscleOverlap(creature: Creature): void {
@@ -2433,79 +2491,12 @@ export default function sketch(p5: p5) {
 
       for (let y = 0; y < 25; y++) {
         for (let x = 0; x < 40; x++) {
-          const nodes: Node[] = []
-          const muscles: Muscle[] = []
+          const index = y * 40 + x
+          const creature = simulation.generateCreature(index + 1)
 
-          const nodeNum = toInt(p5.random(3, 6))
-          const muscleNum = toInt(p5.random(nodeNum - 1, nodeNum * 3 - 6))
-
-          for (let i = 0; i < nodeNum; i++) {
-            nodes.push(
-              new Node(
-                p5.random(-1, 1),
-                p5.random(-1, 1),
-                0,
-                0,
-                0.4,
-                p5.random(0, 1),
-                p5.random(0, 1),
-                randomArrayValue(NODE_OPERATION_IDS, randomInt),
-                Math.floor(p5.random(0, nodeNum)),
-                Math.floor(p5.random(0, nodeNum))
-              )
-            ) // replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
-          }
-
-          for (let i = 0; i < muscleNum; i++) {
-            const taxon = getNewMuscleAxon(nodeNum)
-
-            let tc1 = 0
-            let tc2 = 0
-
-            if (i < nodeNum - 1) {
-              tc1 = i
-              tc2 = i + 1
-            } else {
-              tc1 = toInt(p5.random(0, nodeNum))
-              tc2 = tc1
-
-              while (tc2 == tc1) {
-                tc2 = toInt(p5.random(0, nodeNum))
-              }
-            }
-
-            let s = 0.8
-
-            if (i >= 10) {
-              s *= 1.414
-            }
-
-            const len = p5.random(0.5, 1.5)
-
-            muscles.push(
-              new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08))
-            )
-          }
-
-          stabilizeNodesAndMuscles(nodes, muscles, nodeNum, muscleNum)
-          adjustNodesToCenter(nodes, nodeNum)
-
-          const heartbeat = p5.random(40, 80)
-          const creature = new Creature(
-            y * 40 + x + 1,
-            nodes,
-            muscles,
-            0,
-            true,
-            heartbeat,
-            1.0
-          )
-
-          c[y * 40 + x] = creature
+          c[index] = creature
 
           drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, 0)
-
-          simulation.resolveCreatureIssues(creature)
         }
       }
 

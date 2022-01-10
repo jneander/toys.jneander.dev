@@ -21,28 +21,7 @@ import {
   NODE_OPERATION_LABELS_BY_ID,
   NodeOperationId
 } from './node-operations'
-
-type SimulationCameraState = {
-  x: number
-  y: number
-  zoom: number
-}
-
-type SimulationCreatureState = {
-  averageNodeNausea: number
-  energyUsed: number
-  id: number
-  muscles: Muscle[]
-  nodes: Node[]
-  totalNodeNausea: number
-}
-
-type SimulationState = {
-  camera: SimulationCameraState
-  creature: SimulationCreatureState
-  speed: number
-  timer: number
-}
+import {SimulationState} from './types'
 
 export default function sketch(p5: p5) {
   const AXON_COLOR = p5.color(255, 255, 0)

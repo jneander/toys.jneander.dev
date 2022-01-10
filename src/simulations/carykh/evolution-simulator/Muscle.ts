@@ -1,26 +1,32 @@
 export default class Muscle {
   axon: number
-  c1: number
-  c2: number
-  len: number
+  nodeConnection1: number
+  nodeConnection2: number
+  length: number
   rigidity: number
   previousTarget: number
 
   constructor(
-    taxon: number,
-    tc1: number,
-    tc2: number,
-    tlen: number,
-    trigidity: number
+    axon: number,
+    nodeConnection1: number,
+    nodeConnection2: number,
+    length: number,
+    rigidity: number
   ) {
-    this.axon = taxon
-    this.previousTarget = this.len = tlen
-    this.c1 = tc1
-    this.c2 = tc2
-    this.rigidity = trigidity
+    this.axon = axon
+    this.previousTarget = this.length = length
+    this.nodeConnection1 = nodeConnection1
+    this.nodeConnection2 = nodeConnection2
+    this.rigidity = rigidity
   }
 
   clone(): Muscle {
-    return new Muscle(this.axon, this.c1, this.c2, this.len, this.rigidity)
+    return new Muscle(
+      this.axon,
+      this.nodeConnection1,
+      this.nodeConnection2,
+      this.length,
+      this.rigidity
+    )
   }
 }

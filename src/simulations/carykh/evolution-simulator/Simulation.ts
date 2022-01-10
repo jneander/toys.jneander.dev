@@ -165,13 +165,13 @@ export default class Simulation {
     let target = muscle.previousTarget
 
     if (muscle.axon >= 0 && muscle.axon < nodes.length) {
-      target = muscle.len * nodes[muscle.axon].getClampedValue()
+      target = muscle.length * nodes[muscle.axon].getClampedValue()
     } else {
-      target = muscle.len
+      target = muscle.length
     }
 
-    const ni1 = nodes[muscle.c1]
-    const ni2 = nodes[muscle.c2]
+    const ni1 = nodes[muscle.nodeConnection1]
+    const ni2 = nodes[muscle.nodeConnection2]
 
     const distance = dist2d(
       ni1.positionX,
@@ -314,8 +314,8 @@ export default class Simulation {
   }
 
   modifyMuscle(muscle: Muscle, nodeCount: number, mutability: number): Muscle {
-    let newc1 = muscle.c1
-    let newc2 = muscle.c2
+    let newc1 = muscle.nodeConnection1
+    let newc2 = muscle.nodeConnection2
     let newAxon = muscle.axon
 
     if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
@@ -339,7 +339,10 @@ export default class Simulation {
       0.08
     )
     const newLen = Math.min(
-      Math.max(muscle.len + this.reducedRandomForMutation() * mutability, 0.4),
+      Math.max(
+        muscle.length + this.reducedRandomForMutation() * mutability,
+        0.4
+      ),
       1.25
     )
 
@@ -527,8 +530,8 @@ export default class Simulation {
 
     while (i < creature.muscles.length) {
       if (
-        creature.muscles[i].c1 == choice ||
-        creature.muscles[i].c2 == choice
+        creature.muscles[i].nodeConnection1 == choice ||
+        creature.muscles[i].nodeConnection2 == choice
       ) {
         creature.muscles.splice(i, 1)
       } else {
@@ -537,12 +540,12 @@ export default class Simulation {
     }
 
     for (let j = 0; j < creature.muscles.length; j++) {
-      if (creature.muscles[j].c1 >= choice) {
-        creature.muscles[j].c1--
+      if (creature.muscles[j].nodeConnection1 >= choice) {
+        creature.muscles[j].nodeConnection1--
       }
 
-      if (creature.muscles[j].c2 >= choice) {
-        creature.muscles[j].c2--
+      if (creature.muscles[j].nodeConnection2 >= choice) {
+        creature.muscles[j].nodeConnection2--
       }
     }
   }
@@ -564,16 +567,23 @@ export default class Simulation {
     for (let i = 0; i < creature.muscles.length; i++) {
       for (let j = i + 1; j < creature.muscles.length; j++) {
         if (
-          creature.muscles[i].c1 == creature.muscles[j].c1 &&
-          creature.muscles[i].c2 == creature.muscles[j].c2
+          creature.muscles[i].nodeConnection1 ==
+            creature.muscles[j].nodeConnection1 &&
+          creature.muscles[i].nodeConnection2 ==
+            creature.muscles[j].nodeConnection2
         ) {
           bads.push(i)
         } else if (
-          creature.muscles[i].c1 == creature.muscles[j].c2 &&
-          creature.muscles[i].c2 == creature.muscles[j].c1
+          creature.muscles[i].nodeConnection1 ==
+            creature.muscles[j].nodeConnection2 &&
+          creature.muscles[i].nodeConnection2 ==
+            creature.muscles[j].nodeConnection1
         ) {
           bads.push(i)
-        } else if (creature.muscles[i].c1 == creature.muscles[i].c2) {
+        } else if (
+          creature.muscles[i].nodeConnection1 ==
+          creature.muscles[i].nodeConnection2
+        ) {
           bads.push(i)
         }
       }
@@ -595,7 +605,10 @@ export default class Simulation {
         let connectedTo = -1
 
         for (let j = 0; j < creature.muscles.length; j++) {
-          if (creature.muscles[j].c1 == i || creature.muscles[j].c2 == i) {
+          if (
+            creature.muscles[j].nodeConnection1 == i ||
+            creature.muscles[j].nodeConnection2 == i
+          ) {
             connections++
             connectedTo = j
           }

@@ -4,7 +4,16 @@ import type {Color, Font, Graphics} from 'p5'
 import Creature from './Creature'
 import Muscle from './Muscle'
 import Node from './Node'
-import {Activity} from './constants'
+import {
+  AIR_FRICTION,
+  Activity,
+  BIG_MUTATION_CHANCE,
+  ENERGY_UNIT,
+  FRICTION,
+  GRAVITY,
+  NAUSEA_UNIT,
+  PRESSURE_UNIT
+} from './constants'
 import {dist2d, toInt} from './math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -36,21 +45,14 @@ type SimulationState = {
 }
 
 export default function sketch(p5: p5) {
-  const AIR_FRICTION = 0.95
   const AXON_COLOR = p5.color(255, 255, 0)
-  const BIG_MUTATION_CHANCE = 0.06
   const CREATURE_COUNT = 1000
-  const ENERGY_UNIT = 20
   const FITNESS_LABEL = 'Distance'
   const FITNESS_UNIT_LABEL = 'm'
   const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
   const FRAME_RATE = 60 // target frames per second
-  const FRICTION = 4
-  const GRAVITY = 0.005
-  const NAUSEA_UNIT = 5
   const NODE_TEXT_LINE_MULTIPLIER_Y1 = -0.08 // These are for the lines of text on each node.
   const NODE_TEXT_LINE_MULTIPLIER_Y2 = 0.35
-  const PRESSURE_UNIT = 500.0 / 2.37
   const SEED = 0
   const WINDOW_SIZE_MULTIPLIER = 0.8
 

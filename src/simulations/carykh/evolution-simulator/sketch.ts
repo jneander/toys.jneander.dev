@@ -11,6 +11,8 @@ import {
   ENERGY_UNIT,
   FRICTION,
   GRAVITY,
+  MAX_MUSCLE_LENGTH_INCLUSIVE,
+  MIN_MUSCLE_LENGTH_INCLUSIVE,
   NAUSEA_UNIT,
   PRESSURE_UNIT
 } from './constants'
@@ -163,7 +165,10 @@ export default function sketch(p5: p5) {
           }
         }
 
-        const len = p5.random(0.5, 1.5)
+        const len = p5.random(
+          MIN_MUSCLE_LENGTH_INCLUSIVE,
+          MAX_MUSCLE_LENGTH_INCLUSIVE
+        )
 
         muscles.push(new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08)))
       }
@@ -539,7 +544,10 @@ export default function sketch(p5: p5) {
         }
       }
 
-      let len = p5.random(0.5, 1.5)
+      let len = p5.random(
+        MIN_MUSCLE_LENGTH_INCLUSIVE,
+        MAX_MUSCLE_LENGTH_INCLUSIVE
+      )
 
       if (tc1 != -1) {
         len = dist2d(

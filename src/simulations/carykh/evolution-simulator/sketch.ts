@@ -38,6 +38,7 @@ type SimulationState = {
 export default function sketch(p5: p5) {
   const AIR_FRICTION = 0.95
   const AXON_COLOR = p5.color(255, 255, 0)
+  const BIG_MUTATION_CHANCE = 0.06
   const CREATURE_COUNT = 1000
   const ENERGY_UNIT = 20
   const FITNESS_LABEL = 'Distance'
@@ -76,7 +77,6 @@ export default function sketch(p5: p5) {
   let histBarsPerMeter = 5
 
   let baselineEnergy = 0.0
-  let bigMutationChance = 0.06
   let hazelStairs = -1
 
   let minBar = -10
@@ -266,20 +266,20 @@ export default function sketch(p5: p5) {
       }
 
       if (
-        p5.random(0, 1) < bigMutationChance * creature.mutability ||
+        p5.random(0, 1) < BIG_MUTATION_CHANCE * creature.mutability ||
         creature.nodes.length <= 2
       ) {
         // Add a node
         this.addRandomNode(modifiedCreature)
       }
 
-      if (p5.random(0, 1) < bigMutationChance * creature.mutability) {
+      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * creature.mutability) {
         // Add a muscle
         this.addRandomMuscle(modifiedCreature, -1, -1)
       }
 
       if (
-        p5.random(0, 1) < bigMutationChance * creature.mutability &&
+        p5.random(0, 1) < BIG_MUTATION_CHANCE * creature.mutability &&
         modifiedCreature.nodes.length >= 4
       ) {
         // Remove a node
@@ -287,7 +287,7 @@ export default function sketch(p5: p5) {
       }
 
       if (
-        p5.random(0, 1) < bigMutationChance * creature.mutability &&
+        p5.random(0, 1) < BIG_MUTATION_CHANCE * creature.mutability &&
         modifiedCreature.muscles.length >= 2
       ) {
         // Remove a muscle
@@ -308,15 +308,15 @@ export default function sketch(p5: p5) {
       let newc2 = muscle.c2
       let newAxon = muscle.axon
 
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
+      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newc1 = toInt(p5.random(0, nodeCount))
       }
 
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
+      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newc2 = toInt(p5.random(0, nodeCount))
       }
 
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
+      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newAxon = getNewMuscleAxon(nodeCount)
       }
 
@@ -345,13 +345,13 @@ export default function sketch(p5: p5) {
       let newAxon1 = node.axon1
       let newAxon2 = node.axon2
 
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
+      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newOperation = randomArrayValue(NODE_OPERATION_IDS)
       }
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
+      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newAxon1 = toInt(p5.random(0, nodeNum))
       }
-      if (p5.random(0, 1) < bigMutationChance * mutability) {
+      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newAxon2 = toInt(p5.random(0, nodeNum))
       }
 

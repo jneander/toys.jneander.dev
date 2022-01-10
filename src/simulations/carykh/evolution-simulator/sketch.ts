@@ -1934,33 +1934,6 @@ export default function sketch(p5: p5) {
     return toInt(i) + ''
   }
 
-  function quickSort(c: Array<Creature>): Array<Creature> {
-    if (c.length <= 1) {
-      return c
-    }
-
-    const less = new Array<Creature>()
-    const more = new Array<Creature>()
-    const equal = new Array<Creature>()
-
-    const c0 = c[0]
-    equal.push(c0)
-
-    for (let i = 1; i < c.length; i++) {
-      const ci = c[i]
-
-      if (ci.fitness == c0.fitness) {
-        equal.push(ci)
-      } else if (ci.fitness < c0.fitness) {
-        less.push(ci)
-      } else {
-        more.push(ci)
-      }
-    }
-
-    return quickSort(more).concat(equal).concat(quickSort(less))
-  }
-
   function stabilizeNodesAndMuscles(
     nodes: Node[],
     muscles: Muscle[],
@@ -2674,13 +2647,9 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === Activity.SimulationFinished) {
       // sort
 
-      c2 = new Array<Creature>(0)
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        c2.push(c[i])
-      }
-
-      c2 = quickSort(c2)
+      c2 = [...c].sort(
+        (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
+      )
 
       fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
       for (let i = 0; i < fitnessPercentileCount; i++) {

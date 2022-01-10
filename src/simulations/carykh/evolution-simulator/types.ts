@@ -22,3 +22,8 @@ export type SimulationState = {
   speed: number
   timer: number
 }
+
+export type RandomNumberFn = (
+  minInclusive: number,
+  maxExclusive: number
+) => number

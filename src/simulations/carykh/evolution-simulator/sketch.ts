@@ -37,9 +37,6 @@ export default function sketch(p5: p5) {
 
   let font: Font
   let barCounts: Array<number[]> = []
-  let speciesCounts: Array<number[]> = []
-  let topSpeciesCounts: Array<number> = []
-  let creatureDatabase: Array<Creature> = []
   let graphImage: Graphics
   let screenImage: Graphics
   let popUpImage: Graphics
@@ -68,9 +65,21 @@ export default function sketch(p5: p5) {
   let statusWindow = -4
   const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
-  const appState = {
+  type AppState = {
+    creatureDatabase: Creature[]
+    currentActivityId: Activity
+    showPopupSimulation: boolean
+    speciesCounts: number[][]
+    topSpeciesCounts: number[]
+    viewTimer: number
+  }
+
+  const appState: AppState = {
+    creatureDatabase: [],
     currentActivityId: Activity.Start,
     showPopupSimulation: false,
+    speciesCounts: [],
+    topSpeciesCounts: [],
     viewTimer: 0
   }
 
@@ -545,7 +554,10 @@ export default function sketch(p5: p5) {
 
         p5.rect(x * 30 + 40, y * 25 + 17, 30, 25)
       } else {
-        cj = creatureDatabase[(selectedGeneration - 1) * 3 + statusWindow + 3]
+        cj =
+          appState.creatureDatabase[
+            (selectedGeneration - 1) * 3 + statusWindow + 3
+          ]
         x = 760 + (statusWindow + 3) * 160
         y = 180
         px = x
@@ -1134,7 +1146,7 @@ export default function sketch(p5: p5) {
 
       p5.line(lineX, 180, lineX, 500 + 180)
 
-      const s = speciesCounts[selectedGeneration]
+      const s = appState.speciesCounts[selectedGeneration]
 
       p5.textAlign(p5.LEFT)
       p5.textFont(font, 12)
@@ -1146,7 +1158,7 @@ export default function sketch(p5: p5) {
         if (c >= 25) {
           const y = ((s[i] + s[i - 1]) / 2 / 1000.0) * 100 + 573
 
-          if (i - 1 == topSpeciesCounts[selectedGeneration]) {
+          if (i - 1 == appState.topSpeciesCounts[selectedGeneration]) {
             p5.stroke(0)
             p5.strokeWeight(2)
           } else {
@@ -1294,19 +1306,19 @@ export default function sketch(p5: p5) {
         segBarImage.beginShape()
         segBarImage.vertex(
           barX1,
-          y + (speciesCounts[i][j] / 1000.0) * graphHeight
+          y + (appState.speciesCounts[i][j] / 1000.0) * graphHeight
         )
         segBarImage.vertex(
           barX1,
-          y + (speciesCounts[i][j + 1] / 1000.0) * graphHeight
+          y + (appState.speciesCounts[i][j + 1] / 1000.0) * graphHeight
         )
         segBarImage.vertex(
           barX2,
-          y + (speciesCounts[i2][j + 1] / 1000.0) * graphHeight
+          y + (appState.speciesCounts[i2][j + 1] / 1000.0) * graphHeight
         )
         segBarImage.vertex(
           barX2,
-          y + (speciesCounts[i2][j] / 1000.0) * graphHeight
+          y + (appState.speciesCounts[i2][j] / 1000.0) * graphHeight
         )
         segBarImage.endShape()
       }
@@ -1728,8 +1740,8 @@ export default function sketch(p5: p5) {
 
     fitnessPercentileHistory.push(new Array(fitnessPercentileCount).fill(0.0))
     barCounts.push(new Array(barLen).fill(0))
-    speciesCounts.push(new Array(101).fill(500))
-    topSpeciesCounts.push(0)
+    appState.speciesCounts.push(new Array(101).fill(500))
+    appState.topSpeciesCounts.push(0)
 
     graphImage = p5.createGraphics(975, 570)
     screenImage = p5.createGraphics(1920, 1080)
@@ -1963,9 +1975,9 @@ export default function sketch(p5: p5) {
           c2[fitnessPercentileCreatureIndices[i]].fitness
       }
 
-      creatureDatabase.push(c2[lastCreatureIndex].clone())
-      creatureDatabase.push(c2[midCreatureIndex].clone())
-      creatureDatabase.push(c2[0].clone())
+      appState.creatureDatabase.push(c2[lastCreatureIndex].clone())
+      appState.creatureDatabase.push(c2[midCreatureIndex].clone())
+      appState.creatureDatabase.push(c2[0].clone())
 
       const beginBar = new Array<number>(barLen)
       for (let i = 0; i < barLen; i++) {
@@ -1992,8 +2004,8 @@ export default function sketch(p5: p5) {
         beginSpecies[species]++
       }
 
-      speciesCounts.push(new Array<number>(101))
-      speciesCounts[generationCount + 1][0] = 0
+      appState.speciesCounts.push(new Array<number>(101))
+      appState.speciesCounts[generationCount + 1][0] = 0
 
       let cum = 0
       let record = 0
@@ -2001,7 +2013,7 @@ export default function sketch(p5: p5) {
 
       for (let i = 0; i < 100; i++) {
         cum += beginSpecies[i]
-        speciesCounts[generationCount + 1][i + 1] = cum
+        appState.speciesCounts[generationCount + 1][i + 1] = cum
 
         if (beginSpecies[i] > record) {
           record = beginSpecies[i]
@@ -2009,7 +2021,7 @@ export default function sketch(p5: p5) {
         }
       }
 
-      topSpeciesCounts.push(holder)
+      appState.topSpeciesCounts.push(holder)
 
       if (stepByStep) {
         drawScreenImage(0)
@@ -2262,7 +2274,7 @@ export default function sketch(p5: p5) {
           p5.scale(60.0 / scaleToFixBug)
 
           drawCreature(
-            creatureDatabase[(selectedGeneration - 1) * 3 + k],
+            appState.creatureDatabase[(selectedGeneration - 1) * 3 + k],
             0,
             0,
             0
@@ -2293,7 +2305,9 @@ export default function sketch(p5: p5) {
 
     if (statusWindow <= -1) {
       creature =
-        creatureDatabase[(selectedGeneration - 1) * 3 + statusWindow + 3]
+        appState.creatureDatabase[
+          (selectedGeneration - 1) * 3 + statusWindow + 3
+        ]
       targetCreatureId = creature.id
     } else {
       targetCreatureId = statusWindow

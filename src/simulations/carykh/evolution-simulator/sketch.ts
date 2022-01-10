@@ -952,8 +952,8 @@ export default function sketch(p5: p5) {
     y: number,
     toImage: number
   ): void {
-    const ni1 = n[mi.c1]
-    const ni2 = n[mi.c2]
+    const ni1 = n[mi.nodeConnection1]
+    const ni2 = n[mi.nodeConnection2]
 
     let w = 0.15
 
@@ -998,8 +998,8 @@ export default function sketch(p5: p5) {
     y: number,
     toImage: number
   ): void {
-    const ni1 = n[mi.c1]
-    const ni2 = n[mi.c2]
+    const ni1 = n[mi.nodeConnection1]
+    const ni2 = n[mi.nodeConnection2]
 
     if (mi.axon >= 0 && mi.axon < n.length) {
       const axonSource = n[mi.axon]

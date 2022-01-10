@@ -224,7 +224,7 @@ export default function sketch(p5: p5) {
         0,
         true,
         creature.creatureTimer +
-          reducedRandomForMutation() * 16 * creature.mutability,
+          this.reducedRandomForMutation() * 16 * creature.mutability,
         Math.min(creature.mutability * p5.random(0.8, 1.25), 2)
       )
 
@@ -304,13 +304,17 @@ export default function sketch(p5: p5) {
 
       const newR = Math.min(
         Math.max(
-          muscle.rigidity * (1 + reducedRandomForMutation() * 0.9 * mutability),
+          muscle.rigidity *
+            (1 + this.reducedRandomForMutation() * 0.9 * mutability),
           0.01
         ),
         0.08
       )
       const newLen = Math.min(
-        Math.max(muscle.len + reducedRandomForMutation() * mutability, 0.4),
+        Math.max(
+          muscle.len + this.reducedRandomForMutation() * mutability,
+          0.4
+        ),
         1.25
       )
 
@@ -318,15 +322,15 @@ export default function sketch(p5: p5) {
     }
 
     modifyNode(node: Node, mutability: number, nodeNum: number): Node {
-      const newX = node.x + reducedRandomForMutation() * 0.5 * mutability
-      const newY = node.y + reducedRandomForMutation() * 0.5 * mutability
-      let newM = node.m + reducedRandomForMutation() * 0.1 * mutability
+      const newX = node.x + this.reducedRandomForMutation() * 0.5 * mutability
+      const newY = node.y + this.reducedRandomForMutation() * 0.5 * mutability
+      let newM = node.m + this.reducedRandomForMutation() * 0.1 * mutability
 
       newM = Math.min(Math.max(newM, 0.3), 0.5)
       newM = 0.4
 
       let newV =
-        node.value * (1 + reducedRandomForMutation() * 0.2 * mutability)
+        node.value * (1 + this.reducedRandomForMutation() * 0.2 * mutability)
       let newOperation = node.operation
       let newAxon1 = node.axon1
       let newAxon2 = node.axon2
@@ -359,7 +363,10 @@ export default function sketch(p5: p5) {
         0,
         newM,
         Math.min(
-          Math.max(node.f + reducedRandomForMutation() * 0.1 * mutability, 0),
+          Math.max(
+            node.f + this.reducedRandomForMutation() * 0.1 * mutability,
+            0
+          ),
           1
         ),
         newV,
@@ -667,16 +674,16 @@ export default function sketch(p5: p5) {
         }
       }
     }
+
+    private reducedRandomForMutation(): number {
+      return Math.pow(p5.random(-1, 1), 19)
+    }
   }
 
   const simulation = new Simulation()
 
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
-  }
-
-  function reducedRandomForMutation(): number {
-    return Math.pow(p5.random(-1, 1), 19)
   }
 
   function getCursorPosition(): {mX: number; mY: number} {

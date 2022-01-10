@@ -177,8 +177,8 @@ export default function sketch(p5: p5) {
         muscles.push(new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08)))
       }
 
-      this.stabilizeNodesAndMuscles(nodes, muscles, nodeNum, muscleNum)
-      this.adjustNodesToCenter(nodes, nodeNum)
+      this.stabilizeNodesAndMuscles(nodes, muscles)
+      this.adjustNodesToCenter(nodes)
 
       const heartbeat = p5.random(40, 80)
       const creature = new Creature(id, nodes, muscles, 0, true, heartbeat, 1.0)
@@ -213,34 +213,29 @@ export default function sketch(p5: p5) {
       simulationState.timer++
     }
 
-    stabilizeNodesAndMuscles(
-      nodes: Node[],
-      muscles: Muscle[],
-      nodeCount: number,
-      muscleCount: number
-    ): void {
+    stabilizeNodesAndMuscles(nodes: Node[], muscles: Muscle[]): void {
       for (let j = 0; j < 200; j++) {
-        for (let i = 0; i < muscleCount; i++) {
+        for (let i = 0; i < muscles.length; i++) {
           this.applyForceToMuscle(muscles[i], nodes)
         }
 
-        for (let i = 0; i < nodeCount; i++) {
+        for (let i = 0; i < nodes.length; i++) {
           this.applyForcesToNode(nodes[i])
         }
       }
 
-      for (let i = 0; i < nodeCount; i++) {
+      for (let i = 0; i < nodes.length; i++) {
         const ni = nodes[i]
         ni.vx = 0
         ni.vy = 0
       }
     }
 
-    adjustNodesToCenter(nodes: Node[], nodeCount: number): void {
+    adjustNodesToCenter(nodes: Node[]): void {
       let avx = 0
       let lowY = -1000
 
-      for (let i = 0; i < nodeCount; i++) {
+      for (let i = 0; i < nodes.length; i++) {
         const ni = nodes[i]
         avx += ni.x
 
@@ -249,9 +244,9 @@ export default function sketch(p5: p5) {
         }
       }
 
-      avx /= nodeCount
+      avx /= nodes.length
 
-      for (let i = 0; i < nodeCount; i++) {
+      for (let i = 0; i < nodes.length; i++) {
         const ni = nodes[i]
         ni.x -= avx
         ni.y -= lowY
@@ -2893,13 +2888,8 @@ export default function sketch(p5: p5) {
         // Stabilize and adjust mutated offspring
         const {muscles, nodes} = c2[culledCreatureIndex]
 
-        simulation.stabilizeNodesAndMuscles(
-          nodes,
-          muscles,
-          nodes.length,
-          muscles.length
-        )
-        simulation.adjustNodesToCenter(nodes, nodes.length)
+        simulation.stabilizeNodesAndMuscles(nodes, muscles)
+        simulation.adjustNodesToCenter(nodes)
       }
 
       for (let j = 0; j < CREATURE_COUNT; j++) {

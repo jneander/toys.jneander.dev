@@ -152,7 +152,7 @@ export default function sketch(p5: p5) {
       }
 
       for (let i = 0; i < muscleNum; i++) {
-        const taxon = getNewMuscleAxon(nodeNum)
+        const taxon = this.getNewMuscleAxon(nodeNum)
 
         let tc1 = 0
         let tc2 = 0
@@ -372,7 +372,7 @@ export default function sketch(p5: p5) {
       }
 
       if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-        newAxon = getNewMuscleAxon(nodeCount)
+        newAxon = this.getNewMuscleAxon(nodeCount)
       }
 
       const newR = Math.min(
@@ -537,7 +537,7 @@ export default function sketch(p5: p5) {
     }
 
     addRandomMuscle(creature: Creature, tc1: number, tc2: number): void {
-      const axon = getNewMuscleAxon(creature.nodes.length)
+      const axon = this.getNewMuscleAxon(creature.nodes.length)
 
       if (tc1 == -1) {
         tc1 = toInt(p5.random(0, creature.nodes.length))
@@ -683,7 +683,7 @@ export default function sketch(p5: p5) {
         const mi = creature.muscles[i]
 
         if (mi.axon >= creature.nodes.length) {
-          mi.axon = getNewMuscleAxon(creature.nodes.length)
+          mi.axon = this.getNewMuscleAxon(creature.nodes.length)
         }
       }
 
@@ -753,6 +753,14 @@ export default function sketch(p5: p5) {
 
     private reducedRandomForMutation(): number {
       return Math.pow(p5.random(-1, 1), 19)
+    }
+
+    private getNewMuscleAxon(nodeNum: number): number {
+      if (p5.random(0, 1) < 0.5) {
+        return toInt(p5.random(0, nodeNum))
+      } else {
+        return -1
+      }
     }
   }
 
@@ -1290,14 +1298,6 @@ export default function sketch(p5: p5) {
   const propagateCreaturesButton = new PropagateCreaturesButton()
   const propagatedCreaturesBackButton = new PropagatedCreaturesBackButton()
   const statusWindowView = new StatusWindowView()
-
-  function getNewMuscleAxon(nodeNum: number): number {
-    if (p5.random(0, 1) < 0.5) {
-      return toInt(p5.random(0, nodeNum))
-    } else {
-      return -1
-    }
-  }
 
   function drawGround(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)

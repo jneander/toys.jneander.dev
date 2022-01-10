@@ -14,6 +14,7 @@ import {
   NAUSEA_UNIT,
   PRESSURE_UNIT
 } from './constants'
+import {randomArrayValue} from './helpers'
 import {dist2d, toInt} from './math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -113,9 +114,8 @@ export default function sketch(p5: p5) {
   let stepByStep: boolean
   let stepByStepSlow: boolean
 
-  function randomArrayValue<T>(array: T[]): T {
-    const randomIndex = Math.floor(p5.random(0, array.length))
-    return array[randomIndex]
+  function randomInt(minInclusive: number, maxExclusive: number): number {
+    return Math.floor(p5.random(minInclusive, maxExclusive))
   }
 
   class Simulation {
@@ -336,7 +336,7 @@ export default function sketch(p5: p5) {
       let newAxon2 = node.axon2
 
       if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-        newOperation = randomArrayValue(NODE_OPERATION_IDS)
+        newOperation = randomArrayValue(NODE_OPERATION_IDS, randomInt)
       }
       if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newAxon1 = toInt(p5.random(0, nodeNum))
@@ -444,7 +444,7 @@ export default function sketch(p5: p5) {
           0.4,
           p5.random(0, 1),
           p5.random(0, 1),
-          randomArrayValue(NODE_OPERATION_IDS),
+          randomArrayValue(NODE_OPERATION_IDS, randomInt),
           Math.floor(p5.random(0, newNodeCount)),
           Math.floor(p5.random(0, newNodeCount))
         )
@@ -2450,7 +2450,7 @@ export default function sketch(p5: p5) {
                 0.4,
                 p5.random(0, 1),
                 p5.random(0, 1),
-                randomArrayValue(NODE_OPERATION_IDS),
+                randomArrayValue(NODE_OPERATION_IDS, randomInt),
                 Math.floor(p5.random(0, nodeNum)),
                 Math.floor(p5.random(0, nodeNum))
               )

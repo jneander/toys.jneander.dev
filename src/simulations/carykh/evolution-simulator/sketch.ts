@@ -126,6 +126,7 @@ export default function sketch(p5: p5) {
 
   class Simulation {
     constructor() {
+      this.randomFloat = this.randomFloat.bind(this)
       this.randomInt = this.randomInt.bind(this)
     }
 
@@ -133,22 +134,22 @@ export default function sketch(p5: p5) {
       const nodes: Node[] = []
       const muscles: Muscle[] = []
 
-      const nodeNum = toInt(p5.random(3, 6))
-      const muscleNum = toInt(p5.random(nodeNum - 1, nodeNum * 3 - 6))
+      const nodeNum = toInt(this.randomFloat(3, 6))
+      const muscleNum = toInt(this.randomFloat(nodeNum - 1, nodeNum * 3 - 6))
 
       for (let i = 0; i < nodeNum; i++) {
         nodes.push(
           new Node(
-            p5.random(-1, 1),
-            p5.random(-1, 1),
+            this.randomFloat(-1, 1),
+            this.randomFloat(-1, 1),
             0,
             0,
             0.4,
-            p5.random(0, 1),
-            p5.random(0, 1),
+            this.randomFloat(0, 1),
+            this.randomFloat(0, 1),
             randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
-            Math.floor(p5.random(0, nodeNum)),
-            Math.floor(p5.random(0, nodeNum))
+            Math.floor(this.randomFloat(0, nodeNum)),
+            Math.floor(this.randomFloat(0, nodeNum))
           )
         ) // replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
       }
@@ -163,26 +164,28 @@ export default function sketch(p5: p5) {
           tc1 = i
           tc2 = i + 1
         } else {
-          tc1 = toInt(p5.random(0, nodeNum))
+          tc1 = toInt(this.randomFloat(0, nodeNum))
           tc2 = tc1
 
           while (tc2 == tc1) {
-            tc2 = toInt(p5.random(0, nodeNum))
+            tc2 = toInt(this.randomFloat(0, nodeNum))
           }
         }
 
-        const len = p5.random(
+        const len = this.randomFloat(
           MIN_MUSCLE_LENGTH_INCLUSIVE,
           MAX_MUSCLE_LENGTH_INCLUSIVE
         )
 
-        muscles.push(new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08)))
+        muscles.push(
+          new Muscle(taxon, tc1, tc2, len, this.randomFloat(0.02, 0.08))
+        )
       }
 
       this.stabilizeNodesAndMuscles(nodes, muscles)
       this.adjustNodesToCenter(nodes)
 
-      const heartbeat = p5.random(40, 80)
+      const heartbeat = this.randomFloat(40, 80)
       const creature = new Creature(id, nodes, muscles, 0, true, heartbeat, 1.0)
 
       this.resolveCreatureIssues(creature)
@@ -339,7 +342,7 @@ export default function sketch(p5: p5) {
         true,
         creature.creatureTimer +
           this.reducedRandomForMutation() * 16 * creature.mutability,
-        Math.min(creature.mutability * p5.random(0.8, 1.25), 2)
+        Math.min(creature.mutability * this.randomFloat(0.8, 1.25), 2)
       )
 
       for (let i = 0; i < creature.nodes.length; i++) {
@@ -362,20 +365,20 @@ export default function sketch(p5: p5) {
       }
 
       if (
-        p5.random(0, 1) < BIG_MUTATION_CHANCE * creature.mutability ||
+        this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * creature.mutability ||
         creature.nodes.length <= 2
       ) {
         // Add a node
         this.addRandomNode(modifiedCreature)
       }
 
-      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * creature.mutability) {
+      if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * creature.mutability) {
         // Add a muscle
         this.addRandomMuscle(modifiedCreature, -1, -1)
       }
 
       if (
-        p5.random(0, 1) < BIG_MUTATION_CHANCE * creature.mutability &&
+        this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * creature.mutability &&
         modifiedCreature.nodes.length >= 4
       ) {
         // Remove a node
@@ -383,7 +386,7 @@ export default function sketch(p5: p5) {
       }
 
       if (
-        p5.random(0, 1) < BIG_MUTATION_CHANCE * creature.mutability &&
+        this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * creature.mutability &&
         modifiedCreature.muscles.length >= 2
       ) {
         // Remove a muscle
@@ -404,15 +407,15 @@ export default function sketch(p5: p5) {
       let newc2 = muscle.c2
       let newAxon = muscle.axon
 
-      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-        newc1 = toInt(p5.random(0, nodeCount))
+      if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
+        newc1 = toInt(this.randomFloat(0, nodeCount))
       }
 
-      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-        newc2 = toInt(p5.random(0, nodeCount))
+      if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
+        newc2 = toInt(this.randomFloat(0, nodeCount))
       }
 
-      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
+      if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newAxon = this.getNewMuscleAxon(nodeCount)
       }
 
@@ -449,14 +452,14 @@ export default function sketch(p5: p5) {
       let newAxon1 = node.axon1
       let newAxon2 = node.axon2
 
-      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
+      if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
         newOperation = randomArrayValue(NODE_OPERATION_IDS, this.randomInt)
       }
-      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-        newAxon1 = toInt(p5.random(0, nodeNum))
+      if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
+        newAxon1 = toInt(this.randomFloat(0, nodeNum))
       }
-      if (p5.random(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-        newAxon2 = toInt(p5.random(0, nodeNum))
+      if (this.randomFloat(0, 1) < BIG_MUTATION_CHANCE * mutability) {
+        newAxon2 = toInt(this.randomFloat(0, nodeNum))
       }
 
       if (newOperation === NodeOperationId.TimeInSeconds) {
@@ -535,9 +538,9 @@ export default function sketch(p5: p5) {
     }
 
     addRandomNode(creature: Creature): void {
-      const parentNode = Math.floor(p5.random(0, creature.nodes.length))
-      const ang1 = p5.random(0, 2 * Math.PI)
-      const distance = Math.sqrt(p5.random(0, 1))
+      const parentNode = Math.floor(this.randomFloat(0, creature.nodes.length))
+      const ang1 = this.randomFloat(0, 2 * Math.PI)
+      const distance = Math.sqrt(this.randomFloat(0, 1))
       const x = creature.nodes[parentNode].x + Math.cos(ang1) * 0.5 * distance
       const y = creature.nodes[parentNode].y + Math.sin(ang1) * 0.5 * distance
 
@@ -550,11 +553,11 @@ export default function sketch(p5: p5) {
           0,
           0,
           0.4,
-          p5.random(0, 1),
-          p5.random(0, 1),
+          this.randomFloat(0, 1),
+          this.randomFloat(0, 1),
           randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
-          Math.floor(p5.random(0, newNodeCount)),
-          Math.floor(p5.random(0, newNodeCount))
+          Math.floor(this.randomFloat(0, newNodeCount)),
+          Math.floor(this.randomFloat(0, newNodeCount))
         )
       )
 
@@ -581,15 +584,15 @@ export default function sketch(p5: p5) {
       const axon = this.getNewMuscleAxon(creature.nodes.length)
 
       if (tc1 == -1) {
-        tc1 = toInt(p5.random(0, creature.nodes.length))
+        tc1 = toInt(this.randomFloat(0, creature.nodes.length))
         tc2 = tc1
 
         while (tc2 == tc1 && creature.nodes.length >= 2) {
-          tc2 = toInt(p5.random(0, creature.nodes.length))
+          tc2 = toInt(this.randomFloat(0, creature.nodes.length))
         }
       }
 
-      let len = p5.random(
+      let len = this.randomFloat(
         MIN_MUSCLE_LENGTH_INCLUSIVE,
         MAX_MUSCLE_LENGTH_INCLUSIVE
       )
@@ -604,12 +607,12 @@ export default function sketch(p5: p5) {
       }
 
       creature.muscles.push(
-        new Muscle(axon, tc1, tc2, len, p5.random(0.02, 0.08))
+        new Muscle(axon, tc1, tc2, len, this.randomFloat(0.02, 0.08))
       )
     }
 
     removeRandomNode(creature: Creature): void {
-      const choice = Math.floor(p5.random(0, creature.nodes.length))
+      const choice = Math.floor(this.randomFloat(0, creature.nodes.length))
       creature.nodes.splice(choice, 1)
 
       let i = 0
@@ -637,7 +640,7 @@ export default function sketch(p5: p5) {
     }
 
     removeRandomMuscle(creature: Creature): void {
-      const choice = Math.floor(p5.random(0, creature.muscles.length))
+      const choice = Math.floor(this.randomFloat(0, creature.muscles.length))
       creature.muscles.splice(choice, 1)
     }
 
@@ -692,12 +695,12 @@ export default function sketch(p5: p5) {
 
           if (connections <= 1) {
             let newConnectionNode = Math.floor(
-              p5.random(0, creature.nodes.length)
+              this.randomFloat(0, creature.nodes.length)
             )
 
             while (newConnectionNode == i || newConnectionNode == connectedTo) {
               newConnectionNode = Math.floor(
-                p5.random(0, creature.nodes.length)
+                this.randomFloat(0, creature.nodes.length)
               )
             }
 
@@ -712,11 +715,11 @@ export default function sketch(p5: p5) {
         const ni = creature.nodes[i]
 
         if (ni.axon1 >= creature.nodes.length) {
-          ni.axon1 = toInt(p5.random(0, creature.nodes.length))
+          ni.axon1 = toInt(this.randomFloat(0, creature.nodes.length))
         }
 
         if (ni.axon2 >= creature.nodes.length) {
-          ni.axon2 = toInt(p5.random(0, creature.nodes.length))
+          ni.axon2 = toInt(this.randomFloat(0, creature.nodes.length))
         }
       }
 
@@ -767,7 +770,7 @@ export default function sketch(p5: p5) {
         if (!ni.safeInput) {
           // This node doesn't get its input from a safe place.  CLEANSE IT.
           ni.operation = NodeOperationId.Constant
-          ni.value = p5.random(0, 1)
+          ni.value = this.randomFloat(0, 1)
         }
       }
     }
@@ -793,19 +796,23 @@ export default function sketch(p5: p5) {
     }
 
     private reducedRandomForMutation(): number {
-      return Math.pow(p5.random(-1, 1), 19)
+      return Math.pow(this.randomFloat(-1, 1), 19)
     }
 
     private getNewMuscleAxon(nodeNum: number): number {
-      if (p5.random(0, 1) < 0.5) {
-        return toInt(p5.random(0, nodeNum))
+      if (this.randomFloat(0, 1) < 0.5) {
+        return toInt(this.randomFloat(0, nodeNum))
       } else {
         return -1
       }
     }
 
+    private randomFloat(minInclusive: number, maxExclusive: number): number {
+      return simulationConfig.randomFloatFn(minInclusive, maxExclusive)
+    }
+
     private randomInt(minInclusive: number, maxExclusive: number): number {
-      return Math.floor(p5.random(minInclusive, maxExclusive))
+      return Math.floor(this.randomFloat(minInclusive, maxExclusive))
     }
   }
 

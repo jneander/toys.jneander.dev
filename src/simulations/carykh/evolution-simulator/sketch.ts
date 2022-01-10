@@ -2857,23 +2857,32 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === Activity.PropagatingCreatures) {
       // Reproduce and mutate
 
-      for (let j = 0; j < 500; j++) {
-        let j2 = j
-        if (!c2[j].alive) {
-          j2 = lastCreatureIndex - j
+      for (let i = 0; i < 500; i++) {
+        let survivingCreatureIndex
+        let culledCreatureIndex
+
+        if (c2[i].alive) {
+          survivingCreatureIndex = i
+          culledCreatureIndex = lastCreatureIndex - i
+        } else {
+          survivingCreatureIndex = lastCreatureIndex - i
+          culledCreatureIndex = i
         }
 
-        const cj = c2[j2]
-        const cj2 = c2[lastCreatureIndex - j2]
+        const survivingCreature = c2[survivingCreatureIndex]
+        const culledCreature = c2[culledCreatureIndex]
 
-        c2[j2] = cj.clone(cj.id + CREATURE_COUNT)
-        c2[lastCreatureIndex - j2] = simulation.modifyCreature(
-          cj,
-          cj2.id + CREATURE_COUNT
-        ) // mutated offspring 1
+        // Next generation includes a clone and mutated offspring
+        c2[survivingCreatureIndex] = survivingCreature.clone(
+          survivingCreature.id + CREATURE_COUNT
+        )
+        c2[culledCreatureIndex] = simulation.modifyCreature(
+          survivingCreature,
+          culledCreature.id + CREATURE_COUNT
+        )
 
-        const nodes = c2[lastCreatureIndex - j2].nodes
-        const muscles = c2[lastCreatureIndex - j2].muscles
+        // Stabilize and adjust mutated offspring
+        const {muscles, nodes} = c2[culledCreatureIndex]
 
         stabilizeNodesAndMuscles(nodes, muscles, nodes.length, muscles.length)
         adjustNodesToCenter(nodes, nodes.length)

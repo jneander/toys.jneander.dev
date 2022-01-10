@@ -55,7 +55,6 @@ export default function sketch(p5: p5) {
   let screenImage: Graphics
   let popUpImage: Graphics
   let segBarImage: Graphics
-  let haveGround = true
   let histBarsPerMeter = 5
 
   let baselineEnergy = 0.0
@@ -199,7 +198,7 @@ export default function sketch(p5: p5) {
       node.pressure = 0
       let dif = node.y + node.m / 2
 
-      if (dif >= 0 && haveGround) {
+      if (dif >= 0) {
         this.pressNodeAgainstGround(node, 0)
       }
 
@@ -1241,16 +1240,13 @@ export default function sketch(p5: p5) {
     if (toImage == 0) {
       p5.noStroke()
       p5.fill(0, 130, 0)
-
-      if (haveGround) {
-        p5.rect(
-          (simulationState.camera.x - simulationState.camera.zoom * 800.0) *
-            scaleToFixBug,
-          0 * scaleToFixBug,
-          simulationState.camera.zoom * 1600.0 * scaleToFixBug,
-          simulationState.camera.zoom * 900.0 * scaleToFixBug
-        )
-      }
+      p5.rect(
+        (simulationState.camera.x - simulationState.camera.zoom * 800.0) *
+          scaleToFixBug,
+        0 * scaleToFixBug,
+        simulationState.camera.zoom * 1600.0 * scaleToFixBug,
+        simulationState.camera.zoom * 900.0 * scaleToFixBug
+      )
 
       if (simulationConfig.hazelStairs > 0) {
         for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
@@ -1273,16 +1269,13 @@ export default function sketch(p5: p5) {
     } else if (toImage == 2) {
       popUpImage.noStroke()
       popUpImage.fill(0, 130, 0)
-
-      if (haveGround) {
-        popUpImage.rect(
-          (simulationState.camera.x - simulationState.camera.zoom * 300.0) *
-            scaleToFixBug,
-          0 * scaleToFixBug,
-          simulationState.camera.zoom * 600.0 * scaleToFixBug,
-          simulationState.camera.zoom * 600.0 * scaleToFixBug
-        )
-      }
+      popUpImage.rect(
+        (simulationState.camera.x - simulationState.camera.zoom * 300.0) *
+          scaleToFixBug,
+        0 * scaleToFixBug,
+        simulationState.camera.zoom * 600.0 * scaleToFixBug,
+        simulationState.camera.zoom * 600.0 * scaleToFixBug
+      )
 
       if (simulationConfig.hazelStairs > 0) {
         for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {

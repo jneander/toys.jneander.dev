@@ -177,8 +177,8 @@ export default function sketch(p5: p5) {
         muscles.push(new Muscle(taxon, tc1, tc2, len, p5.random(0.02, 0.08)))
       }
 
-      stabilizeNodesAndMuscles(nodes, muscles, nodeNum, muscleNum)
-      adjustNodesToCenter(nodes, nodeNum)
+      this.stabilizeNodesAndMuscles(nodes, muscles, nodeNum, muscleNum)
+      this.adjustNodesToCenter(nodes, nodeNum)
 
       const heartbeat = p5.random(40, 80)
       const creature = new Creature(id, nodes, muscles, 0, true, heartbeat, 1.0)
@@ -211,6 +211,51 @@ export default function sketch(p5: p5) {
         simulationState.creature.nodes.length
 
       simulationState.timer++
+    }
+
+    stabilizeNodesAndMuscles(
+      nodes: Node[],
+      muscles: Muscle[],
+      nodeCount: number,
+      muscleCount: number
+    ): void {
+      for (let j = 0; j < 200; j++) {
+        for (let i = 0; i < muscleCount; i++) {
+          this.applyForceToMuscle(muscles[i], nodes)
+        }
+
+        for (let i = 0; i < nodeCount; i++) {
+          this.applyForcesToNode(nodes[i])
+        }
+      }
+
+      for (let i = 0; i < nodeCount; i++) {
+        const ni = nodes[i]
+        ni.vx = 0
+        ni.vy = 0
+      }
+    }
+
+    adjustNodesToCenter(nodes: Node[], nodeCount: number): void {
+      let avx = 0
+      let lowY = -1000
+
+      for (let i = 0; i < nodeCount; i++) {
+        const ni = nodes[i]
+        avx += ni.x
+
+        if (ni.y + ni.m / 2 > lowY) {
+          lowY = ni.y + ni.m / 2
+        }
+      }
+
+      avx /= nodeCount
+
+      for (let i = 0; i < nodeCount; i++) {
+        const ni = nodes[i]
+        ni.x -= avx
+        ni.y -= lowY
+      }
     }
 
     applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
@@ -2003,51 +2048,6 @@ export default function sketch(p5: p5) {
     return toInt(i) + ''
   }
 
-  function stabilizeNodesAndMuscles(
-    nodes: Node[],
-    muscles: Muscle[],
-    nodeCount: number,
-    muscleCount: number
-  ): void {
-    for (let j = 0; j < 200; j++) {
-      for (let i = 0; i < muscleCount; i++) {
-        simulation.applyForceToMuscle(muscles[i], nodes)
-      }
-
-      for (let i = 0; i < nodeCount; i++) {
-        simulation.applyForcesToNode(nodes[i])
-      }
-    }
-
-    for (let i = 0; i < nodeCount; i++) {
-      const ni = nodes[i]
-      ni.vx = 0
-      ni.vy = 0
-    }
-  }
-
-  function adjustNodesToCenter(nodes: Node[], nodeCount: number): void {
-    let avx = 0
-    let lowY = -1000
-
-    for (let i = 0; i < nodeCount; i++) {
-      const ni = nodes[i]
-      avx += ni.x
-
-      if (ni.y + ni.m / 2 > lowY) {
-        lowY = ni.y + ni.m / 2
-      }
-    }
-
-    avx /= nodeCount
-
-    for (let i = 0; i < nodeCount; i++) {
-      const ni = nodes[i]
-      ni.x -= avx
-      ni.y -= lowY
-    }
-  }
-
   function getNodesAverage(nodes: Node[]): {
     averageX: number
     averageY: number
@@ -2893,8 +2893,13 @@ export default function sketch(p5: p5) {
         // Stabilize and adjust mutated offspring
         const {muscles, nodes} = c2[culledCreatureIndex]
 
-        stabilizeNodesAndMuscles(nodes, muscles, nodes.length, muscles.length)
-        adjustNodesToCenter(nodes, nodes.length)
+        simulation.stabilizeNodesAndMuscles(
+          nodes,
+          muscles,
+          nodes.length,
+          muscles.length
+        )
+        simulation.adjustNodesToCenter(nodes, nodes.length)
       }
 
       for (let j = 0; j < CREATURE_COUNT; j++) {

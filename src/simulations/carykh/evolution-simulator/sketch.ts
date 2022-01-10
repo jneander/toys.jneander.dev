@@ -211,7 +211,6 @@ export default function sketch(p5: p5) {
         simulationState.creature.nodes.length
 
       simulationState.timer++
-      appState.viewTimer++
     }
 
     applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
@@ -766,6 +765,11 @@ export default function sketch(p5: p5) {
 
   const simulation = new Simulation()
 
+  function advanceSimulation(): void {
+    simulation.advance()
+    appState.viewTimer++
+  }
+
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
   }
@@ -952,7 +956,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       for (let s = appState.viewTimer; s < 900; s++) {
-        simulation.advance()
+        advanceSimulation()
       }
 
       appState.viewTimer = 1021
@@ -1002,7 +1006,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       for (let s = appState.viewTimer; s < 900; s++) {
-        simulation.advance()
+        advanceSimulation()
       }
 
       appState.viewTimer = 0
@@ -1012,7 +1016,7 @@ export default function sketch(p5: p5) {
         setSimulationState(creaturesInLatestGeneration[i])
 
         for (let s = 0; s < 900; s++) {
-          simulation.advance()
+          advanceSimulation()
         }
 
         setFitnessOfSimulationCreature()
@@ -1277,7 +1281,7 @@ export default function sketch(p5: p5) {
       p5.image(popUpImage, px2, py2, 300, 300)
 
       drawStats(px2 + 295, py2, 0.45)
-      simulation.advance()
+      advanceSimulation()
     }
   }
 
@@ -2537,7 +2541,7 @@ export default function sketch(p5: p5) {
           setSimulationState(creaturesInLatestGeneration[i])
 
           for (let s = 0; s < 900; s++) {
-            simulation.advance()
+            advanceSimulation()
           }
 
           setFitnessOfSimulationCreature()
@@ -2557,7 +2561,7 @@ export default function sketch(p5: p5) {
 
         for (let s = 0; s < simulationState.speed; s++) {
           if (appState.viewTimer < 900) {
-            simulation.advance()
+            advanceSimulation()
           }
         }
 

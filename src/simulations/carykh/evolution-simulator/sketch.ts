@@ -244,7 +244,8 @@ export default function sketch(p5: p5) {
         [],
         0,
         true,
-        creature.creatureTimer + r() * 16 * creature.mutability,
+        creature.creatureTimer +
+          reducedRandomForMutation() * 16 * creature.mutability,
         Math.min(creature.mutability * p5.random(0.8, 1.25), 2)
       )
 
@@ -323,11 +324,14 @@ export default function sketch(p5: p5) {
       }
 
       const newR = Math.min(
-        Math.max(muscle.rigidity * (1 + r() * 0.9 * mutability), 0.01),
+        Math.max(
+          muscle.rigidity * (1 + reducedRandomForMutation() * 0.9 * mutability),
+          0.01
+        ),
         0.08
       )
       const newLen = Math.min(
-        Math.max(muscle.len + r() * mutability, 0.4),
+        Math.max(muscle.len + reducedRandomForMutation() * mutability, 0.4),
         1.25
       )
 
@@ -335,14 +339,15 @@ export default function sketch(p5: p5) {
     }
 
     modifyNode(node: Node, mutability: number, nodeNum: number): Node {
-      const newX = node.x + r() * 0.5 * mutability
-      const newY = node.y + r() * 0.5 * mutability
-      let newM = node.m + r() * 0.1 * mutability
+      const newX = node.x + reducedRandomForMutation() * 0.5 * mutability
+      const newY = node.y + reducedRandomForMutation() * 0.5 * mutability
+      let newM = node.m + reducedRandomForMutation() * 0.1 * mutability
 
       newM = Math.min(Math.max(newM, 0.3), 0.5)
       newM = 0.4
 
-      let newV = node.value * (1 + r() * 0.2 * mutability)
+      let newV =
+        node.value * (1 + reducedRandomForMutation() * 0.2 * mutability)
       let newOperation = node.operation
       let newAxon1 = node.axon1
       let newAxon2 = node.axon2
@@ -374,7 +379,10 @@ export default function sketch(p5: p5) {
         0,
         0,
         newM,
-        Math.min(Math.max(node.f + r() * 0.1 * mutability, 0), 1),
+        Math.min(
+          Math.max(node.f + reducedRandomForMutation() * 0.1 * mutability, 0),
+          1
+        ),
         newV,
         newOperation,
         newAxon1,
@@ -688,7 +696,7 @@ export default function sketch(p5: p5) {
     return a + (b - a) * offset
   }
 
-  function r(): number {
+  function reducedRandomForMutation(): number {
     return Math.pow(p5.random(-1, 1), 19)
   }
 

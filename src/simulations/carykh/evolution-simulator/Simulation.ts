@@ -22,8 +22,8 @@ import {
 import type {SimulationConfig, SimulationState} from './types'
 
 export default class Simulation {
-  config: SimulationConfig
-  state: SimulationState
+  private config: SimulationConfig
+  private state: SimulationState
 
   constructor(state: SimulationState, config: SimulationConfig) {
     this.config = config

@@ -162,11 +162,11 @@ export default function sketch(p5: p5) {
     return a + (b - a) * offset
   }
 
-  function getCursorPosition(): {mX: number; mY: number} {
-    const mX = p5.mouseX / WINDOW_SIZE_MULTIPLIER
-    const mY = p5.mouseY / WINDOW_SIZE_MULTIPLIER
+  function getCursorPosition(): {cursorX: number; cursorY: number} {
+    const cursorX = p5.mouseX / WINDOW_SIZE_MULTIPLIER
+    const cursorY = p5.mouseY / WINDOW_SIZE_MULTIPLIER
 
-    return {mX, mY}
+    return {cursorX, cursorY}
   }
 
   function rectIsUnderCursor(
@@ -175,9 +175,14 @@ export default function sketch(p5: p5) {
     width: number,
     height: number
   ): boolean {
-    const {mX, mY} = getCursorPosition()
+    const {cursorX, cursorY} = getCursorPosition()
 
-    return mX >= x && mX <= x + width && mY >= y && mY <= y + height
+    return (
+      cursorX >= x &&
+      cursorX <= x + width &&
+      cursorY >= y &&
+      cursorY <= y + height
+    )
   }
 
   abstract class Widget {
@@ -547,9 +552,9 @@ export default function sketch(p5: p5) {
     }
 
     onDrag(): void {
-      const {mX} = getCursorPosition()
+      const {cursorX} = getCursorPosition()
       sliderX = Math.min(
-        Math.max(sliderX + (mX - 25 - sliderX) * 0.2, 760),
+        Math.max(sliderX + (cursorX - 25 - sliderX) * 0.2, 760),
         1170
       )
     }
@@ -2033,7 +2038,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    const {mX, mY} = getCursorPosition()
+    const {cursorX, cursorY} = getCursorPosition()
 
     if (
       (appState.currentActivityId === Activity.FinishedStepByStep ||
@@ -2051,23 +2056,25 @@ export default function sketch(p5: p5) {
 
       let idOfCreatureUnderCursor: number | null = null
 
-      if (Math.abs(mX - 639.5) <= 599.5) {
+      if (Math.abs(cursorX - 639.5) <= 599.5) {
         if (
           appState.currentActivityId === Activity.FinishedStepByStep &&
-          Math.abs(mY - 329) <= 312
+          Math.abs(cursorY - 329) <= 312
         ) {
           idOfCreatureUnderCursor =
             creatureIdsByGridIndex[
-              Math.floor((mX - 40) / 30) + Math.floor((mY - 17) / 25) * 40
+              Math.floor((cursorX - 40) / 30) +
+                Math.floor((cursorY - 17) / 25) * 40
             ]
         } else if (
           (appState.currentActivityId === Activity.SortedCreatures ||
             appState.currentActivityId === Activity.CullingCreatures ||
             appState.currentActivityId === Activity.CulledCreatures) &&
-          Math.abs(mY - 354) <= 312
+          Math.abs(cursorY - 354) <= 312
         ) {
           idOfCreatureUnderCursor =
-            Math.floor((mX - 40) / 30) + Math.floor((mY - 42) / 25) * 40
+            Math.floor((cursorX - 40) / 30) +
+            Math.floor((cursorY - 42) / 25) * 40
         }
       }
 
@@ -2089,12 +2096,12 @@ export default function sketch(p5: p5) {
 
       let worstMedianOrBest: number | null = null
 
-      if (Math.abs(mY - 250) <= 70) {
-        if (Math.abs(mX - 990) <= 230) {
-          const modX = (mX - 760) % 160
+      if (Math.abs(cursorY - 250) <= 70) {
+        if (Math.abs(cursorX - 990) <= 230) {
+          const modX = (cursorX - 760) % 160
 
           if (modX < 140) {
-            worstMedianOrBest = Math.floor((mX - 760) / 160) - 3
+            worstMedianOrBest = Math.floor((cursorX - 760) / 160) - 3
           }
         }
       }

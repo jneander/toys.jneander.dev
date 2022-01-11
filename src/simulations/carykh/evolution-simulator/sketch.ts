@@ -770,97 +770,37 @@ export default function sketch(p5: p5) {
       )
     }
 
-    if (toImage == 0) {
-      p5.fill(c)
-      p5.noStroke()
-      p5.ellipse(
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + y) * scaleToFixBug,
-        ni.mass * scaleToFixBug,
-        ni.mass * scaleToFixBug
-      )
+    const graphics = [p5, screenImage, popUpImage][toImage]
 
-      if (ni.friction >= 0.5) {
-        p5.fill(255)
-      } else {
-        p5.fill(0)
-      }
+    graphics.fill(c)
+    graphics.noStroke()
+    graphics.ellipse(
+      (ni.positionX + x) * scaleToFixBug,
+      (ni.positionY + y) * scaleToFixBug,
+      ni.mass * scaleToFixBug,
+      ni.mass * scaleToFixBug
+    )
 
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 0.4 * ni.mass * scaleToFixBug)
-      p5.text(
-        p5.nf(ni.value, 0, 2),
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
-          scaleToFixBug
-      )
-      p5.text(
-        NODE_OPERATION_LABELS_BY_ID[ni.operation],
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
-          scaleToFixBug
-      )
-    } else if (toImage == 1) {
-      screenImage.fill(c)
-      screenImage.noStroke()
-      screenImage.ellipse(
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + y) * scaleToFixBug,
-        ni.mass * scaleToFixBug,
-        ni.mass * scaleToFixBug
-      )
-
-      if (ni.friction >= 0.5) {
-        screenImage.fill(255)
-      } else {
-        screenImage.fill(0)
-      }
-
-      screenImage.textAlign(p5.CENTER)
-      screenImage.textFont(font, 0.4 * ni.mass * scaleToFixBug)
-      screenImage.text(
-        p5.nf(ni.value, 0, 2),
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
-          scaleToFixBug
-      )
-      screenImage.text(
-        NODE_OPERATION_LABELS_BY_ID[ni.operation],
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
-          scaleToFixBug
-      )
-    } else if (toImage == 2) {
-      popUpImage.fill(c)
-      popUpImage.noStroke()
-      popUpImage.ellipse(
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + y) * scaleToFixBug,
-        ni.mass * scaleToFixBug,
-        ni.mass * scaleToFixBug
-      )
-
-      if (ni.friction >= 0.5) {
-        popUpImage.fill(255)
-      } else {
-        popUpImage.fill(0)
-      }
-
-      popUpImage.textAlign(p5.CENTER)
-      popUpImage.textFont(font, 0.4 * ni.mass * scaleToFixBug)
-      popUpImage.text(
-        p5.nf(ni.value, 0, 2),
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
-          scaleToFixBug
-      )
-      popUpImage.text(
-        NODE_OPERATION_LABELS_BY_ID[ni.operation],
-        (ni.positionX + x) * scaleToFixBug,
-        (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
-          scaleToFixBug
-      )
+    if (ni.friction >= 0.5) {
+      graphics.fill(255)
+    } else {
+      graphics.fill(0)
     }
+
+    graphics.textAlign(p5.CENTER)
+    graphics.textFont(font, 0.4 * ni.mass * scaleToFixBug)
+    graphics.text(
+      p5.nf(ni.value, 0, 2),
+      (ni.positionX + x) * scaleToFixBug,
+      (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
+        scaleToFixBug
+    )
+    graphics.text(
+      NODE_OPERATION_LABELS_BY_ID[ni.operation],
+      (ni.positionX + x) * scaleToFixBug,
+      (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
+        scaleToFixBug
+    )
   }
 
   function drawNodeAxons(
@@ -903,73 +843,29 @@ export default function sketch(p5: p5) {
     const arrowHeadSize = 0.1
     const angle = Math.atan2(y2 - y1, x2 - x1)
 
-    if (toImage == 0) {
-      p5.stroke(AXON_COLOR)
-      p5.strokeWeight(0.03 * scaleToFixBug)
-      p5.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        x2 * scaleToFixBug,
-        y2 * scaleToFixBug
-      )
-      p5.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
-        (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug
-      )
-      p5.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
-        (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug
-      )
-      p5.noStroke()
-    } else if (toImage == 1) {
-      screenImage.stroke(AXON_COLOR)
-      screenImage.strokeWeight(0.03 * scaleToFixBug)
-      screenImage.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        x2 * scaleToFixBug,
-        y2 * scaleToFixBug
-      )
-      screenImage.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
-        (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug
-      )
-      screenImage.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
-        (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug
-      )
-      popUpImage.noStroke()
-    } else if (toImage == 2) {
-      popUpImage.stroke(AXON_COLOR)
-      popUpImage.strokeWeight(0.03 * scaleToFixBug)
-      popUpImage.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        x2 * scaleToFixBug,
-        y2 * scaleToFixBug
-      )
-      popUpImage.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
-        (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug
-      )
-      popUpImage.line(
-        x1 * scaleToFixBug,
-        y1 * scaleToFixBug,
-        (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
-        (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug
-      )
-      popUpImage.noStroke()
-    }
+    const graphics = [p5, screenImage, popUpImage][toImage]
+
+    graphics.stroke(AXON_COLOR)
+    graphics.strokeWeight(0.03 * scaleToFixBug)
+    graphics.line(
+      x1 * scaleToFixBug,
+      y1 * scaleToFixBug,
+      x2 * scaleToFixBug,
+      y2 * scaleToFixBug
+    )
+    graphics.line(
+      x1 * scaleToFixBug,
+      y1 * scaleToFixBug,
+      (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
+      (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug
+    )
+    graphics.line(
+      x1 * scaleToFixBug,
+      y1 * scaleToFixBug,
+      (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
+      (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug
+    )
+    graphics.noStroke()
   }
 
   function drawMuscle(
@@ -988,34 +884,16 @@ export default function sketch(p5: p5) {
       w = n[mi.axon].getClampedValue() * 0.15
     }
 
-    if (toImage == 0) {
-      p5.strokeWeight(w * scaleToFixBug)
-      p5.stroke(70, 35, 0, mi.rigidity * 3000)
-      p5.line(
-        (ni1.positionX + x) * scaleToFixBug,
-        (ni1.positionY + y) * scaleToFixBug,
-        (ni2.positionX + x) * scaleToFixBug,
-        (ni2.positionY + y) * scaleToFixBug
-      )
-    } else if (toImage == 1) {
-      screenImage.strokeWeight(w * scaleToFixBug)
-      screenImage.stroke(70, 35, 0, mi.rigidity * 3000)
-      screenImage.line(
-        (ni1.positionX + x) * scaleToFixBug,
-        (ni1.positionY + y) * scaleToFixBug,
-        (ni2.positionX + x) * scaleToFixBug,
-        (ni2.positionY + y) * scaleToFixBug
-      )
-    } else if (toImage == 2) {
-      popUpImage.strokeWeight(w * scaleToFixBug)
-      popUpImage.stroke(70, 35, 0, mi.rigidity * 3000)
-      popUpImage.line(
-        (ni1.positionX + x) * scaleToFixBug,
-        (ni1.positionY + y) * scaleToFixBug,
-        (ni2.positionX + x) * scaleToFixBug,
-        (ni2.positionY + y) * scaleToFixBug
-      )
-    }
+    const graphics = [p5, screenImage, popUpImage][toImage]
+
+    graphics.strokeWeight(w * scaleToFixBug)
+    graphics.stroke(70, 35, 0, mi.rigidity * 3000)
+    graphics.line(
+      (ni1.positionX + x) * scaleToFixBug,
+      (ni1.positionY + y) * scaleToFixBug,
+      (ni2.positionX + x) * scaleToFixBug,
+      (ni2.positionY + y) * scaleToFixBug
+    )
   }
 
   function drawMuscleAxons(
@@ -1042,35 +920,16 @@ export default function sketch(p5: p5) {
       )
 
       const averageMass = (ni1.mass + ni2.mass) * 0.5
+      const graphics = [p5, screenImage, popUpImage][toImage]
 
-      if (toImage == 0) {
-        p5.fill(AXON_COLOR)
-        p5.textAlign(p5.CENTER)
-        p5.textFont(font, 0.4 * averageMass * scaleToFixBug)
-        p5.text(
-          p5.nf(n[mi.axon].getClampedValue(), 0, 2),
-          muscleMidX * scaleToFixBug,
-          muscleMidY * scaleToFixBug
-        )
-      } else if (toImage == 1) {
-        screenImage.fill(AXON_COLOR)
-        screenImage.textAlign(p5.CENTER)
-        screenImage.textFont(font, 0.4 * averageMass * scaleToFixBug)
-        screenImage.text(
-          p5.nf(n[mi.axon].getClampedValue(), 0, 2),
-          muscleMidX * scaleToFixBug,
-          muscleMidY * scaleToFixBug
-        )
-      } else if (toImage == 2) {
-        popUpImage.fill(AXON_COLOR)
-        popUpImage.textAlign(p5.CENTER)
-        popUpImage.textFont(font, 0.4 * averageMass * scaleToFixBug)
-        popUpImage.text(
-          p5.nf(n[mi.axon].getClampedValue(), 0, 2),
-          muscleMidX * scaleToFixBug,
-          muscleMidY * scaleToFixBug
-        )
-      }
+      graphics.fill(AXON_COLOR)
+      graphics.textAlign(p5.CENTER)
+      graphics.textFont(font, 0.4 * averageMass * scaleToFixBug)
+      graphics.text(
+        p5.nf(n[mi.axon].getClampedValue(), 0, 2),
+        muscleMidX * scaleToFixBug,
+        muscleMidY * scaleToFixBug
+      )
     }
   }
 
@@ -1078,70 +937,37 @@ export default function sketch(p5: p5) {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
     const startPostY = Math.min(-8, toInt(averageY / 4) * 4 - 4)
 
-    if (toImage == 0) {
-      p5.noStroke()
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, postFontSize * scaleToFixBug)
+    const graphics = [p5, null, popUpImage][toImage]
 
-      for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
-        for (
-          let i = toInt(averageX / 5 - 5);
-          i <= toInt(averageX / 5 + 5);
-          i++
-        ) {
-          p5.fill(255)
-          p5.rect(
-            (i * 5.0 - 0.1) * scaleToFixBug,
-            (-3.0 + postY) * scaleToFixBug,
-            0.2 * scaleToFixBug,
-            3.0 * scaleToFixBug
-          )
-          p5.rect(
-            (i * 5.0 - 1) * scaleToFixBug,
-            (-3.0 + postY) * scaleToFixBug,
-            2.0 * scaleToFixBug,
-            1.0 * scaleToFixBug
-          )
-          p5.fill(120)
-          p5.textAlign(p5.CENTER)
-          p5.text(
-            i + ' m',
-            i * 5.0 * scaleToFixBug,
-            (-2.17 + postY) * scaleToFixBug
-          )
-        }
-      }
-    } else if (toImage == 2) {
-      popUpImage.textAlign(p5.CENTER)
-      popUpImage.textFont(font, postFontSize * scaleToFixBug)
-      popUpImage.noStroke()
+    if (graphics == null) {
+      return
+    }
 
-      for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
-        for (
-          let i = toInt(averageX / 5 - 5);
-          i <= toInt(averageX / 5 + 5);
-          i++
-        ) {
-          popUpImage.fill(255)
-          popUpImage.rect(
-            (i * 5 - 0.1) * scaleToFixBug,
-            (-3.0 + postY) * scaleToFixBug,
-            0.2 * scaleToFixBug,
-            3 * scaleToFixBug
-          )
-          popUpImage.rect(
-            (i * 5 - 1) * scaleToFixBug,
-            (-3.0 + postY) * scaleToFixBug,
-            2 * scaleToFixBug,
-            1 * scaleToFixBug
-          )
-          popUpImage.fill(120)
-          popUpImage.text(
-            i + ' m',
-            i * 5 * scaleToFixBug,
-            (-2.17 + postY) * scaleToFixBug
-          )
-        }
+    graphics.textAlign(p5.CENTER)
+    graphics.textFont(font, postFontSize * scaleToFixBug)
+    graphics.noStroke()
+
+    for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
+      for (let i = toInt(averageX / 5 - 5); i <= toInt(averageX / 5 + 5); i++) {
+        graphics.fill(255)
+        graphics.rect(
+          (i * 5 - 0.1) * scaleToFixBug,
+          (-3.0 + postY) * scaleToFixBug,
+          0.2 * scaleToFixBug,
+          3 * scaleToFixBug
+        )
+        graphics.rect(
+          (i * 5 - 1) * scaleToFixBug,
+          (-3.0 + postY) * scaleToFixBug,
+          2 * scaleToFixBug,
+          1 * scaleToFixBug
+        )
+        graphics.fill(120)
+        graphics.text(
+          i + ' m',
+          i * 5 * scaleToFixBug,
+          (-2.17 + postY) * scaleToFixBug
+        )
       }
     }
   }

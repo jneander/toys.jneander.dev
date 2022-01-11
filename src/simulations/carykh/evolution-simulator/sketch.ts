@@ -66,9 +66,15 @@ export default function sketch(p5: p5) {
   let statusWindow = -4
   const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
+  type GenerationHistoryEntry = {
+    fastest: Creature
+    median: Creature
+    slowest: Creature
+  }
+
   type AppState = {
-    creatureDatabase: Creature[]
     currentActivityId: Activity
+    generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
     showPopupSimulation: boolean
     speciesCounts: number[][]
     topSpeciesCounts: number[]
@@ -76,8 +82,8 @@ export default function sketch(p5: p5) {
   }
 
   const appState: AppState = {
-    creatureDatabase: [],
     currentActivityId: Activity.Start,
+    generationHistoryMap: {},
     showPopupSimulation: false,
     speciesCounts: [],
     topSpeciesCounts: [],
@@ -114,6 +120,20 @@ export default function sketch(p5: p5) {
 
   function indexOfCreatureInLatestGeneration(creatureId: number): number {
     return (creatureId - 1) % CREATURE_COUNT
+  }
+
+  function historyEntryKeyForStatusWindow(
+    statusWindow: number
+  ): keyof GenerationHistoryEntry {
+    if (statusWindow === -3) {
+      return 'slowest'
+    }
+
+    if (statusWindow === -2) {
+      return 'median'
+    }
+
+    return 'fastest'
   }
 
   let c2: Creature[] = []
@@ -555,10 +575,9 @@ export default function sketch(p5: p5) {
 
         p5.rect(x * 30 + 40, y * 25 + 17, 30, 25)
       } else {
-        cj =
-          appState.creatureDatabase[
-            (selectedGeneration - 1) * 3 + statusWindow + 3
-          ]
+        const historyEntry = appState.generationHistoryMap[selectedGeneration]
+        cj = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
+
         x = 760 + (statusWindow + 3) * 160
         y = 180
         px = x
@@ -1988,9 +2007,13 @@ export default function sketch(p5: p5) {
           c2[fitnessPercentileCreatureIndices[i]].fitness
       }
 
-      appState.creatureDatabase.push(c2[lastCreatureIndex].clone())
-      appState.creatureDatabase.push(c2[midCreatureIndex].clone())
-      appState.creatureDatabase.push(c2[0].clone())
+      const historyEntry: GenerationHistoryEntry = {
+        fastest: c2[0].clone(),
+        median: c2[midCreatureIndex].clone(),
+        slowest: c2[lastCreatureIndex].clone()
+      }
+
+      appState.generationHistoryMap[generationCount + 1] = historyEntry
 
       const beginBar = new Array<number>(barLen)
       for (let i = 0; i < barLen; i++) {
@@ -2277,6 +2300,8 @@ export default function sketch(p5: p5) {
       if (selectedGeneration >= 1) {
         p5.textAlign(p5.CENTER)
 
+        const historyEntry = appState.generationHistoryMap[selectedGeneration]
+
         for (let k = 0; k < 3; k++) {
           p5.fill(220)
           p5.rect(760 + k * 160, 180, 140, 140)
@@ -2286,12 +2311,9 @@ export default function sketch(p5: p5) {
           p5.translate(830 + 160 * k, 290)
           p5.scale(60.0 / scaleToFixBug)
 
-          drawCreature(
-            appState.creatureDatabase[(selectedGeneration - 1) * 3 + k],
-            0,
-            0,
-            0
-          )
+          const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
+
+          drawCreature(creature, 0, 0, 0)
 
           p5.pop()
         }
@@ -2317,10 +2339,8 @@ export default function sketch(p5: p5) {
     let targetCreatureId: number
 
     if (statusWindow <= -1) {
-      creature =
-        appState.creatureDatabase[
-          (selectedGeneration - 1) * 3 + statusWindow + 3
-        ]
+      const historyEntry = appState.generationHistoryMap[selectedGeneration]
+      creature = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
       targetCreatureId = creature.id
     } else {
       targetCreatureId = statusWindow

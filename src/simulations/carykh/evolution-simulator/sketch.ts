@@ -51,13 +51,10 @@ export default function sketch(p5: p5) {
   let minBar = -10
   let maxBar = 100
   let barLen = maxBar - minBar
-  let gensToDo = 0
   let postFontSize = 0.96
   let scaleToFixBug = 1000
 
-  let generationCount = -1
   let sliderX = 1170
-  let selectedGeneration = 0
   let draggingSlider = false
   let creaturesTested = 0
 
@@ -79,7 +76,10 @@ export default function sketch(p5: p5) {
 
   type AppState = {
     currentActivityId: Activity
+    generationCount: number
     generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
+    pendingGenerationCount: number
+    selectedGeneration: number
     showPopupSimulation: boolean
     speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
     viewTimer: number
@@ -87,7 +87,10 @@ export default function sketch(p5: p5) {
 
   const appState: AppState = {
     currentActivityId: Activity.Start,
+    generationCount: -1,
     generationHistoryMap: {},
+    pendingGenerationCount: 0,
+    selectedGeneration: 0,
     showPopupSimulation: false,
     speciesCountsHistoryMap: {},
     viewTimer: 0
@@ -233,7 +236,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      generationCount = 0
+      appState.generationCount = 0
       setActivity(Activity.GenerationView)
     }
   }
@@ -295,7 +298,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      gensToDo = 1
+      appState.pendingGenerationCount = 1
       startASAP()
     }
   }
@@ -304,7 +307,7 @@ export default function sketch(p5: p5) {
     draw(): void {
       p5.noStroke()
 
-      if (gensToDo >= 2) {
+      if (appState.pendingGenerationCount >= 2) {
         p5.fill(128, 255, 128)
       } else {
         p5.fill(70, 140, 70)
@@ -320,7 +323,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      gensToDo = 1000000000
+      appState.pendingGenerationCount = 1000000000
       startASAP()
     }
   }
@@ -524,15 +527,19 @@ export default function sketch(p5: p5) {
       p5.rect(sliderX, 340, 50, 50)
 
       let fs = 0
-      if (selectedGeneration >= 1) {
-        fs = Math.floor(Math.log(selectedGeneration) / Math.log(10))
+      if (appState.selectedGeneration >= 1) {
+        fs = Math.floor(Math.log(appState.selectedGeneration) / Math.log(10))
       }
 
       const fontSize = FONT_SIZES[fs]
 
       p5.textFont(font, fontSize)
       p5.fill(0)
-      p5.text(selectedGeneration, sliderX + 25, 366 + fontSize * 0.3333)
+      p5.text(
+        appState.selectedGeneration,
+        sliderX + 25,
+        366 + fontSize * 0.3333
+      )
     }
 
     isUnderCursor(): boolean {
@@ -582,7 +589,8 @@ export default function sketch(p5: p5) {
 
         p5.rect(x * 30 + 40, y * 25 + 17, 30, 25)
       } else {
-        const historyEntry = appState.generationHistoryMap[selectedGeneration]
+        const historyEntry =
+          appState.generationHistoryMap[appState.selectedGeneration]
         cj = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
 
         x = 760 + (statusWindow + 3) * 160
@@ -1002,12 +1010,12 @@ export default function sketch(p5: p5) {
     p5.image(graphImage, 50, 180, 650, 380)
     p5.image(segBarImage, 50, 580, 650, 100)
 
-    if (generationCount >= 1) {
+    if (appState.generationCount >= 1) {
       p5.stroke(0, 160, 0, 255)
       p5.strokeWeight(3)
 
-      const genWidth = 590.0 / generationCount
-      const lineX = 110 + selectedGeneration * genWidth
+      const genWidth = 590.0 / appState.generationCount
+      const lineX = 110 + appState.selectedGeneration * genWidth
 
       p5.line(lineX, 180, lineX, 500 + 180)
 
@@ -1016,7 +1024,7 @@ export default function sketch(p5: p5) {
       p5.noStroke()
 
       const speciesCounts =
-        appState.speciesCountsHistoryMap[selectedGeneration] || []
+        appState.speciesCountsHistoryMap[appState.selectedGeneration] || []
 
       // Identify the largest species count.
       const highCount = speciesCounts.reduce(
@@ -1085,7 +1093,7 @@ export default function sketch(p5: p5) {
   function drawGraph(graphWidth: number, graphHeight: number): void {
     graphImage.background(220)
 
-    if (generationCount >= 1) {
+    if (appState.generationCount >= 1) {
       drawLines(
         90,
         toInt(graphHeight * 0.05),
@@ -1103,7 +1111,7 @@ export default function sketch(p5: p5) {
     graphHeight: number
   ): void {
     const gh = graphHeight
-    const genWidth = graphWidth / generationCount
+    const genWidth = graphWidth / appState.generationCount
     const best = extreme(1)
     const worst = extreme(-1)
     const meterHeight = graphHeight / (best - worst)
@@ -1156,7 +1164,7 @@ export default function sketch(p5: p5) {
         }
       }
 
-      for (let j = 0; j < generationCount; j++) {
+      for (let j = 0; j < appState.generationCount; j++) {
         graphImage.line(
           x + j * genWidth,
           -fitnessPercentileHistory[j][k] * meterHeight + zero + y,
@@ -1177,11 +1185,11 @@ export default function sketch(p5: p5) {
     segBarImage.colorMode(p5.HSB, 1)
     segBarImage.background(0, 0, 0.5)
 
-    const generationWidth = graphWidth / generationCount
-    const generationsPerBar = Math.floor(generationCount / 500) + 1
+    const generationWidth = graphWidth / appState.generationCount
+    const generationsPerBar = Math.floor(appState.generationCount / 500) + 1
 
-    for (let i1 = 0; i1 < generationCount; i1 += generationsPerBar) {
-      const i2 = Math.min(i1 + generationsPerBar, generationCount)
+    for (let i1 = 0; i1 < appState.generationCount; i1 += generationsPerBar) {
+      const i2 = Math.min(i1 + generationsPerBar, appState.generationCount)
 
       const barX1 = x + i1 * generationWidth
       const barX2 = x + i2 * generationWidth
@@ -1278,7 +1286,7 @@ export default function sketch(p5: p5) {
   function extreme(sign: number): number {
     let record = -sign
 
-    for (let i = 0; i < generationCount; i++) {
+    for (let i = 0; i < appState.generationCount; i++) {
       const toTest = fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
 
       if (toTest * sign > record * sign) {
@@ -1355,13 +1363,13 @@ export default function sketch(p5: p5) {
   }
 
   p5.mousePressed = () => {
-    if (gensToDo >= 1) {
-      gensToDo = 0
+    if (appState.pendingGenerationCount >= 1) {
+      appState.pendingGenerationCount = 0
     }
 
     if (
       appState.currentActivityId === Activity.GenerationView &&
-      generationCount >= 1 &&
+      appState.generationCount >= 1 &&
       generationSlider.isUnderCursor()
     ) {
       draggingSlider = true
@@ -1395,13 +1403,13 @@ export default function sketch(p5: p5) {
       startViewStartButton.onClick()
     } else if (
       appState.currentActivityId === Activity.GenerationView &&
-      generationCount == -1 &&
+      appState.generationCount == -1 &&
       generationViewCreateButton.isUnderCursor()
     ) {
       generationViewCreateButton.onClick()
     } else if (
       appState.currentActivityId === Activity.GenerationView &&
-      generationCount >= 0
+      appState.generationCount >= 0
     ) {
       if (simulateStepByStepButton.isUnderCursor()) {
         simulateStepByStepButton.onClick()
@@ -1543,7 +1551,7 @@ export default function sketch(p5: p5) {
       screenImage.fill(0)
       screenImage.text(
         'These are the 1000 creatures of generation #' +
-          (generationCount + 2) +
+          (appState.generationCount + 2) +
           '.',
         windowWidth / 2,
         30
@@ -1593,8 +1601,8 @@ export default function sketch(p5: p5) {
     let maxH = 1
 
     for (let i = 0; i < barLen; i++) {
-      if (barCounts[selectedGeneration][i] > maxH) {
-        maxH = barCounts[selectedGeneration][i]
+      if (barCounts[appState.selectedGeneration][i] > maxH) {
+        maxH = barCounts[appState.selectedGeneration][i]
       }
     }
 
@@ -1655,13 +1663,19 @@ export default function sketch(p5: p5) {
     p5.noStroke()
 
     for (let i = 0; i < barLen; i++) {
-      const h = Math.min(barCounts[selectedGeneration][i] * multiplier, hh)
+      const h = Math.min(
+        barCounts[appState.selectedGeneration][i] * multiplier,
+        hh
+      )
 
       if (
         i + minBar ==
         Math.floor(
           fitnessPercentileHistory[
-            Math.min(selectedGeneration, fitnessPercentileHistory.length - 1)
+            Math.min(
+              appState.selectedGeneration,
+              fitnessPercentileHistory.length - 1
+            )
           ][14] * histBarsPerMeter
         )
       ) {
@@ -1719,10 +1733,10 @@ export default function sketch(p5: p5) {
       p5.textFont(font, 32)
       p5.textAlign(p5.LEFT)
       p5.textFont(font, 96)
-      p5.text('Generation ' + Math.max(selectedGeneration, 0), 20, 100)
+      p5.text('Generation ' + Math.max(appState.selectedGeneration, 0), 20, 100)
       p5.textFont(font, 28)
 
-      if (generationCount == -1) {
+      if (appState.generationCount == -1) {
         p5.fill(0)
         p5.text(
           `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
@@ -1744,7 +1758,10 @@ export default function sketch(p5: p5) {
         p5.text(
           Math.round(
             fitnessPercentileHistory[
-              Math.min(selectedGeneration, fitnessPercentileHistory.length - 1)
+              Math.min(
+                appState.selectedGeneration,
+                fitnessPercentileHistory.length - 1
+              )
             ][14] * 1000
           ) /
             1000 +
@@ -1758,9 +1775,9 @@ export default function sketch(p5: p5) {
         drawGraphImage()
       }
 
-      if (gensToDo >= 1) {
-        gensToDo--
-        if (gensToDo >= 1) {
+      if (appState.pendingGenerationCount >= 1) {
+        appState.pendingGenerationCount--
+        if (appState.pendingGenerationCount >= 1) {
           startASAP()
         }
       }
@@ -1919,7 +1936,7 @@ export default function sketch(p5: p5) {
 
       fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
       for (let i = 0; i < fitnessPercentileCount; i++) {
-        fitnessPercentileHistory[generationCount + 1][i] =
+        fitnessPercentileHistory[appState.generationCount + 1][i] =
           c2[fitnessPercentileCreatureIndices[i]].fitness
       }
 
@@ -1929,7 +1946,7 @@ export default function sketch(p5: p5) {
         slowest: c2[lastCreatureIndex].clone()
       }
 
-      appState.generationHistoryMap[generationCount + 1] = historyEntry
+      appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
 
       const beginBar = new Array<number>(barLen)
       for (let i = 0; i < barLen; i++) {
@@ -1944,7 +1961,7 @@ export default function sketch(p5: p5) {
         const bar = Math.floor(c2[i].fitness * histBarsPerMeter - minBar)
 
         if (bar >= 0 && bar < barLen) {
-          barCounts[generationCount + 1][bar]++
+          barCounts[appState.generationCount + 1][bar]++
         }
 
         const speciesId = speciesIdForCreature(c2[i])
@@ -1962,7 +1979,8 @@ export default function sketch(p5: p5) {
           return speciesCountA.speciesId - speciesCountB.speciesId
         })
 
-      appState.speciesCountsHistoryMap[generationCount + 1] = mapEntries
+      appState.speciesCountsHistoryMap[appState.generationCount + 1] =
+        mapEntries
 
       if (stepByStep) {
         drawScreenImage(CreatureGridViewType.SimulationFinished)
@@ -1984,7 +2002,7 @@ export default function sketch(p5: p5) {
 
       for (let j = 0; j < CREATURE_COUNT; j++) {
         const cj = c2[j]
-        const j2 = cj.id - generationCount * CREATURE_COUNT - 1
+        const j2 = cj.id - appState.generationCount * CREATURE_COUNT - 1
         const x1 = j2 % 40
         const y1 = Math.floor(j2 / 40)
         const x2 = j % 40
@@ -2019,7 +2037,7 @@ export default function sketch(p5: p5) {
         appState.currentActivityId === Activity.SortedCreatures ||
         appState.currentActivityId === Activity.CullingCreatures ||
         appState.currentActivityId === Activity.CulledCreatures) &&
-      gensToDo == 0 &&
+      appState.pendingGenerationCount == 0 &&
       !draggingSlider
     ) {
       /*
@@ -2056,8 +2074,8 @@ export default function sketch(p5: p5) {
       }
     } else if (
       appState.currentActivityId === Activity.GenerationView &&
-      selectedGeneration >= 1 &&
-      gensToDo == 0 &&
+      appState.selectedGeneration >= 1 &&
+      appState.pendingGenerationCount == 0 &&
       !draggingSlider
     ) {
       /*
@@ -2161,7 +2179,7 @@ export default function sketch(p5: p5) {
 
       drawScreenImage(CreatureGridViewType.PropagatedCreatures)
 
-      generationCount++
+      appState.generationCount++
 
       if (stepByStep) {
         setActivity(Activity.PropagatedCreatures)
@@ -2181,17 +2199,19 @@ export default function sketch(p5: p5) {
 
     if (
       appState.currentActivityId === Activity.GenerationView ||
-      gensToDo >= 1
+      appState.pendingGenerationCount >= 1
     ) {
       p5.noStroke()
 
-      if (generationCount >= 1) {
-        if (generationCount >= 5) {
-          selectedGeneration =
-            Math.round(((sliderX - 760) * (generationCount - 1)) / 410) + 1
+      if (appState.generationCount >= 1) {
+        if (appState.generationCount >= 5) {
+          appState.selectedGeneration =
+            Math.round(
+              ((sliderX - 760) * (appState.generationCount - 1)) / 410
+            ) + 1
         } else {
-          selectedGeneration = Math.round(
-            ((sliderX - 760) * generationCount) / 410
+          appState.selectedGeneration = Math.round(
+            ((sliderX - 760) * appState.generationCount) / 410
           )
         }
 
@@ -2202,10 +2222,11 @@ export default function sketch(p5: p5) {
         generationSlider.draw()
       }
 
-      if (selectedGeneration >= 1) {
+      if (appState.selectedGeneration >= 1) {
         p5.textAlign(p5.CENTER)
 
-        const historyEntry = appState.generationHistoryMap[selectedGeneration]
+        const historyEntry =
+          appState.generationHistoryMap[appState.selectedGeneration]
 
         for (let k = 0; k < 3; k++) {
           p5.fill(220)
@@ -2244,7 +2265,8 @@ export default function sketch(p5: p5) {
     let targetCreatureId: number
 
     if (statusWindow <= -1) {
-      const historyEntry = appState.generationHistoryMap[selectedGeneration]
+      const historyEntry =
+        appState.generationHistoryMap[appState.selectedGeneration]
       creature = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
       targetCreatureId = creature.id
     } else {
@@ -2258,7 +2280,7 @@ export default function sketch(p5: p5) {
     ) {
       simulationState.timer = 0
 
-      if (gensToDo == 0) {
+      if (appState.pendingGenerationCount == 0) {
         // The full simulation is not running, so the popup simulation can be shown.
         appState.showPopupSimulation = true
 

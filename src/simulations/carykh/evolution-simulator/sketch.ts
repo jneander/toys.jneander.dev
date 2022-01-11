@@ -66,6 +66,11 @@ export default function sketch(p5: p5) {
   let statusWindow = -4
   const creaturesInPosition = new Array<number>(CREATURE_COUNT)
 
+  type SpeciesCount = {
+    count: number
+    speciesId: number
+  }
+
   type GenerationHistoryEntry = {
     fastest: Creature
     median: Creature
@@ -76,8 +81,7 @@ export default function sketch(p5: p5) {
     currentActivityId: Activity
     generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
     showPopupSimulation: boolean
-    speciesCounts: number[][]
-    topSpeciesCounts: number[]
+    speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
     viewTimer: number
   }
 
@@ -85,8 +89,7 @@ export default function sketch(p5: p5) {
     currentActivityId: Activity.Start,
     generationHistoryMap: {},
     showPopupSimulation: false,
-    speciesCounts: [],
-    topSpeciesCounts: [],
+    speciesCountsHistoryMap: {},
     viewTimer: 0
   }
 
@@ -120,6 +123,10 @@ export default function sketch(p5: p5) {
 
   function indexOfCreatureInLatestGeneration(creatureId: number): number {
     return (creatureId - 1) % CREATURE_COUNT
+  }
+
+  function speciesIdForCreature(creature: Creature): number {
+    return (creature.nodes.length % 10) * 10 + (creature.muscles.length % 10)
   }
 
   function historyEntryKeyForStatusWindow(
@@ -1176,19 +1183,39 @@ export default function sketch(p5: p5) {
 
       p5.line(lineX, 180, lineX, 500 + 180)
 
-      const s = appState.speciesCounts[selectedGeneration]
-
       p5.textAlign(p5.LEFT)
       p5.textFont(font, 12)
       p5.noStroke()
 
-      for (let i = 1; i < 101; i++) {
-        const c = s[i] - s[i - 1]
+      const speciesCounts =
+        appState.speciesCountsHistoryMap[selectedGeneration] || []
 
-        if (c >= 25) {
-          const y = ((s[i] + s[i - 1]) / 2 / 1000.0) * 100 + 573
+      // Identify the largest species count.
+      const highCount = speciesCounts.reduce(
+        (max, entry) => Math.max(max, entry.count),
+        0
+      )
 
-          if (i - 1 == appState.topSpeciesCounts[selectedGeneration]) {
+      const minCountToBeLabeled = 25
+      const yOffset = 573
+
+      let cumulativeStart = 0
+
+      speciesCounts.forEach(({speciesId, count}) => {
+        if (count >= minCountToBeLabeled) {
+          // When this species has a count of at least 25, label it on the graph.
+
+          // Set the starting y position for this species' label.
+          const y = Math.floor(
+            ((cumulativeStart + count / 2) / CREATURE_COUNT) * 100 + yOffset
+          )
+
+          if (count === highCount) {
+            /*
+             * When the count for this species matches the largest count, add
+             * emphasis to its style.
+             */
+
             p5.stroke(0)
             p5.strokeWeight(2)
           } else {
@@ -1198,15 +1225,14 @@ export default function sketch(p5: p5) {
           p5.fill(255, 255, 255)
           p5.rect(lineX + 3, y, 56, 14)
           p5.colorMode(p5.HSB, 1.0)
-          p5.fill(getColor(i - 1, true))
-          p5.text(
-            'S' + Math.floor((i - 1) / 10) + '' + ((i - 1) % 10) + ': ' + c,
-            lineX + 5,
-            y + 11
-          )
+          p5.fill(getColor(speciesId, true))
+          // Example label: "S45: 207"
+          p5.text(`S${speciesId}: ${count}`, lineX + 5, y + 11)
           p5.colorMode(p5.RGB, 255)
         }
-      }
+
+        cumulativeStart += count
+      })
 
       p5.noStroke()
     }
@@ -1323,35 +1349,99 @@ export default function sketch(p5: p5) {
     segBarImage.colorMode(p5.HSB, 1)
     segBarImage.background(0, 0, 0.5)
 
-    const genWidth = graphWidth / generationCount
-    const gensPerBar = Math.floor(generationCount / 500) + 1
+    const generationWidth = graphWidth / generationCount
+    const generationsPerBar = Math.floor(generationCount / 500) + 1
 
-    for (let i = 0; i < generationCount; i += gensPerBar) {
-      const i2 = Math.min(i + gensPerBar, generationCount)
-      const barX1 = x + i * genWidth
-      const barX2 = x + i2 * genWidth
+    for (let i1 = 0; i1 < generationCount; i1 += generationsPerBar) {
+      const i2 = Math.min(i1 + generationsPerBar, generationCount)
 
-      for (let j = 0; j < 100; j++) {
-        segBarImage.fill(getColor(j, false))
-        segBarImage.beginShape()
-        segBarImage.vertex(
-          barX1,
-          y + (appState.speciesCounts[i][j] / 1000.0) * graphHeight
-        )
-        segBarImage.vertex(
-          barX1,
-          y + (appState.speciesCounts[i][j + 1] / 1000.0) * graphHeight
-        )
-        segBarImage.vertex(
-          barX2,
-          y + (appState.speciesCounts[i2][j + 1] / 1000.0) * graphHeight
-        )
-        segBarImage.vertex(
-          barX2,
-          y + (appState.speciesCounts[i2][j] / 1000.0) * graphHeight
-        )
-        segBarImage.endShape()
+      const barX1 = x + i1 * generationWidth
+      const barX2 = x + i2 * generationWidth
+
+      /*
+       * The initial index `i1` of `0` does not correspond to a generation, so
+       * fall back to an empty species counts history entry.
+       */
+      const speciesCounts1 = appState.speciesCountsHistoryMap[i1] || []
+      const speciesCounts2 = appState.speciesCountsHistoryMap[i2]
+
+      /*
+       * Joined entries will include a count for all species represented between
+       * both generations, using a count of `0` where a species has no count in
+       * the given generation.
+       */
+      const joinedEntries = []
+
+      let countIndex1 = 0
+      let countIndex2 = 0
+
+      while (
+        countIndex1 < speciesCounts1.length ||
+        countIndex2 < speciesCounts2.length
+      ) {
+        const entry1 = speciesCounts1[countIndex1]
+        const entry2 = speciesCounts2[countIndex2]
+
+        if (entry1?.speciesId === entry2?.speciesId) {
+          joinedEntries.push({
+            speciesId: entry1.speciesId,
+            countStart: entry1.count,
+            countEnd: entry2.count
+          })
+
+          countIndex1++
+          countIndex2++
+        } else if (entry2 == null || entry1?.speciesId < entry2.speciesId) {
+          joinedEntries.push({
+            speciesId: entry1.speciesId,
+            countStart: entry1.count,
+            countEnd: 0
+          })
+
+          countIndex1++
+        } else {
+          joinedEntries.push({
+            speciesId: entry2.speciesId,
+            countStart: 0,
+            countEnd: entry2.count
+          })
+
+          countIndex2++
+        }
       }
+
+      let cumulativeStart = 0
+      let cumulativeEnd = 0
+
+      if (speciesCounts1.length === 0) {
+        // Start all graph areas from the middle of the range.
+        cumulativeStart = Math.floor(CREATURE_COUNT / 2)
+      }
+
+      joinedEntries.forEach(({speciesId, countStart, countEnd}) => {
+        segBarImage.fill(getColor(speciesId, false))
+        segBarImage.beginShape()
+
+        // top-left and top-right
+        const start1 = cumulativeStart / CREATURE_COUNT
+        const end1 = cumulativeEnd / CREATURE_COUNT
+
+        // Accumulate the counts for the next species' offset.
+        cumulativeStart += countStart
+        cumulativeEnd += countEnd
+
+        // bottom-left and bottom-right
+        const start2 = cumulativeStart / CREATURE_COUNT
+        const end2 = cumulativeEnd / CREATURE_COUNT
+
+        // Draw quadrilateral, counter-clockwise.
+        segBarImage.vertex(barX1, y + start1 * graphHeight)
+        segBarImage.vertex(barX1, y + start2 * graphHeight)
+        segBarImage.vertex(barX2, y + end2 * graphHeight)
+        segBarImage.vertex(barX2, y + end1 * graphHeight)
+
+        segBarImage.endShape()
+      })
     }
 
     p5.colorMode(p5.RGB, 255)
@@ -1772,8 +1862,6 @@ export default function sketch(p5: p5) {
 
     fitnessPercentileHistory.push(new Array(fitnessPercentileCount).fill(0.0))
     barCounts.push(new Array(barLen).fill(0))
-    appState.speciesCounts.push(new Array(101).fill(500))
-    appState.topSpeciesCounts.push(0)
 
     graphImage = p5.createGraphics(975, 570)
     screenImage = p5.createGraphics(1920, 1080)
@@ -2022,11 +2110,7 @@ export default function sketch(p5: p5) {
 
       barCounts.push(beginBar)
 
-      const beginSpecies = new Array<number>(101)
-
-      for (let i = 0; i < 101; i++) {
-        beginSpecies[i] = 0
-      }
+      const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const bar = Math.floor(c2[i].fitness * histBarsPerMeter - minBar)
@@ -2035,29 +2119,22 @@ export default function sketch(p5: p5) {
           barCounts[generationCount + 1][bar]++
         }
 
-        const species =
-          (c2[i].nodes.length % 10) * 10 + (c2[i].muscles.length % 10)
-        beginSpecies[species]++
+        const speciesId = speciesIdForCreature(c2[i])
+        speciesCountBySpeciesId[speciesId] =
+          speciesCountBySpeciesId[speciesId] || 0
+        speciesCountBySpeciesId[speciesId]++
       }
 
-      appState.speciesCounts.push(new Array<number>(101))
-      appState.speciesCounts[generationCount + 1][0] = 0
+      // Ensure species counts are sorted consistently by species ID.
+      const mapEntries: SpeciesCount[] = Object.entries(speciesCountBySpeciesId)
+        .map(([speciesId, count]) => {
+          return {speciesId: Number(speciesId), count}
+        })
+        .sort((speciesCountA, speciesCountB) => {
+          return speciesCountA.speciesId - speciesCountB.speciesId
+        })
 
-      let cum = 0
-      let record = 0
-      let holder = 0
-
-      for (let i = 0; i < 100; i++) {
-        cum += beginSpecies[i]
-        appState.speciesCounts[generationCount + 1][i + 1] = cum
-
-        if (beginSpecies[i] > record) {
-          record = beginSpecies[i]
-          holder = i
-        }
-      }
-
-      appState.topSpeciesCounts.push(holder)
+      appState.speciesCountsHistoryMap[generationCount + 1] = mapEntries
 
       if (stepByStep) {
         drawScreenImage(CreatureGridViewType.SimulationFinished)

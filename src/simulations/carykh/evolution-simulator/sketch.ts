@@ -560,17 +560,17 @@ export default function sketch(p5: p5) {
       let x, y, px, py
       let rank = statusWindow + 1
 
-      let cj
+      let creature
 
       p5.stroke(Math.abs((p5.frameCount % 30) - 15) * 17) // oscillate between 0–255
       p5.strokeWeight(3)
       p5.noFill()
 
       if (statusWindow >= 0) {
-        cj = c2[statusWindow]
+        creature = c2[statusWindow]
 
         if (appState.currentActivityId === Activity.FinishedStepByStep) {
-          const id = (cj.id - 1) % CREATURE_COUNT
+          const id = (creature.id - 1) % CREATURE_COUNT
           x = id % 40
           y = Math.floor(id / 40)
         } else {
@@ -591,7 +591,7 @@ export default function sketch(p5: p5) {
       } else {
         const historyEntry =
           appState.generationHistoryMap[appState.selectedGeneration]
-        cj = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
+        creature = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
 
         x = 760 + (statusWindow + 3) * 160
         y = 180
@@ -610,14 +610,18 @@ export default function sketch(p5: p5) {
       p5.textFont(font, 12)
       p5.textAlign(p5.CENTER)
       p5.text('#' + rank, px, py + 12)
-      p5.text('ID: ' + cj.id, px, py + 24)
-      p5.text('Fitness: ' + p5.nf(cj.fitness, 0, 3), px, py + 36)
+      p5.text('ID: ' + creature.id, px, py + 24)
+      p5.text('Fitness: ' + p5.nf(creature.fitness, 0, 3), px, py + 36)
       p5.colorMode(p5.HSB, 1)
 
-      const sp = (cj.nodes.length % 10) * 10 + (cj.muscles.length % 10)
+      const sp =
+        (creature.nodes.length % 10) * 10 + (creature.muscles.length % 10)
       p5.fill(getColor(sp, true))
       p5.text(
-        'Species: S' + (cj.nodes.length % 10) + '' + (cj.muscles.length % 10),
+        'Species: S' +
+          (creature.nodes.length % 10) +
+          '' +
+          (creature.muscles.length % 10),
         px,
         py + 48
       )
@@ -1164,12 +1168,12 @@ export default function sketch(p5: p5) {
         }
       }
 
-      for (let j = 0; j < appState.generationCount; j++) {
+      for (let i = 0; i < appState.generationCount; i++) {
         graphImage.line(
-          x + j * genWidth,
-          -fitnessPercentileHistory[j][k] * meterHeight + zero + y,
-          x + (j + 1) * genWidth,
-          -fitnessPercentileHistory[j + 1][k] * meterHeight + zero + y
+          x + i * genWidth,
+          -fitnessPercentileHistory[i][k] * meterHeight + zero + y,
+          x + (i + 1) * genWidth,
+          -fitnessPercentileHistory[i + 1][k] * meterHeight + zero + y
         )
       }
     }
@@ -1534,13 +1538,13 @@ export default function sketch(p5: p5) {
       )
       propagateCreaturesButton.draw()
 
-      for (let j = 0; j < CREATURE_COUNT; j++) {
-        const cj = c2[j]
-        const x = j % 40
-        const y = Math.floor(j / 40) + 1
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = c2[i]
+        const x = i % 40
+        const y = Math.floor(i / 40) + 1
 
-        if (cj.alive) {
-          drawCreature(cj, x * 30 + 55, y * 25 + 40, 0)
+        if (creature.alive) {
+          drawCreature(creature, x * 30 + 55, y * 25 + 40, 0)
         } else {
           screenImage.rect(x * 30 + 40, y * 25 + 17, 30, 25)
         }
@@ -2000,17 +2004,17 @@ export default function sketch(p5: p5) {
       const transition =
         0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
 
-      for (let j = 0; j < CREATURE_COUNT; j++) {
-        const cj = c2[j]
-        const j2 = cj.id - appState.generationCount * CREATURE_COUNT - 1
+      for (let i1 = 0; i1 < CREATURE_COUNT; i1++) {
+        const creature = c2[i1]
+        const j2 = creature.id - appState.generationCount * CREATURE_COUNT - 1
         const x1 = j2 % 40
         const y1 = Math.floor(j2 / 40)
-        const x2 = j % 40
-        const y2 = Math.floor(j / 40) + 1
+        const x2 = i1 % 40
+        const y2 = Math.floor(i1 / 40) + 1
         const x3 = inter(x1, x2, transition)
         const y3 = inter(y1, y2, transition)
 
-        drawCreature(cj, x3 * 3 + 5.5, y3 * 2.5 + 4, 0)
+        drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, 0)
       }
 
       p5.pop()
@@ -2171,10 +2175,10 @@ export default function sketch(p5: p5) {
         simulation.adjustNodesToCenter(nodes)
       }
 
-      for (let j = 0; j < CREATURE_COUNT; j++) {
-        const cj = c2[j]
-        const index = indexOfCreatureInLatestGeneration(cj.id)
-        creaturesInLatestGeneration[index] = cj.clone()
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = c2[i]
+        const index = indexOfCreatureInLatestGeneration(creature.id)
+        creaturesInLatestGeneration[index] = creature.clone()
       }
 
       drawScreenImage(CreatureGridViewType.PropagatedCreatures)

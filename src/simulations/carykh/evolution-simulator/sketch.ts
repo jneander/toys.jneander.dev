@@ -64,7 +64,7 @@ export default function sketch(p5: p5) {
   let popupSimulationCreatureId: number | null
 
   let statusWindow = -4
-  const creaturesInPosition = new Array<number>(CREATURE_COUNT)
+  const creatureIdsByGridIndex = new Array<number>(CREATURE_COUNT)
 
   type SpeciesCount = {
     count: number
@@ -759,73 +759,73 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function drawNode(ni: Node, x: number, y: number, toImage: number): void {
-    let c = p5.color(512 - toInt(ni.friction * 512), 0, 0)
+  function drawNode(node: Node, x: number, y: number, toImage: number): void {
+    let color = p5.color(512 - toInt(node.friction * 512), 0, 0)
 
-    if (ni.friction <= 0.5) {
-      c = p5.color(
+    if (node.friction <= 0.5) {
+      color = p5.color(
         255,
-        255 - toInt(ni.friction * 512),
-        255 - toInt(ni.friction * 512)
+        255 - toInt(node.friction * 512),
+        255 - toInt(node.friction * 512)
       )
     }
 
     const graphics = [p5, screenImage, popUpImage][toImage]
 
-    graphics.fill(c)
+    graphics.fill(color)
     graphics.noStroke()
     graphics.ellipse(
-      (ni.positionX + x) * scaleToFixBug,
-      (ni.positionY + y) * scaleToFixBug,
-      ni.mass * scaleToFixBug,
-      ni.mass * scaleToFixBug
+      (node.positionX + x) * scaleToFixBug,
+      (node.positionY + y) * scaleToFixBug,
+      node.mass * scaleToFixBug,
+      node.mass * scaleToFixBug
     )
 
-    if (ni.friction >= 0.5) {
+    if (node.friction >= 0.5) {
       graphics.fill(255)
     } else {
       graphics.fill(0)
     }
 
     graphics.textAlign(p5.CENTER)
-    graphics.textFont(font, 0.4 * ni.mass * scaleToFixBug)
+    graphics.textFont(font, 0.4 * node.mass * scaleToFixBug)
     graphics.text(
-      p5.nf(ni.value, 0, 2),
-      (ni.positionX + x) * scaleToFixBug,
-      (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
+      p5.nf(node.value, 0, 2),
+      (node.positionX + x) * scaleToFixBug,
+      (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
         scaleToFixBug
     )
     graphics.text(
-      NODE_OPERATION_LABELS_BY_ID[ni.operation],
-      (ni.positionX + x) * scaleToFixBug,
-      (ni.positionY + ni.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
+      NODE_OPERATION_LABELS_BY_ID[node.operation],
+      (node.positionX + x) * scaleToFixBug,
+      (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
         scaleToFixBug
     )
   }
 
   function drawNodeAxons(
-    n: Node[],
-    i: number,
+    nodes: Node[],
+    nodeIndex: number,
     x: number,
     y: number,
     toImage: number
   ): void {
-    const ni = n[i]
+    const node = nodes[nodeIndex]
 
-    if (AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] >= 1) {
-      const axonSource = n[n[i].axon1]
-      const point1x = ni.positionX - ni.mass * 0.3 + x
-      const point1y = ni.positionY - ni.mass * 0.3 + y
+    if (AXON_COUNT_BY_NODE_OPERATION_ID[node.operation] >= 1) {
+      const axonSource = nodes[nodes[nodeIndex].axon1]
+      const point1x = node.positionX - node.mass * 0.3 + x
+      const point1y = node.positionY - node.mass * 0.3 + y
       const point2x = axonSource.positionX + x
       const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
 
       drawSingleAxon(point1x, point1y, point2x, point2y, toImage)
     }
 
-    if (AXON_COUNT_BY_NODE_OPERATION_ID[ni.operation] === 2) {
-      const axonSource = n[n[i].axon2]
-      const point1x = ni.positionX + ni.mass * 0.3 + x
-      const point1y = ni.positionY - ni.mass * 0.3 + y
+    if (AXON_COUNT_BY_NODE_OPERATION_ID[node.operation] === 2) {
+      const axonSource = nodes[nodes[nodeIndex].axon2]
+      const point1x = node.positionX + node.mass * 0.3 + x
+      const point1y = node.positionY - node.mass * 0.3 + y
       const point2x = axonSource.positionX + x
       const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
 
@@ -869,25 +869,25 @@ export default function sketch(p5: p5) {
   }
 
   function drawMuscle(
-    mi: Muscle,
-    n: Node[],
+    muscle: Muscle,
+    nodes: Node[],
     x: number,
     y: number,
     toImage: number
   ): void {
-    const ni1 = n[mi.nodeConnection1]
-    const ni2 = n[mi.nodeConnection2]
+    const ni1 = nodes[muscle.nodeConnection1]
+    const ni2 = nodes[muscle.nodeConnection2]
 
     let w = 0.15
 
-    if (mi.axon >= 0 && mi.axon < n.length) {
-      w = n[mi.axon].getClampedValue() * 0.15
+    if (muscle.axon >= 0 && muscle.axon < nodes.length) {
+      w = nodes[muscle.axon].getClampedValue() * 0.15
     }
 
     const graphics = [p5, screenImage, popUpImage][toImage]
 
     graphics.strokeWeight(w * scaleToFixBug)
-    graphics.stroke(70, 35, 0, mi.rigidity * 3000)
+    graphics.stroke(70, 35, 0, muscle.rigidity * 3000)
     graphics.line(
       (ni1.positionX + x) * scaleToFixBug,
       (ni1.positionY + y) * scaleToFixBug,
@@ -897,19 +897,21 @@ export default function sketch(p5: p5) {
   }
 
   function drawMuscleAxons(
-    mi: Muscle,
-    n: Node[],
+    muscle: Muscle,
+    nodes: Node[],
     x: number,
     y: number,
     toImage: number
   ): void {
-    const ni1 = n[mi.nodeConnection1]
-    const ni2 = n[mi.nodeConnection2]
+    const connectedNode1 = nodes[muscle.nodeConnection1]
+    const connectedNode2 = nodes[muscle.nodeConnection2]
 
-    if (mi.axon >= 0 && mi.axon < n.length) {
-      const axonSource = n[mi.axon]
-      const muscleMidX = (ni1.positionX + ni2.positionX) * 0.5 + x
-      const muscleMidY = (ni1.positionY + ni2.positionY) * 0.5 + y
+    if (muscle.axon >= 0 && muscle.axon < nodes.length) {
+      const axonSource = nodes[muscle.axon]
+      const muscleMidX =
+        (connectedNode1.positionX + connectedNode2.positionX) * 0.5 + x
+      const muscleMidY =
+        (connectedNode1.positionY + connectedNode2.positionY) * 0.5 + y
 
       drawSingleAxon(
         muscleMidX,
@@ -919,14 +921,14 @@ export default function sketch(p5: p5) {
         toImage
       )
 
-      const averageMass = (ni1.mass + ni2.mass) * 0.5
+      const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
       const graphics = [p5, screenImage, popUpImage][toImage]
 
       graphics.fill(AXON_COLOR)
       graphics.textAlign(p5.CENTER)
       graphics.textFont(font, 0.4 * averageMass * scaleToFixBug)
       graphics.text(
-        p5.nf(n[mi.axon].getClampedValue(), 0, 2),
+        p5.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
         muscleMidX * scaleToFixBug,
         muscleMidY * scaleToFixBug
       )
@@ -1317,9 +1319,9 @@ export default function sketch(p5: p5) {
     let averageY = 0
 
     for (let i = 0; i < nodes.length; i++) {
-      const ni = nodes[i]
-      averageX += ni.positionX
-      averageY += ni.positionY
+      const node = nodes[i]
+      averageX += node.positionX
+      averageY += node.positionY
     }
 
     averageX = averageX / nodes.length
@@ -1460,27 +1462,27 @@ export default function sketch(p5: p5) {
     screenImage.background(220, 253, 102)
     screenImage.noStroke()
 
-    for (let j = 0; j < CREATURE_COUNT; j++) {
-      let cj = c2[j]
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      let creature = c2[i]
       if (creatureGridViewType === CreatureGridViewType.PropagatedCreatures) {
-        const index = indexOfCreatureInLatestGeneration(cj.id)
-        cj = creaturesInLatestGeneration[index]
+        const index = indexOfCreatureInLatestGeneration(creature.id)
+        creature = creaturesInLatestGeneration[index]
       }
 
-      let j2 = j
+      let gridIndex = i
       if (creatureGridViewType === CreatureGridViewType.SimulationFinished) {
-        j2 = cj.id - generationCount * CREATURE_COUNT - 1
-        creaturesInPosition[j2] = j
+        gridIndex = (creature.id - 1) % CREATURE_COUNT
+        creatureIdsByGridIndex[gridIndex] = i
       }
 
-      const x = j2 % 40
+      const gridX = gridIndex % 40
+      let gridY = Math.floor(gridIndex / 40)
 
-      let y = Math.floor(j2 / 40)
       if (creatureGridViewType !== CreatureGridViewType.SimulationFinished) {
-        y++
+        gridY++
       }
 
-      drawCreature(cj, x * 3 + 5.5, y * 2.5 + 4, 1)
+      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
     }
 
     appState.viewTimer = 0
@@ -1558,32 +1560,32 @@ export default function sketch(p5: p5) {
   }
 
   function drawCreature(
-    cj: Creature,
+    creature: Creature,
     x: number,
     y: number,
     toImage: number
   ): void {
-    drawCreaturePieces(cj.nodes, cj.muscles, x, y, toImage)
+    drawCreaturePieces(creature.nodes, creature.muscles, x, y, toImage)
   }
 
   function drawCreaturePieces(
-    n: Node[],
-    m: Array<Muscle>,
+    nodes: Node[],
+    muscles: Muscle[],
     x: number,
     y: number,
     toImage: number
   ): void {
-    for (let i = 0; i < m.length; i++) {
-      drawMuscle(m[i], n, x, y, toImage)
+    for (let i = 0; i < muscles.length; i++) {
+      drawMuscle(muscles[i], nodes, x, y, toImage)
     }
-    for (let i = 0; i < n.length; i++) {
-      drawNode(n[i], x, y, toImage)
+    for (let i = 0; i < nodes.length; i++) {
+      drawNode(nodes[i], x, y, toImage)
     }
-    for (let i = 0; i < m.length; i++) {
-      drawMuscleAxons(m[i], n, x, y, toImage)
+    for (let i = 0; i < muscles.length; i++) {
+      drawMuscleAxons(muscles[i], nodes, x, y, toImage)
     }
-    for (let i = 0; i < n.length; i++) {
-      drawNodeAxons(n, i, x, y, toImage)
+    for (let i = 0; i < nodes.length; i++) {
+      drawNodeAxons(nodes, i, x, y, toImage)
     }
   }
 
@@ -2033,7 +2035,7 @@ export default function sketch(p5: p5) {
           Math.abs(mY - 329) <= 312
         ) {
           idOfCreatureUnderCursor =
-            creaturesInPosition[
+            creatureIdsByGridIndex[
               Math.floor((mX - 40) / 30) + Math.floor((mY - 17) / 25) * 40
             ]
         } else if (

@@ -1347,44 +1347,6 @@ export default function sketch(p5: p5) {
     return {averageX, averageY}
   }
 
-  p5.mouseWheel = (event: WheelEvent) => {
-    const delta = event.deltaX
-
-    if (appState.currentActivityId === Activity.SimulationRunning) {
-      if (delta < 0) {
-        simulationState.camera.zoom *= 0.9090909
-
-        if (simulationState.camera.zoom < 0.002) {
-          simulationState.camera.zoom = 0.002
-        }
-
-        p5.textFont(font, postFontSize)
-      } else if (delta > 0) {
-        simulationState.camera.zoom *= 1.1
-
-        if (simulationState.camera.zoom > 0.1) {
-          simulationState.camera.zoom = 0.1
-        }
-
-        p5.textFont(font, postFontSize)
-      }
-    }
-  }
-
-  p5.mousePressed = () => {
-    if (appState.pendingGenerationCount >= 1) {
-      appState.pendingGenerationCount = 0
-    }
-
-    if (
-      appState.currentActivityId === Activity.GenerationView &&
-      appState.generationCount >= 1 &&
-      generationSlider.isUnderCursor()
-    ) {
-      draggingSlider = true
-    }
-  }
-
   function setActivity(m: Activity): void {
     appState.currentActivityId = m
 
@@ -1398,79 +1360,6 @@ export default function sketch(p5: p5) {
     creaturesTested = 0
     stepByStep = false
     stepByStepSlow = false
-  }
-
-  p5.mouseReleased = () => {
-    draggingSlider = false
-    // When the popup simulation is running, mouse clicks will stop it.
-    appState.showPopupSimulation = false
-
-    if (
-      appState.currentActivityId === Activity.Start &&
-      startViewStartButton.isUnderCursor()
-    ) {
-      startViewStartButton.onClick()
-    } else if (
-      appState.currentActivityId === Activity.GenerationView &&
-      appState.generationCount == -1 &&
-      generationViewCreateButton.isUnderCursor()
-    ) {
-      generationViewCreateButton.onClick()
-    } else if (
-      appState.currentActivityId === Activity.GenerationView &&
-      appState.generationCount >= 0
-    ) {
-      if (simulateStepByStepButton.isUnderCursor()) {
-        simulateStepByStepButton.onClick()
-      } else if (simulateQuickButton.isUnderCursor()) {
-        simulateQuickButton.onClick()
-      } else if (simulateAsapButton.isUnderCursor()) {
-        simulateAsapButton.onClick()
-      } else if (simulateAlapButton.isUnderCursor()) {
-        simulateAlapButton.onClick()
-      }
-    } else if (
-      appState.currentActivityId === Activity.GeneratedCreatures &&
-      generatedCreaturesBackButton.isUnderCursor()
-    ) {
-      generatedCreaturesBackButton.onClick()
-    } else if (
-      appState.currentActivityId === Activity.FinishedStepByStep &&
-      sortCreaturesButton.isUnderCursor()
-    ) {
-      sortCreaturesButton.onClick()
-    } else if (
-      appState.currentActivityId === Activity.SimulationRunning ||
-      appState.currentActivityId === Activity.RequestingSimulation
-    ) {
-      if (stepByStepSkipButton.isUnderCursor()) {
-        stepByStepSkipButton.onClick()
-      } else if (stepByStepPlaybackSpeedButton.isUnderCursor()) {
-        stepByStepPlaybackSpeedButton.onClick()
-      } else if (stepByStepFinishButton.isUnderCursor()) {
-        stepByStepFinishButton.onClick()
-      }
-    } else if (
-      appState.currentActivityId === Activity.SortingCreatures &&
-      sortingCreaturesSkipButton.isUnderCursor()
-    ) {
-      sortingCreaturesSkipButton.onClick()
-    } else if (
-      appState.currentActivityId === Activity.SortedCreatures &&
-      cullCreaturesButton.isUnderCursor()
-    ) {
-      cullCreaturesButton.onClick()
-    } else if (
-      appState.currentActivityId === Activity.CulledCreatures &&
-      propagateCreaturesButton.isUnderCursor()
-    ) {
-      propagateCreaturesButton.onClick()
-    } else if (
-      appState.currentActivityId === Activity.PropagatedCreatures &&
-      propagatedCreaturesBackButton.isUnderCursor()
-    ) {
-      propagatedCreaturesBackButton.onClick()
-    }
   }
 
   function drawScreenImage(creatureGridViewType: CreatureGridViewType): void {
@@ -1694,6 +1583,224 @@ export default function sketch(p5: p5) {
       }
 
       p5.rect(x + i * barW, y + hh - h, barW, h)
+    }
+  }
+
+  function setPopupSimulationCreatureId(id: number): void {
+    const popupCurrentlyClosed = statusWindow == -4
+    statusWindow = id
+
+    let creature: Creature
+    let targetCreatureId: number
+
+    if (statusWindow <= -1) {
+      const historyEntry =
+        appState.generationHistoryMap[appState.selectedGeneration]
+      creature = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
+      targetCreatureId = creature.id
+    } else {
+      targetCreatureId = statusWindow
+      creature = c2[id]
+    }
+
+    if (
+      popupSimulationCreatureId !== targetCreatureId ||
+      popupCurrentlyClosed
+    ) {
+      simulationState.timer = 0
+
+      if (appState.pendingGenerationCount == 0) {
+        // The full simulation is not running, so the popup simulation can be shown.
+        appState.showPopupSimulation = true
+
+        setSimulationState(creature)
+        popupSimulationCreatureId = targetCreatureId
+      }
+    }
+  }
+
+  function clearPopupSimulation(): void {
+    statusWindow = -4
+  }
+
+  function drawStats(x: number, y: number, size: number): void {
+    p5.textAlign(p5.RIGHT)
+    p5.textFont(font, 32)
+    p5.fill(0)
+
+    p5.push()
+
+    p5.translate(x, y)
+    p5.scale(size)
+    p5.text('Creature ID: ' + simulationState.creature.id, 0, 32)
+
+    let timeShow: number
+    if (simulationState.speed > 60) {
+      timeShow = toInt((appState.viewTimer + creaturesTested * 37) / 60) % 15
+    } else {
+      timeShow = appState.viewTimer / 60
+    }
+
+    p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
+    p5.text('Playback Speed: x' + Math.max(1, simulationState.speed), 0, 96)
+
+    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
+
+    p5.text('X: ' + p5.nf(averageX / 5.0, 0, 2) + '', 0, 128)
+    p5.text('Y: ' + p5.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
+    p5.text(
+      'Energy used: ' +
+        p5.nf(simulationState.creature.energyUsed, 0, 2) +
+        ' yums',
+      0,
+      192
+    )
+    p5.text(
+      'A.N.Nausea: ' +
+        p5.nf(simulationState.creature.averageNodeNausea, 0, 2) +
+        ' blehs',
+      0,
+      224
+    )
+
+    p5.pop()
+  }
+
+  function setSimulationState(simulationCreature: Creature): void {
+    simulationState.creature.nodes = simulationCreature.nodes.map(node =>
+      node.clone()
+    )
+    simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
+      muscle.clone()
+    )
+
+    appState.viewTimer = 0
+    simulationState.creature.id = simulationCreature.id
+    simulationState.camera.zoom = 0.01
+    simulationState.camera.x = 0
+    simulationState.camera.y = 0
+    simulationState.timer = 0
+    simulationState.creature.energyUsed = baselineEnergy
+    simulationState.creature.totalNodeNausea = 0
+    simulationState.creature.averageNodeNausea = 0
+  }
+
+  function setFitnessOfSimulationCreature(): void {
+    const {id, nodes} = simulationState.creature
+    const {averageX} = getNodesAverage(nodes)
+    const index = indexOfCreatureInLatestGeneration(id)
+
+    creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
+  }
+
+  p5.mouseWheel = (event: WheelEvent) => {
+    const delta = event.deltaX
+
+    if (appState.currentActivityId === Activity.SimulationRunning) {
+      if (delta < 0) {
+        simulationState.camera.zoom *= 0.9090909
+
+        if (simulationState.camera.zoom < 0.002) {
+          simulationState.camera.zoom = 0.002
+        }
+
+        p5.textFont(font, postFontSize)
+      } else if (delta > 0) {
+        simulationState.camera.zoom *= 1.1
+
+        if (simulationState.camera.zoom > 0.1) {
+          simulationState.camera.zoom = 0.1
+        }
+
+        p5.textFont(font, postFontSize)
+      }
+    }
+  }
+
+  p5.mousePressed = () => {
+    if (appState.pendingGenerationCount >= 1) {
+      appState.pendingGenerationCount = 0
+    }
+
+    if (
+      appState.currentActivityId === Activity.GenerationView &&
+      appState.generationCount >= 1 &&
+      generationSlider.isUnderCursor()
+    ) {
+      draggingSlider = true
+    }
+  }
+
+  p5.mouseReleased = () => {
+    draggingSlider = false
+    // When the popup simulation is running, mouse clicks will stop it.
+    appState.showPopupSimulation = false
+
+    if (
+      appState.currentActivityId === Activity.Start &&
+      startViewStartButton.isUnderCursor()
+    ) {
+      startViewStartButton.onClick()
+    } else if (
+      appState.currentActivityId === Activity.GenerationView &&
+      appState.generationCount == -1 &&
+      generationViewCreateButton.isUnderCursor()
+    ) {
+      generationViewCreateButton.onClick()
+    } else if (
+      appState.currentActivityId === Activity.GenerationView &&
+      appState.generationCount >= 0
+    ) {
+      if (simulateStepByStepButton.isUnderCursor()) {
+        simulateStepByStepButton.onClick()
+      } else if (simulateQuickButton.isUnderCursor()) {
+        simulateQuickButton.onClick()
+      } else if (simulateAsapButton.isUnderCursor()) {
+        simulateAsapButton.onClick()
+      } else if (simulateAlapButton.isUnderCursor()) {
+        simulateAlapButton.onClick()
+      }
+    } else if (
+      appState.currentActivityId === Activity.GeneratedCreatures &&
+      generatedCreaturesBackButton.isUnderCursor()
+    ) {
+      generatedCreaturesBackButton.onClick()
+    } else if (
+      appState.currentActivityId === Activity.FinishedStepByStep &&
+      sortCreaturesButton.isUnderCursor()
+    ) {
+      sortCreaturesButton.onClick()
+    } else if (
+      appState.currentActivityId === Activity.SimulationRunning ||
+      appState.currentActivityId === Activity.RequestingSimulation
+    ) {
+      if (stepByStepSkipButton.isUnderCursor()) {
+        stepByStepSkipButton.onClick()
+      } else if (stepByStepPlaybackSpeedButton.isUnderCursor()) {
+        stepByStepPlaybackSpeedButton.onClick()
+      } else if (stepByStepFinishButton.isUnderCursor()) {
+        stepByStepFinishButton.onClick()
+      }
+    } else if (
+      appState.currentActivityId === Activity.SortingCreatures &&
+      sortingCreaturesSkipButton.isUnderCursor()
+    ) {
+      sortingCreaturesSkipButton.onClick()
+    } else if (
+      appState.currentActivityId === Activity.SortedCreatures &&
+      cullCreaturesButton.isUnderCursor()
+    ) {
+      cullCreaturesButton.onClick()
+    } else if (
+      appState.currentActivityId === Activity.CulledCreatures &&
+      propagateCreaturesButton.isUnderCursor()
+    ) {
+      propagateCreaturesButton.onClick()
+    } else if (
+      appState.currentActivityId === Activity.PropagatedCreatures &&
+      propagatedCreaturesBackButton.isUnderCursor()
+    ) {
+      propagatedCreaturesBackButton.onClick()
     }
   }
 
@@ -2266,112 +2373,5 @@ export default function sketch(p5: p5) {
     if (statusWindow >= -3) {
       statusWindowView.draw()
     }
-  }
-
-  function setPopupSimulationCreatureId(id: number): void {
-    const popupCurrentlyClosed = statusWindow == -4
-    statusWindow = id
-
-    let creature: Creature
-    let targetCreatureId: number
-
-    if (statusWindow <= -1) {
-      const historyEntry =
-        appState.generationHistoryMap[appState.selectedGeneration]
-      creature = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
-      targetCreatureId = creature.id
-    } else {
-      targetCreatureId = statusWindow
-      creature = c2[id]
-    }
-
-    if (
-      popupSimulationCreatureId !== targetCreatureId ||
-      popupCurrentlyClosed
-    ) {
-      simulationState.timer = 0
-
-      if (appState.pendingGenerationCount == 0) {
-        // The full simulation is not running, so the popup simulation can be shown.
-        appState.showPopupSimulation = true
-
-        setSimulationState(creature)
-        popupSimulationCreatureId = targetCreatureId
-      }
-    }
-  }
-
-  function clearPopupSimulation(): void {
-    statusWindow = -4
-  }
-
-  function drawStats(x: number, y: number, size: number): void {
-    p5.textAlign(p5.RIGHT)
-    p5.textFont(font, 32)
-    p5.fill(0)
-
-    p5.push()
-
-    p5.translate(x, y)
-    p5.scale(size)
-    p5.text('Creature ID: ' + simulationState.creature.id, 0, 32)
-
-    let timeShow: number
-    if (simulationState.speed > 60) {
-      timeShow = toInt((appState.viewTimer + creaturesTested * 37) / 60) % 15
-    } else {
-      timeShow = appState.viewTimer / 60
-    }
-
-    p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
-    p5.text('Playback Speed: x' + Math.max(1, simulationState.speed), 0, 96)
-
-    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
-
-    p5.text('X: ' + p5.nf(averageX / 5.0, 0, 2) + '', 0, 128)
-    p5.text('Y: ' + p5.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
-    p5.text(
-      'Energy used: ' +
-        p5.nf(simulationState.creature.energyUsed, 0, 2) +
-        ' yums',
-      0,
-      192
-    )
-    p5.text(
-      'A.N.Nausea: ' +
-        p5.nf(simulationState.creature.averageNodeNausea, 0, 2) +
-        ' blehs',
-      0,
-      224
-    )
-
-    p5.pop()
-  }
-
-  function setSimulationState(simulationCreature: Creature): void {
-    simulationState.creature.nodes = simulationCreature.nodes.map(node =>
-      node.clone()
-    )
-    simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
-      muscle.clone()
-    )
-
-    appState.viewTimer = 0
-    simulationState.creature.id = simulationCreature.id
-    simulationState.camera.zoom = 0.01
-    simulationState.camera.x = 0
-    simulationState.camera.y = 0
-    simulationState.timer = 0
-    simulationState.creature.energyUsed = baselineEnergy
-    simulationState.creature.totalNodeNausea = 0
-    simulationState.creature.averageNodeNausea = 0
-  }
-
-  function setFitnessOfSimulationCreature(): void {
-    const {id, nodes} = simulationState.creature
-    const {averageX} = getNodesAverage(nodes)
-    const index = indexOfCreatureInLatestGeneration(id)
-
-    creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }
 }

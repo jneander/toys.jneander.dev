@@ -11,7 +11,7 @@ export const MIN_MUSCLE_LENGTH_INCLUSIVE = 0.5
 
 export const NODE_MASS_DEFAULT = 0.4
 
-export enum Activity {
+export enum ActivityId {
   Start = 'START',
   GenerationView = 'GENERATION_VIEW',
   GeneratingCreatures = 'GENERATING_CREATURES',

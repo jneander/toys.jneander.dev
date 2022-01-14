@@ -191,6 +191,54 @@ export default function sketch(p5: p5) {
     )
   }
 
+  function updateHistory(): void {
+    fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
+    for (let i = 0; i < fitnessPercentileCount; i++) {
+      fitnessPercentileHistory[appState.generationCount + 1][i] =
+        sortedCreatures[fitnessPercentileCreatureIndices[i]].fitness
+    }
+
+    const historyEntry: GenerationHistoryEntry = {
+      fastest: sortedCreatures[0].clone(),
+      median: sortedCreatures[midCreatureIndex].clone(),
+      slowest: sortedCreatures[lastCreatureIndex].clone()
+    }
+
+    appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
+
+    const beginBar = new Array<number>(barLen).fill(0)
+
+    barCounts.push(beginBar)
+
+    const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const bar = Math.floor(
+        sortedCreatures[i].fitness * histBarsPerMeter - minBar
+      )
+
+      if (bar >= 0 && bar < barLen) {
+        barCounts[appState.generationCount + 1][bar]++
+      }
+
+      const speciesId = speciesIdForCreature(sortedCreatures[i])
+      speciesCountBySpeciesId[speciesId] =
+        speciesCountBySpeciesId[speciesId] || 0
+      speciesCountBySpeciesId[speciesId]++
+    }
+
+    // Ensure species counts are sorted consistently by species ID.
+    const mapEntries: SpeciesCount[] = Object.entries(speciesCountBySpeciesId)
+      .map(([speciesId, count]) => {
+        return {speciesId: Number(speciesId), count}
+      })
+      .sort((speciesCountA, speciesCountB) => {
+        return speciesCountA.speciesId - speciesCountB.speciesId
+      })
+
+    appState.speciesCountsHistoryMap[appState.generationCount + 1] = mapEntries
+  }
+
   function cullCreatures(): void {
     for (let i = 0; i < 500; i++) {
       const fitnessRankSurvivalChance = i / CREATURE_COUNT
@@ -2168,59 +2216,8 @@ export default function sketch(p5: p5) {
     }
 
     if (appState.currentActivityId === ActivityId.SimulationFinished) {
-      // sort
-
       sortCreatures()
-
-      fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
-      for (let i = 0; i < fitnessPercentileCount; i++) {
-        fitnessPercentileHistory[appState.generationCount + 1][i] =
-          sortedCreatures[fitnessPercentileCreatureIndices[i]].fitness
-      }
-
-      const historyEntry: GenerationHistoryEntry = {
-        fastest: sortedCreatures[0].clone(),
-        median: sortedCreatures[midCreatureIndex].clone(),
-        slowest: sortedCreatures[lastCreatureIndex].clone()
-      }
-
-      appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
-
-      const beginBar = new Array<number>(barLen)
-      for (let i = 0; i < barLen; i++) {
-        beginBar[i] = 0
-      }
-
-      barCounts.push(beginBar)
-
-      const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        const bar = Math.floor(
-          sortedCreatures[i].fitness * histBarsPerMeter - minBar
-        )
-
-        if (bar >= 0 && bar < barLen) {
-          barCounts[appState.generationCount + 1][bar]++
-        }
-
-        const speciesId = speciesIdForCreature(sortedCreatures[i])
-        speciesCountBySpeciesId[speciesId] =
-          speciesCountBySpeciesId[speciesId] || 0
-        speciesCountBySpeciesId[speciesId]++
-      }
-
-      // Ensure species counts are sorted consistently by species ID.
-      const mapEntries: SpeciesCount[] = Object.entries(speciesCountBySpeciesId)
-        .map(([speciesId, count]) => {
-          return {speciesId: Number(speciesId), count}
-        })
-        .sort((speciesCountA, speciesCountB) => {
-          return speciesCountA.speciesId - speciesCountB.speciesId
-        })
-
-      appState.speciesCountsHistoryMap[appState.generationCount + 1] =
-        mapEntries
+      updateHistory()
 
       if (stepByStep) {
         drawScreenImage(CreatureGridViewType.SimulationFinished)

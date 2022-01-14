@@ -1509,7 +1509,7 @@ export default function sketch(p5: p5) {
       screenImage.fill(0)
       screenImage.text(
         'These are the 1000 creatures of generation #' +
-          (appState.generationCount + 2) +
+          (appState.generationCount + 1) +
           '.',
         windowWidth / 2,
         30
@@ -2345,9 +2345,9 @@ export default function sketch(p5: p5) {
         creaturesInLatestGeneration[index] = creature.clone()
       }
 
-      drawScreenImage(CreatureGridViewType.PropagatedCreatures)
-
       appState.generationCount++
+
+      drawScreenImage(CreatureGridViewType.PropagatedCreatures)
 
       if (stepByStep) {
         setActivityId(ActivityId.PropagatedCreatures)

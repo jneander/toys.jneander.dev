@@ -185,6 +185,30 @@ export default function sketch(p5: p5) {
     )
   }
 
+  function cullCreatures(): void {
+    for (let i = 0; i < 500; i++) {
+      const fitnessRankSurvivalChance = i / CREATURE_COUNT
+      const cullingThreshold = (Math.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
+
+      let survivingCreatureIndex
+      let culledCreatureIndex
+
+      if (fitnessRankSurvivalChance <= cullingThreshold) {
+        survivingCreatureIndex = i
+        culledCreatureIndex = lastCreatureIndex - i
+      } else {
+        survivingCreatureIndex = lastCreatureIndex - i
+        culledCreatureIndex = i
+      }
+
+      const survivingCreature = c2[survivingCreatureIndex]
+      survivingCreature.alive = true
+
+      const culledCreature = c2[culledCreatureIndex]
+      culledCreature.alive = false
+    }
+  }
+
   function propagateCreatures(): void {
     // Reproduce and mutate
 
@@ -2316,29 +2340,7 @@ export default function sketch(p5: p5) {
     }
 
     if (appState.currentActivityId === ActivityId.CullingCreatures) {
-      // Cull Creatures
-
-      for (let i = 0; i < 500; i++) {
-        const fitnessRankSurvivalChance = i / CREATURE_COUNT
-        const cullingThreshold = (Math.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
-
-        let survivingCreatureIndex
-        let culledCreatureIndex
-
-        if (fitnessRankSurvivalChance <= cullingThreshold) {
-          survivingCreatureIndex = i
-          culledCreatureIndex = lastCreatureIndex - i
-        } else {
-          survivingCreatureIndex = lastCreatureIndex - i
-          culledCreatureIndex = i
-        }
-
-        const survivingCreature = c2[survivingCreatureIndex]
-        survivingCreature.alive = true
-
-        const culledCreature = c2[culledCreatureIndex]
-        culledCreature.alive = false
-      }
+      cullCreatures()
 
       if (stepByStep) {
         drawScreenImage(CreatureGridViewType.CulledCreatures)

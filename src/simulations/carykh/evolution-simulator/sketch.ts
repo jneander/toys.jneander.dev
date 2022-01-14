@@ -185,6 +185,49 @@ export default function sketch(p5: p5) {
     )
   }
 
+  function propagateCreatures(): void {
+    // Reproduce and mutate
+
+    for (let i = 0; i < 500; i++) {
+      let survivingCreatureIndex
+      let culledCreatureIndex
+
+      if (c2[i].alive) {
+        survivingCreatureIndex = i
+        culledCreatureIndex = lastCreatureIndex - i
+      } else {
+        survivingCreatureIndex = lastCreatureIndex - i
+        culledCreatureIndex = i
+      }
+
+      const survivingCreature = c2[survivingCreatureIndex]
+      const culledCreature = c2[culledCreatureIndex]
+
+      // Next generation includes a clone and mutated offspring
+      c2[survivingCreatureIndex] = survivingCreature.clone(
+        survivingCreature.id + CREATURE_COUNT
+      )
+      c2[culledCreatureIndex] = simulation.modifyCreature(
+        survivingCreature,
+        culledCreature.id + CREATURE_COUNT
+      )
+
+      // Stabilize and adjust mutated offspring
+      const {muscles, nodes} = c2[culledCreatureIndex]
+
+      simulation.stabilizeNodesAndMuscles(nodes, muscles)
+      simulation.adjustNodesToCenter(nodes)
+    }
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const creature = c2[i]
+      const index = indexOfCreatureInLatestGeneration(creature.id)
+      creaturesInLatestGeneration[index] = creature.clone()
+    }
+
+    appState.generationCount++
+  }
+
   abstract class Widget {
     abstract draw(): void
   }
@@ -2306,46 +2349,7 @@ export default function sketch(p5: p5) {
     }
 
     if (appState.currentActivityId === ActivityId.PropagatingCreatures) {
-      // Reproduce and mutate
-
-      for (let i = 0; i < 500; i++) {
-        let survivingCreatureIndex
-        let culledCreatureIndex
-
-        if (c2[i].alive) {
-          survivingCreatureIndex = i
-          culledCreatureIndex = lastCreatureIndex - i
-        } else {
-          survivingCreatureIndex = lastCreatureIndex - i
-          culledCreatureIndex = i
-        }
-
-        const survivingCreature = c2[survivingCreatureIndex]
-        const culledCreature = c2[culledCreatureIndex]
-
-        // Next generation includes a clone and mutated offspring
-        c2[survivingCreatureIndex] = survivingCreature.clone(
-          survivingCreature.id + CREATURE_COUNT
-        )
-        c2[culledCreatureIndex] = simulation.modifyCreature(
-          survivingCreature,
-          culledCreature.id + CREATURE_COUNT
-        )
-
-        // Stabilize and adjust mutated offspring
-        const {muscles, nodes} = c2[culledCreatureIndex]
-
-        simulation.stabilizeNodesAndMuscles(nodes, muscles)
-        simulation.adjustNodesToCenter(nodes)
-      }
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        const creature = c2[i]
-        const index = indexOfCreatureInLatestGeneration(creature.id)
-        creaturesInLatestGeneration[index] = creature.clone()
-      }
-
-      appState.generationCount++
+      propagateCreatures()
 
       drawScreenImage(CreatureGridViewType.PropagatedCreatures)
 

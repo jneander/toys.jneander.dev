@@ -2351,9 +2351,8 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === ActivityId.PropagatingCreatures) {
       propagateCreatures()
 
-      drawScreenImage(CreatureGridViewType.PropagatedCreatures)
-
       if (stepByStep) {
+        drawScreenImage(CreatureGridViewType.PropagatedCreatures)
         setActivityId(ActivityId.PropagatedCreatures)
       } else {
         setActivityId(ActivityId.GenerationView)

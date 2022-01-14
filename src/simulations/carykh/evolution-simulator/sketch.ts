@@ -1666,6 +1666,46 @@ export default function sketch(p5: p5) {
     p5.pop()
   }
 
+  function drawWorstMedianAndBestCreatures(): void {
+    p5.textAlign(p5.CENTER)
+
+    const historyEntry =
+      appState.generationHistoryMap[appState.selectedGeneration]
+
+    for (let k = 0; k < 3; k++) {
+      p5.fill(220)
+      p5.rect(760 + k * 160, 180, 140, 140)
+
+      p5.push()
+
+      p5.translate(830 + 160 * k, 290)
+      p5.scale(60.0 / scaleToFixBug)
+
+      const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
+
+      drawCreature(creature, 0, 0, 0)
+
+      p5.pop()
+    }
+
+    p5.fill(0)
+    p5.textFont(font, 16)
+    p5.text('Worst Creature', 830, 310)
+    p5.text('Median Creature', 990, 310)
+    p5.text('Best Creature', 1150, 310)
+  }
+
+  function updateSelectedGeneration(): void {
+    if (appState.generationCount >= 5) {
+      appState.selectedGeneration =
+        Math.round(((sliderX - 760) * (appState.generationCount - 1)) / 410) + 1
+    } else {
+      appState.selectedGeneration = Math.round(
+        ((sliderX - 760) * appState.generationCount) / 410
+      )
+    }
+  }
+
   function setSimulationState(simulationCreature: Creature): void {
     simulationState.creature.nodes = simulationCreature.nodes.map(node =>
       node.clone()
@@ -2322,16 +2362,7 @@ export default function sketch(p5: p5) {
       p5.noStroke()
 
       if (appState.generationCount >= 1) {
-        if (appState.generationCount >= 5) {
-          appState.selectedGeneration =
-            Math.round(
-              ((sliderX - 760) * (appState.generationCount - 1)) / 410
-            ) + 1
-        } else {
-          appState.selectedGeneration = Math.round(
-            ((sliderX - 760) * appState.generationCount) / 410
-          )
-        }
+        updateSelectedGeneration()
 
         if (draggingSlider) {
           generationSlider.onDrag()
@@ -2341,32 +2372,7 @@ export default function sketch(p5: p5) {
       }
 
       if (appState.selectedGeneration >= 1) {
-        p5.textAlign(p5.CENTER)
-
-        const historyEntry =
-          appState.generationHistoryMap[appState.selectedGeneration]
-
-        for (let k = 0; k < 3; k++) {
-          p5.fill(220)
-          p5.rect(760 + k * 160, 180, 140, 140)
-
-          p5.push()
-
-          p5.translate(830 + 160 * k, 290)
-          p5.scale(60.0 / scaleToFixBug)
-
-          const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
-
-          drawCreature(creature, 0, 0, 0)
-
-          p5.pop()
-        }
-
-        p5.fill(0)
-        p5.textFont(font, 16)
-        p5.text('Worst Creature', 830, 310)
-        p5.text('Median Creature', 990, 310)
-        p5.text('Best Creature', 1150, 310)
+        drawWorstMedianAndBestCreatures()
       }
     }
 

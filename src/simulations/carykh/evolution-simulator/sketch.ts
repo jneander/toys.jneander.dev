@@ -185,15 +185,8 @@ export default function sketch(p5: p5) {
     )
   }
 
-  function finishGenerationSimulation(): void {
-    for (let s = appState.viewTimer; s < 900; s++) {
-      advanceSimulation()
-    }
-
-    appState.viewTimer = 0
-    creaturesTested++
-
-    for (let i = creaturesTested; i < CREATURE_COUNT; i++) {
+  function finishGenerationSimulationFromIndex(creatureIndex: number): void {
+    for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
       setSimulationState(creaturesInLatestGeneration[i])
 
       for (let s = 0; s < 900; s++) {
@@ -204,6 +197,17 @@ export default function sketch(p5: p5) {
     }
 
     setActivityId(ActivityId.SimulationFinished)
+  }
+
+  function finishGenerationSimulation(): void {
+    for (let s = appState.viewTimer; s < 900; s++) {
+      advanceSimulation()
+    }
+
+    appState.viewTimer = 0
+    creaturesTested++
+
+    finishGenerationSimulationFromIndex(creaturesTested)
   }
 
   function sortCreatures(): void {
@@ -2109,17 +2113,7 @@ export default function sketch(p5: p5) {
       setActivityId(ActivityId.SimulationRunning)
 
       if (!stepByStepSlow) {
-        for (let i = 0; i < CREATURE_COUNT; i++) {
-          setSimulationState(creaturesInLatestGeneration[i])
-
-          for (let s = 0; s < 900; s++) {
-            advanceSimulation()
-          }
-
-          setFitnessOfSimulationCreature()
-        }
-
-        setActivityId(ActivityId.SimulationFinished)
+        finishGenerationSimulationFromIndex(0)
       }
     }
 

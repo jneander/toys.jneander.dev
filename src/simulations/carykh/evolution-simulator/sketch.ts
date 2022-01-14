@@ -717,6 +717,56 @@ export default function sketch(p5: p5) {
     startViewStartButton.draw()
   }
 
+  function drawGenerationViewActivity(): void {
+    p5.noStroke()
+    p5.fill(0)
+    p5.background(255, 200, 130)
+    p5.textFont(font, 32)
+    p5.textAlign(p5.LEFT)
+    p5.textFont(font, 96)
+    p5.text('Generation ' + Math.max(appState.selectedGeneration, 0), 20, 100)
+    p5.textFont(font, 28)
+
+    if (appState.generationCount == -1) {
+      p5.fill(0)
+      p5.text(
+        `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
+        20,
+        160
+      )
+      p5.text('They will be randomly created, and also very simple.', 20, 200)
+      generationViewCreateButton.draw()
+    } else {
+      simulateStepByStepButton.draw()
+      simulateQuickButton.draw()
+      simulateAsapButton.draw()
+      simulateAlapButton.draw()
+
+      p5.fill(0)
+      p5.text('Median ' + FITNESS_LABEL, 50, 160)
+      p5.textAlign(p5.CENTER)
+      p5.textAlign(p5.RIGHT)
+      p5.text(
+        Math.round(
+          fitnessPercentileHistory[
+            Math.min(
+              appState.selectedGeneration,
+              fitnessPercentileHistory.length - 1
+            )
+          ][14] * 1000
+        ) /
+          1000 +
+          ' ' +
+          FITNESS_UNIT_LABEL,
+        700,
+        160
+      )
+
+      drawHistogram(760, 410, 460, 280)
+      drawGraphImage()
+    }
+  }
+
   function drawGround(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
@@ -1889,53 +1939,7 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === ActivityId.Start) {
       drawStartActivity()
     } else if (appState.currentActivityId === ActivityId.GenerationView) {
-      p5.noStroke()
-      p5.fill(0)
-      p5.background(255, 200, 130)
-      p5.textFont(font, 32)
-      p5.textAlign(p5.LEFT)
-      p5.textFont(font, 96)
-      p5.text('Generation ' + Math.max(appState.selectedGeneration, 0), 20, 100)
-      p5.textFont(font, 28)
-
-      if (appState.generationCount == -1) {
-        p5.fill(0)
-        p5.text(
-          `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
-          20,
-          160
-        )
-        p5.text('They will be randomly created, and also very simple.', 20, 200)
-        generationViewCreateButton.draw()
-      } else {
-        simulateStepByStepButton.draw()
-        simulateQuickButton.draw()
-        simulateAsapButton.draw()
-        simulateAlapButton.draw()
-
-        p5.fill(0)
-        p5.text('Median ' + FITNESS_LABEL, 50, 160)
-        p5.textAlign(p5.CENTER)
-        p5.textAlign(p5.RIGHT)
-        p5.text(
-          Math.round(
-            fitnessPercentileHistory[
-              Math.min(
-                appState.selectedGeneration,
-                fitnessPercentileHistory.length - 1
-              )
-            ][14] * 1000
-          ) /
-            1000 +
-            ' ' +
-            FITNESS_UNIT_LABEL,
-          700,
-          160
-        )
-
-        drawHistogram(760, 410, 460, 280)
-        drawGraphImage()
-      }
+      drawGenerationViewActivity()
 
       if (appState.pendingGenerationCount >= 1) {
         appState.pendingGenerationCount--

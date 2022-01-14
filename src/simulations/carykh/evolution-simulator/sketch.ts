@@ -185,6 +185,12 @@ export default function sketch(p5: p5) {
     )
   }
 
+  function sortCreatures(): void {
+    sortedCreatures = [...creaturesInLatestGeneration].sort(
+      (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
+    )
+  }
+
   function cullCreatures(): void {
     for (let i = 0; i < 500; i++) {
       const fitnessRankSurvivalChance = i / CREATURE_COUNT
@@ -2164,9 +2170,7 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === ActivityId.SimulationFinished) {
       // sort
 
-      sortedCreatures = [...creaturesInLatestGeneration].sort(
-        (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
-      )
+      sortCreatures()
 
       fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
       for (let i = 0; i < fitnessPercentileCount; i++) {

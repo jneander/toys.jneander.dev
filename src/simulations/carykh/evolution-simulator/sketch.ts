@@ -2008,9 +2008,10 @@ export default function sketch(p5: p5) {
     } else if (appState.currentActivityId === ActivityId.GenerationView) {
       drawGenerationViewActivity()
 
-      if (appState.pendingGenerationCount >= 1) {
+      if (appState.pendingGenerationCount > 0) {
         appState.pendingGenerationCount--
-        if (appState.pendingGenerationCount >= 1) {
+
+        if (appState.pendingGenerationCount > 0) {
           startASAP()
         }
       }

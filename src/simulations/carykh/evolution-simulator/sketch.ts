@@ -124,7 +124,7 @@ export default function sketch(p5: p5) {
 
   const creaturesInLatestGeneration = new Array<Creature>(CREATURE_COUNT)
 
-  function indexOfCreatureInLatestGeneration(creatureId: number): number {
+  function creatureIdToIndex(creatureId: number): number {
     return (creatureId - 1) % CREATURE_COUNT
   }
 
@@ -245,7 +245,7 @@ export default function sketch(p5: p5) {
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = c2[i]
-      const index = indexOfCreatureInLatestGeneration(creature.id)
+      const index = creatureIdToIndex(creature.id)
       creaturesInLatestGeneration[index] = creature.clone()
     }
 
@@ -1498,7 +1498,7 @@ export default function sketch(p5: p5) {
     for (let i = 0; i < CREATURE_COUNT; i++) {
       let creature = c2[i]
       if (creatureGridViewType === CreatureGridViewType.PropagatedCreatures) {
-        const index = indexOfCreatureInLatestGeneration(creature.id)
+        const index = creatureIdToIndex(creature.id)
         creature = creaturesInLatestGeneration[index]
       }
 
@@ -1855,7 +1855,7 @@ export default function sketch(p5: p5) {
   function setFitnessOfSimulationCreature(): void {
     const {id, nodes} = simulationState.creature
     const {averageX} = getNodesAverage(nodes)
-    const index = indexOfCreatureInLatestGeneration(id)
+    const index = creatureIdToIndex(id)
 
     creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }

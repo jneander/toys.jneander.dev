@@ -707,6 +707,16 @@ export default function sketch(p5: p5) {
   const propagatedCreaturesBackButton = new PropagatedCreaturesBackButton()
   const statusWindowView = new StatusWindowView()
 
+  // ACTIVITY DRAWING
+
+  function drawStartActivity(): void {
+    p5.background(255)
+    p5.noStroke()
+    p5.fill(0)
+    p5.text('EVOLUTION!', windowWidth / 2, 200)
+    startViewStartButton.draw()
+  }
+
   function drawGround(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
@@ -1877,11 +1887,7 @@ export default function sketch(p5: p5) {
     p5.scale(WINDOW_SIZE_MULTIPLIER)
 
     if (appState.currentActivityId === ActivityId.Start) {
-      p5.background(255)
-      p5.noStroke()
-      p5.fill(0)
-      p5.text('EVOLUTION!', windowWidth / 2, 200)
-      startViewStartButton.draw()
+      drawStartActivity()
     } else if (appState.currentActivityId === ActivityId.GenerationView) {
       p5.noStroke()
       p5.fill(0)

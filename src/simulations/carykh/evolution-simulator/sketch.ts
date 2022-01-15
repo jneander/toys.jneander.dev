@@ -970,6 +970,22 @@ export default function sketch(p5: p5) {
     }
   }
 
+  function drawFinishedStepByStepActivity(): void {
+    p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+  }
+
+  function drawSortedCreaturesActivity(): void {
+    p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+  }
+
+  function drawCulledCreaturesActivity(): void {
+    p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+  }
+
+  function drawPropagatedCreaturesActivity(): void {
+    p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+  }
+
   // COMPONENT DRAWING
 
   function drawSortedCreaturesScreenImage(): void {
@@ -2515,13 +2531,20 @@ export default function sketch(p5: p5) {
       }
     }
 
-    if (
-      appState.currentActivityId === ActivityId.FinishedStepByStep ||
-      appState.currentActivityId === ActivityId.SortedCreatures ||
-      appState.currentActivityId === ActivityId.CulledCreatures ||
-      appState.currentActivityId === ActivityId.PropagatedCreatures
-    ) {
-      p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+    if (appState.currentActivityId === ActivityId.FinishedStepByStep) {
+      drawFinishedStepByStepActivity()
+    }
+
+    if (appState.currentActivityId === ActivityId.SortedCreatures) {
+      drawSortedCreaturesActivity()
+    }
+
+    if (appState.currentActivityId === ActivityId.CulledCreatures) {
+      drawCulledCreaturesActivity()
+    }
+
+    if (appState.currentActivityId === ActivityId.PropagatedCreatures) {
+      drawPropagatedCreaturesActivity()
     }
 
     if (statusWindow >= -3) {

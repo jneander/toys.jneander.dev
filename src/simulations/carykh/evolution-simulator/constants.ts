@@ -4,6 +4,7 @@ export const CREATURE_COUNT = 1000
 export const ENERGY_UNIT = 20
 export const FRICTION = 4
 export const GRAVITY = 0.005
+export const HISTOGRAM_BARS_PER_METER = 5
 export const NAUSEA_UNIT = 5
 export const POST_FONT_SIZE = 0.96
 export const PRESSURE_UNIT = 500.0 / 2.37

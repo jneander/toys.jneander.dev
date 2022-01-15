@@ -10,6 +10,7 @@ import {
   CREATURE_COUNT,
   FITNESS_PERCENTILE_CREATURE_INDICES,
   GenerationSimulationMode,
+  HISTOGRAM_BARS_PER_METER,
   POST_FONT_SIZE,
   SCALE_TO_FIX_BUG
 } from './constants'
@@ -55,7 +56,6 @@ export default function sketch(p5: p5) {
   let screenImage: Graphics
   let popUpImage: Graphics
   let segBarImage: Graphics
-  let histBarsPerMeter = 5
 
   let minBar = -10
   let maxBar = 100
@@ -202,7 +202,8 @@ export default function sketch(p5: p5) {
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const bar = Math.floor(
-          appState.sortedCreatures[i].fitness * histBarsPerMeter - minBar
+          appState.sortedCreatures[i].fitness * HISTOGRAM_BARS_PER_METER -
+            minBar
         )
 
         if (bar >= 0 && bar < barLen) {
@@ -2027,7 +2028,7 @@ export default function sketch(p5: p5) {
 
       const theX = x + (i - minBar) * barW
 
-      p5.text(p5.nf(i / histBarsPerMeter, 0, 1), theX, y + hh + 14)
+      p5.text(p5.nf(i / HISTOGRAM_BARS_PER_METER, 0, 1), theX, y + hh + 14)
       p5.line(theX, y, theX, y + hh)
     }
 
@@ -2047,7 +2048,7 @@ export default function sketch(p5: p5) {
               appState.selectedGeneration,
               appState.fitnessPercentileHistory.length - 1
             )
-          ][14] * histBarsPerMeter
+          ][14] * HISTOGRAM_BARS_PER_METER
         )
       ) {
         p5.fill(255, 0, 0)

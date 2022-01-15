@@ -27,10 +27,3 @@ export enum ActivityId {
   PropagatingCreatures = 'PROPAGATING_CREATURES',
   PropagatedCreatures = 'PROPAGATED_CREATURES'
 }
-
-export enum CreatureGridViewType {
-  SimulationFinished = 'SIMULATION_FINISHED',
-  SortedCreatures = 'SORTED_CREATURES',
-  CulledCreatures = 'CULLED_CREATURES',
-  PropagatedCreatures = 'PROPAGATED_CREATURES'
-}

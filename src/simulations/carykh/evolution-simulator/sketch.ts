@@ -5,7 +5,7 @@ import Creature from './Creature'
 import Muscle from './Muscle'
 import Node from './Node'
 import Simulation from './Simulation'
-import {ActivityId, CreatureGridViewType} from './constants'
+import {ActivityId} from './constants'
 import {toInt} from './math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -896,6 +896,182 @@ export default function sketch(p5: p5) {
     }
   }
 
+  // COMPONENT DRAWING
+
+  function drawSortedCreaturesScreenImage(): void {
+    screenImage.push()
+    screenImage.scale(15.0 / scaleToFixBug)
+    screenImage.background(220, 253, 102)
+    screenImage.noStroke()
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const creature = sortedCreatures[i]
+      const gridIndex = i
+
+      const gridX = gridIndex % 40
+      const gridY = Math.floor(gridIndex / 40) + 1
+
+      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
+    }
+    screenImage.pop()
+
+    screenImage.push()
+    screenImage.scale(1.5)
+
+    screenImage.textAlign(p5.CENTER)
+    screenImage.textFont(font, 24)
+    screenImage.fill(100, 100, 200)
+    screenImage.noStroke()
+
+    screenImage.fill(0)
+    screenImage.text('Fastest creatures at the top!', windowWidth / 2, 30)
+    screenImage.text(
+      'Slowest creatures at the bottom. (Going backward = slow)',
+      windowWidth / 2 - 200,
+      700
+    )
+    cullCreaturesButton.draw()
+
+    screenImage.pop()
+  }
+
+  function drawSimulationFinishedScreenImage(): void {
+    screenImage.push()
+    screenImage.scale(15.0 / scaleToFixBug)
+    screenImage.background(220, 253, 102)
+    screenImage.noStroke()
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      let creature = sortedCreatures[i]
+
+      const gridIndex = (creature.id - 1) % CREATURE_COUNT
+      creatureIdsByGridIndex[gridIndex] = i
+
+      const gridX = gridIndex % 40
+      const gridY = Math.floor(gridIndex / 40)
+
+      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
+    }
+    screenImage.pop()
+
+    screenImage.push()
+    screenImage.scale(1.5)
+
+    screenImage.textAlign(p5.CENTER)
+    screenImage.textFont(font, 24)
+    screenImage.fill(100, 100, 200)
+    screenImage.noStroke()
+
+    screenImage.fill(0)
+    screenImage.text(
+      "All 1,000 creatures have been tested.  Now let's sort them!",
+      windowWidth / 2 - 200,
+      690
+    )
+    sortCreaturesButton.draw()
+
+    screenImage.pop()
+  }
+
+  function drawCulledCreaturesScreenImage(): void {
+    screenImage.push()
+    screenImage.scale(15.0 / scaleToFixBug)
+    screenImage.background(220, 253, 102)
+    screenImage.noStroke()
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const creature = sortedCreatures[i]
+      const gridIndex = i
+
+      const gridX = gridIndex % 40
+      const gridY = Math.floor(gridIndex / 40) + 1
+
+      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
+    }
+    screenImage.pop()
+
+    screenImage.push()
+    screenImage.scale(1.5)
+
+    screenImage.textAlign(p5.CENTER)
+    screenImage.textFont(font, 24)
+    screenImage.fill(100, 100, 200)
+    screenImage.noStroke()
+
+    screenImage.fill(0)
+    screenImage.text(
+      'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
+      windowWidth / 2,
+      30
+    )
+    screenImage.text(
+      'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
+      windowWidth / 2 - 130,
+      700
+    )
+    propagateCreaturesButton.draw()
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const creature = sortedCreatures[i]
+      const x = i % 40
+      const y = Math.floor(i / 40) + 1
+
+      if (creature.alive) {
+        drawCreature(creature, x * 30 + 55, y * 25 + 40, 0)
+      } else {
+        screenImage.rect(x * 30 + 40, y * 25 + 17, 30, 25)
+      }
+    }
+
+    screenImage.pop()
+  }
+
+  function drawPropagatedCreaturesScreenImage(): void {
+    screenImage.push()
+    screenImage.scale(15.0 / scaleToFixBug)
+    screenImage.background(220, 253, 102)
+    screenImage.noStroke()
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      let creature = sortedCreatures[i]
+      const index = creatureIdToIndex(creature.id)
+      creature = creaturesInLatestGeneration[index]
+
+      const gridIndex = i
+
+      const gridX = gridIndex % 40
+      const gridY = Math.floor(gridIndex / 40) + 1
+
+      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
+    }
+    screenImage.pop()
+
+    screenImage.push()
+    screenImage.scale(1.5)
+
+    screenImage.textAlign(p5.CENTER)
+    screenImage.textFont(font, 24)
+    screenImage.fill(100, 100, 200)
+    screenImage.noStroke()
+
+    screenImage.fill(0)
+    screenImage.text(
+      'These are the 1000 creatures of generation #' +
+        (appState.generationCount + 1) +
+        '.',
+      windowWidth / 2,
+      30
+    )
+    screenImage.text(
+      'What perils will they face?  Find out next time!',
+      windowWidth / 2 - 130,
+      700
+    )
+    propagatedCreaturesBackButton.draw()
+
+    screenImage.pop()
+  }
+
   function drawGround(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
@@ -1551,108 +1727,6 @@ export default function sketch(p5: p5) {
     stepByStepSlow = false
   }
 
-  function drawScreenImage(creatureGridViewType: CreatureGridViewType): void {
-    screenImage.push()
-    screenImage.scale(15.0 / scaleToFixBug)
-    screenImage.background(220, 253, 102)
-    screenImage.noStroke()
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      let creature = sortedCreatures[i]
-      if (creatureGridViewType === CreatureGridViewType.PropagatedCreatures) {
-        const index = creatureIdToIndex(creature.id)
-        creature = creaturesInLatestGeneration[index]
-      }
-
-      let gridIndex = i
-      if (creatureGridViewType === CreatureGridViewType.SimulationFinished) {
-        gridIndex = (creature.id - 1) % CREATURE_COUNT
-        creatureIdsByGridIndex[gridIndex] = i
-      }
-
-      const gridX = gridIndex % 40
-      let gridY = Math.floor(gridIndex / 40)
-
-      if (creatureGridViewType !== CreatureGridViewType.SimulationFinished) {
-        gridY++
-      }
-
-      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
-    }
-    screenImage.pop()
-
-    screenImage.push()
-    screenImage.scale(1.5)
-
-    screenImage.textAlign(p5.CENTER)
-    screenImage.textFont(font, 24)
-    screenImage.fill(100, 100, 200)
-    screenImage.noStroke()
-
-    if (creatureGridViewType === CreatureGridViewType.SimulationFinished) {
-      screenImage.fill(0)
-      screenImage.text(
-        "All 1,000 creatures have been tested.  Now let's sort them!",
-        windowWidth / 2 - 200,
-        690
-      )
-      sortCreaturesButton.draw()
-    } else if (creatureGridViewType === CreatureGridViewType.SortedCreatures) {
-      screenImage.fill(0)
-      screenImage.text('Fastest creatures at the top!', windowWidth / 2, 30)
-      screenImage.text(
-        'Slowest creatures at the bottom. (Going backward = slow)',
-        windowWidth / 2 - 200,
-        700
-      )
-      cullCreaturesButton.draw()
-    } else if (creatureGridViewType === CreatureGridViewType.CulledCreatures) {
-      screenImage.fill(0)
-      screenImage.text(
-        'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
-        windowWidth / 2,
-        30
-      )
-      screenImage.text(
-        'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
-        windowWidth / 2 - 130,
-        700
-      )
-      propagateCreaturesButton.draw()
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        const creature = sortedCreatures[i]
-        const x = i % 40
-        const y = Math.floor(i / 40) + 1
-
-        if (creature.alive) {
-          drawCreature(creature, x * 30 + 55, y * 25 + 40, 0)
-        } else {
-          screenImage.rect(x * 30 + 40, y * 25 + 17, 30, 25)
-        }
-      }
-    } else if (
-      creatureGridViewType === CreatureGridViewType.PropagatedCreatures
-    ) {
-      screenImage.fill(0)
-      screenImage.text(
-        'These are the 1000 creatures of generation #' +
-          (appState.generationCount + 1) +
-          '.',
-        windowWidth / 2,
-        30
-      )
-      screenImage.text(
-        'What perils will they face?  Find out next time!',
-        windowWidth / 2 - 130,
-        700
-      )
-      propagatedCreaturesBackButton.draw()
-    }
-
-    screenImage.pop()
-  }
-
   function drawCreature(
     creature: Creature,
     x: number,
@@ -2218,7 +2292,7 @@ export default function sketch(p5: p5) {
 
       if (stepByStep) {
         appState.viewTimer = 0
-        drawScreenImage(CreatureGridViewType.SimulationFinished)
+        drawSimulationFinishedScreenImage()
         setActivityId(ActivityId.FinishedStepByStep)
       } else {
         setActivityId(ActivityId.CullingCreatures)
@@ -2260,7 +2334,7 @@ export default function sketch(p5: p5) {
 
       if (appState.viewTimer > 60 * Math.PI) {
         appState.viewTimer = 0
-        drawScreenImage(CreatureGridViewType.SortedCreatures)
+        drawSortedCreaturesScreenImage()
         setActivityId(ActivityId.SortedCreatures)
       }
     }
@@ -2347,7 +2421,7 @@ export default function sketch(p5: p5) {
 
       if (stepByStep) {
         appState.viewTimer = 0
-        drawScreenImage(CreatureGridViewType.CulledCreatures)
+        drawCulledCreaturesScreenImage()
         setActivityId(ActivityId.CulledCreatures)
       } else {
         setActivityId(ActivityId.PropagatingCreatures)
@@ -2359,7 +2433,7 @@ export default function sketch(p5: p5) {
 
       if (stepByStep) {
         appState.viewTimer = 0
-        drawScreenImage(CreatureGridViewType.PropagatedCreatures)
+        drawPropagatedCreaturesScreenImage()
         setActivityId(ActivityId.PropagatedCreatures)
       } else {
         setActivityId(ActivityId.GenerationView)

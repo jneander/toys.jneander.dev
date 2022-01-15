@@ -197,13 +197,15 @@ export default function sketch(p5: p5) {
     simulationState.speed = 1
     creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    setActivityId(ActivityId.RequestingSimulation)
+    setSimulationState(creaturesInLatestGeneration[creaturesTested])
+    setActivityId(ActivityId.SimulationRunning)
   }
 
   function performQuickGenerationSimulation(): void {
     creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.Quick
-    setActivityId(ActivityId.RequestingSimulation)
+    finishGenerationSimulationFromIndex(0)
+    setActivityId(ActivityId.SimulationFinished)
   }
 
   function finishGenerationSimulationFromIndex(creatureIndex: number): void {
@@ -2276,10 +2278,7 @@ export default function sketch(p5: p5) {
       sortCreaturesButton.isUnderCursor()
     ) {
       sortCreaturesButton.onClick()
-    } else if (
-      appState.currentActivityId === ActivityId.SimulationRunning ||
-      appState.currentActivityId === ActivityId.RequestingSimulation
-    ) {
+    } else if (appState.currentActivityId === ActivityId.SimulationRunning) {
       if (stepByStepSkipButton.isUnderCursor()) {
         stepByStepSkipButton.onClick()
       } else if (stepByStepPlaybackSpeedButton.isUnderCursor()) {
@@ -2374,17 +2373,6 @@ export default function sketch(p5: p5) {
       generateCreatures()
       predrawGeneratedCreaturesActivity()
       setActivityId(ActivityId.GeneratedCreatures)
-    } else if (appState.currentActivityId === ActivityId.RequestingSimulation) {
-      setSimulationState(creaturesInLatestGeneration[creaturesTested])
-
-      if (
-        appState.generationSimulationMode === GenerationSimulationMode.Quick
-      ) {
-        finishGenerationSimulationFromIndex(0)
-        setActivityId(ActivityId.SimulationFinished)
-      } else {
-        setActivityId(ActivityId.SimulationRunning)
-      }
     }
 
     if (appState.currentActivityId === ActivityId.SimulationRunning) {
@@ -2421,10 +2409,11 @@ export default function sketch(p5: p5) {
 
       if (appState.viewTimer >= 1020) {
         creaturesTested++
-        if (creaturesTested == CREATURE_COUNT) {
-          setActivityId(ActivityId.SimulationFinished)
+
+        if (creaturesTested < CREATURE_COUNT) {
+          setSimulationState(creaturesInLatestGeneration[creaturesTested])
         } else {
-          setActivityId(ActivityId.RequestingSimulation)
+          setActivityId(ActivityId.SimulationFinished)
         }
 
         simulationState.camera.x = 0

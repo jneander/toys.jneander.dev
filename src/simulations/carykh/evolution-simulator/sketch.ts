@@ -51,7 +51,6 @@ export default function sketch(p5: p5) {
   const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 
   let font: Font
-  let barCounts: Array<number[]> = []
   let graphImage: Graphics
   let screenImage: Graphics
   let popUpImage: Graphics
@@ -74,6 +73,7 @@ export default function sketch(p5: p5) {
     generationCountDepictedInGraph: -1,
     generationHistoryMap: {},
     generationSimulationMode: GenerationSimulationMode.Off,
+    histogramBarCounts: [],
     pendingGenerationCount: 0,
     popupSimulationCreatureId: null,
     selectedGeneration: 0,
@@ -196,7 +196,7 @@ export default function sketch(p5: p5) {
 
       const beginBar = new Array<number>(barLen).fill(0)
 
-      barCounts.push(beginBar)
+      appState.histogramBarCounts.push(beginBar)
 
       const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
 
@@ -207,7 +207,7 @@ export default function sketch(p5: p5) {
         )
 
         if (bar >= 0 && bar < barLen) {
-          barCounts[appState.generationCount + 1][bar]++
+          appState.histogramBarCounts[appState.generationCount + 1][bar]++
         }
 
         const speciesId = speciesIdForCreature(appState.sortedCreatures[i])
@@ -1973,8 +1973,8 @@ export default function sketch(p5: p5) {
     let maxH = 1
 
     for (let i = 0; i < barLen; i++) {
-      if (barCounts[appState.selectedGeneration][i] > maxH) {
-        maxH = barCounts[appState.selectedGeneration][i]
+      if (appState.histogramBarCounts[appState.selectedGeneration][i] > maxH) {
+        maxH = appState.histogramBarCounts[appState.selectedGeneration][i]
       }
     }
 
@@ -2036,7 +2036,8 @@ export default function sketch(p5: p5) {
 
     for (let i = 0; i < barLen; i++) {
       const h = Math.min(
-        barCounts[appState.selectedGeneration][i] * multiplier,
+        appState.histogramBarCounts[appState.selectedGeneration][i] *
+          multiplier,
         hh
       )
 
@@ -2293,7 +2294,7 @@ export default function sketch(p5: p5) {
     appState.fitnessPercentileHistory.push(
       new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0.0)
     )
-    barCounts.push(new Array(barLen).fill(0))
+    appState.histogramBarCounts.push(new Array(barLen).fill(0))
 
     graphImage = p5.createGraphics(975, 570)
     screenImage = p5.createGraphics(1920, 1080)

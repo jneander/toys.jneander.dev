@@ -54,12 +54,6 @@ export default function sketch(p5: p5) {
 
   let sliderX = 1170
   let draggingSlider = false
-  let creaturesTested = 0
-
-  let popupSimulationCreatureId: number | null
-
-  let statusWindow = -4
-  const creatureIdsByGridIndex = new Array<number>(CREATURE_COUNT)
 
   type SpeciesCount = {
     count: number
@@ -73,28 +67,40 @@ export default function sketch(p5: p5) {
   }
 
   type AppState = {
+    creatureIdsByGridIndex: number[]
+    creaturesInLatestGeneration: Creature[]
+    creaturesTested: number
     currentActivityId: ActivityId
     generationCount: number
     generationCountDepictedInGraph: number
     generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
     generationSimulationMode: GenerationSimulationMode
     pendingGenerationCount: number
+    popupSimulationCreatureId: number | null
     selectedGeneration: number
     showPopupSimulation: boolean
+    sortedCreatures: Creature[]
     speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
+    statusWindow: number
     viewTimer: number
   }
 
   const appState: AppState = {
+    creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
+    creaturesInLatestGeneration: new Array<Creature>(CREATURE_COUNT),
+    creaturesTested: 0,
     currentActivityId: ActivityId.Start,
     generationCount: -1,
     generationCountDepictedInGraph: -1,
     generationHistoryMap: {},
     generationSimulationMode: GenerationSimulationMode.Off,
     pendingGenerationCount: 0,
+    popupSimulationCreatureId: null,
     selectedGeneration: 0,
     showPopupSimulation: false,
+    sortedCreatures: [],
     speciesCountsHistoryMap: {},
+    statusWindow: -4,
     viewTimer: 0
   }
 
@@ -124,8 +130,6 @@ export default function sketch(p5: p5) {
     timer: 0
   }
 
-  const creaturesInLatestGeneration = new Array<Creature>(CREATURE_COUNT)
-
   function creatureIdToIndex(creatureId: number): number {
     return (creatureId - 1) % CREATURE_COUNT
   }
@@ -147,8 +151,6 @@ export default function sketch(p5: p5) {
 
     return 'fastest'
   }
-
-  let sortedCreatures: Creature[] = []
 
   const simulation = new Simulation(simulationState, simulationConfig)
 
@@ -187,20 +189,22 @@ export default function sketch(p5: p5) {
   function generateCreatures(): void {
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = simulation.generateCreature(i + 1)
-      creaturesInLatestGeneration[i] = creature
+      appState.creaturesInLatestGeneration[i] = creature
     }
   }
 
   function performStepByStepSimulation(): void {
     simulationState.speed = 1
-    creaturesTested = 0
+    appState.creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    setSimulationState(creaturesInLatestGeneration[creaturesTested])
+    setSimulationState(
+      appState.creaturesInLatestGeneration[appState.creaturesTested]
+    )
     setActivityId(ActivityId.SimulationRunning)
   }
 
   function performQuickGenerationSimulation(): void {
-    creaturesTested = 0
+    appState.creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.Quick
     finishGenerationSimulationFromIndex(0)
     setActivityId(ActivityId.SimulationFinished)
@@ -208,7 +212,7 @@ export default function sketch(p5: p5) {
 
   function finishGenerationSimulationFromIndex(creatureIndex: number): void {
     for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
-      setSimulationState(creaturesInLatestGeneration[i])
+      setSimulationState(appState.creaturesInLatestGeneration[i])
 
       for (let s = 0; s < 900; s++) {
         advanceSimulation()
@@ -224,22 +228,22 @@ export default function sketch(p5: p5) {
     }
 
     appState.viewTimer = 0
-    creaturesTested++
+    appState.creaturesTested++
 
-    finishGenerationSimulationFromIndex(creaturesTested)
+    finishGenerationSimulationFromIndex(appState.creaturesTested)
     setActivityId(ActivityId.SimulationFinished)
   }
 
   function updateCreatureIdsByGridIndex(): void {
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = sortedCreatures[i]
+      const creature = appState.sortedCreatures[i]
       const gridIndex = creatureIdToIndex(creature.id)
-      creatureIdsByGridIndex[gridIndex] = i
+      appState.creatureIdsByGridIndex[gridIndex] = i
     }
   }
 
   function sortCreatures(): void {
-    sortedCreatures = [...creaturesInLatestGeneration].sort(
+    appState.sortedCreatures = [...appState.creaturesInLatestGeneration].sort(
       (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
     )
   }
@@ -248,13 +252,13 @@ export default function sketch(p5: p5) {
     fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
     for (let i = 0; i < fitnessPercentileCount; i++) {
       fitnessPercentileHistory[appState.generationCount + 1][i] =
-        sortedCreatures[fitnessPercentileCreatureIndices[i]].fitness
+        appState.sortedCreatures[fitnessPercentileCreatureIndices[i]].fitness
     }
 
     const historyEntry: GenerationHistoryEntry = {
-      fastest: sortedCreatures[0].clone(),
-      median: sortedCreatures[midCreatureIndex].clone(),
-      slowest: sortedCreatures[lastCreatureIndex].clone()
+      fastest: appState.sortedCreatures[0].clone(),
+      median: appState.sortedCreatures[midCreatureIndex].clone(),
+      slowest: appState.sortedCreatures[lastCreatureIndex].clone()
     }
 
     appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
@@ -267,14 +271,14 @@ export default function sketch(p5: p5) {
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const bar = Math.floor(
-        sortedCreatures[i].fitness * histBarsPerMeter - minBar
+        appState.sortedCreatures[i].fitness * histBarsPerMeter - minBar
       )
 
       if (bar >= 0 && bar < barLen) {
         barCounts[appState.generationCount + 1][bar]++
       }
 
-      const speciesId = speciesIdForCreature(sortedCreatures[i])
+      const speciesId = speciesIdForCreature(appState.sortedCreatures[i])
       speciesCountBySpeciesId[speciesId] =
         speciesCountBySpeciesId[speciesId] || 0
       speciesCountBySpeciesId[speciesId]++
@@ -308,10 +312,10 @@ export default function sketch(p5: p5) {
         culledCreatureIndex = i
       }
 
-      const survivingCreature = sortedCreatures[survivingCreatureIndex]
+      const survivingCreature = appState.sortedCreatures[survivingCreatureIndex]
       survivingCreature.alive = true
 
-      const culledCreature = sortedCreatures[culledCreatureIndex]
+      const culledCreature = appState.sortedCreatures[culledCreatureIndex]
       culledCreature.alive = false
     }
   }
@@ -323,7 +327,7 @@ export default function sketch(p5: p5) {
       let survivingCreatureIndex
       let culledCreatureIndex
 
-      if (sortedCreatures[i].alive) {
+      if (appState.sortedCreatures[i].alive) {
         survivingCreatureIndex = i
         culledCreatureIndex = lastCreatureIndex - i
       } else {
@@ -331,29 +335,28 @@ export default function sketch(p5: p5) {
         culledCreatureIndex = i
       }
 
-      const survivingCreature = sortedCreatures[survivingCreatureIndex]
-      const culledCreature = sortedCreatures[culledCreatureIndex]
+      const survivingCreature = appState.sortedCreatures[survivingCreatureIndex]
+      const culledCreature = appState.sortedCreatures[culledCreatureIndex]
 
       // Next generation includes a clone and mutated offspring
-      sortedCreatures[survivingCreatureIndex] = survivingCreature.clone(
-        survivingCreature.id + CREATURE_COUNT
-      )
-      sortedCreatures[culledCreatureIndex] = simulation.modifyCreature(
+      appState.sortedCreatures[survivingCreatureIndex] =
+        survivingCreature.clone(survivingCreature.id + CREATURE_COUNT)
+      appState.sortedCreatures[culledCreatureIndex] = simulation.modifyCreature(
         survivingCreature,
         culledCreature.id + CREATURE_COUNT
       )
 
       // Stabilize and adjust mutated offspring
-      const {muscles, nodes} = sortedCreatures[culledCreatureIndex]
+      const {muscles, nodes} = appState.sortedCreatures[culledCreatureIndex]
 
       simulation.stabilizeNodesAndMuscles(nodes, muscles)
       simulation.adjustNodesToCenter(nodes)
     }
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = sortedCreatures[i]
+      const creature = appState.sortedCreatures[i]
       const index = creatureIdToIndex(creature.id)
-      creaturesInLatestGeneration[index] = creature.clone()
+      appState.creaturesInLatestGeneration[index] = creature.clone()
     }
 
     appState.generationCount++
@@ -751,7 +754,7 @@ export default function sketch(p5: p5) {
   class StatusWindowView extends Widget {
     draw(): void {
       let x, y, px, py
-      let rank = statusWindow + 1
+      let rank = appState.statusWindow + 1
 
       let creature
 
@@ -759,16 +762,16 @@ export default function sketch(p5: p5) {
       p5.strokeWeight(3)
       p5.noFill()
 
-      if (statusWindow >= 0) {
-        creature = sortedCreatures[statusWindow]
+      if (appState.statusWindow >= 0) {
+        creature = appState.sortedCreatures[appState.statusWindow]
 
         if (appState.currentActivityId === ActivityId.FinishedStepByStep) {
           const id = (creature.id - 1) % CREATURE_COUNT
           x = id % 40
           y = Math.floor(id / 40)
         } else {
-          x = statusWindow % 40
-          y = Math.floor(statusWindow / 40) + 1
+          x = appState.statusWindow % 40
+          y = Math.floor(appState.statusWindow / 40) + 1
         }
 
         px = x * 30 + 55
@@ -784,16 +787,17 @@ export default function sketch(p5: p5) {
       } else {
         const historyEntry =
           appState.generationHistoryMap[appState.selectedGeneration]
-        creature = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
+        creature =
+          historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
 
-        x = 760 + (statusWindow + 3) * 160
+        x = 760 + (appState.statusWindow + 3) * 160
         y = 180
         px = x
         py = y
         p5.rect(x, y, 140, 140)
 
         const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
-        rank = ranks[statusWindow + 3]
+        rank = ranks[appState.statusWindow + 3]
       }
 
       p5.noStroke()
@@ -913,7 +917,7 @@ export default function sketch(p5: p5) {
     for (let y = 0; y < 25; y++) {
       for (let x = 0; x < 40; x++) {
         const index = y * 40 + x
-        const creature = creaturesInLatestGeneration[index]
+        const creature = appState.creaturesInLatestGeneration[index]
 
         drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, 0)
       }
@@ -1010,7 +1014,7 @@ export default function sketch(p5: p5) {
       0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
 
     for (let i1 = 0; i1 < CREATURE_COUNT; i1++) {
-      const creature = sortedCreatures[i1]
+      const creature = appState.sortedCreatures[i1]
       const j2 = creature.id - appState.generationCount * CREATURE_COUNT - 1
       const x1 = j2 % 40
       const y1 = Math.floor(j2 / 40)
@@ -1048,7 +1052,7 @@ export default function sketch(p5: p5) {
     screenImage.noStroke()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = sortedCreatures[i]
+      const creature = appState.sortedCreatures[i]
       const gridIndex = i
 
       const gridX = gridIndex % 40
@@ -1085,7 +1089,7 @@ export default function sketch(p5: p5) {
     screenImage.noStroke()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = sortedCreatures[i]
+      const creature = appState.sortedCreatures[i]
       const gridIndex = creatureIdToIndex(creature.id)
 
       const gridX = gridIndex % 40
@@ -1121,7 +1125,7 @@ export default function sketch(p5: p5) {
     screenImage.noStroke()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = sortedCreatures[i]
+      const creature = appState.sortedCreatures[i]
       const gridIndex = i
 
       const gridX = gridIndex % 40
@@ -1153,7 +1157,7 @@ export default function sketch(p5: p5) {
     propagateCreaturesButton.draw()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = sortedCreatures[i]
+      const creature = appState.sortedCreatures[i]
       const x = i % 40
       const y = Math.floor(i / 40) + 1
 
@@ -1174,9 +1178,9 @@ export default function sketch(p5: p5) {
     screenImage.noStroke()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      let creature = sortedCreatures[i]
+      let creature = appState.sortedCreatures[i]
       const index = creatureIdToIndex(creature.id)
-      creature = creaturesInLatestGeneration[index]
+      creature = appState.creaturesInLatestGeneration[index]
 
       const gridIndex = i
 
@@ -1906,7 +1910,7 @@ export default function sketch(p5: p5) {
 
   function startASAP(): void {
     appState.generationSimulationMode = GenerationSimulationMode.ASAP
-    creaturesTested = 0
+    appState.creaturesTested = 0
   }
 
   function drawCreature(
@@ -2031,24 +2035,25 @@ export default function sketch(p5: p5) {
   }
 
   function setPopupSimulationCreatureId(id: number): void {
-    const popupCurrentlyClosed = statusWindow == -4
-    statusWindow = id
+    const popupCurrentlyClosed = appState.statusWindow == -4
+    appState.statusWindow = id
 
     let creature: Creature
     let targetCreatureId: number
 
-    if (statusWindow <= -1) {
+    if (appState.statusWindow <= -1) {
       const historyEntry =
         appState.generationHistoryMap[appState.selectedGeneration]
-      creature = historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
+      creature =
+        historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
       targetCreatureId = creature.id
     } else {
-      targetCreatureId = statusWindow
-      creature = sortedCreatures[id]
+      targetCreatureId = appState.statusWindow
+      creature = appState.sortedCreatures[id]
     }
 
     if (
-      popupSimulationCreatureId !== targetCreatureId ||
+      appState.popupSimulationCreatureId !== targetCreatureId ||
       popupCurrentlyClosed
     ) {
       simulationState.timer = 0
@@ -2058,13 +2063,13 @@ export default function sketch(p5: p5) {
         appState.showPopupSimulation = true
 
         setSimulationState(creature)
-        popupSimulationCreatureId = targetCreatureId
+        appState.popupSimulationCreatureId = targetCreatureId
       }
     }
   }
 
   function clearPopupSimulation(): void {
-    statusWindow = -4
+    appState.statusWindow = -4
   }
 
   function drawStats(x: number, y: number, size: number): void {
@@ -2080,7 +2085,8 @@ export default function sketch(p5: p5) {
 
     let timeShow: number
     if (simulationState.speed > 60) {
-      timeShow = toInt((appState.viewTimer + creaturesTested * 37) / 60) % 15
+      timeShow =
+        toInt((appState.viewTimer + appState.creaturesTested * 37) / 60) % 15
     } else {
       timeShow = appState.viewTimer / 60
     }
@@ -2196,7 +2202,7 @@ export default function sketch(p5: p5) {
     const {averageX} = getNodesAverage(nodes)
     const index = creatureIdToIndex(id)
 
-    creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
+    appState.creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }
 
   p5.mouseWheel = (event: WheelEvent) => {
@@ -2359,7 +2365,9 @@ export default function sketch(p5: p5) {
       }
 
       if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
-        setSimulationState(creaturesInLatestGeneration[creaturesTested])
+        setSimulationState(
+          appState.creaturesInLatestGeneration[appState.creaturesTested]
+        )
         finishGenerationSimulationFromIndex(0)
         sortCreatures()
         updateHistory()
@@ -2406,10 +2414,12 @@ export default function sketch(p5: p5) {
       }
 
       if (appState.viewTimer >= 1020) {
-        creaturesTested++
+        appState.creaturesTested++
 
-        if (creaturesTested < CREATURE_COUNT) {
-          setSimulationState(creaturesInLatestGeneration[creaturesTested])
+        if (appState.creaturesTested < CREATURE_COUNT) {
+          setSimulationState(
+            appState.creaturesInLatestGeneration[appState.creaturesTested]
+          )
         } else {
           setActivityId(ActivityId.SimulationFinished)
         }
@@ -2474,7 +2484,7 @@ export default function sketch(p5: p5) {
           Math.abs(cursorY - 329) <= 312
         ) {
           idOfCreatureUnderCursor =
-            creatureIdsByGridIndex[
+            appState.creatureIdsByGridIndex[
               Math.floor((cursorX - 40) / 30) +
                 Math.floor((cursorY - 17) / 25) * 40
             ]
@@ -2560,7 +2570,7 @@ export default function sketch(p5: p5) {
       drawPropagatedCreaturesActivity()
     }
 
-    if (statusWindow >= -3) {
+    if (appState.statusWindow >= -3) {
       statusWindowView.draw()
     }
   }

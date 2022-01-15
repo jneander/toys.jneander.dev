@@ -12,6 +12,12 @@ import {
   POST_FONT_SIZE,
   SCALE_TO_FIX_BUG
 } from './constants'
+import {
+  averagePositionOfNodes,
+  creatureIdToIndex,
+  historyEntryKeyForStatusWindow,
+  speciesIdForCreature
+} from './helpers'
 import {toInt} from './math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -107,28 +113,6 @@ export default function sketch(p5: p5) {
 
     speed: 1,
     timer: 0
-  }
-
-  function creatureIdToIndex(creatureId: number): number {
-    return (creatureId - 1) % CREATURE_COUNT
-  }
-
-  function speciesIdForCreature(creature: Creature): number {
-    return (creature.nodes.length % 10) * 10 + (creature.muscles.length % 10)
-  }
-
-  function historyEntryKeyForStatusWindow(
-    statusWindow: number
-  ): keyof GenerationHistoryEntry {
-    if (statusWindow === -3) {
-      return 'slowest'
-    }
-
-    if (statusWindow === -2) {
-      return 'median'
-    }
-
-    return 'fastest'
   }
 
   const simulation = new Simulation(simulationState, simulationConfig)
@@ -1870,25 +1854,6 @@ export default function sketch(p5: p5) {
     }
 
     return toInt(i) + ''
-  }
-
-  function averagePositionOfNodes(nodes: Node[]): {
-    averageX: number
-    averageY: number
-  } {
-    let averageX = 0
-    let averageY = 0
-
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i]
-      averageX += node.positionX
-      averageY += node.positionY
-    }
-
-    averageX = averageX / nodes.length
-    averageY = averageY / nodes.length
-
-    return {averageX, averageY}
   }
 
   function setActivityId(activityId: ActivityId): void {

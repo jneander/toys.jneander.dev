@@ -1579,9 +1579,8 @@ export default function sketch(p5: p5) {
 
       drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
     }
-
-    appState.viewTimer = 0
     screenImage.pop()
+
     screenImage.push()
     screenImage.scale(1.5)
 
@@ -2218,6 +2217,7 @@ export default function sketch(p5: p5) {
       updateHistory()
 
       if (stepByStep) {
+        appState.viewTimer = 0
         drawScreenImage(CreatureGridViewType.SimulationFinished)
         setActivityId(ActivityId.FinishedStepByStep)
       } else {
@@ -2259,6 +2259,7 @@ export default function sketch(p5: p5) {
       sortingCreaturesSkipButton.draw()
 
       if (appState.viewTimer > 60 * Math.PI) {
+        appState.viewTimer = 0
         drawScreenImage(CreatureGridViewType.SortedCreatures)
         setActivityId(ActivityId.SortedCreatures)
       }
@@ -2345,6 +2346,7 @@ export default function sketch(p5: p5) {
       cullCreatures()
 
       if (stepByStep) {
+        appState.viewTimer = 0
         drawScreenImage(CreatureGridViewType.CulledCreatures)
         setActivityId(ActivityId.CulledCreatures)
       } else {
@@ -2356,6 +2358,7 @@ export default function sketch(p5: p5) {
       propagateCreatures()
 
       if (stepByStep) {
+        appState.viewTimer = 0
         drawScreenImage(CreatureGridViewType.PropagatedCreatures)
         setActivityId(ActivityId.PropagatedCreatures)
       } else {

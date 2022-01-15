@@ -1993,6 +1993,7 @@ export default function sketch(p5: p5) {
   }
 
   function drawWorstMedianAndBestCreatures(): void {
+    p5.noStroke()
     p5.textAlign(p5.CENTER)
 
     const historyEntry =
@@ -2512,8 +2513,6 @@ export default function sketch(p5: p5) {
     }
 
     if (appState.currentActivityId === ActivityId.GenerationView) {
-      p5.noStroke()
-
       if (appState.generationCount >= 1) {
         if (draggingSlider) {
           generationSlider.onDrag()

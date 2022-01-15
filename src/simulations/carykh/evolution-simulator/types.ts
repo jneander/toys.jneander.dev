@@ -51,6 +51,7 @@ export type AppState = {
   creaturesInLatestGeneration: Creature[]
   creaturesTested: number
   currentActivityId: ActivityId
+  fitnessPercentileHistory: Array<number[]>
   generationCount: number
   generationCountDepictedInGraph: number
   generationHistoryMap: {[generation: number]: GenerationHistoryEntry}

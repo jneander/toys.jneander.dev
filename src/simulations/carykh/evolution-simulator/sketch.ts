@@ -49,8 +49,6 @@ export default function sketch(p5: p5) {
   const lastCreatureIndex = CREATURE_COUNT - 1
   const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 
-  const fitnessPercentileHistory: Array<number[]> = []
-
   let font: Font
   let barCounts: Array<number[]> = []
   let graphImage: Graphics
@@ -71,6 +69,7 @@ export default function sketch(p5: p5) {
     creaturesInLatestGeneration: new Array<Creature>(CREATURE_COUNT),
     creaturesTested: 0,
     currentActivityId: ActivityId.Start,
+    fitnessPercentileHistory: [],
     generationCount: -1,
     generationCountDepictedInGraph: -1,
     generationHistoryMap: {},
@@ -177,11 +176,11 @@ export default function sketch(p5: p5) {
     }
 
     updateHistory(): void {
-      fitnessPercentileHistory.push(
+      appState.fitnessPercentileHistory.push(
         new Array<number>(FITNESS_PERCENTILE_CREATURE_INDICES.length)
       )
       for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
-        fitnessPercentileHistory[appState.generationCount + 1][i] =
+        appState.fitnessPercentileHistory[appState.generationCount + 1][i] =
           appState.sortedCreatures[
             FITNESS_PERCENTILE_CREATURE_INDICES[i]
           ].fitness
@@ -1014,10 +1013,10 @@ export default function sketch(p5: p5) {
       p5.textAlign(p5.RIGHT)
       p5.text(
         Math.round(
-          fitnessPercentileHistory[
+          appState.fitnessPercentileHistory[
             Math.min(
               appState.selectedGeneration,
-              fitnessPercentileHistory.length - 1
+              appState.fitnessPercentileHistory.length - 1
             )
           ][14] * 1000
         ) /
@@ -1786,9 +1785,9 @@ export default function sketch(p5: p5) {
       for (let i = 0; i < appState.generationCount; i++) {
         graphImage.line(
           x + i * genWidth,
-          -fitnessPercentileHistory[i][k] * meterHeight + zero + y,
+          -appState.fitnessPercentileHistory[i][k] * meterHeight + zero + y,
           x + (i + 1) * genWidth,
-          -fitnessPercentileHistory[i + 1][k] * meterHeight + zero + y
+          -appState.fitnessPercentileHistory[i + 1][k] * meterHeight + zero + y
         )
       }
     }
@@ -1906,7 +1905,8 @@ export default function sketch(p5: p5) {
     let record = -sign
 
     for (let i = 0; i < appState.generationCount; i++) {
-      const toTest = fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
+      const toTest =
+        appState.fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
 
       if (toTest * sign > record * sign) {
         record = toTest
@@ -2042,10 +2042,10 @@ export default function sketch(p5: p5) {
       if (
         i + minBar ==
         Math.floor(
-          fitnessPercentileHistory[
+          appState.fitnessPercentileHistory[
             Math.min(
               appState.selectedGeneration,
-              fitnessPercentileHistory.length - 1
+              appState.fitnessPercentileHistory.length - 1
             )
           ][14] * histBarsPerMeter
         )
@@ -2289,7 +2289,7 @@ export default function sketch(p5: p5) {
     )
     p5.ellipseMode(p5.CENTER)
 
-    fitnessPercentileHistory.push(
+    appState.fitnessPercentileHistory.push(
       new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0.0)
     )
     barCounts.push(new Array(barLen).fill(0))

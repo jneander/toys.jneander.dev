@@ -5,7 +5,7 @@ import Creature from './Creature'
 import Muscle from './Muscle'
 import Node from './Node'
 import Simulation from './Simulation'
-import {ActivityId} from './constants'
+import {ActivityId, GenerationSimulationMode} from './constants'
 import {toInt} from './math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -79,7 +79,7 @@ export default function sketch(p5: p5) {
     generationCount: number
     generationCountDepictedInGraph: number
     generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
-    inAsapSimulation: boolean
+    generationSimulationMode: GenerationSimulationMode
     pendingGenerationCount: number
     selectedGeneration: number
     showPopupSimulation: boolean
@@ -92,7 +92,7 @@ export default function sketch(p5: p5) {
     generationCount: -1,
     generationCountDepictedInGraph: -1,
     generationHistoryMap: {},
-    inAsapSimulation: false,
+    generationSimulationMode: GenerationSimulationMode.Off,
     pendingGenerationCount: 0,
     selectedGeneration: 0,
     showPopupSimulation: false,
@@ -151,8 +151,6 @@ export default function sketch(p5: p5) {
   }
 
   let sortedCreatures: Creature[] = []
-
-  let stepByStepSlow: boolean
 
   const simulation = new Simulation(simulationState, simulationConfig)
 
@@ -426,7 +424,7 @@ export default function sketch(p5: p5) {
       setActivityId(ActivityId.RequestingSimulation)
       simulationState.speed = 1
       creaturesTested = 0
-      stepByStepSlow = true
+      appState.generationSimulationMode = GenerationSimulationMode.StepByStep
     }
   }
 
@@ -446,7 +444,7 @@ export default function sketch(p5: p5) {
     onClick(): void {
       setActivityId(ActivityId.RequestingSimulation)
       creaturesTested = 0
-      stepByStepSlow = false
+      appState.generationSimulationMode = GenerationSimulationMode.Quick
     }
   }
 
@@ -1838,7 +1836,7 @@ export default function sketch(p5: p5) {
   }
 
   function startASAP(): void {
-    appState.inAsapSimulation = true
+    appState.generationSimulationMode = GenerationSimulationMode.ASAP
     creaturesTested = 0
   }
 
@@ -2291,10 +2289,10 @@ export default function sketch(p5: p5) {
           startASAP()
         }
       } else {
-        appState.inAsapSimulation = false
+        appState.generationSimulationMode = GenerationSimulationMode.Off
       }
 
-      if (appState.inAsapSimulation) {
+      if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
         setSimulationState(creaturesInLatestGeneration[creaturesTested])
         finishGenerationSimulationFromIndex(0)
         sortCreatures()
@@ -2313,7 +2311,9 @@ export default function sketch(p5: p5) {
 
       setActivityId(ActivityId.SimulationRunning)
 
-      if (!stepByStepSlow) {
+      if (
+        appState.generationSimulationMode === GenerationSimulationMode.Quick
+      ) {
         finishGenerationSimulationFromIndex(0)
         setActivityId(ActivityId.SimulationFinished)
       }
@@ -2428,10 +2428,12 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === ActivityId.SortingCreatures) {
       drawSortingCreaturesActivity()
 
-      if (stepByStepSlow) {
-        appState.viewTimer += 2
-      } else {
+      if (
+        appState.generationSimulationMode === GenerationSimulationMode.Quick
+      ) {
         appState.viewTimer += 10
+      } else {
+        appState.viewTimer += 2
       }
 
       if (appState.viewTimer > 60 * Math.PI) {

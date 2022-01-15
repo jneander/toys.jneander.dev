@@ -158,10 +158,10 @@ export default function sketch(p5: p5) {
     }
 
     private drawNode(node: Node, x: number, y: number, graphics: p5): void {
-      let color = p5.color(512 - toInt(node.friction * 512), 0, 0)
+      let color = graphics.color(512 - toInt(node.friction * 512), 0, 0)
 
       if (node.friction <= 0.5) {
-        color = p5.color(
+        color = graphics.color(
           255,
           255 - toInt(node.friction * 512),
           255 - toInt(node.friction * 512)
@@ -183,10 +183,10 @@ export default function sketch(p5: p5) {
         graphics.fill(0)
       }
 
-      graphics.textAlign(p5.CENTER)
+      graphics.textAlign(graphics.CENTER)
       graphics.textFont(font, 0.4 * node.mass * SCALE_TO_FIX_BUG)
       graphics.text(
-        p5.nf(node.value, 0, 2),
+        graphics.nf(node.value, 0, 2),
         (node.positionX + x) * SCALE_TO_FIX_BUG,
         (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
           SCALE_TO_FIX_BUG
@@ -320,10 +320,10 @@ export default function sketch(p5: p5) {
         const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
 
         graphics.fill(AXON_COLOR)
-        graphics.textAlign(p5.CENTER)
+        graphics.textAlign(graphics.CENTER)
         graphics.textFont(font, 0.4 * averageMass * SCALE_TO_FIX_BUG)
         graphics.text(
-          p5.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
+          graphics.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
           muscleMidX * SCALE_TO_FIX_BUG,
           muscleMidY * SCALE_TO_FIX_BUG
         )

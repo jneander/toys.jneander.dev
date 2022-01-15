@@ -1208,6 +1208,8 @@ export default function sketch(p5: p5) {
   function drawStepByStepSimulationView(): void {
     const {averageX} = getNodesAverage(simulationState.creature.nodes)
 
+    p5.background(120, 200, 255)
+
     p5.push()
 
     p5.translate(p5.width / 2.0, p5.height / 2.0)
@@ -2382,8 +2384,6 @@ export default function sketch(p5: p5) {
       // simulate running
 
       if (appState.viewTimer <= 900) {
-        p5.background(120, 200, 255)
-
         for (let s = 0; s < simulationState.speed; s++) {
           if (appState.viewTimer < 900) {
             advanceSimulation()

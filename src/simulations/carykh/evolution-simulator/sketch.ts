@@ -193,6 +193,12 @@ export default function sketch(p5: p5) {
     }
   }
 
+  function performQuickGenerationSimulation(): void {
+    creaturesTested = 0
+    appState.generationSimulationMode = GenerationSimulationMode.Quick
+    setActivityId(ActivityId.RequestingSimulation)
+  }
+
   function finishGenerationSimulationFromIndex(creatureIndex: number): void {
     for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
       setSimulationState(creaturesInLatestGeneration[i])
@@ -456,9 +462,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      setActivityId(ActivityId.RequestingSimulation)
-      creaturesTested = 0
-      appState.generationSimulationMode = GenerationSimulationMode.Quick
+      performQuickGenerationSimulation()
     }
   }
 

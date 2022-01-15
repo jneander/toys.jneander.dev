@@ -749,6 +749,39 @@ export default function sketch(p5: p5) {
       if (appState.selectedGeneration >= 1) {
         drawWorstMedianAndBestCreatures()
       }
+
+      if (
+        appState.selectedGeneration > 0 &&
+        appState.pendingGenerationCount === 0 &&
+        !draggingSlider
+      ) {
+        const {cursorX, cursorY} = appView.getCursorPosition()
+
+        /*
+         * When the cursor is over the worst, median, or best creature, the popup
+         * simulation will be displayed for that creature.
+         */
+
+        let worstMedianOrBest: number | null = null
+
+        if (Math.abs(cursorY - 250) <= 70) {
+          if (Math.abs(cursorX - 990) <= 230) {
+            const modX = (cursorX - 760) % 160
+
+            if (modX < 140) {
+              worstMedianOrBest = Math.floor((cursorX - 760) / 160) - 3
+            }
+          }
+        }
+
+        if (worstMedianOrBest != null) {
+          appController.setPopupSimulationCreatureId(worstMedianOrBest)
+        } else {
+          appController.clearPopupSimulation()
+        }
+      } else {
+        appController.clearPopupSimulation()
+      }
     }
   }
 
@@ -1978,35 +2011,7 @@ export default function sketch(p5: p5) {
       } else {
         appController.clearPopupSimulation()
       }
-    } else if (
-      appState.currentActivityId === ActivityId.GenerationView &&
-      appState.selectedGeneration >= 1 &&
-      appState.pendingGenerationCount == 0 &&
-      !draggingSlider
-    ) {
-      /*
-       * When the cursor is over the worst, median, or best creature, the popup
-       * simulation will be displayed for that creature.
-       */
-
-      let worstMedianOrBest: number | null = null
-
-      if (Math.abs(cursorY - 250) <= 70) {
-        if (Math.abs(cursorX - 990) <= 230) {
-          const modX = (cursorX - 760) % 160
-
-          if (modX < 140) {
-            worstMedianOrBest = Math.floor((cursorX - 760) / 160) - 3
-          }
-        }
-      }
-
-      if (worstMedianOrBest != null) {
-        appController.setPopupSimulationCreatureId(worstMedianOrBest)
-      } else {
-        appController.clearPopupSimulation()
-      }
-    } else {
+    } else if (appState.currentActivityId !== ActivityId.GenerationView) {
       appController.clearPopupSimulation()
     }
 

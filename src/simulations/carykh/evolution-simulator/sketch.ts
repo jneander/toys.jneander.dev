@@ -5,7 +5,13 @@ import Creature from './Creature'
 import Muscle from './Muscle'
 import Node from './Node'
 import Simulation from './Simulation'
-import {ActivityId, GenerationSimulationMode} from './constants'
+import {
+  ActivityId,
+  CREATURE_COUNT,
+  GenerationSimulationMode,
+  POST_FONT_SIZE,
+  SCALE_TO_FIX_BUG
+} from './constants'
 import {toInt} from './math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -15,7 +21,6 @@ import type {SimulationConfig, SimulationState} from './types'
 
 export default function sketch(p5: p5) {
   const AXON_COLOR = p5.color(255, 255, 0)
-  const CREATURE_COUNT = 1000
   const FITNESS_LABEL = 'Distance'
   const FITNESS_UNIT_LABEL = 'm'
   const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
@@ -49,8 +54,6 @@ export default function sketch(p5: p5) {
   let minBar = -10
   let maxBar = 100
   let barLen = maxBar - minBar
-  let postFontSize = 0.96
-  let scaleToFixBug = 1000
 
   let sliderX = 1170
   let draggingSlider = false
@@ -849,10 +852,10 @@ export default function sketch(p5: p5) {
 
       popUpImage.push()
       popUpImage.translate(225, 225)
-      popUpImage.scale(1.0 / simulationState.camera.zoom / scaleToFixBug)
+      popUpImage.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
       popUpImage.translate(
-        -simulationState.camera.x * scaleToFixBug,
-        -simulationState.camera.y * scaleToFixBug
+        -simulationState.camera.x * SCALE_TO_FIX_BUG,
+        -simulationState.camera.y * SCALE_TO_FIX_BUG
       )
 
       if (simulationState.timer < 900) {
@@ -912,7 +915,7 @@ export default function sketch(p5: p5) {
   function predrawGeneratedCreaturesActivity(): void {
     p5.background(220, 253, 102)
     p5.push()
-    p5.scale(10.0 / scaleToFixBug)
+    p5.scale(10.0 / SCALE_TO_FIX_BUG)
 
     for (let y = 0; y < 25; y++) {
       for (let x = 0; x < 40; x++) {
@@ -1008,7 +1011,7 @@ export default function sketch(p5: p5) {
   function drawSortingCreaturesActivity(): void {
     p5.background(220, 253, 102)
     p5.push()
-    p5.scale(10.0 / scaleToFixBug)
+    p5.scale(10.0 / SCALE_TO_FIX_BUG)
 
     const transition =
       0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
@@ -1047,7 +1050,7 @@ export default function sketch(p5: p5) {
 
   function drawSortedCreaturesScreenImage(): void {
     screenImage.push()
-    screenImage.scale(15.0 / scaleToFixBug)
+    screenImage.scale(15.0 / SCALE_TO_FIX_BUG)
     screenImage.background(220, 253, 102)
     screenImage.noStroke()
 
@@ -1084,7 +1087,7 @@ export default function sketch(p5: p5) {
 
   function drawSimulationFinishedScreenImage(): void {
     screenImage.push()
-    screenImage.scale(15.0 / scaleToFixBug)
+    screenImage.scale(15.0 / SCALE_TO_FIX_BUG)
     screenImage.background(220, 253, 102)
     screenImage.noStroke()
 
@@ -1120,7 +1123,7 @@ export default function sketch(p5: p5) {
 
   function drawCulledCreaturesScreenImage(): void {
     screenImage.push()
-    screenImage.scale(15.0 / scaleToFixBug)
+    screenImage.scale(15.0 / SCALE_TO_FIX_BUG)
     screenImage.background(220, 253, 102)
     screenImage.noStroke()
 
@@ -1173,7 +1176,7 @@ export default function sketch(p5: p5) {
 
   function drawPropagatedCreaturesScreenImage(): void {
     screenImage.push()
-    screenImage.scale(15.0 / scaleToFixBug)
+    screenImage.scale(15.0 / SCALE_TO_FIX_BUG)
     screenImage.background(220, 253, 102)
     screenImage.noStroke()
 
@@ -1225,10 +1228,10 @@ export default function sketch(p5: p5) {
     p5.push()
 
     p5.translate(p5.width / 2.0, p5.height / 2.0)
-    p5.scale(1.0 / simulationState.camera.zoom / scaleToFixBug)
+    p5.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
     p5.translate(
-      -simulationState.camera.x * scaleToFixBug,
-      -simulationState.camera.y * scaleToFixBug
+      -simulationState.camera.x * SCALE_TO_FIX_BUG,
+      -simulationState.camera.y * SCALE_TO_FIX_BUG
     )
 
     drawPosts(0)
@@ -1277,27 +1280,27 @@ export default function sketch(p5: p5) {
       p5.fill(0, 130, 0)
       p5.rect(
         (simulationState.camera.x - simulationState.camera.zoom * 800.0) *
-          scaleToFixBug,
-        0 * scaleToFixBug,
-        simulationState.camera.zoom * 1600.0 * scaleToFixBug,
-        simulationState.camera.zoom * 900.0 * scaleToFixBug
+          SCALE_TO_FIX_BUG,
+        0 * SCALE_TO_FIX_BUG,
+        simulationState.camera.zoom * 1600.0 * SCALE_TO_FIX_BUG,
+        simulationState.camera.zoom * 900.0 * SCALE_TO_FIX_BUG
       )
 
       if (simulationConfig.hazelStairs > 0) {
         for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
           p5.fill(255, 255, 255, 128)
           p5.rect(
-            (averageX - 20) * scaleToFixBug,
-            -simulationConfig.hazelStairs * i * scaleToFixBug,
-            40 * scaleToFixBug,
-            simulationConfig.hazelStairs * 0.3 * scaleToFixBug
+            (averageX - 20) * SCALE_TO_FIX_BUG,
+            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
+            40 * SCALE_TO_FIX_BUG,
+            simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
           )
           p5.fill(255, 255, 255, 255)
           p5.rect(
-            (averageX - 20) * scaleToFixBug,
-            -simulationConfig.hazelStairs * i * scaleToFixBug,
-            40 * scaleToFixBug,
-            simulationConfig.hazelStairs * 0.15 * scaleToFixBug
+            (averageX - 20) * SCALE_TO_FIX_BUG,
+            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
+            40 * SCALE_TO_FIX_BUG,
+            simulationConfig.hazelStairs * 0.15 * SCALE_TO_FIX_BUG
           )
         }
       }
@@ -1306,27 +1309,27 @@ export default function sketch(p5: p5) {
       popUpImage.fill(0, 130, 0)
       popUpImage.rect(
         (simulationState.camera.x - simulationState.camera.zoom * 300.0) *
-          scaleToFixBug,
-        0 * scaleToFixBug,
-        simulationState.camera.zoom * 600.0 * scaleToFixBug,
-        simulationState.camera.zoom * 600.0 * scaleToFixBug
+          SCALE_TO_FIX_BUG,
+        0 * SCALE_TO_FIX_BUG,
+        simulationState.camera.zoom * 600.0 * SCALE_TO_FIX_BUG,
+        simulationState.camera.zoom * 600.0 * SCALE_TO_FIX_BUG
       )
 
       if (simulationConfig.hazelStairs > 0) {
         for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
           popUpImage.fill(255, 255, 255, 128)
           popUpImage.rect(
-            (averageX - 20) * scaleToFixBug,
-            -simulationConfig.hazelStairs * i * scaleToFixBug,
-            40 * scaleToFixBug,
-            simulationConfig.hazelStairs * 0.3 * scaleToFixBug
+            (averageX - 20) * SCALE_TO_FIX_BUG,
+            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
+            40 * SCALE_TO_FIX_BUG,
+            simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
           )
           popUpImage.fill(255, 255, 255, 255)
           popUpImage.rect(
-            (averageX - 20) * scaleToFixBug,
-            -simulationConfig.hazelStairs * i * scaleToFixBug,
-            40 * scaleToFixBug,
-            simulationConfig.hazelStairs * 0.15 * scaleToFixBug
+            (averageX - 20) * SCALE_TO_FIX_BUG,
+            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
+            40 * SCALE_TO_FIX_BUG,
+            simulationConfig.hazelStairs * 0.15 * SCALE_TO_FIX_BUG
           )
         }
       }
@@ -1349,10 +1352,10 @@ export default function sketch(p5: p5) {
     graphics.fill(color)
     graphics.noStroke()
     graphics.ellipse(
-      (node.positionX + x) * scaleToFixBug,
-      (node.positionY + y) * scaleToFixBug,
-      node.mass * scaleToFixBug,
-      node.mass * scaleToFixBug
+      (node.positionX + x) * SCALE_TO_FIX_BUG,
+      (node.positionY + y) * SCALE_TO_FIX_BUG,
+      node.mass * SCALE_TO_FIX_BUG,
+      node.mass * SCALE_TO_FIX_BUG
     )
 
     if (node.friction >= 0.5) {
@@ -1362,18 +1365,18 @@ export default function sketch(p5: p5) {
     }
 
     graphics.textAlign(p5.CENTER)
-    graphics.textFont(font, 0.4 * node.mass * scaleToFixBug)
+    graphics.textFont(font, 0.4 * node.mass * SCALE_TO_FIX_BUG)
     graphics.text(
       p5.nf(node.value, 0, 2),
-      (node.positionX + x) * scaleToFixBug,
+      (node.positionX + x) * SCALE_TO_FIX_BUG,
       (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
-        scaleToFixBug
+        SCALE_TO_FIX_BUG
     )
     graphics.text(
       NODE_OPERATION_LABELS_BY_ID[node.operation],
-      (node.positionX + x) * scaleToFixBug,
+      (node.positionX + x) * SCALE_TO_FIX_BUG,
       (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
-        scaleToFixBug
+        SCALE_TO_FIX_BUG
     )
   }
 
@@ -1420,24 +1423,26 @@ export default function sketch(p5: p5) {
     const graphics = [p5, screenImage, popUpImage][toImage]
 
     graphics.stroke(AXON_COLOR)
-    graphics.strokeWeight(0.03 * scaleToFixBug)
+    graphics.strokeWeight(0.03 * SCALE_TO_FIX_BUG)
     graphics.line(
-      x1 * scaleToFixBug,
-      y1 * scaleToFixBug,
-      x2 * scaleToFixBug,
-      y2 * scaleToFixBug
+      x1 * SCALE_TO_FIX_BUG,
+      y1 * SCALE_TO_FIX_BUG,
+      x2 * SCALE_TO_FIX_BUG,
+      y2 * SCALE_TO_FIX_BUG
     )
     graphics.line(
-      x1 * scaleToFixBug,
-      y1 * scaleToFixBug,
-      (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug,
-      (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * scaleToFixBug
+      x1 * SCALE_TO_FIX_BUG,
+      y1 * SCALE_TO_FIX_BUG,
+      (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) *
+        SCALE_TO_FIX_BUG,
+      (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * SCALE_TO_FIX_BUG
     )
     graphics.line(
-      x1 * scaleToFixBug,
-      y1 * scaleToFixBug,
-      (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug,
-      (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * scaleToFixBug
+      x1 * SCALE_TO_FIX_BUG,
+      y1 * SCALE_TO_FIX_BUG,
+      (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) *
+        SCALE_TO_FIX_BUG,
+      (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * SCALE_TO_FIX_BUG
     )
     graphics.noStroke()
   }
@@ -1460,13 +1465,13 @@ export default function sketch(p5: p5) {
 
     const graphics = [p5, screenImage, popUpImage][toImage]
 
-    graphics.strokeWeight(w * scaleToFixBug)
+    graphics.strokeWeight(w * SCALE_TO_FIX_BUG)
     graphics.stroke(70, 35, 0, muscle.rigidity * 3000)
     graphics.line(
-      (ni1.positionX + x) * scaleToFixBug,
-      (ni1.positionY + y) * scaleToFixBug,
-      (ni2.positionX + x) * scaleToFixBug,
-      (ni2.positionY + y) * scaleToFixBug
+      (ni1.positionX + x) * SCALE_TO_FIX_BUG,
+      (ni1.positionY + y) * SCALE_TO_FIX_BUG,
+      (ni2.positionX + x) * SCALE_TO_FIX_BUG,
+      (ni2.positionY + y) * SCALE_TO_FIX_BUG
     )
   }
 
@@ -1500,11 +1505,11 @@ export default function sketch(p5: p5) {
 
       graphics.fill(AXON_COLOR)
       graphics.textAlign(p5.CENTER)
-      graphics.textFont(font, 0.4 * averageMass * scaleToFixBug)
+      graphics.textFont(font, 0.4 * averageMass * SCALE_TO_FIX_BUG)
       graphics.text(
         p5.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
-        muscleMidX * scaleToFixBug,
-        muscleMidY * scaleToFixBug
+        muscleMidX * SCALE_TO_FIX_BUG,
+        muscleMidY * SCALE_TO_FIX_BUG
       )
     }
   }
@@ -1520,29 +1525,29 @@ export default function sketch(p5: p5) {
     }
 
     graphics.textAlign(p5.CENTER)
-    graphics.textFont(font, postFontSize * scaleToFixBug)
+    graphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
     graphics.noStroke()
 
     for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
       for (let i = toInt(averageX / 5 - 5); i <= toInt(averageX / 5 + 5); i++) {
         graphics.fill(255)
         graphics.rect(
-          (i * 5 - 0.1) * scaleToFixBug,
-          (-3.0 + postY) * scaleToFixBug,
-          0.2 * scaleToFixBug,
-          3 * scaleToFixBug
+          (i * 5 - 0.1) * SCALE_TO_FIX_BUG,
+          (-3.0 + postY) * SCALE_TO_FIX_BUG,
+          0.2 * SCALE_TO_FIX_BUG,
+          3 * SCALE_TO_FIX_BUG
         )
         graphics.rect(
-          (i * 5 - 1) * scaleToFixBug,
-          (-3.0 + postY) * scaleToFixBug,
-          2 * scaleToFixBug,
-          1 * scaleToFixBug
+          (i * 5 - 1) * SCALE_TO_FIX_BUG,
+          (-3.0 + postY) * SCALE_TO_FIX_BUG,
+          2 * SCALE_TO_FIX_BUG,
+          1 * SCALE_TO_FIX_BUG
         )
         graphics.fill(120)
         graphics.text(
           i + ' m',
-          i * 5 * scaleToFixBug,
-          (-2.17 + postY) * scaleToFixBug
+          i * 5 * SCALE_TO_FIX_BUG,
+          (-2.17 + postY) * SCALE_TO_FIX_BUG
         )
       }
     }
@@ -1550,25 +1555,25 @@ export default function sketch(p5: p5) {
 
   function drawArrow(x: number): void {
     p5.textAlign(p5.CENTER)
-    p5.textFont(font, postFontSize * scaleToFixBug)
+    p5.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
     p5.noStroke()
     p5.fill(120, 0, 255)
     p5.rect(
-      (x - 1.7) * scaleToFixBug,
-      -4.8 * scaleToFixBug,
-      3.4 * scaleToFixBug,
-      1.1 * scaleToFixBug
+      (x - 1.7) * SCALE_TO_FIX_BUG,
+      -4.8 * SCALE_TO_FIX_BUG,
+      3.4 * SCALE_TO_FIX_BUG,
+      1.1 * SCALE_TO_FIX_BUG
     )
     p5.beginShape()
-    p5.vertex(x * scaleToFixBug, -3.2 * scaleToFixBug)
-    p5.vertex((x - 0.5) * scaleToFixBug, -3.7 * scaleToFixBug)
-    p5.vertex((x + 0.5) * scaleToFixBug, -3.7 * scaleToFixBug)
+    p5.vertex(x * SCALE_TO_FIX_BUG, -3.2 * SCALE_TO_FIX_BUG)
+    p5.vertex((x - 0.5) * SCALE_TO_FIX_BUG, -3.7 * SCALE_TO_FIX_BUG)
+    p5.vertex((x + 0.5) * SCALE_TO_FIX_BUG, -3.7 * SCALE_TO_FIX_BUG)
     p5.endShape(p5.CLOSE)
     p5.fill(255)
     p5.text(
       Math.round(x * 2) / 10 + ' m',
-      x * scaleToFixBug,
-      -3.91 * scaleToFixBug
+      x * SCALE_TO_FIX_BUG,
+      -3.91 * SCALE_TO_FIX_BUG
     )
   }
 
@@ -2130,7 +2135,7 @@ export default function sketch(p5: p5) {
       p5.push()
 
       p5.translate(830 + 160 * k, 290)
-      p5.scale(60.0 / scaleToFixBug)
+      p5.scale(60.0 / SCALE_TO_FIX_BUG)
 
       const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
 
@@ -2216,7 +2221,7 @@ export default function sketch(p5: p5) {
           simulationState.camera.zoom = 0.002
         }
 
-        p5.textFont(font, postFontSize)
+        p5.textFont(font, POST_FONT_SIZE)
       } else if (delta > 0) {
         simulationState.camera.zoom *= 1.1
 
@@ -2224,7 +2229,7 @@ export default function sketch(p5: p5) {
           simulationState.camera.zoom = 0.1
         }
 
-        p5.textFont(font, postFontSize)
+        p5.textFont(font, POST_FONT_SIZE)
       }
     }
   }

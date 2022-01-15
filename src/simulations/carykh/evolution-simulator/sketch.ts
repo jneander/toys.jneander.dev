@@ -43,7 +43,6 @@ export default function sketch(p5: p5) {
 
   let font: Font
   let graphImage: Graphics
-  let screenImage: Graphics
   let popUpImage: Graphics
   let segBarImage: Graphics
 
@@ -116,9 +115,13 @@ export default function sketch(p5: p5) {
     height: number
     width: number
 
+    screenGraphics: Graphics
+
     constructor(config: AppViewConfig) {
       this.height = config.height
       this.width = config.width
+
+      this.screenGraphics = p5.createGraphics(1920, 1080)
     }
 
     getColor(i: number, adjust: boolean): Color {
@@ -400,13 +403,13 @@ export default function sketch(p5: p5) {
 
   class SortCreaturesButton extends Widget {
     draw(): void {
-      screenImage.noStroke()
-      screenImage.fill(100, 100, 200)
-      screenImage.rect(900, 664, 260, 40)
-      screenImage.fill(0)
-      screenImage.textAlign(p5.CENTER)
-      screenImage.textFont(font, 24)
-      screenImage.text('Sort', appView.width - 250, 690)
+      appView.screenGraphics.noStroke()
+      appView.screenGraphics.fill(100, 100, 200)
+      appView.screenGraphics.rect(900, 664, 260, 40)
+      appView.screenGraphics.fill(0)
+      appView.screenGraphics.textAlign(p5.CENTER)
+      appView.screenGraphics.textFont(font, 24)
+      appView.screenGraphics.text('Sort', appView.width - 250, 690)
     }
 
     isUnderCursor(): boolean {
@@ -439,13 +442,13 @@ export default function sketch(p5: p5) {
 
   class CullCreaturesButton extends Widget {
     draw(): void {
-      screenImage.noStroke()
-      screenImage.fill(100, 100, 200)
-      screenImage.rect(900, 670, 260, 40)
-      screenImage.fill(0)
-      screenImage.textAlign(p5.CENTER)
-      screenImage.textFont(font, 24)
-      screenImage.text(
+      appView.screenGraphics.noStroke()
+      appView.screenGraphics.fill(100, 100, 200)
+      appView.screenGraphics.rect(900, 670, 260, 40)
+      appView.screenGraphics.fill(0)
+      appView.screenGraphics.textAlign(p5.CENTER)
+      appView.screenGraphics.textFont(font, 24)
+      appView.screenGraphics.text(
         `Kill ${Math.floor(CREATURE_COUNT / 2)}`,
         appView.width - 250,
         700
@@ -463,13 +466,13 @@ export default function sketch(p5: p5) {
 
   class PropagateCreaturesButton extends Widget {
     draw(): void {
-      screenImage.noStroke()
-      screenImage.fill(100, 100, 200)
-      screenImage.rect(1050, 670, 160, 40)
-      screenImage.fill(0)
-      screenImage.textAlign(p5.CENTER)
-      screenImage.textFont(font, 24)
-      screenImage.text('Reproduce', appView.width - 150, 700)
+      appView.screenGraphics.noStroke()
+      appView.screenGraphics.fill(100, 100, 200)
+      appView.screenGraphics.rect(1050, 670, 160, 40)
+      appView.screenGraphics.fill(0)
+      appView.screenGraphics.textAlign(p5.CENTER)
+      appView.screenGraphics.textFont(font, 24)
+      appView.screenGraphics.text('Reproduce', appView.width - 150, 700)
     }
 
     isUnderCursor(): boolean {
@@ -483,13 +486,13 @@ export default function sketch(p5: p5) {
 
   class PropagatedCreaturesBackButton extends Widget {
     draw(): void {
-      screenImage.noStroke()
-      screenImage.fill(100, 100, 200)
-      screenImage.rect(1050, 670, 160, 40)
-      screenImage.fill(0)
-      screenImage.textAlign(p5.CENTER)
-      screenImage.textFont(font, 24)
-      screenImage.text('Back', appView.width - 150, 700)
+      appView.screenGraphics.noStroke()
+      appView.screenGraphics.fill(100, 100, 200)
+      appView.screenGraphics.rect(1050, 670, 160, 40)
+      appView.screenGraphics.fill(0)
+      appView.screenGraphics.textAlign(p5.CENTER)
+      appView.screenGraphics.textFont(font, 24)
+      appView.screenGraphics.text('Back', appView.width - 150, 700)
     }
 
     isUnderCursor(): boolean {
@@ -814,7 +817,7 @@ export default function sketch(p5: p5) {
   }
 
   function drawFinishedStepByStepActivity(): void {
-    p5.image(screenImage, 0, 0, appView.width, appView.height)
+    p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
   }
 
   function drawSortingCreaturesActivity(): void {
@@ -844,24 +847,24 @@ export default function sketch(p5: p5) {
   }
 
   function drawSortedCreaturesActivity(): void {
-    p5.image(screenImage, 0, 0, appView.width, appView.height)
+    p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
   }
 
   function drawCulledCreaturesActivity(): void {
-    p5.image(screenImage, 0, 0, appView.width, appView.height)
+    p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
   }
 
   function drawPropagatedCreaturesActivity(): void {
-    p5.image(screenImage, 0, 0, appView.width, appView.height)
+    p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
   }
 
   // COMPONENT DRAWING
 
   function drawSortedCreaturesScreenImage(): void {
-    screenImage.push()
-    screenImage.scale(15.0 / SCALE_TO_FIX_BUG)
-    screenImage.background(220, 253, 102)
-    screenImage.noStroke()
+    appView.screenGraphics.push()
+    appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+    appView.screenGraphics.background(220, 253, 102)
+    appView.screenGraphics.noStroke()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = appState.sortedCreatures[i]
@@ -872,33 +875,37 @@ export default function sketch(p5: p5) {
 
       drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
     }
-    screenImage.pop()
+    appView.screenGraphics.pop()
 
-    screenImage.push()
-    screenImage.scale(1.5)
+    appView.screenGraphics.push()
+    appView.screenGraphics.scale(1.5)
 
-    screenImage.textAlign(p5.CENTER)
-    screenImage.textFont(font, 24)
-    screenImage.fill(100, 100, 200)
-    screenImage.noStroke()
+    appView.screenGraphics.textAlign(p5.CENTER)
+    appView.screenGraphics.textFont(font, 24)
+    appView.screenGraphics.fill(100, 100, 200)
+    appView.screenGraphics.noStroke()
 
-    screenImage.fill(0)
-    screenImage.text('Fastest creatures at the top!', appView.width / 2, 30)
-    screenImage.text(
+    appView.screenGraphics.fill(0)
+    appView.screenGraphics.text(
+      'Fastest creatures at the top!',
+      appView.width / 2,
+      30
+    )
+    appView.screenGraphics.text(
       'Slowest creatures at the bottom. (Going backward = slow)',
       appView.width / 2 - 200,
       700
     )
     cullCreaturesButton.draw()
 
-    screenImage.pop()
+    appView.screenGraphics.pop()
   }
 
   function drawSimulationFinishedScreenImage(): void {
-    screenImage.push()
-    screenImage.scale(15.0 / SCALE_TO_FIX_BUG)
-    screenImage.background(220, 253, 102)
-    screenImage.noStroke()
+    appView.screenGraphics.push()
+    appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+    appView.screenGraphics.background(220, 253, 102)
+    appView.screenGraphics.noStroke()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = appState.sortedCreatures[i]
@@ -909,32 +916,32 @@ export default function sketch(p5: p5) {
 
       drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
     }
-    screenImage.pop()
+    appView.screenGraphics.pop()
 
-    screenImage.push()
-    screenImage.scale(1.5)
+    appView.screenGraphics.push()
+    appView.screenGraphics.scale(1.5)
 
-    screenImage.textAlign(p5.CENTER)
-    screenImage.textFont(font, 24)
-    screenImage.fill(100, 100, 200)
-    screenImage.noStroke()
+    appView.screenGraphics.textAlign(p5.CENTER)
+    appView.screenGraphics.textFont(font, 24)
+    appView.screenGraphics.fill(100, 100, 200)
+    appView.screenGraphics.noStroke()
 
-    screenImage.fill(0)
-    screenImage.text(
+    appView.screenGraphics.fill(0)
+    appView.screenGraphics.text(
       "All 1,000 creatures have been tested.  Now let's sort them!",
       appView.width / 2 - 200,
       690
     )
     sortCreaturesButton.draw()
 
-    screenImage.pop()
+    appView.screenGraphics.pop()
   }
 
   function drawCulledCreaturesScreenImage(): void {
-    screenImage.push()
-    screenImage.scale(15.0 / SCALE_TO_FIX_BUG)
-    screenImage.background(220, 253, 102)
-    screenImage.noStroke()
+    appView.screenGraphics.push()
+    appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+    appView.screenGraphics.background(220, 253, 102)
+    appView.screenGraphics.noStroke()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = appState.sortedCreatures[i]
@@ -945,23 +952,23 @@ export default function sketch(p5: p5) {
 
       drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
     }
-    screenImage.pop()
+    appView.screenGraphics.pop()
 
-    screenImage.push()
-    screenImage.scale(1.5)
+    appView.screenGraphics.push()
+    appView.screenGraphics.scale(1.5)
 
-    screenImage.textAlign(p5.CENTER)
-    screenImage.textFont(font, 24)
-    screenImage.fill(100, 100, 200)
-    screenImage.noStroke()
+    appView.screenGraphics.textAlign(p5.CENTER)
+    appView.screenGraphics.textFont(font, 24)
+    appView.screenGraphics.fill(100, 100, 200)
+    appView.screenGraphics.noStroke()
 
-    screenImage.fill(0)
-    screenImage.text(
+    appView.screenGraphics.fill(0)
+    appView.screenGraphics.text(
       'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
       appView.width / 2,
       30
     )
-    screenImage.text(
+    appView.screenGraphics.text(
       'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
       appView.width / 2 - 130,
       700
@@ -976,18 +983,18 @@ export default function sketch(p5: p5) {
       if (creature.alive) {
         drawCreature(creature, x * 30 + 55, y * 25 + 40, 0)
       } else {
-        screenImage.rect(x * 30 + 40, y * 25 + 17, 30, 25)
+        appView.screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
       }
     }
 
-    screenImage.pop()
+    appView.screenGraphics.pop()
   }
 
   function drawPropagatedCreaturesScreenImage(): void {
-    screenImage.push()
-    screenImage.scale(15.0 / SCALE_TO_FIX_BUG)
-    screenImage.background(220, 253, 102)
-    screenImage.noStroke()
+    appView.screenGraphics.push()
+    appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+    appView.screenGraphics.background(220, 253, 102)
+    appView.screenGraphics.noStroke()
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       let creature = appState.sortedCreatures[i]
@@ -1001,32 +1008,32 @@ export default function sketch(p5: p5) {
 
       drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
     }
-    screenImage.pop()
+    appView.screenGraphics.pop()
 
-    screenImage.push()
-    screenImage.scale(1.5)
+    appView.screenGraphics.push()
+    appView.screenGraphics.scale(1.5)
 
-    screenImage.textAlign(p5.CENTER)
-    screenImage.textFont(font, 24)
-    screenImage.fill(100, 100, 200)
-    screenImage.noStroke()
+    appView.screenGraphics.textAlign(p5.CENTER)
+    appView.screenGraphics.textFont(font, 24)
+    appView.screenGraphics.fill(100, 100, 200)
+    appView.screenGraphics.noStroke()
 
-    screenImage.fill(0)
-    screenImage.text(
+    appView.screenGraphics.fill(0)
+    appView.screenGraphics.text(
       'These are the 1000 creatures of generation #' +
         (appState.generationCount + 1) +
         '.',
       appView.width / 2,
       30
     )
-    screenImage.text(
+    appView.screenGraphics.text(
       'What perils will they face?  Find out next time!',
       appView.width / 2 - 130,
       700
     )
     propagatedCreaturesBackButton.draw()
 
-    screenImage.pop()
+    appView.screenGraphics.pop()
   }
 
   function drawStepByStepSimulationView(): void {
@@ -1158,7 +1165,7 @@ export default function sketch(p5: p5) {
       )
     }
 
-    const graphics = [p5, screenImage, popUpImage][toImage]
+    const graphics = [p5, appView.screenGraphics, popUpImage][toImage]
 
     graphics.fill(color)
     graphics.noStroke()
@@ -1231,7 +1238,7 @@ export default function sketch(p5: p5) {
     const arrowHeadSize = 0.1
     const angle = Math.atan2(y2 - y1, x2 - x1)
 
-    const graphics = [p5, screenImage, popUpImage][toImage]
+    const graphics = [p5, appView.screenGraphics, popUpImage][toImage]
 
     graphics.stroke(AXON_COLOR)
     graphics.strokeWeight(0.03 * SCALE_TO_FIX_BUG)
@@ -1274,7 +1281,7 @@ export default function sketch(p5: p5) {
       w = nodes[muscle.axon].getClampedValue() * 0.15
     }
 
-    const graphics = [p5, screenImage, popUpImage][toImage]
+    const graphics = [p5, appView.screenGraphics, popUpImage][toImage]
 
     graphics.strokeWeight(w * SCALE_TO_FIX_BUG)
     graphics.stroke(70, 35, 0, muscle.rigidity * 3000)
@@ -1312,7 +1319,7 @@ export default function sketch(p5: p5) {
       )
 
       const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
-      const graphics = [p5, screenImage, popUpImage][toImage]
+      const graphics = [p5, appView.screenGraphics, popUpImage][toImage]
 
       graphics.fill(AXON_COLOR)
       graphics.textAlign(p5.CENTER)
@@ -2052,7 +2059,6 @@ export default function sketch(p5: p5) {
     appState.histogramBarCounts.push(new Array(HISTOGRAM_BAR_SPAN).fill(0))
 
     graphImage = p5.createGraphics(975, 570)
-    screenImage = p5.createGraphics(1920, 1080)
     popUpImage = p5.createGraphics(450, 450)
     segBarImage = p5.createGraphics(975, 150)
 

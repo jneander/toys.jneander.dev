@@ -11,6 +11,9 @@ import {
   FITNESS_PERCENTILE_CREATURE_INDICES,
   GenerationSimulationMode,
   HISTOGRAM_BARS_PER_METER,
+  HISTOGRAM_BAR_MAX,
+  HISTOGRAM_BAR_MIN,
+  HISTOGRAM_BAR_SPAN,
   POST_FONT_SIZE,
   SCALE_TO_FIX_BUG
 } from './constants'
@@ -55,10 +58,6 @@ export default function sketch(p5: p5) {
   let screenImage: Graphics
   let popUpImage: Graphics
   let segBarImage: Graphics
-
-  let minBar = -10
-  let maxBar = 100
-  let barLen = maxBar - minBar
 
   let sliderX = 1170
   let draggingSlider = false
@@ -194,7 +193,7 @@ export default function sketch(p5: p5) {
 
       appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
 
-      const beginBar = new Array<number>(barLen).fill(0)
+      const beginBar = new Array<number>(HISTOGRAM_BAR_SPAN).fill(0)
 
       appState.histogramBarCounts.push(beginBar)
 
@@ -203,10 +202,10 @@ export default function sketch(p5: p5) {
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const bar = Math.floor(
           appState.sortedCreatures[i].fitness * HISTOGRAM_BARS_PER_METER -
-            minBar
+            HISTOGRAM_BAR_MIN
         )
 
-        if (bar >= 0 && bar < barLen) {
+        if (bar >= 0 && bar < HISTOGRAM_BAR_SPAN) {
           appState.histogramBarCounts[appState.generationCount + 1][bar]++
         }
 
@@ -1972,7 +1971,7 @@ export default function sketch(p5: p5) {
   function drawHistogram(x: number, y: number, hw: number, hh: number): void {
     let maxH = 1
 
-    for (let i = 0; i < barLen; i++) {
+    for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
       if (appState.histogramBarCounts[appState.selectedGeneration][i] > maxH) {
         maxH = appState.histogramBarCounts[appState.selectedGeneration][i]
       }
@@ -1983,7 +1982,7 @@ export default function sketch(p5: p5) {
     p5.rect(x, y, hw, hh)
     p5.fill(0, 0, 0)
 
-    const barW = hw / barLen
+    const barW = hw / HISTOGRAM_BAR_SPAN
     const multiplier = (hh / maxH) * 0.9
 
     p5.textAlign(p5.LEFT)
@@ -2019,14 +2018,14 @@ export default function sketch(p5: p5) {
 
     p5.textAlign(p5.CENTER)
 
-    for (let i = minBar; i <= maxBar; i += 10) {
+    for (let i = HISTOGRAM_BAR_MIN; i <= HISTOGRAM_BAR_MAX; i += 10) {
       if (i == 0) {
         p5.stroke(0, 0, 255)
       } else {
         p5.stroke(128)
       }
 
-      const theX = x + (i - minBar) * barW
+      const theX = x + (i - HISTOGRAM_BAR_MIN) * barW
 
       p5.text(p5.nf(i / HISTOGRAM_BARS_PER_METER, 0, 1), theX, y + hh + 14)
       p5.line(theX, y, theX, y + hh)
@@ -2034,7 +2033,7 @@ export default function sketch(p5: p5) {
 
     p5.noStroke()
 
-    for (let i = 0; i < barLen; i++) {
+    for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
       const h = Math.min(
         appState.histogramBarCounts[appState.selectedGeneration][i] *
           multiplier,
@@ -2042,7 +2041,7 @@ export default function sketch(p5: p5) {
       )
 
       if (
-        i + minBar ==
+        i + HISTOGRAM_BAR_MIN ==
         Math.floor(
           appState.fitnessPercentileHistory[
             Math.min(
@@ -2294,7 +2293,7 @@ export default function sketch(p5: p5) {
     appState.fitnessPercentileHistory.push(
       new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0.0)
     )
-    appState.histogramBarCounts.push(new Array(barLen).fill(0))
+    appState.histogramBarCounts.push(new Array(HISTOGRAM_BAR_SPAN).fill(0))
 
     graphImage = p5.createGraphics(975, 570)
     screenImage = p5.createGraphics(1920, 1080)

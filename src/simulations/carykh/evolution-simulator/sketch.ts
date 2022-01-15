@@ -39,7 +39,6 @@ export default function sketch(p5: p5) {
   const NODE_TEXT_LINE_MULTIPLIER_Y1 = -0.08 // These are for the lines of text on each node.
   const NODE_TEXT_LINE_MULTIPLIER_Y2 = 0.35
   const SEED = 0
-  const WINDOW_SIZE_MULTIPLIER = 0.8
 
   let font: Font
   let graphImage: Graphics
@@ -107,25 +106,46 @@ export default function sketch(p5: p5) {
   })
 
   interface AppViewConfig {
+    font: Font
     height: number
+    p5: p5
+    scale: number
     width: number
   }
 
   class AppView {
     height: number
+    scale: number
     width: number
 
+    canvas: p5
     screenGraphics: Graphics
 
     constructor(config: AppViewConfig) {
       this.height = config.height
+      this.scale = config.scale
       this.width = config.width
 
-      this.screenGraphics = p5.createGraphics(1920, 1080)
+      this.canvas = config.p5
+      const {canvas} = this
+
+      // Create a 1024x576 Canvas
+      canvas.createCanvas(this.width * this.scale, this.height * this.scale)
+
+      this.screenGraphics = canvas.createGraphics(1920, 1080)
+
+      canvas.ellipseMode(canvas.CENTER)
+      canvas.textFont(config.font, 96)
+      canvas.textAlign(canvas.CENTER)
+
+      canvas.textFont(config.font, 96)
+      canvas.textAlign(canvas.CENTER)
     }
 
     getColor(i: number, adjust: boolean): Color {
-      p5.colorMode(p5.HSB, 1.0)
+      const {canvas} = this
+
+      canvas.colorMode(canvas.HSB, 1.0)
 
       let col = (i * 1.618034) % 1
       if (i == 46) {
@@ -137,12 +157,12 @@ export default function sketch(p5: p5) {
         light = 0.7
       }
 
-      return p5.color(col, 1.0, light)
+      return canvas.color(col, 1.0, light)
     }
 
     getCursorPosition(): {cursorX: number; cursorY: number} {
-      const cursorX = p5.mouseX / WINDOW_SIZE_MULTIPLIER
-      const cursorY = p5.mouseY / WINDOW_SIZE_MULTIPLIER
+      const cursorX = this.canvas.mouseX / this.scale
+      const cursorY = this.canvas.mouseY / this.scale
 
       return {cursorX, cursorY}
     }
@@ -2042,16 +2062,12 @@ export default function sketch(p5: p5) {
     p5.randomSeed(SEED)
 
     appView = new AppView({
+      font,
       height: 720,
+      p5,
+      scale: 0.8,
       width: 1280
     })
-
-    // Create a 1024x576 Canvas
-    p5.createCanvas(
-      appView.width * WINDOW_SIZE_MULTIPLIER,
-      appView.height * WINDOW_SIZE_MULTIPLIER
-    )
-    p5.ellipseMode(p5.CENTER)
 
     appState.fitnessPercentileHistory.push(
       new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0.0)
@@ -2064,13 +2080,10 @@ export default function sketch(p5: p5) {
 
     segBarImage.background(220)
     popUpImage.background(220)
-
-    p5.textFont(font, 96)
-    p5.textAlign(p5.CENTER)
   }
 
   p5.draw = () => {
-    p5.scale(WINDOW_SIZE_MULTIPLIER)
+    p5.scale(appView.scale)
 
     if (appState.currentActivityId === ActivityId.Start) {
       drawStartActivity()

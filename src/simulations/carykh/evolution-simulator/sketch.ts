@@ -342,7 +342,9 @@ export default function sketch(p5: p5) {
   }
 
   function updateCameraPosition(): void {
-    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
+    const {averageX, averageY} = averagePositionOfNodes(
+      simulationState.creature.nodes
+    )
 
     if (simulationState.speed < 30) {
       for (let s = 0; s < simulationState.speed; s++) {
@@ -820,7 +822,7 @@ export default function sketch(p5: p5) {
 
       simulationState.camera.zoom = 0.009
 
-      const {averageX, averageY} = getNodesAverage(
+      const {averageX, averageY} = averagePositionOfNodes(
         simulationState.creature.nodes
       )
       simulationState.camera.x += (averageX - simulationState.camera.x) * 0.1
@@ -1197,7 +1199,7 @@ export default function sketch(p5: p5) {
   }
 
   function drawStepByStepSimulationView(): void {
-    const {averageX} = getNodesAverage(simulationState.creature.nodes)
+    const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
 
     p5.background(120, 200, 255)
 
@@ -1225,7 +1227,7 @@ export default function sketch(p5: p5) {
   }
 
   function drawStepByStepFinalFitness(): void {
-    const {averageX} = getNodesAverage(simulationState.creature.nodes)
+    const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
 
     p5.noStroke()
     p5.fill(0, 0, 0, 130)
@@ -1244,7 +1246,9 @@ export default function sketch(p5: p5) {
   }
 
   function drawGround(toImage: number): void {
-    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
+    const {averageX, averageY} = averagePositionOfNodes(
+      simulationState.creature.nodes
+    )
 
     const stairDrawStart = Math.max(
       1,
@@ -1491,7 +1495,9 @@ export default function sketch(p5: p5) {
   }
 
   function drawPosts(toImage: number): void {
-    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
+    const {averageX, averageY} = averagePositionOfNodes(
+      simulationState.creature.nodes
+    )
     const startPostY = Math.min(-8, toInt(averageY / 4) * 4 - 4)
 
     const graphics = [p5, null, popUpImage][toImage]
@@ -1866,7 +1872,7 @@ export default function sketch(p5: p5) {
     return toInt(i) + ''
   }
 
-  function getNodesAverage(nodes: Node[]): {
+  function averagePositionOfNodes(nodes: Node[]): {
     averageX: number
     averageY: number
   } {
@@ -2075,7 +2081,9 @@ export default function sketch(p5: p5) {
     p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
     p5.text('Playback Speed: x' + Math.max(1, simulationState.speed), 0, 96)
 
-    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
+    const {averageX, averageY} = averagePositionOfNodes(
+      simulationState.creature.nodes
+    )
 
     p5.text('X: ' + p5.nf(averageX / 5.0, 0, 2) + '', 0, 128)
     p5.text('Y: ' + p5.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
@@ -2180,7 +2188,7 @@ export default function sketch(p5: p5) {
 
   function setFitnessOfSimulationCreature(): void {
     const {id, nodes} = simulationState.creature
-    const {averageX} = getNodesAverage(nodes)
+    const {averageX} = averagePositionOfNodes(nodes)
     const index = creatureIdToIndex(id)
 
     appState.creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.

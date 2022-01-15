@@ -2386,6 +2386,7 @@ export default function sketch(p5: p5) {
       if (appState.viewTimer <= 900) {
         for (let s = 0; s < simulationState.speed; s++) {
           if (appState.viewTimer < 900) {
+            // For each point of speed, advance through one cycle of simulation.
             advanceSimulation()
           }
         }

@@ -56,6 +56,7 @@ export type AppState = {
   generationCountDepictedInGraph: number
   generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
   generationSimulationMode: GenerationSimulationMode
+  histogramBarCounts: Array<number[]>
   pendingGenerationCount: number
   popupSimulationCreatureId: number | null
   selectedGeneration: number

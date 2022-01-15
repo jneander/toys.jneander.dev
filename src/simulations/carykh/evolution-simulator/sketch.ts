@@ -128,6 +128,211 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class CreatureDrawer {
+    drawCreature(creature: Creature, x: number, y: number, graphics: p5): void {
+      this.drawCreaturePieces(creature.nodes, creature.muscles, x, y, graphics)
+    }
+
+    drawCreaturePieces(
+      nodes: Node[],
+      muscles: Muscle[],
+      x: number,
+      y: number,
+      graphics: p5
+    ): void {
+      for (let i = 0; i < muscles.length; i++) {
+        this.drawMuscle(muscles[i], nodes, x, y, graphics)
+      }
+
+      for (let i = 0; i < nodes.length; i++) {
+        this.drawNode(nodes[i], x, y, graphics)
+      }
+
+      for (let i = 0; i < muscles.length; i++) {
+        this.drawMuscleAxons(muscles[i], nodes, x, y, graphics)
+      }
+
+      for (let i = 0; i < nodes.length; i++) {
+        this.drawNodeAxons(nodes, i, x, y, graphics)
+      }
+    }
+
+    private drawNode(node: Node, x: number, y: number, graphics: p5): void {
+      let color = p5.color(512 - toInt(node.friction * 512), 0, 0)
+
+      if (node.friction <= 0.5) {
+        color = p5.color(
+          255,
+          255 - toInt(node.friction * 512),
+          255 - toInt(node.friction * 512)
+        )
+      }
+
+      graphics.fill(color)
+      graphics.noStroke()
+      graphics.ellipse(
+        (node.positionX + x) * SCALE_TO_FIX_BUG,
+        (node.positionY + y) * SCALE_TO_FIX_BUG,
+        node.mass * SCALE_TO_FIX_BUG,
+        node.mass * SCALE_TO_FIX_BUG
+      )
+
+      if (node.friction >= 0.5) {
+        graphics.fill(255)
+      } else {
+        graphics.fill(0)
+      }
+
+      graphics.textAlign(p5.CENTER)
+      graphics.textFont(font, 0.4 * node.mass * SCALE_TO_FIX_BUG)
+      graphics.text(
+        p5.nf(node.value, 0, 2),
+        (node.positionX + x) * SCALE_TO_FIX_BUG,
+        (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
+          SCALE_TO_FIX_BUG
+      )
+      graphics.text(
+        NODE_OPERATION_LABELS_BY_ID[node.operation],
+        (node.positionX + x) * SCALE_TO_FIX_BUG,
+        (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
+          SCALE_TO_FIX_BUG
+      )
+    }
+
+    private drawNodeAxons(
+      nodes: Node[],
+      nodeIndex: number,
+      x: number,
+      y: number,
+      graphics: p5
+    ): void {
+      const node = nodes[nodeIndex]
+
+      if (AXON_COUNT_BY_NODE_OPERATION_ID[node.operation] >= 1) {
+        const axonSource = nodes[nodes[nodeIndex].axon1]
+        const point1x = node.positionX - node.mass * 0.3 + x
+        const point1y = node.positionY - node.mass * 0.3 + y
+        const point2x = axonSource.positionX + x
+        const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
+
+        this.drawSingleAxon(point1x, point1y, point2x, point2y, graphics)
+      }
+
+      if (AXON_COUNT_BY_NODE_OPERATION_ID[node.operation] === 2) {
+        const axonSource = nodes[nodes[nodeIndex].axon2]
+        const point1x = node.positionX + node.mass * 0.3 + x
+        const point1y = node.positionY - node.mass * 0.3 + y
+        const point2x = axonSource.positionX + x
+        const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
+
+        this.drawSingleAxon(point1x, point1y, point2x, point2y, graphics)
+      }
+    }
+
+    private drawSingleAxon(
+      x1: number,
+      y1: number,
+      x2: number,
+      y2: number,
+      graphics: p5
+    ): void {
+      const arrowHeadSize = 0.1
+      const angle = Math.atan2(y2 - y1, x2 - x1)
+
+      graphics.stroke(AXON_COLOR)
+      graphics.strokeWeight(0.03 * SCALE_TO_FIX_BUG)
+      graphics.line(
+        x1 * SCALE_TO_FIX_BUG,
+        y1 * SCALE_TO_FIX_BUG,
+        x2 * SCALE_TO_FIX_BUG,
+        y2 * SCALE_TO_FIX_BUG
+      )
+      graphics.line(
+        x1 * SCALE_TO_FIX_BUG,
+        y1 * SCALE_TO_FIX_BUG,
+        (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) *
+          SCALE_TO_FIX_BUG,
+        (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) *
+          SCALE_TO_FIX_BUG
+      )
+      graphics.line(
+        x1 * SCALE_TO_FIX_BUG,
+        y1 * SCALE_TO_FIX_BUG,
+        (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) *
+          SCALE_TO_FIX_BUG,
+        (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) *
+          SCALE_TO_FIX_BUG
+      )
+      graphics.noStroke()
+    }
+
+    private drawMuscle(
+      muscle: Muscle,
+      nodes: Node[],
+      x: number,
+      y: number,
+      graphics: p5
+    ): void {
+      const ni1 = nodes[muscle.nodeConnection1]
+      const ni2 = nodes[muscle.nodeConnection2]
+
+      let w = 0.15
+
+      if (muscle.axon >= 0 && muscle.axon < nodes.length) {
+        w = nodes[muscle.axon].getClampedValue() * 0.15
+      }
+
+      graphics.strokeWeight(w * SCALE_TO_FIX_BUG)
+      graphics.stroke(70, 35, 0, muscle.rigidity * 3000)
+      graphics.line(
+        (ni1.positionX + x) * SCALE_TO_FIX_BUG,
+        (ni1.positionY + y) * SCALE_TO_FIX_BUG,
+        (ni2.positionX + x) * SCALE_TO_FIX_BUG,
+        (ni2.positionY + y) * SCALE_TO_FIX_BUG
+      )
+    }
+
+    private drawMuscleAxons(
+      muscle: Muscle,
+      nodes: Node[],
+      x: number,
+      y: number,
+      graphics: p5
+    ): void {
+      const connectedNode1 = nodes[muscle.nodeConnection1]
+      const connectedNode2 = nodes[muscle.nodeConnection2]
+
+      if (muscle.axon >= 0 && muscle.axon < nodes.length) {
+        const axonSource = nodes[muscle.axon]
+        const muscleMidX =
+          (connectedNode1.positionX + connectedNode2.positionX) * 0.5 + x
+        const muscleMidY =
+          (connectedNode1.positionY + connectedNode2.positionY) * 0.5 + y
+
+        this.drawSingleAxon(
+          muscleMidX,
+          muscleMidY,
+          axonSource.positionX + x,
+          axonSource.positionY + axonSource.mass * 0.5 + y,
+          graphics
+        )
+
+        const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
+
+        graphics.fill(AXON_COLOR)
+        graphics.textAlign(p5.CENTER)
+        graphics.textFont(font, 0.4 * averageMass * SCALE_TO_FIX_BUG)
+        graphics.text(
+          p5.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
+          muscleMidX * SCALE_TO_FIX_BUG,
+          muscleMidY * SCALE_TO_FIX_BUG
+        )
+      }
+    }
+  }
+
+  let creatureDrawer: CreatureDrawer
+
   abstract class Widget {
     abstract draw(): void
   }
@@ -620,7 +825,7 @@ export default function sketch(p5: p5) {
 
       drawPosts(2)
       drawGround(2)
-      drawCreaturePieces(
+      creatureDrawer.drawCreaturePieces(
         simulationState.creature.nodes,
         simulationState.creature.muscles,
         0,
@@ -676,7 +881,7 @@ export default function sketch(p5: p5) {
         const index = y * 40 + x
         const creature = appState.creaturesInLatestGeneration[index]
 
-        drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, p5)
+        creatureDrawer.drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, p5)
       }
     }
 
@@ -780,7 +985,7 @@ export default function sketch(p5: p5) {
       const x3 = inter(x1, x2, transition)
       const y3 = inter(y1, y2, transition)
 
-      drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, p5)
+      creatureDrawer.drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, p5)
     }
 
     p5.pop()
@@ -815,7 +1020,7 @@ export default function sketch(p5: p5) {
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40) + 1
 
-      drawCreature(
+      creatureDrawer.drawCreature(
         creature,
         gridX * 3 + 5.5,
         gridY * 2.5 + 4,
@@ -861,7 +1066,7 @@ export default function sketch(p5: p5) {
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40)
 
-      drawCreature(
+      creatureDrawer.drawCreature(
         creature,
         gridX * 3 + 5.5,
         gridY * 2.5 + 4,
@@ -902,7 +1107,7 @@ export default function sketch(p5: p5) {
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40) + 1
 
-      drawCreature(
+      creatureDrawer.drawCreature(
         creature,
         gridX * 3 + 5.5,
         gridY * 2.5 + 4,
@@ -938,7 +1143,7 @@ export default function sketch(p5: p5) {
       const y = Math.floor(i / 40) + 1
 
       if (creature.alive) {
-        drawCreature(creature, x * 30 + 55, y * 25 + 40, p5)
+        creatureDrawer.drawCreature(creature, x * 30 + 55, y * 25 + 40, p5)
       } else {
         appView.screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
       }
@@ -963,7 +1168,7 @@ export default function sketch(p5: p5) {
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40) + 1
 
-      drawCreature(
+      creatureDrawer.drawCreature(
         creature,
         gridX * 3 + 5.5,
         gridY * 2.5 + 4,
@@ -1014,7 +1219,7 @@ export default function sketch(p5: p5) {
 
     drawPosts(0)
     drawGround(0)
-    drawCreaturePieces(
+    creatureDrawer.drawCreaturePieces(
       simulationState.creature.nodes,
       simulationState.creature.muscles,
       0,
@@ -1113,177 +1318,6 @@ export default function sketch(p5: p5) {
           )
         }
       }
-    }
-  }
-
-  function drawNode(node: Node, x: number, y: number, graphics: p5): void {
-    let color = p5.color(512 - toInt(node.friction * 512), 0, 0)
-
-    if (node.friction <= 0.5) {
-      color = p5.color(
-        255,
-        255 - toInt(node.friction * 512),
-        255 - toInt(node.friction * 512)
-      )
-    }
-
-    graphics.fill(color)
-    graphics.noStroke()
-    graphics.ellipse(
-      (node.positionX + x) * SCALE_TO_FIX_BUG,
-      (node.positionY + y) * SCALE_TO_FIX_BUG,
-      node.mass * SCALE_TO_FIX_BUG,
-      node.mass * SCALE_TO_FIX_BUG
-    )
-
-    if (node.friction >= 0.5) {
-      graphics.fill(255)
-    } else {
-      graphics.fill(0)
-    }
-
-    graphics.textAlign(p5.CENTER)
-    graphics.textFont(font, 0.4 * node.mass * SCALE_TO_FIX_BUG)
-    graphics.text(
-      p5.nf(node.value, 0, 2),
-      (node.positionX + x) * SCALE_TO_FIX_BUG,
-      (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
-        SCALE_TO_FIX_BUG
-    )
-    graphics.text(
-      NODE_OPERATION_LABELS_BY_ID[node.operation],
-      (node.positionX + x) * SCALE_TO_FIX_BUG,
-      (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
-        SCALE_TO_FIX_BUG
-    )
-  }
-
-  function drawNodeAxons(
-    nodes: Node[],
-    nodeIndex: number,
-    x: number,
-    y: number,
-    graphics: p5
-  ): void {
-    const node = nodes[nodeIndex]
-
-    if (AXON_COUNT_BY_NODE_OPERATION_ID[node.operation] >= 1) {
-      const axonSource = nodes[nodes[nodeIndex].axon1]
-      const point1x = node.positionX - node.mass * 0.3 + x
-      const point1y = node.positionY - node.mass * 0.3 + y
-      const point2x = axonSource.positionX + x
-      const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
-
-      drawSingleAxon(point1x, point1y, point2x, point2y, graphics)
-    }
-
-    if (AXON_COUNT_BY_NODE_OPERATION_ID[node.operation] === 2) {
-      const axonSource = nodes[nodes[nodeIndex].axon2]
-      const point1x = node.positionX + node.mass * 0.3 + x
-      const point1y = node.positionY - node.mass * 0.3 + y
-      const point2x = axonSource.positionX + x
-      const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
-
-      drawSingleAxon(point1x, point1y, point2x, point2y, graphics)
-    }
-  }
-
-  function drawSingleAxon(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    graphics: p5
-  ): void {
-    const arrowHeadSize = 0.1
-    const angle = Math.atan2(y2 - y1, x2 - x1)
-
-    graphics.stroke(AXON_COLOR)
-    graphics.strokeWeight(0.03 * SCALE_TO_FIX_BUG)
-    graphics.line(
-      x1 * SCALE_TO_FIX_BUG,
-      y1 * SCALE_TO_FIX_BUG,
-      x2 * SCALE_TO_FIX_BUG,
-      y2 * SCALE_TO_FIX_BUG
-    )
-    graphics.line(
-      x1 * SCALE_TO_FIX_BUG,
-      y1 * SCALE_TO_FIX_BUG,
-      (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) *
-        SCALE_TO_FIX_BUG,
-      (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * SCALE_TO_FIX_BUG
-    )
-    graphics.line(
-      x1 * SCALE_TO_FIX_BUG,
-      y1 * SCALE_TO_FIX_BUG,
-      (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) *
-        SCALE_TO_FIX_BUG,
-      (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * SCALE_TO_FIX_BUG
-    )
-    graphics.noStroke()
-  }
-
-  function drawMuscle(
-    muscle: Muscle,
-    nodes: Node[],
-    x: number,
-    y: number,
-    graphics: p5
-  ): void {
-    const ni1 = nodes[muscle.nodeConnection1]
-    const ni2 = nodes[muscle.nodeConnection2]
-
-    let w = 0.15
-
-    if (muscle.axon >= 0 && muscle.axon < nodes.length) {
-      w = nodes[muscle.axon].getClampedValue() * 0.15
-    }
-
-    graphics.strokeWeight(w * SCALE_TO_FIX_BUG)
-    graphics.stroke(70, 35, 0, muscle.rigidity * 3000)
-    graphics.line(
-      (ni1.positionX + x) * SCALE_TO_FIX_BUG,
-      (ni1.positionY + y) * SCALE_TO_FIX_BUG,
-      (ni2.positionX + x) * SCALE_TO_FIX_BUG,
-      (ni2.positionY + y) * SCALE_TO_FIX_BUG
-    )
-  }
-
-  function drawMuscleAxons(
-    muscle: Muscle,
-    nodes: Node[],
-    x: number,
-    y: number,
-    graphics: p5
-  ): void {
-    const connectedNode1 = nodes[muscle.nodeConnection1]
-    const connectedNode2 = nodes[muscle.nodeConnection2]
-
-    if (muscle.axon >= 0 && muscle.axon < nodes.length) {
-      const axonSource = nodes[muscle.axon]
-      const muscleMidX =
-        (connectedNode1.positionX + connectedNode2.positionX) * 0.5 + x
-      const muscleMidY =
-        (connectedNode1.positionY + connectedNode2.positionY) * 0.5 + y
-
-      drawSingleAxon(
-        muscleMidX,
-        muscleMidY,
-        axonSource.positionX + x,
-        axonSource.positionY + axonSource.mass * 0.5 + y,
-        graphics
-      )
-
-      const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
-
-      graphics.fill(AXON_COLOR)
-      graphics.textAlign(p5.CENTER)
-      graphics.textFont(font, 0.4 * averageMass * SCALE_TO_FIX_BUG)
-      graphics.text(
-        p5.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
-        muscleMidX * SCALE_TO_FIX_BUG,
-        muscleMidY * SCALE_TO_FIX_BUG
-      )
     }
   }
 
@@ -1650,36 +1684,6 @@ export default function sketch(p5: p5) {
     return toInt(i) + ''
   }
 
-  function drawCreature(
-    creature: Creature,
-    x: number,
-    y: number,
-    graphics: p5
-  ): void {
-    drawCreaturePieces(creature.nodes, creature.muscles, x, y, graphics)
-  }
-
-  function drawCreaturePieces(
-    nodes: Node[],
-    muscles: Muscle[],
-    x: number,
-    y: number,
-    graphics: p5
-  ): void {
-    for (let i = 0; i < muscles.length; i++) {
-      drawMuscle(muscles[i], nodes, x, y, graphics)
-    }
-    for (let i = 0; i < nodes.length; i++) {
-      drawNode(nodes[i], x, y, graphics)
-    }
-    for (let i = 0; i < muscles.length; i++) {
-      drawMuscleAxons(muscles[i], nodes, x, y, graphics)
-    }
-    for (let i = 0; i < nodes.length; i++) {
-      drawNodeAxons(nodes, i, x, y, graphics)
-    }
-  }
-
   function drawHistogram(x: number, y: number, hw: number, hh: number): void {
     let maxH = 1
 
@@ -1836,7 +1840,7 @@ export default function sketch(p5: p5) {
 
       const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
 
-      drawCreature(creature, 0, 0, p5)
+      creatureDrawer.drawCreature(creature, 0, 0, p5)
 
       p5.pop()
     }
@@ -2015,6 +2019,8 @@ export default function sketch(p5: p5) {
 
     segBarImage.background(220)
     popUpImage.background(220)
+
+    creatureDrawer = new CreatureDrawer()
   }
 
   p5.draw = () => {

@@ -949,8 +949,6 @@ export default function sketch(p5: p5) {
     screenImage.background(220, 253, 102)
     screenImage.noStroke()
 
-    updateCreatureIdsByGridIndex()
-
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = sortedCreatures[i]
       const gridIndex = creatureIdToIndex(creature.id)
@@ -2300,6 +2298,7 @@ export default function sketch(p5: p5) {
 
       if (stepByStep) {
         appState.viewTimer = 0
+        updateCreatureIdsByGridIndex()
         drawSimulationFinishedScreenImage()
         setActivityId(ActivityId.FinishedStepByStep)
       } else {

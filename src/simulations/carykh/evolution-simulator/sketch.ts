@@ -46,8 +46,6 @@ export default function sketch(p5: p5) {
   let segBarImage: Graphics
   let histBarsPerMeter = 5
 
-  let baselineEnergy = 0.0
-
   let minBar = -10
   let maxBar = 100
   let barLen = maxBar - minBar
@@ -2188,7 +2186,7 @@ export default function sketch(p5: p5) {
     simulationState.camera.x = 0
     simulationState.camera.y = 0
     simulationState.timer = 0
-    simulationState.creature.energyUsed = baselineEnergy
+    simulationState.creature.energyUsed = 0
     simulationState.creature.totalNodeNausea = 0
     simulationState.creature.averageNodeNausea = 0
   }

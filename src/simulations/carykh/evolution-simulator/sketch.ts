@@ -747,7 +747,7 @@ export default function sketch(p5: p5) {
         creature = appState.sortedCreatures[appState.statusWindow]
 
         if (appState.currentActivityId === ActivityId.FinishedStepByStep) {
-          const id = (creature.id - 1) % CREATURE_COUNT
+          const id = creatureIdToIndex(creature.id)
           x = id % 40
           y = Math.floor(id / 40)
         } else {

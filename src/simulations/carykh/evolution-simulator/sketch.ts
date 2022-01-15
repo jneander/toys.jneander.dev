@@ -2227,6 +2227,10 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === ActivityId.Start) {
       drawStartActivity()
     } else if (appState.currentActivityId === ActivityId.GenerationView) {
+      if (draggingSlider && appState.generationCount >= 1) {
+        generationSlider.onDrag()
+      }
+
       drawGenerationViewActivity()
 
       if (appState.pendingGenerationCount > 0) {
@@ -2514,10 +2518,6 @@ export default function sketch(p5: p5) {
 
     if (appState.currentActivityId === ActivityId.GenerationView) {
       if (appState.generationCount >= 1) {
-        if (draggingSlider) {
-          generationSlider.onDrag()
-        }
-
         generationSlider.draw()
       }
 

@@ -1231,6 +1231,25 @@ export default function sketch(p5: p5) {
     p5.pop()
   }
 
+  function drawStepByStepFinalFitness(): void {
+    const {averageX} = getNodesAverage(simulationState.creature.nodes)
+
+    p5.noStroke()
+    p5.fill(0, 0, 0, 130)
+    p5.rect(0, 0, windowWidth, windowHeight)
+    p5.fill(0, 0, 0, 255)
+    p5.rect(windowWidth / 2 - 500, 200, 1000, 240)
+    p5.fill(255, 0, 0)
+    p5.textAlign(p5.CENTER)
+    p5.textFont(font, 96)
+    p5.text("Creature's " + FITNESS_LABEL + ':', windowWidth / 2, 300)
+    p5.text(
+      p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
+      windowWidth / 2,
+      400
+    )
+  }
+
   function drawGround(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
@@ -2359,8 +2378,6 @@ export default function sketch(p5: p5) {
       }
     }
 
-    const {averageX} = getNodesAverage(simulationState.creature.nodes)
-
     if (appState.currentActivityId === ActivityId.SimulationRunning) {
       // simulate running
 
@@ -2385,20 +2402,7 @@ export default function sketch(p5: p5) {
       if (appState.viewTimer == 900) {
         if (simulationState.speed < 30) {
           // When the simulation speed is slow enough, display the creature's fitness.
-          p5.noStroke()
-          p5.fill(0, 0, 0, 130)
-          p5.rect(0, 0, windowWidth, windowHeight)
-          p5.fill(0, 0, 0, 255)
-          p5.rect(windowWidth / 2 - 500, 200, 1000, 240)
-          p5.fill(255, 0, 0)
-          p5.textAlign(p5.CENTER)
-          p5.textFont(font, 96)
-          p5.text("Creature's " + FITNESS_LABEL + ':', windowWidth / 2, 300)
-          p5.text(
-            p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
-            windowWidth / 2,
-            400
-          )
+          drawStepByStepFinalFitness()
         } else {
           // When the simulation speed is too fast, skip ahead to next simulation using the timer.
           appState.viewTimer = 1020

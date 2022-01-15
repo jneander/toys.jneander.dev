@@ -14,6 +14,11 @@ export const MIN_MUSCLE_LENGTH_INCLUSIVE = 0.5
 
 export const NODE_MASS_DEFAULT = 0.4
 
+export const FITNESS_PERCENTILE_CREATURE_INDICES = [
+  0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800,
+  900, 910, 920, 930, 940, 950, 960, 970, 980, 990, 999
+]
+
 export enum ActivityId {
   Start = 'START',
   GenerationView = 'GENERATION_VIEW',

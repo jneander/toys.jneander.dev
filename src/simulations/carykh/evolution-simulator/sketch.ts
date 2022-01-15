@@ -346,6 +346,20 @@ export default function sketch(p5: p5) {
     appState.generationCount++
   }
 
+  function updateCameraPosition(): void {
+    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
+
+    if (simulationState.speed < 30) {
+      for (let s = 0; s < simulationState.speed; s++) {
+        simulationState.camera.x += (averageX - simulationState.camera.x) * 0.06
+        simulationState.camera.y += (averageY - simulationState.camera.y) * 0.06
+      }
+    } else {
+      simulationState.camera.x = averageX
+      simulationState.camera.y = averageY
+    }
+  }
+
   abstract class Widget {
     abstract draw(): void
   }
@@ -2319,7 +2333,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
+    const {averageX} = getNodesAverage(simulationState.creature.nodes)
 
     if (appState.currentActivityId === ActivityId.SimulationRunning) {
       // simulate running
@@ -2333,17 +2347,7 @@ export default function sketch(p5: p5) {
           }
         }
 
-        if (simulationState.speed < 30) {
-          for (let s = 0; s < simulationState.speed; s++) {
-            simulationState.camera.x +=
-              (averageX - simulationState.camera.x) * 0.06
-            simulationState.camera.y +=
-              (averageY - simulationState.camera.y) * 0.06
-          }
-        } else {
-          simulationState.camera.x = averageX
-          simulationState.camera.y = averageY
-        }
+        updateCameraPosition()
 
         p5.push()
 

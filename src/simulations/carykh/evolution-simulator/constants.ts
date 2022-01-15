@@ -1,10 +1,13 @@
 export const AIR_FRICTION = 0.95
 export const BIG_MUTATION_CHANCE = 0.06
+export const CREATURE_COUNT = 1000
 export const ENERGY_UNIT = 20
 export const FRICTION = 4
 export const GRAVITY = 0.005
 export const NAUSEA_UNIT = 5
+export const POST_FONT_SIZE = 0.96
 export const PRESSURE_UNIT = 500.0 / 2.37
+export const SCALE_TO_FIX_BUG = 1000
 
 export const MAX_MUSCLE_LENGTH_INCLUSIVE = 1.5
 export const MIN_MUSCLE_LENGTH_INCLUSIVE = 0.5

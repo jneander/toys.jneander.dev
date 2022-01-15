@@ -959,6 +959,14 @@ export default function sketch(p5: p5) {
 
       drawHistogram(760, 410, 460, 280)
       drawGraphImage()
+
+      if (appState.generationCount >= 1) {
+        generationSlider.draw()
+      }
+
+      if (appState.selectedGeneration >= 1) {
+        drawWorstMedianAndBestCreatures()
+      }
     }
   }
 
@@ -2514,16 +2522,6 @@ export default function sketch(p5: p5) {
       appState.currentActivityId === ActivityId.PropagatedCreatures
     ) {
       p5.image(screenImage, 0, 0, windowWidth, windowHeight)
-    }
-
-    if (appState.currentActivityId === ActivityId.GenerationView) {
-      if (appState.generationCount >= 1) {
-        generationSlider.draw()
-      }
-
-      if (appState.selectedGeneration >= 1) {
-        drawWorstMedianAndBestCreatures()
-      }
     }
 
     if (statusWindow >= -3) {

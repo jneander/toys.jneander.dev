@@ -8,6 +8,7 @@ import Simulation from './Simulation'
 import {
   ActivityId,
   CREATURE_COUNT,
+  FITNESS_PERCENTILE_CREATURE_INDICES,
   GenerationSimulationMode,
   POST_FONT_SIZE,
   SCALE_TO_FIX_BUG
@@ -48,11 +49,6 @@ export default function sketch(p5: p5) {
   const lastCreatureIndex = CREATURE_COUNT - 1
   const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 
-  const fitnessPercentileCreatureIndices = [
-    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700,
-    800, 900, 910, 920, 930, 940, 950, 960, 970, 980, 990, 999
-  ]
-  const fitnessPercentileCount = fitnessPercentileCreatureIndices.length
   const fitnessPercentileHistory: Array<number[]> = []
 
   let font: Font
@@ -181,10 +177,14 @@ export default function sketch(p5: p5) {
     }
 
     updateHistory(): void {
-      fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
-      for (let i = 0; i < fitnessPercentileCount; i++) {
+      fitnessPercentileHistory.push(
+        new Array<number>(FITNESS_PERCENTILE_CREATURE_INDICES.length)
+      )
+      for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
         fitnessPercentileHistory[appState.generationCount + 1][i] =
-          appState.sortedCreatures[fitnessPercentileCreatureIndices[i]].fitness
+          appState.sortedCreatures[
+            FITNESS_PERCENTILE_CREATURE_INDICES[i]
+          ].fitness
       }
 
       const historyEntry: GenerationHistoryEntry = {
@@ -1759,7 +1759,7 @@ export default function sketch(p5: p5) {
 
     graphImage.stroke(0)
 
-    for (let i = 0; i < fitnessPercentileCount; i++) {
+    for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
       let k
 
       if (i == 28) {
@@ -2289,7 +2289,9 @@ export default function sketch(p5: p5) {
     )
     p5.ellipseMode(p5.CENTER)
 
-    fitnessPercentileHistory.push(new Array(fitnessPercentileCount).fill(0.0))
+    fitnessPercentileHistory.push(
+      new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0.0)
+    )
     barCounts.push(new Array(barLen).fill(0))
 
     graphImage = p5.createGraphics(975, 570)

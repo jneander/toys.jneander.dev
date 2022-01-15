@@ -625,7 +625,7 @@ export default function sketch(p5: p5) {
         simulationState.creature.muscles,
         0,
         0,
-        2
+        popUpImage
       )
 
       popUpImage.noStroke()
@@ -676,7 +676,7 @@ export default function sketch(p5: p5) {
         const index = y * 40 + x
         const creature = appState.creaturesInLatestGeneration[index]
 
-        drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, 0)
+        drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, p5)
       }
     }
 
@@ -780,7 +780,7 @@ export default function sketch(p5: p5) {
       const x3 = inter(x1, x2, transition)
       const y3 = inter(y1, y2, transition)
 
-      drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, 0)
+      drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, p5)
     }
 
     p5.pop()
@@ -815,7 +815,12 @@ export default function sketch(p5: p5) {
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40) + 1
 
-      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
+      drawCreature(
+        creature,
+        gridX * 3 + 5.5,
+        gridY * 2.5 + 4,
+        appView.screenGraphics
+      )
     }
     appView.screenGraphics.pop()
 
@@ -856,7 +861,12 @@ export default function sketch(p5: p5) {
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40)
 
-      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
+      drawCreature(
+        creature,
+        gridX * 3 + 5.5,
+        gridY * 2.5 + 4,
+        appView.screenGraphics
+      )
     }
     appView.screenGraphics.pop()
 
@@ -892,7 +902,12 @@ export default function sketch(p5: p5) {
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40) + 1
 
-      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
+      drawCreature(
+        creature,
+        gridX * 3 + 5.5,
+        gridY * 2.5 + 4,
+        appView.screenGraphics
+      )
     }
     appView.screenGraphics.pop()
 
@@ -923,7 +938,7 @@ export default function sketch(p5: p5) {
       const y = Math.floor(i / 40) + 1
 
       if (creature.alive) {
-        drawCreature(creature, x * 30 + 55, y * 25 + 40, 0)
+        drawCreature(creature, x * 30 + 55, y * 25 + 40, p5)
       } else {
         appView.screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
       }
@@ -948,7 +963,12 @@ export default function sketch(p5: p5) {
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40) + 1
 
-      drawCreature(creature, gridX * 3 + 5.5, gridY * 2.5 + 4, 1)
+      drawCreature(
+        creature,
+        gridX * 3 + 5.5,
+        gridY * 2.5 + 4,
+        appView.screenGraphics
+      )
     }
     appView.screenGraphics.pop()
 
@@ -999,7 +1019,7 @@ export default function sketch(p5: p5) {
       simulationState.creature.muscles,
       0,
       0,
-      0
+      p5
     )
     drawArrow(averageX)
 
@@ -1096,7 +1116,7 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function drawNode(node: Node, x: number, y: number, toImage: number): void {
+  function drawNode(node: Node, x: number, y: number, graphics: p5): void {
     let color = p5.color(512 - toInt(node.friction * 512), 0, 0)
 
     if (node.friction <= 0.5) {
@@ -1106,8 +1126,6 @@ export default function sketch(p5: p5) {
         255 - toInt(node.friction * 512)
       )
     }
-
-    const graphics = [p5, appView.screenGraphics, popUpImage][toImage]
 
     graphics.fill(color)
     graphics.noStroke()
@@ -1145,7 +1163,7 @@ export default function sketch(p5: p5) {
     nodeIndex: number,
     x: number,
     y: number,
-    toImage: number
+    graphics: p5
   ): void {
     const node = nodes[nodeIndex]
 
@@ -1156,7 +1174,7 @@ export default function sketch(p5: p5) {
       const point2x = axonSource.positionX + x
       const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
 
-      drawSingleAxon(point1x, point1y, point2x, point2y, toImage)
+      drawSingleAxon(point1x, point1y, point2x, point2y, graphics)
     }
 
     if (AXON_COUNT_BY_NODE_OPERATION_ID[node.operation] === 2) {
@@ -1166,7 +1184,7 @@ export default function sketch(p5: p5) {
       const point2x = axonSource.positionX + x
       const point2y = axonSource.positionY + axonSource.mass * 0.5 + y
 
-      drawSingleAxon(point1x, point1y, point2x, point2y, toImage)
+      drawSingleAxon(point1x, point1y, point2x, point2y, graphics)
     }
   }
 
@@ -1175,12 +1193,10 @@ export default function sketch(p5: p5) {
     y1: number,
     x2: number,
     y2: number,
-    toImage: number
+    graphics: p5
   ): void {
     const arrowHeadSize = 0.1
     const angle = Math.atan2(y2 - y1, x2 - x1)
-
-    const graphics = [p5, appView.screenGraphics, popUpImage][toImage]
 
     graphics.stroke(AXON_COLOR)
     graphics.strokeWeight(0.03 * SCALE_TO_FIX_BUG)
@@ -1212,7 +1228,7 @@ export default function sketch(p5: p5) {
     nodes: Node[],
     x: number,
     y: number,
-    toImage: number
+    graphics: p5
   ): void {
     const ni1 = nodes[muscle.nodeConnection1]
     const ni2 = nodes[muscle.nodeConnection2]
@@ -1222,8 +1238,6 @@ export default function sketch(p5: p5) {
     if (muscle.axon >= 0 && muscle.axon < nodes.length) {
       w = nodes[muscle.axon].getClampedValue() * 0.15
     }
-
-    const graphics = [p5, appView.screenGraphics, popUpImage][toImage]
 
     graphics.strokeWeight(w * SCALE_TO_FIX_BUG)
     graphics.stroke(70, 35, 0, muscle.rigidity * 3000)
@@ -1240,7 +1254,7 @@ export default function sketch(p5: p5) {
     nodes: Node[],
     x: number,
     y: number,
-    toImage: number
+    graphics: p5
   ): void {
     const connectedNode1 = nodes[muscle.nodeConnection1]
     const connectedNode2 = nodes[muscle.nodeConnection2]
@@ -1257,11 +1271,10 @@ export default function sketch(p5: p5) {
         muscleMidY,
         axonSource.positionX + x,
         axonSource.positionY + axonSource.mass * 0.5 + y,
-        toImage
+        graphics
       )
 
       const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
-      const graphics = [p5, appView.screenGraphics, popUpImage][toImage]
 
       graphics.fill(AXON_COLOR)
       graphics.textAlign(p5.CENTER)
@@ -1641,9 +1654,9 @@ export default function sketch(p5: p5) {
     creature: Creature,
     x: number,
     y: number,
-    toImage: number
+    graphics: p5
   ): void {
-    drawCreaturePieces(creature.nodes, creature.muscles, x, y, toImage)
+    drawCreaturePieces(creature.nodes, creature.muscles, x, y, graphics)
   }
 
   function drawCreaturePieces(
@@ -1651,19 +1664,19 @@ export default function sketch(p5: p5) {
     muscles: Muscle[],
     x: number,
     y: number,
-    toImage: number
+    graphics: p5
   ): void {
     for (let i = 0; i < muscles.length; i++) {
-      drawMuscle(muscles[i], nodes, x, y, toImage)
+      drawMuscle(muscles[i], nodes, x, y, graphics)
     }
     for (let i = 0; i < nodes.length; i++) {
-      drawNode(nodes[i], x, y, toImage)
+      drawNode(nodes[i], x, y, graphics)
     }
     for (let i = 0; i < muscles.length; i++) {
-      drawMuscleAxons(muscles[i], nodes, x, y, toImage)
+      drawMuscleAxons(muscles[i], nodes, x, y, graphics)
     }
     for (let i = 0; i < nodes.length; i++) {
-      drawNodeAxons(nodes, i, x, y, toImage)
+      drawNodeAxons(nodes, i, x, y, graphics)
     }
   }
 
@@ -1823,7 +1836,7 @@ export default function sketch(p5: p5) {
 
       const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
 
-      drawCreature(creature, 0, 0, 0)
+      drawCreature(creature, 0, 0, p5)
 
       p5.pop()
     }

@@ -79,6 +79,7 @@ export default function sketch(p5: p5) {
     generationCount: number
     generationCountDepictedInGraph: number
     generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
+    inAsapSimulation: boolean
     pendingGenerationCount: number
     selectedGeneration: number
     showPopupSimulation: boolean
@@ -91,6 +92,7 @@ export default function sketch(p5: p5) {
     generationCount: -1,
     generationCountDepictedInGraph: -1,
     generationHistoryMap: {},
+    inAsapSimulation: false,
     pendingGenerationCount: 0,
     selectedGeneration: 0,
     showPopupSimulation: false,
@@ -150,7 +152,6 @@ export default function sketch(p5: p5) {
 
   let sortedCreatures: Creature[] = []
 
-  let stepByStep: boolean
   let stepByStepSlow: boolean
 
   const simulation = new Simulation(simulationState, simulationConfig)
@@ -204,8 +205,6 @@ export default function sketch(p5: p5) {
 
       setFitnessOfSimulationCreature()
     }
-
-    setActivityId(ActivityId.SimulationFinished)
   }
 
   function finishGenerationSimulation(): void {
@@ -217,6 +216,7 @@ export default function sketch(p5: p5) {
     creaturesTested++
 
     finishGenerationSimulationFromIndex(creaturesTested)
+    setActivityId(ActivityId.SimulationFinished)
   }
 
   function updateCreatureIdsByGridIndex(): void {
@@ -426,7 +426,6 @@ export default function sketch(p5: p5) {
       setActivityId(ActivityId.RequestingSimulation)
       simulationState.speed = 1
       creaturesTested = 0
-      stepByStep = true
       stepByStepSlow = true
     }
   }
@@ -447,7 +446,6 @@ export default function sketch(p5: p5) {
     onClick(): void {
       setActivityId(ActivityId.RequestingSimulation)
       creaturesTested = 0
-      stepByStep = true
       stepByStepSlow = false
     }
   }
@@ -1840,10 +1838,8 @@ export default function sketch(p5: p5) {
   }
 
   function startASAP(): void {
-    setActivityId(ActivityId.RequestingSimulation)
+    appState.inAsapSimulation = true
     creaturesTested = 0
-    stepByStep = false
-    stepByStepSlow = false
   }
 
   function drawCreature(
@@ -2294,6 +2290,18 @@ export default function sketch(p5: p5) {
         if (appState.pendingGenerationCount > 0) {
           startASAP()
         }
+      } else {
+        appState.inAsapSimulation = false
+      }
+
+      if (appState.inAsapSimulation) {
+        setSimulationState(creaturesInLatestGeneration[creaturesTested])
+        finishGenerationSimulationFromIndex(0)
+        sortCreatures()
+        updateHistory()
+        cullCreatures()
+        propagateCreatures()
+        updateSelectedGenerationAndSliderPosition()
       }
     } else if (appState.currentActivityId === ActivityId.GeneratingCreatures) {
       generateCreatures()
@@ -2307,6 +2315,7 @@ export default function sketch(p5: p5) {
 
       if (!stepByStepSlow) {
         finishGenerationSimulationFromIndex(0)
+        setActivityId(ActivityId.SimulationFinished)
       }
     }
 
@@ -2410,14 +2419,10 @@ export default function sketch(p5: p5) {
       sortCreatures()
       updateHistory()
 
-      if (stepByStep) {
-        appState.viewTimer = 0
-        updateCreatureIdsByGridIndex()
-        drawSimulationFinishedScreenImage()
-        setActivityId(ActivityId.FinishedStepByStep)
-      } else {
-        setActivityId(ActivityId.CullingCreatures)
-      }
+      appState.viewTimer = 0
+      updateCreatureIdsByGridIndex()
+      drawSimulationFinishedScreenImage()
+      setActivityId(ActivityId.FinishedStepByStep)
     }
 
     if (appState.currentActivityId === ActivityId.SortingCreatures) {
@@ -2516,26 +2521,18 @@ export default function sketch(p5: p5) {
     if (appState.currentActivityId === ActivityId.CullingCreatures) {
       cullCreatures()
 
-      if (stepByStep) {
-        appState.viewTimer = 0
-        drawCulledCreaturesScreenImage()
-        setActivityId(ActivityId.CulledCreatures)
-      } else {
-        setActivityId(ActivityId.PropagatingCreatures)
-      }
+      appState.viewTimer = 0
+      drawCulledCreaturesScreenImage()
+      setActivityId(ActivityId.CulledCreatures)
     }
 
     if (appState.currentActivityId === ActivityId.PropagatingCreatures) {
       propagateCreatures()
       updateSelectedGenerationAndSliderPosition()
 
-      if (stepByStep) {
-        appState.viewTimer = 0
-        drawPropagatedCreaturesScreenImage()
-        setActivityId(ActivityId.PropagatedCreatures)
-      } else {
-        setActivityId(ActivityId.GenerationView)
-      }
+      appState.viewTimer = 0
+      drawPropagatedCreaturesScreenImage()
+      setActivityId(ActivityId.PropagatedCreatures)
     }
 
     if (appState.currentActivityId === ActivityId.FinishedStepByStep) {

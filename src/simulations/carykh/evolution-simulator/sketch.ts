@@ -2511,10 +2511,7 @@ export default function sketch(p5: p5) {
       p5.image(screenImage, 0, 0, windowWidth, windowHeight)
     }
 
-    if (
-      appState.currentActivityId === ActivityId.GenerationView ||
-      appState.pendingGenerationCount >= 1
-    ) {
+    if (appState.currentActivityId === ActivityId.GenerationView) {
       p5.noStroke()
 
       if (appState.generationCount >= 1) {

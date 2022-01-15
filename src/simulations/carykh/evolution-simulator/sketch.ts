@@ -17,7 +17,13 @@ import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   NODE_OPERATION_LABELS_BY_ID
 } from './node-operations'
-import type {SimulationConfig, SimulationState} from './types'
+import type {
+  AppState,
+  GenerationHistoryEntry,
+  SimulationConfig,
+  SimulationState,
+  SpeciesCount
+} from './types'
 
 export default function sketch(p5: p5) {
   const AXON_COLOR = p5.color(255, 255, 0)
@@ -57,36 +63,6 @@ export default function sketch(p5: p5) {
 
   let sliderX = 1170
   let draggingSlider = false
-
-  type SpeciesCount = {
-    count: number
-    speciesId: number
-  }
-
-  type GenerationHistoryEntry = {
-    fastest: Creature
-    median: Creature
-    slowest: Creature
-  }
-
-  type AppState = {
-    creatureIdsByGridIndex: number[]
-    creaturesInLatestGeneration: Creature[]
-    creaturesTested: number
-    currentActivityId: ActivityId
-    generationCount: number
-    generationCountDepictedInGraph: number
-    generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
-    generationSimulationMode: GenerationSimulationMode
-    pendingGenerationCount: number
-    popupSimulationCreatureId: number | null
-    selectedGeneration: number
-    showPopupSimulation: boolean
-    sortedCreatures: Creature[]
-    speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
-    statusWindow: number
-    viewTimer: number
-  }
 
   const appState: AppState = {
     creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),

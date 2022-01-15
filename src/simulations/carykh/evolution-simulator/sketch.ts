@@ -974,6 +974,32 @@ export default function sketch(p5: p5) {
     p5.image(screenImage, 0, 0, windowWidth, windowHeight)
   }
 
+  function drawSortingCreaturesActivity(): void {
+    p5.background(220, 253, 102)
+    p5.push()
+    p5.scale(10.0 / scaleToFixBug)
+
+    const transition =
+      0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
+
+    for (let i1 = 0; i1 < CREATURE_COUNT; i1++) {
+      const creature = sortedCreatures[i1]
+      const j2 = creature.id - appState.generationCount * CREATURE_COUNT - 1
+      const x1 = j2 % 40
+      const y1 = Math.floor(j2 / 40)
+      const x2 = i1 % 40
+      const y2 = Math.floor(i1 / 40) + 1
+      const x3 = inter(x1, x2, transition)
+      const y3 = inter(y1, y2, transition)
+
+      drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, 0)
+    }
+
+    p5.pop()
+
+    sortingCreaturesSkipButton.draw()
+  }
+
   function drawSortedCreaturesActivity(): void {
     p5.image(screenImage, 0, 0, windowWidth, windowHeight)
   }
@@ -2390,37 +2416,13 @@ export default function sketch(p5: p5) {
     }
 
     if (appState.currentActivityId === ActivityId.SortingCreatures) {
-      // cool sorting animation
-
-      p5.background(220, 253, 102)
-      p5.push()
-      p5.scale(10.0 / scaleToFixBug)
-
-      const transition =
-        0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
-
-      for (let i1 = 0; i1 < CREATURE_COUNT; i1++) {
-        const creature = sortedCreatures[i1]
-        const j2 = creature.id - appState.generationCount * CREATURE_COUNT - 1
-        const x1 = j2 % 40
-        const y1 = Math.floor(j2 / 40)
-        const x2 = i1 % 40
-        const y2 = Math.floor(i1 / 40) + 1
-        const x3 = inter(x1, x2, transition)
-        const y3 = inter(y1, y2, transition)
-
-        drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, 0)
-      }
-
-      p5.pop()
+      drawSortingCreaturesActivity()
 
       if (stepByStepSlow) {
         appState.viewTimer += 2
       } else {
         appState.viewTimer += 10
       }
-
-      sortingCreaturesSkipButton.draw()
 
       if (appState.viewTimer > 60 * Math.PI) {
         appState.viewTimer = 0

@@ -110,31 +110,51 @@ export default function sketch(p5: p5) {
     simulationState
   })
 
+  class AppView {
+    getColor(i: number, adjust: boolean): Color {
+      p5.colorMode(p5.HSB, 1.0)
+
+      let col = (i * 1.618034) % 1
+      if (i == 46) {
+        col = 0.083333
+      }
+
+      let light = 1.0
+      if (Math.abs(col - 0.333) <= 0.18 && adjust) {
+        light = 0.7
+      }
+
+      return p5.color(col, 1.0, light)
+    }
+
+    getCursorPosition(): {cursorX: number; cursorY: number} {
+      const cursorX = p5.mouseX / WINDOW_SIZE_MULTIPLIER
+      const cursorY = p5.mouseY / WINDOW_SIZE_MULTIPLIER
+
+      return {cursorX, cursorY}
+    }
+
+    rectIsUnderCursor(
+      x: number,
+      y: number,
+      width: number,
+      height: number
+    ): boolean {
+      const {cursorX, cursorY} = this.getCursorPosition()
+
+      return (
+        cursorX >= x &&
+        cursorX <= x + width &&
+        cursorY >= y &&
+        cursorY <= y + height
+      )
+    }
+  }
+
+  let appView: AppView
+
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
-  }
-
-  function getCursorPosition(): {cursorX: number; cursorY: number} {
-    const cursorX = p5.mouseX / WINDOW_SIZE_MULTIPLIER
-    const cursorY = p5.mouseY / WINDOW_SIZE_MULTIPLIER
-
-    return {cursorX, cursorY}
-  }
-
-  function rectIsUnderCursor(
-    x: number,
-    y: number,
-    width: number,
-    height: number
-  ): boolean {
-    const {cursorX, cursorY} = getCursorPosition()
-
-    return (
-      cursorX >= x &&
-      cursorX <= x + width &&
-      cursorY >= y &&
-      cursorY <= y + height
-    )
   }
 
   function updateCameraPosition(): void {
@@ -167,7 +187,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(windowWidth / 2 - 200, 300, 400, 200)
+      return appView.rectIsUnderCursor(windowWidth / 2 - 200, 300, 400, 200)
     }
 
     onClick(): void {
@@ -185,7 +205,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(20, 250, 200, 100)
+      return appView.rectIsUnderCursor(20, 250, 200, 100)
     }
 
     onClick(): void {
@@ -205,7 +225,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(900, 664, 260, 40)
+      return appView.rectIsUnderCursor(900, 664, 260, 40)
     }
 
     onClick(): void {
@@ -224,7 +244,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(760, 20, 460, 40)
+      return appView.rectIsUnderCursor(760, 20, 460, 40)
     }
 
     onClick(): void {
@@ -242,7 +262,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(760, 70, 460, 40)
+      return appView.rectIsUnderCursor(760, 70, 460, 40)
     }
 
     onClick(): void {
@@ -260,7 +280,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(760, 120, 230, 40)
+      return appView.rectIsUnderCursor(760, 120, 230, 40)
     }
 
     onClick(): void {
@@ -285,7 +305,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(990, 120, 230, 40)
+      return appView.rectIsUnderCursor(990, 120, 230, 40)
     }
 
     onClick(): void {
@@ -305,7 +325,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(0, windowHeight - 40, 90, 40)
+      return appView.rectIsUnderCursor(0, windowHeight - 40, 90, 40)
     }
 
     onClick(): void {
@@ -328,7 +348,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(120, windowHeight - 40, 240, 40)
+      return appView.rectIsUnderCursor(120, windowHeight - 40, 240, 40)
     }
 
     onClick(): void {
@@ -355,7 +375,12 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(windowWidth - 120, windowHeight - 40, 120, 40)
+      return appView.rectIsUnderCursor(
+        windowWidth - 120,
+        windowHeight - 40,
+        120,
+        40
+      )
     }
 
     onClick(): void {
@@ -375,7 +400,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(900, 664, 260, 40)
+      return appView.rectIsUnderCursor(900, 664, 260, 40)
     }
 
     onClick(): void {
@@ -394,7 +419,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(0, windowHeight - 40, 90, 40)
+      return appView.rectIsUnderCursor(0, windowHeight - 40, 90, 40)
     }
 
     onClick(): void {
@@ -418,7 +443,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(900, 670, 260, 40)
+      return appView.rectIsUnderCursor(900, 670, 260, 40)
     }
 
     onClick(): void {
@@ -438,7 +463,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(1050, 670, 160, 40)
+      return appView.rectIsUnderCursor(1050, 670, 160, 40)
     }
 
     onClick(): void {
@@ -458,7 +483,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(1050, 670, 160, 40)
+      return appView.rectIsUnderCursor(1050, 670, 160, 40)
     }
 
     onClick(): void {
@@ -492,11 +517,11 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return rectIsUnderCursor(sliderX, 340, 50, 50)
+      return appView.rectIsUnderCursor(sliderX, 340, 50, 50)
     }
 
     onDrag(): void {
-      const {cursorX} = getCursorPosition()
+      const {cursorX} = appView.getCursorPosition()
 
       const sliderXMax = 1170
       const sliderXMin = 760
@@ -590,7 +615,7 @@ export default function sketch(p5: p5) {
 
       const sp =
         (creature.nodes.length % 10) * 10 + (creature.muscles.length % 10)
-      p5.fill(getColor(sp, true))
+      p5.fill(appView.getColor(sp, true))
       p5.text(
         'Species: S' +
           (creature.nodes.length % 10) +
@@ -1410,7 +1435,7 @@ export default function sketch(p5: p5) {
           p5.fill(255, 255, 255)
           p5.rect(lineX + 3, y, 56, 14)
           p5.colorMode(p5.HSB, 1.0)
-          p5.fill(getColor(speciesId, true))
+          p5.fill(appView.getColor(speciesId, true))
           // Example label: "S45: 207"
           p5.text(`S${speciesId}: ${count}`, lineX + 5, y + 11)
           p5.colorMode(p5.RGB, 255)
@@ -1421,22 +1446,6 @@ export default function sketch(p5: p5) {
 
       p5.noStroke()
     }
-  }
-
-  function getColor(i: number, adjust: boolean): Color {
-    p5.colorMode(p5.HSB, 1.0)
-
-    let col = (i * 1.618034) % 1
-    if (i == 46) {
-      col = 0.083333
-    }
-
-    let light = 1.0
-    if (Math.abs(col - 0.333) <= 0.18 && adjust) {
-      light = 0.7
-    }
-
-    return p5.color(col, 1.0, light)
   }
 
   function drawGraph(graphWidth: number, graphHeight: number): void {
@@ -1604,7 +1613,7 @@ export default function sketch(p5: p5) {
       }
 
       joinedEntries.forEach(({speciesId, countStart, countEnd}) => {
-        segBarImage.fill(getColor(speciesId, false))
+        segBarImage.fill(appView.getColor(speciesId, false))
         segBarImage.beginShape()
 
         // top-left and top-right
@@ -2036,6 +2045,8 @@ export default function sketch(p5: p5) {
 
     p5.textFont(font, 96)
     p5.textAlign(p5.CENTER)
+
+    appView = new AppView()
   }
 
   p5.draw = () => {
@@ -2156,7 +2167,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    const {cursorX, cursorY} = getCursorPosition()
+    const {cursorX, cursorY} = appView.getCursorPosition()
 
     if (
       (appState.currentActivityId === ActivityId.FinishedStepByStep ||

@@ -2376,7 +2376,6 @@ export default function sketch(p5: p5) {
       setActivityId(ActivityId.GeneratedCreatures)
     } else if (appState.currentActivityId === ActivityId.RequestingSimulation) {
       setSimulationState(creaturesInLatestGeneration[creaturesTested])
-      simulationState.camera.zoom = 0.01
 
       setActivityId(ActivityId.SimulationRunning)
 

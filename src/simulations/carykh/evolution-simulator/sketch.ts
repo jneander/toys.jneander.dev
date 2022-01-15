@@ -193,6 +193,13 @@ export default function sketch(p5: p5) {
     }
   }
 
+  function performStepByStepSimulation(): void {
+    simulationState.speed = 1
+    creaturesTested = 0
+    appState.generationSimulationMode = GenerationSimulationMode.StepByStep
+    setActivityId(ActivityId.RequestingSimulation)
+  }
+
   function performQuickGenerationSimulation(): void {
     creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.Quick
@@ -441,10 +448,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      setActivityId(ActivityId.RequestingSimulation)
-      simulationState.speed = 1
-      creaturesTested = 0
-      appState.generationSimulationMode = GenerationSimulationMode.StepByStep
+      performStepByStepSimulation()
     }
   }
 

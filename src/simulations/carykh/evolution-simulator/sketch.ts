@@ -117,10 +117,268 @@ export default function sketch(p5: p5) {
 
   const simulation = new Simulation(simulationState, simulationConfig)
 
-  function advanceSimulation(): void {
-    simulation.advance()
-    appState.viewTimer++
+  class AppController {
+    generateCreatures(): void {
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = simulation.generateCreature(i + 1)
+        appState.creaturesInLatestGeneration[i] = creature
+      }
+    }
+
+    performStepByStepSimulation(): void {
+      simulationState.speed = 1
+      appState.creaturesTested = 0
+      appState.generationSimulationMode = GenerationSimulationMode.StepByStep
+      this.setSimulationState(
+        appState.creaturesInLatestGeneration[appState.creaturesTested]
+      )
+      this.setActivityId(ActivityId.SimulationRunning)
+    }
+
+    performQuickGenerationSimulation(): void {
+      appState.creaturesTested = 0
+      appState.generationSimulationMode = GenerationSimulationMode.Quick
+      this.finishGenerationSimulationFromIndex(0)
+      this.setActivityId(ActivityId.SimulationFinished)
+    }
+
+    finishGenerationSimulationFromIndex(creatureIndex: number): void {
+      for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
+        this.setSimulationState(appState.creaturesInLatestGeneration[i])
+
+        for (let s = 0; s < 900; s++) {
+          this.advanceSimulation()
+        }
+
+        this.setFitnessOfSimulationCreature()
+      }
+    }
+
+    finishGenerationSimulation(): void {
+      for (let s = appState.viewTimer; s < 900; s++) {
+        this.advanceSimulation()
+      }
+
+      appState.viewTimer = 0
+      appState.creaturesTested++
+
+      this.finishGenerationSimulationFromIndex(appState.creaturesTested)
+      this.setActivityId(ActivityId.SimulationFinished)
+    }
+
+    updateCreatureIdsByGridIndex(): void {
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = appState.sortedCreatures[i]
+        const gridIndex = creatureIdToIndex(creature.id)
+        appState.creatureIdsByGridIndex[gridIndex] = i
+      }
+    }
+
+    sortCreatures(): void {
+      appState.sortedCreatures = [...appState.creaturesInLatestGeneration].sort(
+        (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
+      )
+    }
+
+    updateHistory(): void {
+      fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
+      for (let i = 0; i < fitnessPercentileCount; i++) {
+        fitnessPercentileHistory[appState.generationCount + 1][i] =
+          appState.sortedCreatures[fitnessPercentileCreatureIndices[i]].fitness
+      }
+
+      const historyEntry: GenerationHistoryEntry = {
+        fastest: appState.sortedCreatures[0].clone(),
+        median: appState.sortedCreatures[midCreatureIndex].clone(),
+        slowest: appState.sortedCreatures[lastCreatureIndex].clone()
+      }
+
+      appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
+
+      const beginBar = new Array<number>(barLen).fill(0)
+
+      barCounts.push(beginBar)
+
+      const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
+
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const bar = Math.floor(
+          appState.sortedCreatures[i].fitness * histBarsPerMeter - minBar
+        )
+
+        if (bar >= 0 && bar < barLen) {
+          barCounts[appState.generationCount + 1][bar]++
+        }
+
+        const speciesId = speciesIdForCreature(appState.sortedCreatures[i])
+        speciesCountBySpeciesId[speciesId] =
+          speciesCountBySpeciesId[speciesId] || 0
+        speciesCountBySpeciesId[speciesId]++
+      }
+
+      // Ensure species counts are sorted consistently by species ID.
+      const mapEntries: SpeciesCount[] = Object.entries(speciesCountBySpeciesId)
+        .map(([speciesId, count]) => {
+          return {speciesId: Number(speciesId), count}
+        })
+        .sort((speciesCountA, speciesCountB) => {
+          return speciesCountA.speciesId - speciesCountB.speciesId
+        })
+
+      appState.speciesCountsHistoryMap[appState.generationCount + 1] =
+        mapEntries
+    }
+
+    cullCreatures(): void {
+      for (let i = 0; i < 500; i++) {
+        const fitnessRankSurvivalChance = i / CREATURE_COUNT
+        const cullingThreshold = (Math.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
+
+        let survivingCreatureIndex
+        let culledCreatureIndex
+
+        if (fitnessRankSurvivalChance <= cullingThreshold) {
+          survivingCreatureIndex = i
+          culledCreatureIndex = lastCreatureIndex - i
+        } else {
+          survivingCreatureIndex = lastCreatureIndex - i
+          culledCreatureIndex = i
+        }
+
+        const survivingCreature =
+          appState.sortedCreatures[survivingCreatureIndex]
+        survivingCreature.alive = true
+
+        const culledCreature = appState.sortedCreatures[culledCreatureIndex]
+        culledCreature.alive = false
+      }
+    }
+
+    propagateCreatures(): void {
+      // Reproduce and mutate
+
+      for (let i = 0; i < 500; i++) {
+        let survivingCreatureIndex
+        let culledCreatureIndex
+
+        if (appState.sortedCreatures[i].alive) {
+          survivingCreatureIndex = i
+          culledCreatureIndex = lastCreatureIndex - i
+        } else {
+          survivingCreatureIndex = lastCreatureIndex - i
+          culledCreatureIndex = i
+        }
+
+        const survivingCreature =
+          appState.sortedCreatures[survivingCreatureIndex]
+        const culledCreature = appState.sortedCreatures[culledCreatureIndex]
+
+        // Next generation includes a clone and mutated offspring
+        appState.sortedCreatures[survivingCreatureIndex] =
+          survivingCreature.clone(survivingCreature.id + CREATURE_COUNT)
+        appState.sortedCreatures[culledCreatureIndex] =
+          simulation.modifyCreature(
+            survivingCreature,
+            culledCreature.id + CREATURE_COUNT
+          )
+
+        // Stabilize and adjust mutated offspring
+        const {muscles, nodes} = appState.sortedCreatures[culledCreatureIndex]
+
+        simulation.stabilizeNodesAndMuscles(nodes, muscles)
+        simulation.adjustNodesToCenter(nodes)
+      }
+
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = appState.sortedCreatures[i]
+        const index = creatureIdToIndex(creature.id)
+        appState.creaturesInLatestGeneration[index] = creature.clone()
+      }
+
+      appState.generationCount++
+    }
+
+    advanceSimulation(): void {
+      simulation.advance()
+      appState.viewTimer++
+    }
+
+    setActivityId(activityId: ActivityId): void {
+      appState.currentActivityId = activityId
+    }
+
+    startASAP(): void {
+      appState.generationSimulationMode = GenerationSimulationMode.ASAP
+      appState.creaturesTested = 0
+    }
+
+    setPopupSimulationCreatureId(id: number): void {
+      const popupCurrentlyClosed = appState.statusWindow == -4
+      appState.statusWindow = id
+
+      let creature: Creature
+      let targetCreatureId: number
+
+      if (appState.statusWindow <= -1) {
+        const historyEntry =
+          appState.generationHistoryMap[appState.selectedGeneration]
+        creature =
+          historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
+        targetCreatureId = creature.id
+      } else {
+        targetCreatureId = appState.statusWindow
+        creature = appState.sortedCreatures[id]
+      }
+
+      if (
+        appState.popupSimulationCreatureId !== targetCreatureId ||
+        popupCurrentlyClosed
+      ) {
+        simulationState.timer = 0
+
+        if (appState.pendingGenerationCount == 0) {
+          // The full simulation is not running, so the popup simulation can be shown.
+          appState.showPopupSimulation = true
+
+          this.setSimulationState(creature)
+          appState.popupSimulationCreatureId = targetCreatureId
+        }
+      }
+    }
+
+    clearPopupSimulation(): void {
+      appState.statusWindow = -4
+    }
+
+    setSimulationState(simulationCreature: Creature): void {
+      simulationState.creature.nodes = simulationCreature.nodes.map(node =>
+        node.clone()
+      )
+      simulationState.creature.muscles = simulationCreature.muscles.map(
+        muscle => muscle.clone()
+      )
+
+      appState.viewTimer = 0
+      simulationState.creature.id = simulationCreature.id
+      simulationState.camera.zoom = 0.01
+      simulationState.camera.x = 0
+      simulationState.camera.y = 0
+      simulationState.timer = 0
+      simulationState.creature.energyUsed = 0
+      simulationState.creature.totalNodeNausea = 0
+      simulationState.creature.averageNodeNausea = 0
+    }
+
+    setFitnessOfSimulationCreature(): void {
+      const {id, nodes} = simulationState.creature
+      const {averageX} = averagePositionOfNodes(nodes)
+      const index = creatureIdToIndex(id)
+
+      appState.creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
+    }
   }
+
+  const appController = new AppController()
 
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
@@ -147,182 +405,6 @@ export default function sketch(p5: p5) {
       cursorY >= y &&
       cursorY <= y + height
     )
-  }
-
-  function generateCreatures(): void {
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = simulation.generateCreature(i + 1)
-      appState.creaturesInLatestGeneration[i] = creature
-    }
-  }
-
-  function performStepByStepSimulation(): void {
-    simulationState.speed = 1
-    appState.creaturesTested = 0
-    appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    setSimulationState(
-      appState.creaturesInLatestGeneration[appState.creaturesTested]
-    )
-    setActivityId(ActivityId.SimulationRunning)
-  }
-
-  function performQuickGenerationSimulation(): void {
-    appState.creaturesTested = 0
-    appState.generationSimulationMode = GenerationSimulationMode.Quick
-    finishGenerationSimulationFromIndex(0)
-    setActivityId(ActivityId.SimulationFinished)
-  }
-
-  function finishGenerationSimulationFromIndex(creatureIndex: number): void {
-    for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
-      setSimulationState(appState.creaturesInLatestGeneration[i])
-
-      for (let s = 0; s < 900; s++) {
-        advanceSimulation()
-      }
-
-      setFitnessOfSimulationCreature()
-    }
-  }
-
-  function finishGenerationSimulation(): void {
-    for (let s = appState.viewTimer; s < 900; s++) {
-      advanceSimulation()
-    }
-
-    appState.viewTimer = 0
-    appState.creaturesTested++
-
-    finishGenerationSimulationFromIndex(appState.creaturesTested)
-    setActivityId(ActivityId.SimulationFinished)
-  }
-
-  function updateCreatureIdsByGridIndex(): void {
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.sortedCreatures[i]
-      const gridIndex = creatureIdToIndex(creature.id)
-      appState.creatureIdsByGridIndex[gridIndex] = i
-    }
-  }
-
-  function sortCreatures(): void {
-    appState.sortedCreatures = [...appState.creaturesInLatestGeneration].sort(
-      (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
-    )
-  }
-
-  function updateHistory(): void {
-    fitnessPercentileHistory.push(new Array<number>(fitnessPercentileCount))
-    for (let i = 0; i < fitnessPercentileCount; i++) {
-      fitnessPercentileHistory[appState.generationCount + 1][i] =
-        appState.sortedCreatures[fitnessPercentileCreatureIndices[i]].fitness
-    }
-
-    const historyEntry: GenerationHistoryEntry = {
-      fastest: appState.sortedCreatures[0].clone(),
-      median: appState.sortedCreatures[midCreatureIndex].clone(),
-      slowest: appState.sortedCreatures[lastCreatureIndex].clone()
-    }
-
-    appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
-
-    const beginBar = new Array<number>(barLen).fill(0)
-
-    barCounts.push(beginBar)
-
-    const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const bar = Math.floor(
-        appState.sortedCreatures[i].fitness * histBarsPerMeter - minBar
-      )
-
-      if (bar >= 0 && bar < barLen) {
-        barCounts[appState.generationCount + 1][bar]++
-      }
-
-      const speciesId = speciesIdForCreature(appState.sortedCreatures[i])
-      speciesCountBySpeciesId[speciesId] =
-        speciesCountBySpeciesId[speciesId] || 0
-      speciesCountBySpeciesId[speciesId]++
-    }
-
-    // Ensure species counts are sorted consistently by species ID.
-    const mapEntries: SpeciesCount[] = Object.entries(speciesCountBySpeciesId)
-      .map(([speciesId, count]) => {
-        return {speciesId: Number(speciesId), count}
-      })
-      .sort((speciesCountA, speciesCountB) => {
-        return speciesCountA.speciesId - speciesCountB.speciesId
-      })
-
-    appState.speciesCountsHistoryMap[appState.generationCount + 1] = mapEntries
-  }
-
-  function cullCreatures(): void {
-    for (let i = 0; i < 500; i++) {
-      const fitnessRankSurvivalChance = i / CREATURE_COUNT
-      const cullingThreshold = (Math.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
-
-      let survivingCreatureIndex
-      let culledCreatureIndex
-
-      if (fitnessRankSurvivalChance <= cullingThreshold) {
-        survivingCreatureIndex = i
-        culledCreatureIndex = lastCreatureIndex - i
-      } else {
-        survivingCreatureIndex = lastCreatureIndex - i
-        culledCreatureIndex = i
-      }
-
-      const survivingCreature = appState.sortedCreatures[survivingCreatureIndex]
-      survivingCreature.alive = true
-
-      const culledCreature = appState.sortedCreatures[culledCreatureIndex]
-      culledCreature.alive = false
-    }
-  }
-
-  function propagateCreatures(): void {
-    // Reproduce and mutate
-
-    for (let i = 0; i < 500; i++) {
-      let survivingCreatureIndex
-      let culledCreatureIndex
-
-      if (appState.sortedCreatures[i].alive) {
-        survivingCreatureIndex = i
-        culledCreatureIndex = lastCreatureIndex - i
-      } else {
-        survivingCreatureIndex = lastCreatureIndex - i
-        culledCreatureIndex = i
-      }
-
-      const survivingCreature = appState.sortedCreatures[survivingCreatureIndex]
-      const culledCreature = appState.sortedCreatures[culledCreatureIndex]
-
-      // Next generation includes a clone and mutated offspring
-      appState.sortedCreatures[survivingCreatureIndex] =
-        survivingCreature.clone(survivingCreature.id + CREATURE_COUNT)
-      appState.sortedCreatures[culledCreatureIndex] = simulation.modifyCreature(
-        survivingCreature,
-        culledCreature.id + CREATURE_COUNT
-      )
-
-      // Stabilize and adjust mutated offspring
-      const {muscles, nodes} = appState.sortedCreatures[culledCreatureIndex]
-
-      simulation.stabilizeNodesAndMuscles(nodes, muscles)
-      simulation.adjustNodesToCenter(nodes)
-    }
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.sortedCreatures[i]
-      const index = creatureIdToIndex(creature.id)
-      appState.creaturesInLatestGeneration[index] = creature.clone()
-    }
-
-    appState.generationCount++
   }
 
   function updateCameraPosition(): void {
@@ -359,7 +441,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      setActivityId(ActivityId.GenerationView)
+      appController.setActivityId(ActivityId.GenerationView)
     }
   }
 
@@ -377,7 +459,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      setActivityId(ActivityId.GeneratingCreatures)
+      appController.setActivityId(ActivityId.GeneratingCreatures)
     }
   }
 
@@ -398,7 +480,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       appState.generationCount = 0
-      setActivityId(ActivityId.GenerationView)
+      appController.setActivityId(ActivityId.GenerationView)
     }
   }
 
@@ -416,7 +498,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      performStepByStepSimulation()
+      appController.performStepByStepSimulation()
     }
   }
 
@@ -434,7 +516,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      performQuickGenerationSimulation()
+      appController.performQuickGenerationSimulation()
     }
   }
 
@@ -453,7 +535,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       appState.pendingGenerationCount = 1
-      startASAP()
+      appController.startASAP()
     }
   }
 
@@ -478,7 +560,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       appState.pendingGenerationCount = 1000000000
-      startASAP()
+      appController.startASAP()
     }
   }
 
@@ -498,7 +580,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       for (let s = appState.viewTimer; s < 900; s++) {
-        advanceSimulation()
+        appController.advanceSimulation()
       }
 
       appState.viewTimer = 1021
@@ -547,7 +629,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      finishGenerationSimulation()
+      appController.finishGenerationSimulation()
     }
   }
 
@@ -567,7 +649,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      setActivityId(ActivityId.SortingCreatures)
+      appController.setActivityId(ActivityId.SortingCreatures)
     }
   }
 
@@ -610,7 +692,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      setActivityId(ActivityId.CullingCreatures)
+      appController.setActivityId(ActivityId.CullingCreatures)
     }
   }
 
@@ -630,7 +712,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      setActivityId(ActivityId.PropagatingCreatures)
+      appController.setActivityId(ActivityId.PropagatingCreatures)
     }
   }
 
@@ -650,7 +732,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      setActivityId(ActivityId.GenerationView)
+      appController.setActivityId(ActivityId.GenerationView)
     }
   }
 
@@ -842,7 +924,7 @@ export default function sketch(p5: p5) {
       p5.image(popUpImage, px2, py2, 300, 300)
 
       drawStats(px2 + 295, py2, 0.45)
-      advanceSimulation()
+      appController.advanceSimulation()
     }
   }
 
@@ -1856,15 +1938,6 @@ export default function sketch(p5: p5) {
     return toInt(i) + ''
   }
 
-  function setActivityId(activityId: ActivityId): void {
-    appState.currentActivityId = activityId
-  }
-
-  function startASAP(): void {
-    appState.generationSimulationMode = GenerationSimulationMode.ASAP
-    appState.creaturesTested = 0
-  }
-
   function drawCreature(
     creature: Creature,
     x: number,
@@ -1986,44 +2059,6 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function setPopupSimulationCreatureId(id: number): void {
-    const popupCurrentlyClosed = appState.statusWindow == -4
-    appState.statusWindow = id
-
-    let creature: Creature
-    let targetCreatureId: number
-
-    if (appState.statusWindow <= -1) {
-      const historyEntry =
-        appState.generationHistoryMap[appState.selectedGeneration]
-      creature =
-        historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
-      targetCreatureId = creature.id
-    } else {
-      targetCreatureId = appState.statusWindow
-      creature = appState.sortedCreatures[id]
-    }
-
-    if (
-      appState.popupSimulationCreatureId !== targetCreatureId ||
-      popupCurrentlyClosed
-    ) {
-      simulationState.timer = 0
-
-      if (appState.pendingGenerationCount == 0) {
-        // The full simulation is not running, so the popup simulation can be shown.
-        appState.showPopupSimulation = true
-
-        setSimulationState(creature)
-        appState.popupSimulationCreatureId = targetCreatureId
-      }
-    }
-  }
-
-  function clearPopupSimulation(): void {
-    appState.statusWindow = -4
-  }
-
   function drawStats(x: number, y: number, size: number): void {
     p5.textAlign(p5.RIGHT)
     p5.textFont(font, 32)
@@ -2130,33 +2165,6 @@ export default function sketch(p5: p5) {
 
       sliderX = Math.round(sliderPercentage * sliderXRange + sliderXMin)
     }
-  }
-
-  function setSimulationState(simulationCreature: Creature): void {
-    simulationState.creature.nodes = simulationCreature.nodes.map(node =>
-      node.clone()
-    )
-    simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
-      muscle.clone()
-    )
-
-    appState.viewTimer = 0
-    simulationState.creature.id = simulationCreature.id
-    simulationState.camera.zoom = 0.01
-    simulationState.camera.x = 0
-    simulationState.camera.y = 0
-    simulationState.timer = 0
-    simulationState.creature.energyUsed = 0
-    simulationState.creature.totalNodeNausea = 0
-    simulationState.creature.averageNodeNausea = 0
-  }
-
-  function setFitnessOfSimulationCreature(): void {
-    const {id, nodes} = simulationState.creature
-    const {averageX} = averagePositionOfNodes(nodes)
-    const index = creatureIdToIndex(id)
-
-    appState.creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
   }
 
   p5.mouseWheel = (event: WheelEvent) => {
@@ -2312,27 +2320,27 @@ export default function sketch(p5: p5) {
         appState.pendingGenerationCount--
 
         if (appState.pendingGenerationCount > 0) {
-          startASAP()
+          appController.startASAP()
         }
       } else {
         appState.generationSimulationMode = GenerationSimulationMode.Off
       }
 
       if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
-        setSimulationState(
+        appController.setSimulationState(
           appState.creaturesInLatestGeneration[appState.creaturesTested]
         )
-        finishGenerationSimulationFromIndex(0)
-        sortCreatures()
-        updateHistory()
-        cullCreatures()
-        propagateCreatures()
+        appController.finishGenerationSimulationFromIndex(0)
+        appController.sortCreatures()
+        appController.updateHistory()
+        appController.cullCreatures()
+        appController.propagateCreatures()
         updateSelectedGenerationAndSliderPosition()
       }
     } else if (appState.currentActivityId === ActivityId.GeneratingCreatures) {
-      generateCreatures()
+      appController.generateCreatures()
       predrawGeneratedCreaturesActivity()
-      setActivityId(ActivityId.GeneratedCreatures)
+      appController.setActivityId(ActivityId.GeneratedCreatures)
     }
 
     if (appState.currentActivityId === ActivityId.SimulationRunning) {
@@ -2342,7 +2350,7 @@ export default function sketch(p5: p5) {
         for (let s = 0; s < simulationState.speed; s++) {
           if (appState.viewTimer < 900) {
             // For each point of speed, advance through one cycle of simulation.
-            advanceSimulation()
+            appController.advanceSimulation()
           }
         }
 
@@ -2364,18 +2372,18 @@ export default function sketch(p5: p5) {
           appState.viewTimer = 1020
         }
 
-        setFitnessOfSimulationCreature()
+        appController.setFitnessOfSimulationCreature()
       }
 
       if (appState.viewTimer >= 1020) {
         appState.creaturesTested++
 
         if (appState.creaturesTested < CREATURE_COUNT) {
-          setSimulationState(
+          appController.setSimulationState(
             appState.creaturesInLatestGeneration[appState.creaturesTested]
           )
         } else {
-          setActivityId(ActivityId.SimulationFinished)
+          appController.setActivityId(ActivityId.SimulationFinished)
         }
 
         simulationState.camera.x = 0
@@ -2387,13 +2395,13 @@ export default function sketch(p5: p5) {
     }
 
     if (appState.currentActivityId === ActivityId.SimulationFinished) {
-      sortCreatures()
-      updateHistory()
+      appController.sortCreatures()
+      appController.updateHistory()
 
       appState.viewTimer = 0
-      updateCreatureIdsByGridIndex()
+      appController.updateCreatureIdsByGridIndex()
       drawSimulationFinishedScreenImage()
-      setActivityId(ActivityId.FinishedStepByStep)
+      appController.setActivityId(ActivityId.FinishedStepByStep)
     }
 
     if (appState.currentActivityId === ActivityId.SortingCreatures) {
@@ -2410,7 +2418,7 @@ export default function sketch(p5: p5) {
       if (appState.viewTimer > 60 * Math.PI) {
         appState.viewTimer = 0
         drawSortedCreaturesScreenImage()
-        setActivityId(ActivityId.SortedCreatures)
+        appController.setActivityId(ActivityId.SortedCreatures)
       }
     }
 
@@ -2455,9 +2463,9 @@ export default function sketch(p5: p5) {
       }
 
       if (idOfCreatureUnderCursor != null) {
-        setPopupSimulationCreatureId(idOfCreatureUnderCursor)
+        appController.setPopupSimulationCreatureId(idOfCreatureUnderCursor)
       } else {
-        clearPopupSimulation()
+        appController.clearPopupSimulation()
       }
     } else if (
       appState.currentActivityId === ActivityId.GenerationView &&
@@ -2483,29 +2491,29 @@ export default function sketch(p5: p5) {
       }
 
       if (worstMedianOrBest != null) {
-        setPopupSimulationCreatureId(worstMedianOrBest)
+        appController.setPopupSimulationCreatureId(worstMedianOrBest)
       } else {
-        clearPopupSimulation()
+        appController.clearPopupSimulation()
       }
     } else {
-      clearPopupSimulation()
+      appController.clearPopupSimulation()
     }
 
     if (appState.currentActivityId === ActivityId.CullingCreatures) {
-      cullCreatures()
+      appController.cullCreatures()
 
       appState.viewTimer = 0
       drawCulledCreaturesScreenImage()
-      setActivityId(ActivityId.CulledCreatures)
+      appController.setActivityId(ActivityId.CulledCreatures)
     }
 
     if (appState.currentActivityId === ActivityId.PropagatingCreatures) {
-      propagateCreatures()
+      appController.propagateCreatures()
       updateSelectedGenerationAndSliderPosition()
 
       appState.viewTimer = 0
       drawPropagatedCreaturesScreenImage()
-      setActivityId(ActivityId.PropagatedCreatures)
+      appController.setActivityId(ActivityId.PropagatedCreatures)
     }
 
     if (appState.currentActivityId === ActivityId.FinishedStepByStep) {

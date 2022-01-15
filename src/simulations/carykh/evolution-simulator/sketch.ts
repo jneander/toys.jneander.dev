@@ -41,9 +41,6 @@ export default function sketch(p5: p5) {
   const SEED = 0
   const WINDOW_SIZE_MULTIPLIER = 0.8
 
-  const windowWidth = 1280
-  const windowHeight = 720
-
   let font: Font
   let graphImage: Graphics
   let screenImage: Graphics
@@ -110,7 +107,20 @@ export default function sketch(p5: p5) {
     simulationState
   })
 
+  interface AppViewConfig {
+    height: number
+    width: number
+  }
+
   class AppView {
+    height: number
+    width: number
+
+    constructor(config: AppViewConfig) {
+      this.height = config.height
+      this.width = config.width
+    }
+
     getColor(i: number, adjust: boolean): Color {
       p5.colorMode(p5.HSB, 1.0)
 
@@ -181,13 +191,13 @@ export default function sketch(p5: p5) {
     draw(): void {
       p5.noStroke()
       p5.fill(100, 200, 100)
-      p5.rect(windowWidth / 2 - 200, 300, 400, 200)
+      p5.rect(appView.width / 2 - 200, 300, 400, 200)
       p5.fill(0)
-      p5.text('START', windowWidth / 2, 430)
+      p5.text('START', appView.width / 2, 430)
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(windowWidth / 2 - 200, 300, 400, 200)
+      return appView.rectIsUnderCursor(appView.width / 2 - 200, 300, 400, 200)
     }
 
     onClick(): void {
@@ -221,7 +231,7 @@ export default function sketch(p5: p5) {
       p5.fill(0)
       p5.textAlign(p5.CENTER)
       p5.textFont(font, 24)
-      p5.text('Back', windowWidth - 250, 690)
+      p5.text('Back', appView.width - 250, 690)
     }
 
     isUnderCursor(): boolean {
@@ -317,15 +327,15 @@ export default function sketch(p5: p5) {
   class StepByStepSkipButton extends Widget {
     draw(): void {
       p5.fill(0)
-      p5.rect(0, windowHeight - 40, 90, 40)
+      p5.rect(0, appView.height - 40, 90, 40)
       p5.fill(255)
       p5.textAlign(p5.CENTER)
       p5.textFont(font, 32)
-      p5.text('SKIP', 45, windowHeight - 8)
+      p5.text('SKIP', 45, appView.height - 8)
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(0, windowHeight - 40, 90, 40)
+      return appView.rectIsUnderCursor(0, appView.height - 40, 90, 40)
     }
 
     onClick(): void {
@@ -340,15 +350,15 @@ export default function sketch(p5: p5) {
   class StepByStepPlaybackSpeedButton extends Widget {
     draw(): void {
       p5.fill(0)
-      p5.rect(120, windowHeight - 40, 240, 40)
+      p5.rect(120, appView.height - 40, 240, 40)
       p5.fill(255)
       p5.textAlign(p5.CENTER)
       p5.textFont(font, 32)
-      p5.text('PB speed: x' + simulationState.speed, 240, windowHeight - 8)
+      p5.text('PB speed: x' + simulationState.speed, 240, appView.height - 8)
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(120, windowHeight - 40, 240, 40)
+      return appView.rectIsUnderCursor(120, appView.height - 40, 240, 40)
     }
 
     onClick(): void {
@@ -367,17 +377,17 @@ export default function sketch(p5: p5) {
   class StepByStepFinishButton extends Widget {
     draw(): void {
       p5.fill(0)
-      p5.rect(windowWidth - 120, windowHeight - 40, 120, 40)
+      p5.rect(appView.width - 120, appView.height - 40, 120, 40)
       p5.fill(255)
       p5.textAlign(p5.CENTER)
       p5.textFont(font, 32)
-      p5.text('FINISH', windowWidth - 60, windowHeight - 8)
+      p5.text('FINISH', appView.width - 60, appView.height - 8)
     }
 
     isUnderCursor(): boolean {
       return appView.rectIsUnderCursor(
-        windowWidth - 120,
-        windowHeight - 40,
+        appView.width - 120,
+        appView.height - 40,
         120,
         40
       )
@@ -396,7 +406,7 @@ export default function sketch(p5: p5) {
       screenImage.fill(0)
       screenImage.textAlign(p5.CENTER)
       screenImage.textFont(font, 24)
-      screenImage.text('Sort', windowWidth - 250, 690)
+      screenImage.text('Sort', appView.width - 250, 690)
     }
 
     isUnderCursor(): boolean {
@@ -411,15 +421,15 @@ export default function sketch(p5: p5) {
   class SortingCreaturesSkipButton extends Widget {
     draw(): void {
       p5.fill(0)
-      p5.rect(0, windowHeight - 40, 90, 40)
+      p5.rect(0, appView.height - 40, 90, 40)
       p5.fill(255)
       p5.textAlign(p5.CENTER)
       p5.textFont(font, 32)
-      p5.text('SKIP', 45, windowHeight - 8)
+      p5.text('SKIP', 45, appView.height - 8)
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(0, windowHeight - 40, 90, 40)
+      return appView.rectIsUnderCursor(0, appView.height - 40, 90, 40)
     }
 
     onClick(): void {
@@ -437,7 +447,7 @@ export default function sketch(p5: p5) {
       screenImage.textFont(font, 24)
       screenImage.text(
         `Kill ${Math.floor(CREATURE_COUNT / 2)}`,
-        windowWidth - 250,
+        appView.width - 250,
         700
       )
     }
@@ -459,7 +469,7 @@ export default function sketch(p5: p5) {
       screenImage.fill(0)
       screenImage.textAlign(p5.CENTER)
       screenImage.textFont(font, 24)
-      screenImage.text('Reproduce', windowWidth - 150, 700)
+      screenImage.text('Reproduce', appView.width - 150, 700)
     }
 
     isUnderCursor(): boolean {
@@ -479,7 +489,7 @@ export default function sketch(p5: p5) {
       screenImage.fill(0)
       screenImage.textAlign(p5.CENTER)
       screenImage.textFont(font, 24)
-      screenImage.text('Back', windowWidth - 150, 700)
+      screenImage.text('Back', appView.width - 150, 700)
     }
 
     isUnderCursor(): boolean {
@@ -707,7 +717,7 @@ export default function sketch(p5: p5) {
     p5.background(255)
     p5.noStroke()
     p5.fill(0)
-    p5.text('EVOLUTION!', windowWidth / 2, 200)
+    p5.text('EVOLUTION!', appView.width / 2, 200)
     startViewStartButton.draw()
   }
 
@@ -732,7 +742,7 @@ export default function sketch(p5: p5) {
     p5.textFont(font, 24)
     p5.text(
       `Here are your ${CREATURE_COUNT} randomly generated creatures!!!`,
-      windowWidth / 2 - 200,
+      appView.width / 2 - 200,
       690
     )
     generatedCreaturesBackButton.draw()
@@ -804,7 +814,7 @@ export default function sketch(p5: p5) {
   }
 
   function drawFinishedStepByStepActivity(): void {
-    p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+    p5.image(screenImage, 0, 0, appView.width, appView.height)
   }
 
   function drawSortingCreaturesActivity(): void {
@@ -834,15 +844,15 @@ export default function sketch(p5: p5) {
   }
 
   function drawSortedCreaturesActivity(): void {
-    p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+    p5.image(screenImage, 0, 0, appView.width, appView.height)
   }
 
   function drawCulledCreaturesActivity(): void {
-    p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+    p5.image(screenImage, 0, 0, appView.width, appView.height)
   }
 
   function drawPropagatedCreaturesActivity(): void {
-    p5.image(screenImage, 0, 0, windowWidth, windowHeight)
+    p5.image(screenImage, 0, 0, appView.width, appView.height)
   }
 
   // COMPONENT DRAWING
@@ -873,10 +883,10 @@ export default function sketch(p5: p5) {
     screenImage.noStroke()
 
     screenImage.fill(0)
-    screenImage.text('Fastest creatures at the top!', windowWidth / 2, 30)
+    screenImage.text('Fastest creatures at the top!', appView.width / 2, 30)
     screenImage.text(
       'Slowest creatures at the bottom. (Going backward = slow)',
-      windowWidth / 2 - 200,
+      appView.width / 2 - 200,
       700
     )
     cullCreaturesButton.draw()
@@ -912,7 +922,7 @@ export default function sketch(p5: p5) {
     screenImage.fill(0)
     screenImage.text(
       "All 1,000 creatures have been tested.  Now let's sort them!",
-      windowWidth / 2 - 200,
+      appView.width / 2 - 200,
       690
     )
     sortCreaturesButton.draw()
@@ -948,12 +958,12 @@ export default function sketch(p5: p5) {
     screenImage.fill(0)
     screenImage.text(
       'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
-      windowWidth / 2,
+      appView.width / 2,
       30
     )
     screenImage.text(
       'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
-      windowWidth / 2 - 130,
+      appView.width / 2 - 130,
       700
     )
     propagateCreaturesButton.draw()
@@ -1006,12 +1016,12 @@ export default function sketch(p5: p5) {
       'These are the 1000 creatures of generation #' +
         (appState.generationCount + 1) +
         '.',
-      windowWidth / 2,
+      appView.width / 2,
       30
     )
     screenImage.text(
       'What perils will they face?  Find out next time!',
-      windowWidth / 2 - 130,
+      appView.width / 2 - 130,
       700
     )
     propagatedCreaturesBackButton.draw()
@@ -1052,16 +1062,16 @@ export default function sketch(p5: p5) {
 
     p5.noStroke()
     p5.fill(0, 0, 0, 130)
-    p5.rect(0, 0, windowWidth, windowHeight)
+    p5.rect(0, 0, appView.width, appView.height)
     p5.fill(0, 0, 0, 255)
-    p5.rect(windowWidth / 2 - 500, 200, 1000, 240)
+    p5.rect(appView.width / 2 - 500, 200, 1000, 240)
     p5.fill(255, 0, 0)
     p5.textAlign(p5.CENTER)
     p5.textFont(font, 96)
-    p5.text("Creature's " + FITNESS_LABEL + ':', windowWidth / 2, 300)
+    p5.text("Creature's " + FITNESS_LABEL + ':', appView.width / 2, 300)
     p5.text(
       p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
-      windowWidth / 2,
+      appView.width / 2,
       400
     )
   }
@@ -2023,10 +2033,16 @@ export default function sketch(p5: p5) {
   p5.setup = () => {
     p5.frameRate(FRAME_RATE)
     p5.randomSeed(SEED)
+
+    appView = new AppView({
+      height: 720,
+      width: 1280
+    })
+
     // Create a 1024x576 Canvas
     p5.createCanvas(
-      windowWidth * WINDOW_SIZE_MULTIPLIER,
-      windowHeight * WINDOW_SIZE_MULTIPLIER
+      appView.width * WINDOW_SIZE_MULTIPLIER,
+      appView.height * WINDOW_SIZE_MULTIPLIER
     )
     p5.ellipseMode(p5.CENTER)
 
@@ -2045,8 +2061,6 @@ export default function sketch(p5: p5) {
 
     p5.textFont(font, 96)
     p5.textAlign(p5.CENTER)
-
-    appView = new AppView()
   }
 
   p5.draw = () => {
@@ -2101,7 +2115,7 @@ export default function sketch(p5: p5) {
 
         updateCameraPosition()
         drawStepByStepSimulationView()
-        drawStats(windowWidth - 10, 0, 0.7)
+        drawStats(appView.width - 10, 0, 0.7)
 
         stepByStepSkipButton.draw()
         stepByStepPlaybackSpeedButton.draw()

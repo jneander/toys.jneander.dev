@@ -2377,13 +2377,13 @@ export default function sketch(p5: p5) {
     } else if (appState.currentActivityId === ActivityId.RequestingSimulation) {
       setSimulationState(creaturesInLatestGeneration[creaturesTested])
 
-      setActivityId(ActivityId.SimulationRunning)
-
       if (
         appState.generationSimulationMode === GenerationSimulationMode.Quick
       ) {
         finishGenerationSimulationFromIndex(0)
         setActivityId(ActivityId.SimulationFinished)
+      } else {
+        setActivityId(ActivityId.SimulationRunning)
       }
     }
 
@@ -2420,11 +2420,11 @@ export default function sketch(p5: p5) {
       }
 
       if (appState.viewTimer >= 1020) {
-        setActivityId(ActivityId.RequestingSimulation)
-
         creaturesTested++
         if (creaturesTested == CREATURE_COUNT) {
           setActivityId(ActivityId.SimulationFinished)
+        } else {
+          setActivityId(ActivityId.RequestingSimulation)
         }
 
         simulationState.camera.x = 0

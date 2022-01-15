@@ -77,6 +77,7 @@ export default function sketch(p5: p5) {
   type AppState = {
     currentActivityId: ActivityId
     generationCount: number
+    generationCountDepictedInGraph: number
     generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
     pendingGenerationCount: number
     selectedGeneration: number
@@ -88,6 +89,7 @@ export default function sketch(p5: p5) {
   const appState: AppState = {
     currentActivityId: ActivityId.Start,
     generationCount: -1,
+    generationCountDepictedInGraph: -1,
     generationHistoryMap: {},
     pendingGenerationCount: 0,
     selectedGeneration: 0,
@@ -956,6 +958,13 @@ export default function sketch(p5: p5) {
         700,
         160
       )
+
+      if (
+        appState.generationCountDepictedInGraph !== appState.generationCount
+      ) {
+        drawGraph(975, 570)
+        appState.generationCountDepictedInGraph = appState.generationCount
+      }
 
       drawHistogram(760, 410, 460, 280)
       drawGraphImage()
@@ -1828,10 +1837,6 @@ export default function sketch(p5: p5) {
 
   function setActivityId(activityId: ActivityId): void {
     appState.currentActivityId = activityId
-
-    if (activityId === ActivityId.GenerationView) {
-      drawGraph(975, 570)
-    }
   }
 
   function startASAP(): void {

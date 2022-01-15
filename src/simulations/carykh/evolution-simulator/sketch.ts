@@ -1,5 +1,5 @@
 import type p5 from 'p5'
-import type {Font, Graphics} from 'p5'
+import type {Color, Font, Graphics} from 'p5'
 
 import Creature from './Creature'
 import Muscle from './Muscle'
@@ -32,7 +32,6 @@ import type {AppState, SimulationConfig, SimulationState} from './types'
 import {AppView} from './views'
 
 export default function sketch(p5: p5) {
-  const AXON_COLOR = p5.color(255, 255, 0)
   const FITNESS_LABEL = 'Distance'
   const FITNESS_UNIT_LABEL = 'm'
   const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
@@ -128,7 +127,18 @@ export default function sketch(p5: p5) {
     }
   }
 
+  interface CreatureDrawerConfig {
+    axonColor: Color
+    axonFont: Font
+  }
+
   class CreatureDrawer {
+    private config: CreatureDrawerConfig
+
+    constructor(config: CreatureDrawerConfig) {
+      this.config = config
+    }
+
     drawCreature(creature: Creature, x: number, y: number, graphics: p5): void {
       this.drawCreaturePieces(creature.nodes, creature.muscles, x, y, graphics)
     }
@@ -184,7 +194,10 @@ export default function sketch(p5: p5) {
       }
 
       graphics.textAlign(graphics.CENTER)
-      graphics.textFont(font, 0.4 * node.mass * SCALE_TO_FIX_BUG)
+      graphics.textFont(
+        this.config.axonFont,
+        0.4 * node.mass * SCALE_TO_FIX_BUG
+      )
       graphics.text(
         graphics.nf(node.value, 0, 2),
         (node.positionX + x) * SCALE_TO_FIX_BUG,
@@ -239,7 +252,7 @@ export default function sketch(p5: p5) {
       const arrowHeadSize = 0.1
       const angle = Math.atan2(y2 - y1, x2 - x1)
 
-      graphics.stroke(AXON_COLOR)
+      graphics.stroke(this.config.axonColor)
       graphics.strokeWeight(0.03 * SCALE_TO_FIX_BUG)
       graphics.line(
         x1 * SCALE_TO_FIX_BUG,
@@ -319,9 +332,12 @@ export default function sketch(p5: p5) {
 
         const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
 
-        graphics.fill(AXON_COLOR)
+        graphics.fill(this.config.axonColor)
         graphics.textAlign(graphics.CENTER)
-        graphics.textFont(font, 0.4 * averageMass * SCALE_TO_FIX_BUG)
+        graphics.textFont(
+          this.config.axonFont,
+          0.4 * averageMass * SCALE_TO_FIX_BUG
+        )
         graphics.text(
           graphics.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
           muscleMidX * SCALE_TO_FIX_BUG,
@@ -2020,7 +2036,10 @@ export default function sketch(p5: p5) {
     segBarImage.background(220)
     popUpImage.background(220)
 
-    creatureDrawer = new CreatureDrawer()
+    creatureDrawer = new CreatureDrawer({
+      axonColor: p5.color(255, 255, 0),
+      axonFont: font
+    })
   }
 
   p5.draw = () => {

@@ -31,6 +31,7 @@ import {
 import type {
   AppState,
   GenerationHistoryEntry,
+  RandomNumberFn,
   SimulationConfig,
   SimulationState,
   SpeciesCount
@@ -111,8 +112,23 @@ export default function sketch(p5: p5) {
 
   const simulation = new Simulation(simulationState, simulationConfig)
 
+  interface AppControllerConfig {
+    appState: AppState
+    randomFractFn: RandomNumberFn
+    simulation: Simulation
+    simulationState: SimulationState
+  }
+
   class AppController {
+    private config: AppControllerConfig
+
+    constructor(config: AppControllerConfig) {
+      this.config = config
+    }
+
     generateCreatures(): void {
+      const {appState, simulation} = this.config
+
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const creature = simulation.generateCreature(i + 1)
         appState.creaturesInLatestGeneration[i] = creature
@@ -120,6 +136,8 @@ export default function sketch(p5: p5) {
     }
 
     performStepByStepSimulation(): void {
+      const {appState, simulationState} = this.config
+
       simulationState.speed = 1
       appState.creaturesTested = 0
       appState.generationSimulationMode = GenerationSimulationMode.StepByStep
@@ -130,6 +148,8 @@ export default function sketch(p5: p5) {
     }
 
     performQuickGenerationSimulation(): void {
+      const {appState} = this.config
+
       appState.creaturesTested = 0
       appState.generationSimulationMode = GenerationSimulationMode.Quick
       this.finishGenerationSimulationFromIndex(0)
@@ -138,7 +158,9 @@ export default function sketch(p5: p5) {
 
     finishGenerationSimulationFromIndex(creatureIndex: number): void {
       for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
-        this.setSimulationState(appState.creaturesInLatestGeneration[i])
+        this.setSimulationState(
+          this.config.appState.creaturesInLatestGeneration[i]
+        )
 
         for (let s = 0; s < 900; s++) {
           this.advanceSimulation()
@@ -149,6 +171,8 @@ export default function sketch(p5: p5) {
     }
 
     finishGenerationSimulation(): void {
+      const {appState} = this.config
+
       for (let s = appState.viewTimer; s < 900; s++) {
         this.advanceSimulation()
       }
@@ -161,6 +185,8 @@ export default function sketch(p5: p5) {
     }
 
     updateCreatureIdsByGridIndex(): void {
+      const {appState} = this.config
+
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const creature = appState.sortedCreatures[i]
         const gridIndex = creatureIdToIndex(creature.id)
@@ -169,12 +195,16 @@ export default function sketch(p5: p5) {
     }
 
     sortCreatures(): void {
+      const {appState} = this.config
+
       appState.sortedCreatures = [...appState.creaturesInLatestGeneration].sort(
         (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
       )
     }
 
     updateHistory(): void {
+      const {appState} = this.config
+
       appState.fitnessPercentileHistory.push(
         new Array<number>(FITNESS_PERCENTILE_CREATURE_INDICES.length)
       )
@@ -229,9 +259,11 @@ export default function sketch(p5: p5) {
     }
 
     cullCreatures(): void {
+      const {appState, randomFractFn} = this.config
+
       for (let i = 0; i < 500; i++) {
         const fitnessRankSurvivalChance = i / CREATURE_COUNT
-        const cullingThreshold = (Math.pow(p5.random(-1, 1), 3) + 1) / 2 // cube function
+        const cullingThreshold = (Math.pow(randomFractFn(-1, 1), 3) + 1) / 2 // cube function
 
         let survivingCreatureIndex
         let culledCreatureIndex
@@ -254,6 +286,8 @@ export default function sketch(p5: p5) {
     }
 
     propagateCreatures(): void {
+      const {appState, simulation} = this.config
+
       // Reproduce and mutate
 
       for (let i = 0; i < 500; i++) {
@@ -298,21 +332,25 @@ export default function sketch(p5: p5) {
     }
 
     advanceSimulation(): void {
-      simulation.advance()
-      appState.viewTimer++
+      this.config.simulation.advance()
+      this.config.appState.viewTimer++
     }
 
     setActivityId(activityId: ActivityId): void {
-      appState.currentActivityId = activityId
+      this.config.appState.currentActivityId = activityId
     }
 
     startASAP(): void {
+      const {appState} = this.config
+
       appState.generationSimulationMode = GenerationSimulationMode.ASAP
       appState.creaturesTested = 0
     }
 
     setPopupSimulationCreatureId(id: number): void {
-      const popupCurrentlyClosed = appState.statusWindow == -4
+      const {appState, simulationState} = this.config
+
+      const popupCurrentlyClosed = this.config.appState.statusWindow == -4
       appState.statusWindow = id
 
       let creature: Creature
@@ -346,10 +384,12 @@ export default function sketch(p5: p5) {
     }
 
     clearPopupSimulation(): void {
-      appState.statusWindow = -4
+      this.config.appState.statusWindow = -4
     }
 
     setSimulationState(simulationCreature: Creature): void {
+      const {appState, simulationState} = this.config
+
       simulationState.creature.nodes = simulationCreature.nodes.map(node =>
         node.clone()
       )
@@ -369,6 +409,8 @@ export default function sketch(p5: p5) {
     }
 
     setFitnessOfSimulationCreature(): void {
+      const {appState, simulationState} = this.config
+
       const {id, nodes} = simulationState.creature
       const {averageX} = averagePositionOfNodes(nodes)
       const index = creatureIdToIndex(id)
@@ -377,7 +419,13 @@ export default function sketch(p5: p5) {
     }
   }
 
-  const appController = new AppController()
+  const appController = new AppController({
+    appState,
+    randomFractFn: (minInclusive: number, maxExclusive: number) =>
+      p5.random(minInclusive, maxExclusive),
+    simulation,
+    simulationState
+  })
 
   function inter(a: number, b: number, offset: number): number {
     return a + (b - a) * offset

@@ -185,6 +185,13 @@ export default function sketch(p5: p5) {
     )
   }
 
+  function generateCreatures(): void {
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const creature = simulation.generateCreature(i + 1)
+      creaturesInLatestGeneration[i] = creature
+    }
+  }
+
   function finishGenerationSimulationFromIndex(creatureIndex: number): void {
     for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
       setSimulationState(creaturesInLatestGeneration[i])
@@ -852,6 +859,33 @@ export default function sketch(p5: p5) {
     p5.fill(0)
     p5.text('EVOLUTION!', windowWidth / 2, 200)
     startViewStartButton.draw()
+  }
+
+  function predrawGeneratedCreaturesActivity(): void {
+    p5.background(220, 253, 102)
+    p5.push()
+    p5.scale(10.0 / scaleToFixBug)
+
+    for (let y = 0; y < 25; y++) {
+      for (let x = 0; x < 40; x++) {
+        const index = y * 40 + x
+        const creature = creaturesInLatestGeneration[index]
+
+        drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, 0)
+      }
+    }
+
+    p5.pop()
+    p5.noStroke()
+    p5.fill(0)
+    p5.textAlign(p5.CENTER)
+    p5.textFont(font, 24)
+    p5.text(
+      `Here are your ${CREATURE_COUNT} randomly generated creatures!!!`,
+      windowWidth / 2 - 200,
+      690
+    )
+    generatedCreaturesBackButton.draw()
   }
 
   function drawGenerationViewActivity(): void {
@@ -2157,34 +2191,9 @@ export default function sketch(p5: p5) {
         }
       }
     } else if (appState.currentActivityId === ActivityId.GeneratingCreatures) {
-      p5.background(220, 253, 102)
-      p5.push()
-      p5.scale(10.0 / scaleToFixBug)
-
-      for (let y = 0; y < 25; y++) {
-        for (let x = 0; x < 40; x++) {
-          const index = y * 40 + x
-          const creature = simulation.generateCreature(index + 1)
-
-          creaturesInLatestGeneration[index] = creature
-
-          drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, 0)
-        }
-      }
-
+      generateCreatures()
+      predrawGeneratedCreaturesActivity()
       setActivityId(ActivityId.GeneratedCreatures)
-
-      p5.pop()
-      p5.noStroke()
-      p5.fill(0)
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 24)
-      p5.text(
-        `Here are your ${CREATURE_COUNT} randomly generated creatures!!!`,
-        windowWidth / 2 - 200,
-        690
-      )
-      generatedCreaturesBackButton.draw()
     } else if (appState.currentActivityId === ActivityId.RequestingSimulation) {
       setSimulationState(creaturesInLatestGeneration[creaturesTested])
       simulationState.camera.zoom = 0.01

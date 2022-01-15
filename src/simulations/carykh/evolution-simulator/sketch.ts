@@ -210,6 +210,14 @@ export default function sketch(p5: p5) {
     finishGenerationSimulationFromIndex(creaturesTested)
   }
 
+  function updateCreatureIdsByGridIndex(): void {
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const creature = sortedCreatures[i]
+      const gridIndex = creatureIdToIndex(creature.id)
+      creatureIdsByGridIndex[gridIndex] = i
+    }
+  }
+
   function sortCreatures(): void {
     sortedCreatures = [...creaturesInLatestGeneration].sort(
       (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
@@ -941,11 +949,11 @@ export default function sketch(p5: p5) {
     screenImage.background(220, 253, 102)
     screenImage.noStroke()
 
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      let creature = sortedCreatures[i]
+    updateCreatureIdsByGridIndex()
 
-      const gridIndex = (creature.id - 1) % CREATURE_COUNT
-      creatureIdsByGridIndex[gridIndex] = i
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const creature = sortedCreatures[i]
+      const gridIndex = creatureIdToIndex(creature.id)
 
       const gridX = gridIndex % 40
       const gridY = Math.floor(gridIndex / 40)

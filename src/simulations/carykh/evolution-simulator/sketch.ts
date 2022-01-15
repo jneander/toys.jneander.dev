@@ -697,10 +697,34 @@ export default function sketch(p5: p5) {
 
     onDrag(): void {
       const {cursorX} = getCursorPosition()
+
+      const sliderXMax = 1170
+      const sliderXMin = 760
+      const sliderXRange = sliderXMax - sliderXMin // 410
+
+      /*
+       * Update the slider position with a sluggish effect. This avoids some
+       * perceived jitter in the control resulting from the frame rate.
+       */
+
       sliderX = Math.min(
-        Math.max(sliderX + (cursorX - 25 - sliderX) * 0.2, 760),
-        1170
+        Math.max(sliderX + (cursorX - 25 - sliderX) * 0.5, sliderXMin),
+        sliderXMax
       )
+
+      const {generationCount} = appState
+
+      if (generationCount > 1) {
+        // After 2 generations, the slider starts at generation 1.
+        appState.selectedGeneration =
+          Math.round(
+            ((sliderX - sliderXMin) * (generationCount - 1)) / sliderXRange
+          ) + 1
+      } else {
+        appState.selectedGeneration = Math.round(
+          ((sliderX - sliderXMin) * generationCount) / sliderXRange
+        )
+      }
     }
   }
 
@@ -1997,14 +2021,35 @@ export default function sketch(p5: p5) {
     p5.text('Best Creature', 1150, 310)
   }
 
-  function updateSelectedGeneration(): void {
-    if (appState.generationCount >= 5) {
-      appState.selectedGeneration =
-        Math.round(((sliderX - 760) * (appState.generationCount - 1)) / 410) + 1
+  function updateSelectedGenerationAndSliderPosition(): void {
+    // Update slider position to reflect change in generation range.
+
+    const {generationCount, selectedGeneration} = appState
+    const sliderXMax = 1170
+    const sliderXMin = 760
+    const sliderXRange = sliderXMax - sliderXMin // 410
+
+    if (selectedGeneration === generationCount - 1) {
+      // Continue selecting latest generation.
+      sliderX = sliderXMax
+      appState.selectedGeneration = generationCount
     } else {
-      appState.selectedGeneration = Math.round(
-        ((sliderX - 760) * appState.generationCount) / 410
-      )
+      // Preserve previously-selected generation by shifting slider.
+      let previousGenerationRange = generationCount - 1
+      if (previousGenerationRange > 1) {
+        previousGenerationRange--
+      }
+
+      let currentGenerationRange = generationCount
+      if (generationCount > 1) {
+        // After 2 generations, the slider starts at generation 1.
+        currentGenerationRange--
+      }
+
+      let sliderPercentage = (sliderX - sliderXMin) / sliderXRange
+      sliderPercentage *= previousGenerationRange / currentGenerationRange
+
+      sliderX = Math.round(sliderPercentage * sliderXRange + sliderXMin)
     }
   }
 
@@ -2446,6 +2491,7 @@ export default function sketch(p5: p5) {
 
     if (appState.currentActivityId === ActivityId.PropagatingCreatures) {
       propagateCreatures()
+      updateSelectedGenerationAndSliderPosition()
 
       if (stepByStep) {
         appState.viewTimer = 0
@@ -2472,8 +2518,6 @@ export default function sketch(p5: p5) {
       p5.noStroke()
 
       if (appState.generationCount >= 1) {
-        updateSelectedGeneration()
-
         if (draggingSlider) {
           generationSlider.onDrag()
         }

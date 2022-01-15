@@ -1205,6 +1205,32 @@ export default function sketch(p5: p5) {
     screenImage.pop()
   }
 
+  function drawStepByStepSimulationView(): void {
+    const {averageX} = getNodesAverage(simulationState.creature.nodes)
+
+    p5.push()
+
+    p5.translate(p5.width / 2.0, p5.height / 2.0)
+    p5.scale(1.0 / simulationState.camera.zoom / scaleToFixBug)
+    p5.translate(
+      -simulationState.camera.x * scaleToFixBug,
+      -simulationState.camera.y * scaleToFixBug
+    )
+
+    drawPosts(0)
+    drawGround(0)
+    drawCreaturePieces(
+      simulationState.creature.nodes,
+      simulationState.creature.muscles,
+      0,
+      0,
+      0
+    )
+    drawArrow(averageX)
+
+    p5.pop()
+  }
+
   function drawGround(toImage: number): void {
     const {averageX, averageY} = getNodesAverage(simulationState.creature.nodes)
 
@@ -2348,29 +2374,7 @@ export default function sketch(p5: p5) {
         }
 
         updateCameraPosition()
-
-        p5.push()
-
-        p5.translate(p5.width / 2.0, p5.height / 2.0)
-        p5.scale(1.0 / simulationState.camera.zoom / scaleToFixBug)
-        p5.translate(
-          -simulationState.camera.x * scaleToFixBug,
-          -simulationState.camera.y * scaleToFixBug
-        )
-
-        drawPosts(0)
-        drawGround(0)
-        drawCreaturePieces(
-          simulationState.creature.nodes,
-          simulationState.creature.muscles,
-          0,
-          0,
-          0
-        )
-        drawArrow(averageX)
-
-        p5.pop()
-
+        drawStepByStepSimulationView()
         drawStats(windowWidth - 10, 0, 0.7)
 
         stepByStepSkipButton.draw()

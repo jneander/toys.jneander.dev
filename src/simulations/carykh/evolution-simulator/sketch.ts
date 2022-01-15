@@ -1970,7 +1970,6 @@ export default function sketch(p5: p5) {
 
     if (
       (appState.currentActivityId === ActivityId.FinishedStepByStep ||
-        appState.currentActivityId === ActivityId.SortingCreatures ||
         appState.currentActivityId === ActivityId.SortedCreatures ||
         appState.currentActivityId === ActivityId.CullingCreatures ||
         appState.currentActivityId === ActivityId.CulledCreatures) &&

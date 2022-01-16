@@ -661,7 +661,7 @@ export default function sketch(p5: p5) {
         popUpImage.background(60, 100, 128)
       }
 
-      drawPosts(2)
+      drawPosts(popUpImage)
       drawGround(600, 600, popUpImage)
 
       creatureDrawer.drawCreaturePieces(
@@ -1465,7 +1465,7 @@ export default function sketch(p5: p5) {
         -simulationState.camera.y * SCALE_TO_FIX_BUG
       )
 
-      drawPosts(0)
+      drawPosts(p5)
       drawGround(1600, 900, p5)
 
       creatureDrawer.drawCreaturePieces(
@@ -1968,13 +1968,11 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function drawPosts(toImage: number): void {
+  function drawPosts(graphics: p5): void {
     const {averageX, averageY} = averagePositionOfNodes(
       simulationState.creature.nodes
     )
     const startPostY = Math.min(-8, toInt(averageY / 4) * 4 - 4)
-
-    const graphics = [p5, null, popUpImage][toImage]
 
     if (graphics == null) {
       return

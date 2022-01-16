@@ -31,8 +31,7 @@ export enum ActivityId {
   SimulationFinished = 'SIMULATION_FINISHED',
   SortingCreatures = 'SORTING_CREATURES',
   SortedCreatures = 'SORTED_CREATURES',
-  CullingCreatures = 'CULLING_CREATURES',
-  CulledCreatures = 'CULLED_CREATURES',
+  CullCreatures = 'CULL_CREATURES',
   PropagatingCreatures = 'PROPAGATING_CREATURES',
   PropagatedCreatures = 'PROPAGATED_CREATURES'
 }

@@ -399,7 +399,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.CullingCreatures)
+      appController.setActivityId(ActivityId.CullCreatures)
     }
   }
 
@@ -1088,6 +1088,93 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class CullCreaturesActivity extends Activity {
+    draw(): void {
+      p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+
+      /*
+       * When the cursor is over any of the creature tiles, the popup simulation
+       * will be displayed for the associated creature.
+       */
+
+      const gridIndex = getGridIndexUnderCursor(40, 42)
+
+      if (gridIndex != null) {
+        appController.setPopupSimulationCreatureId(gridIndex)
+        statusWindowView.draw()
+      } else {
+        appController.clearPopupSimulation()
+      }
+    }
+
+    initialize(): void {
+      appController.cullCreatures()
+      appState.viewTimer = 0
+
+      appView.screenGraphics.push()
+      appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+      appView.screenGraphics.background(220, 253, 102)
+      appView.screenGraphics.noStroke()
+
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = appState.sortedCreatures[i]
+        const gridIndex = i
+
+        const gridX = gridIndex % 40
+        const gridY = Math.floor(gridIndex / 40) + 1
+
+        creatureDrawer.drawCreature(
+          creature,
+          gridX * 3 + 5.5,
+          gridY * 2.5 + 4,
+          appView.screenGraphics
+        )
+      }
+      appView.screenGraphics.pop()
+
+      appView.screenGraphics.push()
+      appView.screenGraphics.scale(1.5)
+
+      appView.screenGraphics.textAlign(p5.CENTER)
+      appView.screenGraphics.textFont(font, 24)
+      appView.screenGraphics.fill(100, 100, 200)
+      appView.screenGraphics.noStroke()
+
+      appView.screenGraphics.fill(0)
+      appView.screenGraphics.text(
+        'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
+        appView.width / 2,
+        30
+      )
+      appView.screenGraphics.text(
+        'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
+        appView.width / 2 - 130,
+        700
+      )
+      propagateCreaturesButton.draw()
+
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = appState.sortedCreatures[i]
+        const x = i % 40
+        const y = Math.floor(i / 40) + 1
+
+        if (creature.alive) {
+          creatureDrawer.drawCreature(creature, x * 30 + 55, y * 25 + 40, p5)
+        } else {
+          appView.screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
+        }
+      }
+
+      appView.screenGraphics.pop()
+    }
+
+    onMouseReleased(): void {
+      if (propagateCreaturesButton.isUnderCursor()) {
+        propagateCreaturesButton.onClick()
+      }
+    }
+  }
+
   const activityClassByActivityId = {
     [ActivityId.Start]: StartActivity,
     [ActivityId.GenerationView]: GenerationViewActivity,
@@ -1096,31 +1183,12 @@ export default function sketch(p5: p5) {
     [ActivityId.SimulationFinished]: SimulationFinishedActivity,
     [ActivityId.SortingCreatures]: SortingCreaturesActivity,
     [ActivityId.SortedCreatures]: SortedCreaturesActivity,
-    [ActivityId.CullingCreatures]: NullActivity,
-    [ActivityId.CulledCreatures]: NullActivity,
+    [ActivityId.CullCreatures]: CullCreaturesActivity,
     [ActivityId.PropagatingCreatures]: NullActivity,
     [ActivityId.PropagatedCreatures]: NullActivity
   }
 
   // ACTIVITY DRAWING
-
-  function drawCulledCreaturesActivity(): void {
-    p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
-
-    /*
-     * When the cursor is over any of the creature tiles, the popup simulation
-     * will be displayed for the associated creature.
-     */
-
-    const gridIndex = getGridIndexUnderCursor(40, 42)
-
-    if (gridIndex != null) {
-      appController.setPopupSimulationCreatureId(gridIndex)
-      statusWindowView.draw()
-    } else {
-      appController.clearPopupSimulation()
-    }
-  }
 
   function drawPropagatedCreaturesActivity(): void {
     p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
@@ -1170,64 +1238,6 @@ export default function sketch(p5: p5) {
       700
     )
     cullCreaturesButton.draw()
-
-    appView.screenGraphics.pop()
-  }
-
-  function drawCulledCreaturesScreenImage(): void {
-    appView.screenGraphics.push()
-    appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-    appView.screenGraphics.background(220, 253, 102)
-    appView.screenGraphics.noStroke()
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.sortedCreatures[i]
-      const gridIndex = i
-
-      const gridX = gridIndex % 40
-      const gridY = Math.floor(gridIndex / 40) + 1
-
-      creatureDrawer.drawCreature(
-        creature,
-        gridX * 3 + 5.5,
-        gridY * 2.5 + 4,
-        appView.screenGraphics
-      )
-    }
-    appView.screenGraphics.pop()
-
-    appView.screenGraphics.push()
-    appView.screenGraphics.scale(1.5)
-
-    appView.screenGraphics.textAlign(p5.CENTER)
-    appView.screenGraphics.textFont(font, 24)
-    appView.screenGraphics.fill(100, 100, 200)
-    appView.screenGraphics.noStroke()
-
-    appView.screenGraphics.fill(0)
-    appView.screenGraphics.text(
-      'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
-      appView.width / 2,
-      30
-    )
-    appView.screenGraphics.text(
-      'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
-      appView.width / 2 - 130,
-      700
-    )
-    propagateCreaturesButton.draw()
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.sortedCreatures[i]
-      const x = i % 40
-      const y = Math.floor(i / 40) + 1
-
-      if (creature.alive) {
-        creatureDrawer.drawCreature(creature, x * 30 + 55, y * 25 + 40, p5)
-      } else {
-        appView.screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
-      }
-    }
 
     appView.screenGraphics.pop()
   }
@@ -2016,11 +2026,6 @@ export default function sketch(p5: p5) {
     appState.currentActivity.onMouseReleased()
 
     if (
-      appState.currentActivityId === ActivityId.CulledCreatures &&
-      propagateCreaturesButton.isUnderCursor()
-    ) {
-      propagateCreaturesButton.onClick()
-    } else if (
       appState.currentActivityId === ActivityId.PropagatedCreatures &&
       propagatedCreaturesBackButton.isUnderCursor()
     ) {
@@ -2077,14 +2082,6 @@ export default function sketch(p5: p5) {
 
     appState.currentActivity.draw()
 
-    if (appState.currentActivityId === ActivityId.CullingCreatures) {
-      appController.cullCreatures()
-
-      appState.viewTimer = 0
-      drawCulledCreaturesScreenImage()
-      appController.setActivityId(ActivityId.CulledCreatures)
-    }
-
     if (appState.currentActivityId === ActivityId.PropagatingCreatures) {
       appController.propagateCreatures()
       updateSelectedGenerationAndSliderPosition()
@@ -2092,10 +2089,6 @@ export default function sketch(p5: p5) {
       appState.viewTimer = 0
       drawPropagatedCreaturesScreenImage()
       appController.setActivityId(ActivityId.PropagatedCreatures)
-    }
-
-    if (appState.currentActivityId === ActivityId.CulledCreatures) {
-      drawCulledCreaturesActivity()
     }
 
     if (appState.currentActivityId === ActivityId.PropagatedCreatures) {

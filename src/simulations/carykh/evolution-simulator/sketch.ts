@@ -1015,13 +1015,60 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class SortingCreaturesActivity extends Activity {
+    draw(): void {
+      p5.background(220, 253, 102)
+      p5.push()
+      p5.scale(10.0 / SCALE_TO_FIX_BUG)
+
+      const transition =
+        0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
+
+      for (let i1 = 0; i1 < CREATURE_COUNT; i1++) {
+        const creature = appState.sortedCreatures[i1]
+        const j2 = creature.id - appState.generationCount * CREATURE_COUNT - 1
+        const x1 = j2 % 40
+        const y1 = Math.floor(j2 / 40)
+        const x2 = i1 % 40
+        const y2 = Math.floor(i1 / 40) + 1
+        const x3 = inter(x1, x2, transition)
+        const y3 = inter(y1, y2, transition)
+
+        creatureDrawer.drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, p5)
+      }
+
+      p5.pop()
+
+      sortingCreaturesSkipButton.draw()
+      if (
+        appState.generationSimulationMode === GenerationSimulationMode.Quick
+      ) {
+        appState.viewTimer += 10
+      } else {
+        appState.viewTimer += 2
+      }
+
+      if (appState.viewTimer > 60 * Math.PI) {
+        appState.viewTimer = 0
+        drawSortedCreaturesScreenImage()
+        appController.setActivityId(ActivityId.SortedCreatures)
+      }
+    }
+
+    onMouseReleased(): void {
+      if (sortingCreaturesSkipButton.isUnderCursor()) {
+        sortingCreaturesSkipButton.onClick()
+      }
+    }
+  }
+
   const activityClassByActivityId = {
     [ActivityId.Start]: StartActivity,
     [ActivityId.GenerationView]: GenerationViewActivity,
     [ActivityId.GenerateCreatures]: GenerateCreaturesActivity,
     [ActivityId.SimulationRunning]: SimulationRunningActivity,
     [ActivityId.SimulationFinished]: SimulationFinishedActivity,
-    [ActivityId.SortingCreatures]: NullActivity,
+    [ActivityId.SortingCreatures]: SortingCreaturesActivity,
     [ActivityId.SortedCreatures]: NullActivity,
     [ActivityId.CullingCreatures]: NullActivity,
     [ActivityId.CulledCreatures]: NullActivity,
@@ -1030,32 +1077,6 @@ export default function sketch(p5: p5) {
   }
 
   // ACTIVITY DRAWING
-
-  function drawSortingCreaturesActivity(): void {
-    p5.background(220, 253, 102)
-    p5.push()
-    p5.scale(10.0 / SCALE_TO_FIX_BUG)
-
-    const transition =
-      0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
-
-    for (let i1 = 0; i1 < CREATURE_COUNT; i1++) {
-      const creature = appState.sortedCreatures[i1]
-      const j2 = creature.id - appState.generationCount * CREATURE_COUNT - 1
-      const x1 = j2 % 40
-      const y1 = Math.floor(j2 / 40)
-      const x2 = i1 % 40
-      const y2 = Math.floor(i1 / 40) + 1
-      const x3 = inter(x1, x2, transition)
-      const y3 = inter(y1, y2, transition)
-
-      creatureDrawer.drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, p5)
-    }
-
-    p5.pop()
-
-    sortingCreaturesSkipButton.draw()
-  }
 
   function drawSortedCreaturesActivity(): void {
     p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
@@ -1987,11 +2008,6 @@ export default function sketch(p5: p5) {
     appState.currentActivity.onMouseReleased()
 
     if (
-      appState.currentActivityId === ActivityId.SortingCreatures &&
-      sortingCreaturesSkipButton.isUnderCursor()
-    ) {
-      sortingCreaturesSkipButton.onClick()
-    } else if (
       appState.currentActivityId === ActivityId.SortedCreatures &&
       cullCreaturesButton.isUnderCursor()
     ) {
@@ -2057,24 +2073,6 @@ export default function sketch(p5: p5) {
     }
 
     appState.currentActivity.draw()
-
-    if (appState.currentActivityId === ActivityId.SortingCreatures) {
-      drawSortingCreaturesActivity()
-
-      if (
-        appState.generationSimulationMode === GenerationSimulationMode.Quick
-      ) {
-        appState.viewTimer += 10
-      } else {
-        appState.viewTimer += 2
-      }
-
-      if (appState.viewTimer > 60 * Math.PI) {
-        appState.viewTimer = 0
-        drawSortedCreaturesScreenImage()
-        appController.setActivityId(ActivityId.SortedCreatures)
-      }
-    }
 
     if (appState.currentActivityId === ActivityId.CullingCreatures) {
       appController.cullCreatures()

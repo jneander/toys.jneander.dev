@@ -114,6 +114,7 @@ export default function sketch(p5: p5) {
 
     private config: SimulationViewConfig
     private simulationGraphics: Graphics
+    private statsGraphics: Graphics
 
     constructor(config: SimulationViewConfig) {
       this.config = config
@@ -122,19 +123,23 @@ export default function sketch(p5: p5) {
 
       this.graphics = p5.createGraphics(width, height)
       this.simulationGraphics = p5.createGraphics(width, height)
+      this.statsGraphics = p5.createGraphics(width, height)
     }
 
     deinitialize(): void {
       this.graphics.remove()
       this.simulationGraphics.remove()
+      this.statsGraphics.remove()
     }
 
     draw(): void {
-      const {graphics, simulationGraphics} = this
+      const {graphics, simulationGraphics, statsGraphics} = this
 
       this.drawSimulation()
+      this.drawStats()
 
       graphics.image(simulationGraphics, 0, 0)
+      graphics.image(statsGraphics, 0, 0)
     }
 
     private drawArrow(): void {
@@ -304,6 +309,75 @@ export default function sketch(p5: p5) {
       }
 
       simulationGraphics.pop()
+    }
+
+    private drawStats(): void {
+      const {width} = this.config
+      const {statsGraphics} = this
+
+      const x = width - 5
+      const y = 0
+
+      statsGraphics.clear()
+
+      statsGraphics.textAlign(statsGraphics.RIGHT)
+      statsGraphics.textFont(font, 32)
+      statsGraphics.fill(0)
+
+      statsGraphics.push()
+
+      statsGraphics.translate(x, y)
+      statsGraphics.text('Creature ID: ' + simulationState.creature.id, 0, 32)
+
+      let timeShow: number
+      if (simulationState.speed > 60) {
+        timeShow =
+          toInt((appState.viewTimer + appState.creaturesTested * 37) / 60) % 15
+      } else {
+        timeShow = appState.viewTimer / 60
+      }
+
+      statsGraphics.text(
+        'Time: ' + statsGraphics.nf(timeShow, 0, 2) + ' / 15 sec.',
+        0,
+        64
+      )
+      statsGraphics.text(
+        'Playback Speed: x' + Math.max(1, simulationState.speed),
+        0,
+        96
+      )
+
+      const {averageX, averageY} = averagePositionOfNodes(
+        simulationState.creature.nodes
+      )
+
+      statsGraphics.text(
+        'X: ' + statsGraphics.nf(averageX / 5.0, 0, 2) + '',
+        0,
+        128
+      )
+      statsGraphics.text(
+        'Y: ' + statsGraphics.nf(-averageY / 5.0, 0, 2) + '',
+        0,
+        160
+      )
+      statsGraphics.text(
+        'Energy used: ' +
+          statsGraphics.nf(simulationState.creature.energyUsed, 0, 2) +
+          ' yums',
+        0,
+        192
+      )
+      statsGraphics.text(
+        'A.N.Nausea: ' +
+          statsGraphics.nf(simulationState.creature.averageNodeNausea, 0, 2) +
+          ' blehs',
+        0,
+        224
+      )
+
+      statsGraphics.pop()
     }
   }
 
@@ -881,7 +955,6 @@ export default function sketch(p5: p5) {
 
       p5.image(popUpImage, px2, py2, 300, 300)
 
-      drawStats(px2 + 295, py2, 0.45)
       appController.advanceSimulation()
     }
   }
@@ -1606,8 +1679,6 @@ export default function sketch(p5: p5) {
           appView.height
         )
 
-        drawStats(appView.width - 10, 0, 0.7)
-
         this.skipButton.draw()
         this.playbackSpeedButton.draw()
         this.finishButton.draw()
@@ -2150,52 +2221,6 @@ export default function sketch(p5: p5) {
     }
 
     return null
-  }
-
-  function drawStats(x: number, y: number, size: number): void {
-    p5.textAlign(p5.RIGHT)
-    p5.textFont(font, 32)
-    p5.fill(0)
-
-    p5.push()
-
-    p5.translate(x, y)
-    p5.scale(size)
-    p5.text('Creature ID: ' + simulationState.creature.id, 0, 32)
-
-    let timeShow: number
-    if (simulationState.speed > 60) {
-      timeShow =
-        toInt((appState.viewTimer + appState.creaturesTested * 37) / 60) % 15
-    } else {
-      timeShow = appState.viewTimer / 60
-    }
-
-    p5.text('Time: ' + p5.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
-    p5.text('Playback Speed: x' + Math.max(1, simulationState.speed), 0, 96)
-
-    const {averageX, averageY} = averagePositionOfNodes(
-      simulationState.creature.nodes
-    )
-
-    p5.text('X: ' + p5.nf(averageX / 5.0, 0, 2) + '', 0, 128)
-    p5.text('Y: ' + p5.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
-    p5.text(
-      'Energy used: ' +
-        p5.nf(simulationState.creature.energyUsed, 0, 2) +
-        ' yums',
-      0,
-      192
-    )
-    p5.text(
-      'A.N.Nausea: ' +
-        p5.nf(simulationState.creature.averageNodeNausea, 0, 2) +
-        ' blehs',
-      0,
-      224
-    )
-
-    p5.pop()
   }
 
   p5.mouseWheel = (event: WheelEvent) => {

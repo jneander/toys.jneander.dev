@@ -40,7 +40,6 @@ export default function sketch(p5: p5) {
   let segBarImage: Graphics
 
   let sliderX = 1170
-  let draggingSlider = false
 
   const appState: AppState = {
     creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
@@ -649,6 +648,8 @@ export default function sketch(p5: p5) {
     private alapButton: SimulateAlapButton
     private generationSlider: GenerationSlider
 
+    private draggingSlider: boolean
+
     constructor() {
       super()
 
@@ -658,10 +659,12 @@ export default function sketch(p5: p5) {
       this.asapButton = new SimulateAsapButton()
       this.alapButton = new SimulateAlapButton()
       this.generationSlider = new GenerationSlider()
+
+      this.draggingSlider = false
     }
 
     draw(): void {
-      if (draggingSlider && appState.generationCount >= 1) {
+      if (this.draggingSlider && appState.generationCount >= 1) {
         this.generationSlider.onDrag()
       }
 
@@ -730,7 +733,7 @@ export default function sketch(p5: p5) {
         if (
           appState.selectedGeneration > 0 &&
           appState.pendingGenerationCount === 0 &&
-          !draggingSlider
+          !this.draggingSlider
         ) {
           const {cursorX, cursorY} = appView.getCursorPosition()
 
@@ -790,11 +793,13 @@ export default function sketch(p5: p5) {
         appState.generationCount >= 1 &&
         this.generationSlider.isUnderCursor()
       ) {
-        draggingSlider = true
+        this.draggingSlider = true
       }
     }
 
     onMouseReleased(): void {
+      this.draggingSlider = false
+
       if (
         appState.generationCount === -1 &&
         this.createButton.isUnderCursor()
@@ -2111,7 +2116,6 @@ export default function sketch(p5: p5) {
   }
 
   p5.mouseReleased = () => {
-    draggingSlider = false
     // When the popup simulation is running, mouse clicks will stop it.
     appState.showPopupSimulation = false
 

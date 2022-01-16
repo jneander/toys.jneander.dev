@@ -103,26 +103,6 @@ export default function sketch(p5: p5) {
 
   let appView: AppView
 
-  function inter(a: number, b: number, offset: number): number {
-    return a + (b - a) * offset
-  }
-
-  function updateCameraPosition(): void {
-    const {averageX, averageY} = averagePositionOfNodes(
-      simulationState.creature.nodes
-    )
-
-    if (simulationState.speed < 30) {
-      for (let s = 0; s < simulationState.speed; s++) {
-        simulationState.camera.x += (averageX - simulationState.camera.x) * 0.06
-        simulationState.camera.y += (averageY - simulationState.camera.y) * 0.06
-      }
-    } else {
-      simulationState.camera.x = averageX
-      simulationState.camera.y = averageY
-    }
-  }
-
   let creatureDrawer: CreatureDrawer
 
   abstract class Widget {
@@ -722,19 +702,19 @@ export default function sketch(p5: p5) {
         if (
           appState.generationCountDepictedInGraph !== appState.generationCount
         ) {
-          drawGraph(975, 570)
+          this.drawGraph(975, 570)
           appState.generationCountDepictedInGraph = appState.generationCount
         }
 
-        drawHistogram(760, 410, 460, 280)
-        drawGraphImage()
+        this.drawHistogram(760, 410, 460, 280)
+        this.drawGraphImage()
 
         if (appState.generationCount >= 1) {
           generationSlider.draw()
         }
 
         if (appState.selectedGeneration >= 1) {
-          drawWorstMedianAndBestCreatures()
+          this.drawWorstMedianAndBestCreatures()
         }
 
         if (
@@ -819,6 +799,430 @@ export default function sketch(p5: p5) {
         }
       }
     }
+
+    private drawGraph(graphWidth: number, graphHeight: number): void {
+      graphImage.background(220)
+
+      if (appState.generationCount >= 1) {
+        this.drawLines(
+          90,
+          toInt(graphHeight * 0.05),
+          graphWidth - 90,
+          toInt(graphHeight * 0.9)
+        )
+        this.drawSegBars(90, 0, graphWidth - 90, 150)
+      }
+    }
+
+    private drawGraphImage(): void {
+      p5.image(graphImage, 50, 180, 650, 380)
+      p5.image(segBarImage, 50, 580, 650, 100)
+
+      if (appState.generationCount >= 1) {
+        p5.stroke(0, 160, 0, 255)
+        p5.strokeWeight(3)
+
+        const genWidth = 590.0 / appState.generationCount
+        const lineX = 110 + appState.selectedGeneration * genWidth
+
+        p5.line(lineX, 180, lineX, 500 + 180)
+
+        p5.textAlign(p5.LEFT)
+        p5.textFont(font, 12)
+        p5.noStroke()
+
+        const speciesCounts =
+          appState.speciesCountsHistoryMap[appState.selectedGeneration] || []
+
+        // Identify the largest species count.
+        const highCount = speciesCounts.reduce(
+          (max, entry) => Math.max(max, entry.count),
+          0
+        )
+
+        const minCountToBeLabeled = 25
+        const yOffset = 573
+
+        let cumulativeStart = 0
+
+        speciesCounts.forEach(({speciesId, count}) => {
+          if (count >= minCountToBeLabeled) {
+            // When this species has a count of at least 25, label it on the graph.
+
+            // Set the starting y position for this species' label.
+            const y = Math.floor(
+              ((cumulativeStart + count / 2) / CREATURE_COUNT) * 100 + yOffset
+            )
+
+            if (count === highCount) {
+              /*
+               * When the count for this species matches the largest count, add
+               * emphasis to its style.
+               */
+
+              p5.stroke(0)
+              p5.strokeWeight(2)
+            } else {
+              p5.noStroke()
+            }
+
+            p5.fill(255, 255, 255)
+            p5.rect(lineX + 3, y, 56, 14)
+            p5.colorMode(p5.HSB, 1.0)
+            p5.fill(appView.getColor(speciesId, true))
+            // Example label: "S45: 207"
+            p5.text(`S${speciesId}: ${count}`, lineX + 5, y + 11)
+            p5.colorMode(p5.RGB, 255)
+          }
+
+          cumulativeStart += count
+        })
+
+        p5.noStroke()
+      }
+    }
+
+    private drawHistogram(x: number, y: number, hw: number, hh: number): void {
+      let maxH = 1
+
+      for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
+        if (
+          appState.histogramBarCounts[appState.selectedGeneration][i] > maxH
+        ) {
+          maxH = appState.histogramBarCounts[appState.selectedGeneration][i]
+        }
+      }
+
+      p5.fill(200)
+      p5.noStroke()
+      p5.rect(x, y, hw, hh)
+      p5.fill(0, 0, 0)
+
+      const barW = hw / HISTOGRAM_BAR_SPAN
+      const multiplier = (hh / maxH) * 0.9
+
+      p5.textAlign(p5.LEFT)
+      p5.textFont(font, 16)
+      p5.stroke(128)
+      p5.strokeWeight(2)
+
+      let unit = 100
+
+      if (maxH < 300) {
+        unit = 50
+      }
+
+      if (maxH < 100) {
+        unit = 20
+      }
+
+      if (maxH < 50) {
+        unit = 10
+      }
+
+      for (let i = 0; i < hh / multiplier; i += unit) {
+        let theY = y + hh - i * multiplier
+
+        p5.line(x, theY, x + hw, theY)
+
+        if (i == 0) {
+          theY -= 5
+        }
+
+        p5.text(i, x + hw + 5, theY + 7)
+      }
+
+      p5.textAlign(p5.CENTER)
+
+      for (let i = HISTOGRAM_BAR_MIN; i <= HISTOGRAM_BAR_MAX; i += 10) {
+        if (i == 0) {
+          p5.stroke(0, 0, 255)
+        } else {
+          p5.stroke(128)
+        }
+
+        const theX = x + (i - HISTOGRAM_BAR_MIN) * barW
+
+        p5.text(p5.nf(i / HISTOGRAM_BARS_PER_METER, 0, 1), theX, y + hh + 14)
+        p5.line(theX, y, theX, y + hh)
+      }
+
+      p5.noStroke()
+
+      for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
+        const h = Math.min(
+          appState.histogramBarCounts[appState.selectedGeneration][i] *
+            multiplier,
+          hh
+        )
+
+        if (
+          i + HISTOGRAM_BAR_MIN ==
+          Math.floor(
+            appState.fitnessPercentileHistory[
+              Math.min(
+                appState.selectedGeneration,
+                appState.fitnessPercentileHistory.length - 1
+              )
+            ][14] * HISTOGRAM_BARS_PER_METER
+          )
+        ) {
+          p5.fill(255, 0, 0)
+        } else {
+          p5.fill(0, 0, 0)
+        }
+
+        p5.rect(x + i * barW, y + hh - h, barW, h)
+      }
+    }
+
+    private drawLines(
+      x: number,
+      y: number,
+      graphWidth: number,
+      graphHeight: number
+    ): void {
+      const gh = graphHeight
+      const genWidth = graphWidth / appState.generationCount
+      const best = this.extreme(1)
+      const worst = this.extreme(-1)
+      const meterHeight = graphHeight / (best - worst)
+      const zero = (best / (best - worst)) * gh
+      const unit = this.setUnit(best, worst)
+
+      graphImage.stroke(150)
+      graphImage.strokeWeight(2)
+      graphImage.fill(150)
+      graphImage.textFont(font, 18)
+      graphImage.textAlign(p5.RIGHT)
+
+      for (
+        let i = Math.ceil((worst - (best - worst) / 18.0) / unit) * unit;
+        i < best + (best - worst) / 18.0;
+        i += unit
+      ) {
+        const lineY = y - i * meterHeight + zero
+        graphImage.line(x, lineY, graphWidth + x, lineY)
+        graphImage.text(
+          this.showUnit(i, unit) + ' ' + FITNESS_UNIT_LABEL,
+          x - 5,
+          lineY + 4
+        )
+      }
+
+      graphImage.stroke(0)
+
+      for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
+        let k
+
+        if (i == 28) {
+          k = 14
+        } else if (i < 14) {
+          k = i
+        } else {
+          k = i + 1
+        }
+
+        if (k == 14) {
+          graphImage.stroke(255, 0, 0, 255)
+          graphImage.strokeWeight(5)
+        } else {
+          p5.stroke(0)
+
+          if (k == 0 || k == 28 || (k >= 10 && k <= 18)) {
+            graphImage.strokeWeight(3)
+          } else {
+            graphImage.strokeWeight(1)
+          }
+        }
+
+        for (let i = 0; i < appState.generationCount; i++) {
+          graphImage.line(
+            x + i * genWidth,
+            -appState.fitnessPercentileHistory[i][k] * meterHeight + zero + y,
+            x + (i + 1) * genWidth,
+            -appState.fitnessPercentileHistory[i + 1][k] * meterHeight +
+              zero +
+              y
+          )
+        }
+      }
+    }
+
+    private drawSegBars(
+      x: number,
+      y: number,
+      graphWidth: number,
+      graphHeight: number
+    ): void {
+      segBarImage.noStroke()
+      segBarImage.colorMode(p5.HSB, 1)
+      segBarImage.background(0, 0, 0.5)
+
+      const generationWidth = graphWidth / appState.generationCount
+      const generationsPerBar = Math.floor(appState.generationCount / 500) + 1
+
+      for (let i1 = 0; i1 < appState.generationCount; i1 += generationsPerBar) {
+        const i2 = Math.min(i1 + generationsPerBar, appState.generationCount)
+
+        const barX1 = x + i1 * generationWidth
+        const barX2 = x + i2 * generationWidth
+
+        /*
+         * The initial index `i1` of `0` does not correspond to a generation, so
+         * fall back to an empty species counts history entry.
+         */
+        const speciesCounts1 = appState.speciesCountsHistoryMap[i1] || []
+        const speciesCounts2 = appState.speciesCountsHistoryMap[i2]
+
+        /*
+         * Joined entries will include a count for all species represented between
+         * both generations, using a count of `0` where a species has no count in
+         * the given generation.
+         */
+        const joinedEntries = []
+
+        let countIndex1 = 0
+        let countIndex2 = 0
+
+        while (
+          countIndex1 < speciesCounts1.length ||
+          countIndex2 < speciesCounts2.length
+        ) {
+          const entry1 = speciesCounts1[countIndex1]
+          const entry2 = speciesCounts2[countIndex2]
+
+          if (entry1?.speciesId === entry2?.speciesId) {
+            joinedEntries.push({
+              speciesId: entry1.speciesId,
+              countStart: entry1.count,
+              countEnd: entry2.count
+            })
+
+            countIndex1++
+            countIndex2++
+          } else if (entry2 == null || entry1?.speciesId < entry2.speciesId) {
+            joinedEntries.push({
+              speciesId: entry1.speciesId,
+              countStart: entry1.count,
+              countEnd: 0
+            })
+
+            countIndex1++
+          } else {
+            joinedEntries.push({
+              speciesId: entry2.speciesId,
+              countStart: 0,
+              countEnd: entry2.count
+            })
+
+            countIndex2++
+          }
+        }
+
+        let cumulativeStart = 0
+        let cumulativeEnd = 0
+
+        if (speciesCounts1.length === 0) {
+          // Start all graph areas from the middle of the range.
+          cumulativeStart = Math.floor(CREATURE_COUNT / 2)
+        }
+
+        joinedEntries.forEach(({speciesId, countStart, countEnd}) => {
+          segBarImage.fill(appView.getColor(speciesId, false))
+          segBarImage.beginShape()
+
+          // top-left and top-right
+          const start1 = cumulativeStart / CREATURE_COUNT
+          const end1 = cumulativeEnd / CREATURE_COUNT
+
+          // Accumulate the counts for the next species' offset.
+          cumulativeStart += countStart
+          cumulativeEnd += countEnd
+
+          // bottom-left and bottom-right
+          const start2 = cumulativeStart / CREATURE_COUNT
+          const end2 = cumulativeEnd / CREATURE_COUNT
+
+          // Draw quadrilateral, counter-clockwise.
+          segBarImage.vertex(barX1, y + start1 * graphHeight)
+          segBarImage.vertex(barX1, y + start2 * graphHeight)
+          segBarImage.vertex(barX2, y + end2 * graphHeight)
+          segBarImage.vertex(barX2, y + end1 * graphHeight)
+
+          segBarImage.endShape()
+        })
+      }
+
+      p5.colorMode(p5.RGB, 255)
+    }
+
+    private drawWorstMedianAndBestCreatures(): void {
+      p5.noStroke()
+      p5.textAlign(p5.CENTER)
+
+      const historyEntry =
+        appState.generationHistoryMap[appState.selectedGeneration]
+
+      for (let k = 0; k < 3; k++) {
+        p5.fill(220)
+        p5.rect(760 + k * 160, 180, 140, 140)
+
+        p5.push()
+
+        p5.translate(830 + 160 * k, 290)
+        p5.scale(60.0 / SCALE_TO_FIX_BUG)
+
+        const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
+
+        creatureDrawer.drawCreature(creature, 0, 0, p5)
+
+        p5.pop()
+      }
+
+      p5.fill(0)
+      p5.textFont(font, 16)
+      p5.text('Worst Creature', 830, 310)
+      p5.text('Median Creature', 990, 310)
+      p5.text('Best Creature', 1150, 310)
+    }
+
+    private extreme(sign: number): number {
+      let record = -sign
+
+      for (let i = 0; i < appState.generationCount; i++) {
+        const toTest =
+          appState.fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
+
+        if (toTest * sign > record * sign) {
+          record = toTest
+        }
+      }
+
+      return record
+    }
+
+    private setUnit(best: number, worst: number): number {
+      const unit2 = (3 * Math.log(best - worst)) / Math.log(10) - 2
+
+      if ((unit2 + 90) % 3 < 1) {
+        return Math.pow(10, Math.floor(unit2 / 3))
+      }
+
+      if ((unit2 + 90) % 3 < 2) {
+        return Math.pow(10, Math.floor((unit2 - 1) / 3)) * 2
+      }
+
+      return Math.pow(10, Math.floor((unit2 - 2) / 3)) * 5
+    }
+
+    private showUnit(i: number, unit: number): String {
+      if (unit < 1) {
+        return p5.nf(i, 0, 2) + ''
+      }
+
+      return toInt(i) + ''
+    }
   }
 
   class GenerateCreaturesActivity extends Activity {
@@ -868,8 +1272,8 @@ export default function sketch(p5: p5) {
           }
         }
 
-        updateCameraPosition()
-        drawStepByStepSimulationView()
+        this.updateCameraPosition()
+        this.drawSimulationView()
         drawStats(appView.width - 10, 0, 0.7)
 
         stepByStepSkipButton.draw()
@@ -880,7 +1284,7 @@ export default function sketch(p5: p5) {
       if (appState.viewTimer == 900) {
         if (simulationState.speed < 30) {
           // When the simulation speed is slow enough, display the creature's fitness.
-          drawStepByStepFinalFitness()
+          this.drawFinalFitness()
         } else {
           // When the simulation speed is too fast, skip ahead to next simulation using the timer.
           appState.viewTimer = 1020
@@ -937,6 +1341,71 @@ export default function sketch(p5: p5) {
         }
 
         p5.textFont(font, POST_FONT_SIZE)
+      }
+    }
+
+    private drawSimulationView(): void {
+      const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
+
+      p5.background(120, 200, 255)
+
+      p5.push()
+
+      p5.translate(p5.width / 2.0, p5.height / 2.0)
+      p5.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
+      p5.translate(
+        -simulationState.camera.x * SCALE_TO_FIX_BUG,
+        -simulationState.camera.y * SCALE_TO_FIX_BUG
+      )
+
+      drawPosts(0)
+      drawGround(0)
+      creatureDrawer.drawCreaturePieces(
+        simulationState.creature.nodes,
+        simulationState.creature.muscles,
+        0,
+        0,
+        p5
+      )
+      drawArrow(averageX)
+
+      p5.pop()
+    }
+
+    private drawFinalFitness(): void {
+      const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
+
+      p5.noStroke()
+      p5.fill(0, 0, 0, 130)
+      p5.rect(0, 0, appView.width, appView.height)
+      p5.fill(0, 0, 0, 255)
+      p5.rect(appView.width / 2 - 500, 200, 1000, 240)
+      p5.fill(255, 0, 0)
+      p5.textAlign(p5.CENTER)
+      p5.textFont(font, 96)
+      p5.text("Creature's " + FITNESS_LABEL + ':', appView.width / 2, 300)
+      p5.text(
+        p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
+        appView.width / 2,
+        400
+      )
+    }
+
+    private updateCameraPosition(): void {
+      const {averageX, averageY} = averagePositionOfNodes(
+        simulationState.creature.nodes
+      )
+
+      if (simulationState.speed < 30) {
+        for (let s = 0; s < simulationState.speed; s++) {
+          simulationState.camera.x +=
+            (averageX - simulationState.camera.x) * 0.06
+          simulationState.camera.y +=
+            (averageY - simulationState.camera.y) * 0.06
+        }
+      } else {
+        simulationState.camera.x = averageX
+        simulationState.camera.y = averageY
       }
     }
   }
@@ -1031,8 +1500,8 @@ export default function sketch(p5: p5) {
         const y1 = Math.floor(j2 / 40)
         const x2 = i1 % 40
         const y2 = Math.floor(i1 / 40) + 1
-        const x3 = inter(x1, x2, transition)
-        const y3 = inter(y1, y2, transition)
+        const x3 = this.interpolate(x1, x2, transition)
+        const y3 = this.interpolate(y1, y2, transition)
 
         creatureDrawer.drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, p5)
       }
@@ -1059,6 +1528,10 @@ export default function sketch(p5: p5) {
         sortingCreaturesSkipButton.onClick()
       }
     }
+
+    private interpolate(a: number, b: number, offset: number): number {
+      return a + (b - a) * offset
+    }
   }
 
   class SortedCreaturesActivity extends Activity {
@@ -1081,13 +1554,59 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      drawSortedCreaturesScreenImage()
+      this.drawCreatureGrid()
     }
 
     onMouseReleased(): void {
       if (cullCreaturesButton.isUnderCursor()) {
         cullCreaturesButton.onClick()
       }
+    }
+
+    private drawCreatureGrid(): void {
+      appView.screenGraphics.push()
+      appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+      appView.screenGraphics.background(220, 253, 102)
+      appView.screenGraphics.noStroke()
+
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = appState.sortedCreatures[i]
+        const gridIndex = i
+
+        const gridX = gridIndex % 40
+        const gridY = Math.floor(gridIndex / 40) + 1
+
+        creatureDrawer.drawCreature(
+          creature,
+          gridX * 3 + 5.5,
+          gridY * 2.5 + 4,
+          appView.screenGraphics
+        )
+      }
+      appView.screenGraphics.pop()
+
+      appView.screenGraphics.push()
+      appView.screenGraphics.scale(1.5)
+
+      appView.screenGraphics.textAlign(p5.CENTER)
+      appView.screenGraphics.textFont(font, 24)
+      appView.screenGraphics.fill(100, 100, 200)
+      appView.screenGraphics.noStroke()
+
+      appView.screenGraphics.fill(0)
+      appView.screenGraphics.text(
+        'Fastest creatures at the top!',
+        appView.width / 2,
+        30
+      )
+      appView.screenGraphics.text(
+        'Slowest creatures at the bottom. (Going backward = slow)',
+        appView.width / 2 - 200,
+        700
+      )
+      cullCreaturesButton.draw()
+
+      appView.screenGraphics.pop()
     }
   }
 
@@ -1184,7 +1703,7 @@ export default function sketch(p5: p5) {
       updateSelectedGenerationAndSliderPosition()
 
       appState.viewTimer = 0
-      drawPropagatedCreaturesScreenImage()
+      this.drawCreatureGrid()
       p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
     }
 
@@ -1192,6 +1711,57 @@ export default function sketch(p5: p5) {
       if (propagatedCreaturesBackButton.isUnderCursor()) {
         propagatedCreaturesBackButton.onClick()
       }
+    }
+
+    private drawCreatureGrid(): void {
+      appView.screenGraphics.push()
+      appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+      appView.screenGraphics.background(220, 253, 102)
+      appView.screenGraphics.noStroke()
+
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        let creature = appState.sortedCreatures[i]
+        const index = creatureIdToIndex(creature.id)
+        creature = appState.creaturesInLatestGeneration[index]
+
+        const gridIndex = i
+
+        const gridX = gridIndex % 40
+        const gridY = Math.floor(gridIndex / 40) + 1
+
+        creatureDrawer.drawCreature(
+          creature,
+          gridX * 3 + 5.5,
+          gridY * 2.5 + 4,
+          appView.screenGraphics
+        )
+      }
+      appView.screenGraphics.pop()
+
+      appView.screenGraphics.push()
+      appView.screenGraphics.scale(1.5)
+
+      appView.screenGraphics.textAlign(p5.CENTER)
+      appView.screenGraphics.textFont(font, 24)
+      appView.screenGraphics.fill(100, 100, 200)
+      appView.screenGraphics.noStroke()
+
+      appView.screenGraphics.fill(0)
+      appView.screenGraphics.text(
+        'These are the 1000 creatures of generation #' +
+          (appState.generationCount + 1) +
+          '.',
+        appView.width / 2,
+        30
+      )
+      appView.screenGraphics.text(
+        'What perils will they face?  Find out next time!',
+        appView.width / 2 - 130,
+        700
+      )
+      propagatedCreaturesBackButton.draw()
+
+      appView.screenGraphics.pop()
     }
   }
 
@@ -1208,150 +1778,6 @@ export default function sketch(p5: p5) {
   }
 
   // COMPONENT DRAWING
-
-  function drawSortedCreaturesScreenImage(): void {
-    appView.screenGraphics.push()
-    appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-    appView.screenGraphics.background(220, 253, 102)
-    appView.screenGraphics.noStroke()
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.sortedCreatures[i]
-      const gridIndex = i
-
-      const gridX = gridIndex % 40
-      const gridY = Math.floor(gridIndex / 40) + 1
-
-      creatureDrawer.drawCreature(
-        creature,
-        gridX * 3 + 5.5,
-        gridY * 2.5 + 4,
-        appView.screenGraphics
-      )
-    }
-    appView.screenGraphics.pop()
-
-    appView.screenGraphics.push()
-    appView.screenGraphics.scale(1.5)
-
-    appView.screenGraphics.textAlign(p5.CENTER)
-    appView.screenGraphics.textFont(font, 24)
-    appView.screenGraphics.fill(100, 100, 200)
-    appView.screenGraphics.noStroke()
-
-    appView.screenGraphics.fill(0)
-    appView.screenGraphics.text(
-      'Fastest creatures at the top!',
-      appView.width / 2,
-      30
-    )
-    appView.screenGraphics.text(
-      'Slowest creatures at the bottom. (Going backward = slow)',
-      appView.width / 2 - 200,
-      700
-    )
-    cullCreaturesButton.draw()
-
-    appView.screenGraphics.pop()
-  }
-
-  function drawPropagatedCreaturesScreenImage(): void {
-    appView.screenGraphics.push()
-    appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-    appView.screenGraphics.background(220, 253, 102)
-    appView.screenGraphics.noStroke()
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      let creature = appState.sortedCreatures[i]
-      const index = creatureIdToIndex(creature.id)
-      creature = appState.creaturesInLatestGeneration[index]
-
-      const gridIndex = i
-
-      const gridX = gridIndex % 40
-      const gridY = Math.floor(gridIndex / 40) + 1
-
-      creatureDrawer.drawCreature(
-        creature,
-        gridX * 3 + 5.5,
-        gridY * 2.5 + 4,
-        appView.screenGraphics
-      )
-    }
-    appView.screenGraphics.pop()
-
-    appView.screenGraphics.push()
-    appView.screenGraphics.scale(1.5)
-
-    appView.screenGraphics.textAlign(p5.CENTER)
-    appView.screenGraphics.textFont(font, 24)
-    appView.screenGraphics.fill(100, 100, 200)
-    appView.screenGraphics.noStroke()
-
-    appView.screenGraphics.fill(0)
-    appView.screenGraphics.text(
-      'These are the 1000 creatures of generation #' +
-        (appState.generationCount + 1) +
-        '.',
-      appView.width / 2,
-      30
-    )
-    appView.screenGraphics.text(
-      'What perils will they face?  Find out next time!',
-      appView.width / 2 - 130,
-      700
-    )
-    propagatedCreaturesBackButton.draw()
-
-    appView.screenGraphics.pop()
-  }
-
-  function drawStepByStepSimulationView(): void {
-    const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
-
-    p5.background(120, 200, 255)
-
-    p5.push()
-
-    p5.translate(p5.width / 2.0, p5.height / 2.0)
-    p5.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
-    p5.translate(
-      -simulationState.camera.x * SCALE_TO_FIX_BUG,
-      -simulationState.camera.y * SCALE_TO_FIX_BUG
-    )
-
-    drawPosts(0)
-    drawGround(0)
-    creatureDrawer.drawCreaturePieces(
-      simulationState.creature.nodes,
-      simulationState.creature.muscles,
-      0,
-      0,
-      p5
-    )
-    drawArrow(averageX)
-
-    p5.pop()
-  }
-
-  function drawStepByStepFinalFitness(): void {
-    const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
-
-    p5.noStroke()
-    p5.fill(0, 0, 0, 130)
-    p5.rect(0, 0, appView.width, appView.height)
-    p5.fill(0, 0, 0, 255)
-    p5.rect(appView.width / 2 - 500, 200, 1000, 240)
-    p5.fill(255, 0, 0)
-    p5.textAlign(p5.CENTER)
-    p5.textFont(font, 96)
-    p5.text("Creature's " + FITNESS_LABEL + ':', appView.width / 2, 300)
-    p5.text(
-      p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
-      appView.width / 2,
-      400
-    )
-  }
 
   function drawGround(toImage: number): void {
     const {averageX, averageY} = averagePositionOfNodes(
@@ -1489,304 +1915,6 @@ export default function sketch(p5: p5) {
     )
   }
 
-  function drawGraphImage(): void {
-    p5.image(graphImage, 50, 180, 650, 380)
-    p5.image(segBarImage, 50, 580, 650, 100)
-
-    if (appState.generationCount >= 1) {
-      p5.stroke(0, 160, 0, 255)
-      p5.strokeWeight(3)
-
-      const genWidth = 590.0 / appState.generationCount
-      const lineX = 110 + appState.selectedGeneration * genWidth
-
-      p5.line(lineX, 180, lineX, 500 + 180)
-
-      p5.textAlign(p5.LEFT)
-      p5.textFont(font, 12)
-      p5.noStroke()
-
-      const speciesCounts =
-        appState.speciesCountsHistoryMap[appState.selectedGeneration] || []
-
-      // Identify the largest species count.
-      const highCount = speciesCounts.reduce(
-        (max, entry) => Math.max(max, entry.count),
-        0
-      )
-
-      const minCountToBeLabeled = 25
-      const yOffset = 573
-
-      let cumulativeStart = 0
-
-      speciesCounts.forEach(({speciesId, count}) => {
-        if (count >= minCountToBeLabeled) {
-          // When this species has a count of at least 25, label it on the graph.
-
-          // Set the starting y position for this species' label.
-          const y = Math.floor(
-            ((cumulativeStart + count / 2) / CREATURE_COUNT) * 100 + yOffset
-          )
-
-          if (count === highCount) {
-            /*
-             * When the count for this species matches the largest count, add
-             * emphasis to its style.
-             */
-
-            p5.stroke(0)
-            p5.strokeWeight(2)
-          } else {
-            p5.noStroke()
-          }
-
-          p5.fill(255, 255, 255)
-          p5.rect(lineX + 3, y, 56, 14)
-          p5.colorMode(p5.HSB, 1.0)
-          p5.fill(appView.getColor(speciesId, true))
-          // Example label: "S45: 207"
-          p5.text(`S${speciesId}: ${count}`, lineX + 5, y + 11)
-          p5.colorMode(p5.RGB, 255)
-        }
-
-        cumulativeStart += count
-      })
-
-      p5.noStroke()
-    }
-  }
-
-  function drawGraph(graphWidth: number, graphHeight: number): void {
-    graphImage.background(220)
-
-    if (appState.generationCount >= 1) {
-      drawLines(
-        90,
-        toInt(graphHeight * 0.05),
-        graphWidth - 90,
-        toInt(graphHeight * 0.9)
-      )
-      drawSegBars(90, 0, graphWidth - 90, 150)
-    }
-  }
-
-  function drawLines(
-    x: number,
-    y: number,
-    graphWidth: number,
-    graphHeight: number
-  ): void {
-    const gh = graphHeight
-    const genWidth = graphWidth / appState.generationCount
-    const best = extreme(1)
-    const worst = extreme(-1)
-    const meterHeight = graphHeight / (best - worst)
-    const zero = (best / (best - worst)) * gh
-    const unit = setUnit(best, worst)
-
-    graphImage.stroke(150)
-    graphImage.strokeWeight(2)
-    graphImage.fill(150)
-    graphImage.textFont(font, 18)
-    graphImage.textAlign(p5.RIGHT)
-
-    for (
-      let i = Math.ceil((worst - (best - worst) / 18.0) / unit) * unit;
-      i < best + (best - worst) / 18.0;
-      i += unit
-    ) {
-      const lineY = y - i * meterHeight + zero
-      graphImage.line(x, lineY, graphWidth + x, lineY)
-      graphImage.text(
-        showUnit(i, unit) + ' ' + FITNESS_UNIT_LABEL,
-        x - 5,
-        lineY + 4
-      )
-    }
-
-    graphImage.stroke(0)
-
-    for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
-      let k
-
-      if (i == 28) {
-        k = 14
-      } else if (i < 14) {
-        k = i
-      } else {
-        k = i + 1
-      }
-
-      if (k == 14) {
-        graphImage.stroke(255, 0, 0, 255)
-        graphImage.strokeWeight(5)
-      } else {
-        p5.stroke(0)
-
-        if (k == 0 || k == 28 || (k >= 10 && k <= 18)) {
-          graphImage.strokeWeight(3)
-        } else {
-          graphImage.strokeWeight(1)
-        }
-      }
-
-      for (let i = 0; i < appState.generationCount; i++) {
-        graphImage.line(
-          x + i * genWidth,
-          -appState.fitnessPercentileHistory[i][k] * meterHeight + zero + y,
-          x + (i + 1) * genWidth,
-          -appState.fitnessPercentileHistory[i + 1][k] * meterHeight + zero + y
-        )
-      }
-    }
-  }
-
-  function drawSegBars(
-    x: number,
-    y: number,
-    graphWidth: number,
-    graphHeight: number
-  ): void {
-    segBarImage.noStroke()
-    segBarImage.colorMode(p5.HSB, 1)
-    segBarImage.background(0, 0, 0.5)
-
-    const generationWidth = graphWidth / appState.generationCount
-    const generationsPerBar = Math.floor(appState.generationCount / 500) + 1
-
-    for (let i1 = 0; i1 < appState.generationCount; i1 += generationsPerBar) {
-      const i2 = Math.min(i1 + generationsPerBar, appState.generationCount)
-
-      const barX1 = x + i1 * generationWidth
-      const barX2 = x + i2 * generationWidth
-
-      /*
-       * The initial index `i1` of `0` does not correspond to a generation, so
-       * fall back to an empty species counts history entry.
-       */
-      const speciesCounts1 = appState.speciesCountsHistoryMap[i1] || []
-      const speciesCounts2 = appState.speciesCountsHistoryMap[i2]
-
-      /*
-       * Joined entries will include a count for all species represented between
-       * both generations, using a count of `0` where a species has no count in
-       * the given generation.
-       */
-      const joinedEntries = []
-
-      let countIndex1 = 0
-      let countIndex2 = 0
-
-      while (
-        countIndex1 < speciesCounts1.length ||
-        countIndex2 < speciesCounts2.length
-      ) {
-        const entry1 = speciesCounts1[countIndex1]
-        const entry2 = speciesCounts2[countIndex2]
-
-        if (entry1?.speciesId === entry2?.speciesId) {
-          joinedEntries.push({
-            speciesId: entry1.speciesId,
-            countStart: entry1.count,
-            countEnd: entry2.count
-          })
-
-          countIndex1++
-          countIndex2++
-        } else if (entry2 == null || entry1?.speciesId < entry2.speciesId) {
-          joinedEntries.push({
-            speciesId: entry1.speciesId,
-            countStart: entry1.count,
-            countEnd: 0
-          })
-
-          countIndex1++
-        } else {
-          joinedEntries.push({
-            speciesId: entry2.speciesId,
-            countStart: 0,
-            countEnd: entry2.count
-          })
-
-          countIndex2++
-        }
-      }
-
-      let cumulativeStart = 0
-      let cumulativeEnd = 0
-
-      if (speciesCounts1.length === 0) {
-        // Start all graph areas from the middle of the range.
-        cumulativeStart = Math.floor(CREATURE_COUNT / 2)
-      }
-
-      joinedEntries.forEach(({speciesId, countStart, countEnd}) => {
-        segBarImage.fill(appView.getColor(speciesId, false))
-        segBarImage.beginShape()
-
-        // top-left and top-right
-        const start1 = cumulativeStart / CREATURE_COUNT
-        const end1 = cumulativeEnd / CREATURE_COUNT
-
-        // Accumulate the counts for the next species' offset.
-        cumulativeStart += countStart
-        cumulativeEnd += countEnd
-
-        // bottom-left and bottom-right
-        const start2 = cumulativeStart / CREATURE_COUNT
-        const end2 = cumulativeEnd / CREATURE_COUNT
-
-        // Draw quadrilateral, counter-clockwise.
-        segBarImage.vertex(barX1, y + start1 * graphHeight)
-        segBarImage.vertex(barX1, y + start2 * graphHeight)
-        segBarImage.vertex(barX2, y + end2 * graphHeight)
-        segBarImage.vertex(barX2, y + end1 * graphHeight)
-
-        segBarImage.endShape()
-      })
-    }
-
-    p5.colorMode(p5.RGB, 255)
-  }
-
-  function extreme(sign: number): number {
-    let record = -sign
-
-    for (let i = 0; i < appState.generationCount; i++) {
-      const toTest =
-        appState.fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
-
-      if (toTest * sign > record * sign) {
-        record = toTest
-      }
-    }
-
-    return record
-  }
-
-  function setUnit(best: number, worst: number): number {
-    const unit2 = (3 * Math.log(best - worst)) / Math.log(10) - 2
-
-    if ((unit2 + 90) % 3 < 1) {
-      return Math.pow(10, Math.floor(unit2 / 3))
-    }
-
-    if ((unit2 + 90) % 3 < 2) {
-      return Math.pow(10, Math.floor((unit2 - 1) / 3)) * 2
-    }
-
-    return Math.pow(10, Math.floor((unit2 - 2) / 3)) * 5
-  }
-
-  function showUnit(i: number, unit: number): String {
-    if (unit < 1) {
-      return p5.nf(i, 0, 2) + ''
-    }
-
-    return toInt(i) + ''
-  }
-
   function getGridIndexUnderCursor(
     gridStartX: number,
     gridStartY: number
@@ -1817,98 +1945,6 @@ export default function sketch(p5: p5) {
     }
 
     return null
-  }
-
-  function drawHistogram(x: number, y: number, hw: number, hh: number): void {
-    let maxH = 1
-
-    for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
-      if (appState.histogramBarCounts[appState.selectedGeneration][i] > maxH) {
-        maxH = appState.histogramBarCounts[appState.selectedGeneration][i]
-      }
-    }
-
-    p5.fill(200)
-    p5.noStroke()
-    p5.rect(x, y, hw, hh)
-    p5.fill(0, 0, 0)
-
-    const barW = hw / HISTOGRAM_BAR_SPAN
-    const multiplier = (hh / maxH) * 0.9
-
-    p5.textAlign(p5.LEFT)
-    p5.textFont(font, 16)
-    p5.stroke(128)
-    p5.strokeWeight(2)
-
-    let unit = 100
-
-    if (maxH < 300) {
-      unit = 50
-    }
-
-    if (maxH < 100) {
-      unit = 20
-    }
-
-    if (maxH < 50) {
-      unit = 10
-    }
-
-    for (let i = 0; i < hh / multiplier; i += unit) {
-      let theY = y + hh - i * multiplier
-
-      p5.line(x, theY, x + hw, theY)
-
-      if (i == 0) {
-        theY -= 5
-      }
-
-      p5.text(i, x + hw + 5, theY + 7)
-    }
-
-    p5.textAlign(p5.CENTER)
-
-    for (let i = HISTOGRAM_BAR_MIN; i <= HISTOGRAM_BAR_MAX; i += 10) {
-      if (i == 0) {
-        p5.stroke(0, 0, 255)
-      } else {
-        p5.stroke(128)
-      }
-
-      const theX = x + (i - HISTOGRAM_BAR_MIN) * barW
-
-      p5.text(p5.nf(i / HISTOGRAM_BARS_PER_METER, 0, 1), theX, y + hh + 14)
-      p5.line(theX, y, theX, y + hh)
-    }
-
-    p5.noStroke()
-
-    for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
-      const h = Math.min(
-        appState.histogramBarCounts[appState.selectedGeneration][i] *
-          multiplier,
-        hh
-      )
-
-      if (
-        i + HISTOGRAM_BAR_MIN ==
-        Math.floor(
-          appState.fitnessPercentileHistory[
-            Math.min(
-              appState.selectedGeneration,
-              appState.fitnessPercentileHistory.length - 1
-            )
-          ][14] * HISTOGRAM_BARS_PER_METER
-        )
-      ) {
-        p5.fill(255, 0, 0)
-      } else {
-        p5.fill(0, 0, 0)
-      }
-
-      p5.rect(x + i * barW, y + hh - h, barW, h)
-    }
   }
 
   function drawStats(x: number, y: number, size: number): void {
@@ -1955,36 +1991,6 @@ export default function sketch(p5: p5) {
     )
 
     p5.pop()
-  }
-
-  function drawWorstMedianAndBestCreatures(): void {
-    p5.noStroke()
-    p5.textAlign(p5.CENTER)
-
-    const historyEntry =
-      appState.generationHistoryMap[appState.selectedGeneration]
-
-    for (let k = 0; k < 3; k++) {
-      p5.fill(220)
-      p5.rect(760 + k * 160, 180, 140, 140)
-
-      p5.push()
-
-      p5.translate(830 + 160 * k, 290)
-      p5.scale(60.0 / SCALE_TO_FIX_BUG)
-
-      const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
-
-      creatureDrawer.drawCreature(creature, 0, 0, p5)
-
-      p5.pop()
-    }
-
-    p5.fill(0)
-    p5.textFont(font, 16)
-    p5.text('Worst Creature', 830, 310)
-    p5.text('Median Creature', 990, 310)
-    p5.text('Best Creature', 1150, 310)
   }
 
   function updateSelectedGenerationAndSliderPosition(): void {

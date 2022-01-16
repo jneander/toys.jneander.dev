@@ -1476,18 +1476,18 @@ export default function sketch(p5: p5) {
       canvas.push()
       canvas.scale(10.0 / SCALE_TO_FIX_BUG)
 
-      for (let y = 0; y < 25; y++) {
-        for (let x = 0; x < 40; x++) {
-          const index = y * 40 + x
-          const creature = this.appState.creaturesInLatestGeneration[index]
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = this.appState.creaturesInLatestGeneration[i]
 
-          creatureDrawer.drawCreature(
-            creature,
-            x * 3 + 5.5,
-            y * 2.5 + 3,
-            canvas
-          )
-        }
+        const gridX = i % 40
+        const gridY = Math.floor(i / 40)
+
+        creatureDrawer.drawCreature(
+          creature,
+          gridX * 3 + 5.5,
+          gridY * 2.5 + 3,
+          canvas
+        )
       }
 
       canvas.pop()

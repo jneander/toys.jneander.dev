@@ -35,8 +35,6 @@ export default function sketch(p5: p5) {
   const SEED = 0
 
   let font: Font
-  let graphImage: Graphics
-  let segBarImage: Graphics
 
   const appState: AppState = {
     creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
@@ -713,6 +711,9 @@ export default function sketch(p5: p5) {
 
     private draggingSlider: boolean
 
+    private generationHistoryGraphics: Graphics
+    private graphGraphics: Graphics
+
     constructor() {
       super()
 
@@ -724,6 +725,14 @@ export default function sketch(p5: p5) {
       this.generationSlider = new GenerationSlider()
 
       this.draggingSlider = false
+
+      this.generationHistoryGraphics = p5.createGraphics(975, 150)
+      this.graphGraphics = p5.createGraphics(975, 570)
+    }
+
+    deinitialize(): void {
+      this.generationHistoryGraphics.remove()
+      this.graphGraphics.remove()
     }
 
     draw(): void {
@@ -883,7 +892,8 @@ export default function sketch(p5: p5) {
     }
 
     private drawGraph(graphWidth: number, graphHeight: number): void {
-      graphImage.background(220)
+      this.generationHistoryGraphics.background(220)
+      this.graphGraphics.background(220)
 
       if (appState.generationCount >= 1) {
         this.drawLines(
@@ -897,8 +907,8 @@ export default function sketch(p5: p5) {
     }
 
     private drawGraphImage(): void {
-      p5.image(graphImage, 50, 180, 650, 380)
-      p5.image(segBarImage, 50, 580, 650, 100)
+      p5.image(this.graphGraphics, 50, 180, 650, 380)
+      p5.image(this.generationHistoryGraphics, 50, 580, 650, 100)
 
       if (appState.generationCount >= 1) {
         p5.stroke(0, 160, 0, 255)
@@ -1072,11 +1082,11 @@ export default function sketch(p5: p5) {
       const zero = (best / (best - worst)) * gh
       const unit = this.setUnit(best, worst)
 
-      graphImage.stroke(150)
-      graphImage.strokeWeight(2)
-      graphImage.fill(150)
-      graphImage.textFont(font, 18)
-      graphImage.textAlign(p5.RIGHT)
+      this.graphGraphics.stroke(150)
+      this.graphGraphics.strokeWeight(2)
+      this.graphGraphics.fill(150)
+      this.graphGraphics.textFont(font, 18)
+      this.graphGraphics.textAlign(p5.RIGHT)
 
       for (
         let i = Math.ceil((worst - (best - worst) / 18.0) / unit) * unit;
@@ -1084,15 +1094,15 @@ export default function sketch(p5: p5) {
         i += unit
       ) {
         const lineY = y - i * meterHeight + zero
-        graphImage.line(x, lineY, graphWidth + x, lineY)
-        graphImage.text(
+        this.graphGraphics.line(x, lineY, graphWidth + x, lineY)
+        this.graphGraphics.text(
           this.showUnit(i, unit) + ' ' + FITNESS_UNIT_LABEL,
           x - 5,
           lineY + 4
         )
       }
 
-      graphImage.stroke(0)
+      this.graphGraphics.stroke(0)
 
       for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
         let k
@@ -1106,20 +1116,20 @@ export default function sketch(p5: p5) {
         }
 
         if (k == 14) {
-          graphImage.stroke(255, 0, 0, 255)
-          graphImage.strokeWeight(5)
+          this.graphGraphics.stroke(255, 0, 0, 255)
+          this.graphGraphics.strokeWeight(5)
         } else {
           p5.stroke(0)
 
           if (k == 0 || k == 28 || (k >= 10 && k <= 18)) {
-            graphImage.strokeWeight(3)
+            this.graphGraphics.strokeWeight(3)
           } else {
-            graphImage.strokeWeight(1)
+            this.graphGraphics.strokeWeight(1)
           }
         }
 
         for (let i = 0; i < appState.generationCount; i++) {
-          graphImage.line(
+          this.graphGraphics.line(
             x + i * genWidth,
             -appState.fitnessPercentileHistory[i][k] * meterHeight + zero + y,
             x + (i + 1) * genWidth,
@@ -1137,9 +1147,9 @@ export default function sketch(p5: p5) {
       graphWidth: number,
       graphHeight: number
     ): void {
-      segBarImage.noStroke()
-      segBarImage.colorMode(p5.HSB, 1)
-      segBarImage.background(0, 0, 0.5)
+      this.generationHistoryGraphics.noStroke()
+      this.generationHistoryGraphics.colorMode(p5.HSB, 1)
+      this.generationHistoryGraphics.background(0, 0, 0.5)
 
       const generationWidth = graphWidth / appState.generationCount
       const generationsPerBar = Math.floor(appState.generationCount / 500) + 1
@@ -1211,8 +1221,10 @@ export default function sketch(p5: p5) {
         }
 
         joinedEntries.forEach(({speciesId, countStart, countEnd}) => {
-          segBarImage.fill(appView.getColor(speciesId, false))
-          segBarImage.beginShape()
+          this.generationHistoryGraphics.fill(
+            appView.getColor(speciesId, false)
+          )
+          this.generationHistoryGraphics.beginShape()
 
           // top-left and top-right
           const start1 = cumulativeStart / CREATURE_COUNT
@@ -1227,12 +1239,12 @@ export default function sketch(p5: p5) {
           const end2 = cumulativeEnd / CREATURE_COUNT
 
           // Draw quadrilateral, counter-clockwise.
-          segBarImage.vertex(barX1, y + start1 * graphHeight)
-          segBarImage.vertex(barX1, y + start2 * graphHeight)
-          segBarImage.vertex(barX2, y + end2 * graphHeight)
-          segBarImage.vertex(barX2, y + end1 * graphHeight)
+          this.generationHistoryGraphics.vertex(barX1, y + start1 * graphHeight)
+          this.generationHistoryGraphics.vertex(barX1, y + start2 * graphHeight)
+          this.generationHistoryGraphics.vertex(barX2, y + end2 * graphHeight)
+          this.generationHistoryGraphics.vertex(barX2, y + end1 * graphHeight)
 
-          segBarImage.endShape()
+          this.generationHistoryGraphics.endShape()
         })
       }
 
@@ -1986,11 +1998,6 @@ export default function sketch(p5: p5) {
       new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0.0)
     )
     appState.histogramBarCounts.push(new Array(HISTOGRAM_BAR_SPAN).fill(0))
-
-    graphImage = p5.createGraphics(975, 570)
-    segBarImage = p5.createGraphics(975, 150)
-
-    segBarImage.background(220)
 
     creatureDrawer = new CreatureDrawer({
       axonColor: p5.color(255, 255, 0),

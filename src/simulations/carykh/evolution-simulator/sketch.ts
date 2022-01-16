@@ -101,13 +101,16 @@ export default function sketch(p5: p5) {
 
   interface WidgetConfig {
     appController: AppController
+    appState: AppState
   }
 
   abstract class Widget {
     protected appController: AppController
+    protected appState: AppState
 
     constructor(config: WidgetConfig) {
       this.appController = config.appController
+      this.appState = config.appState
     }
 
     abstract draw(): void
@@ -171,7 +174,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appState.generationCount = 0
+      this.appState.generationCount = 0
       this.appController.setActivityId(ActivityId.GenerationView)
     }
   }
@@ -232,7 +235,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appState.pendingGenerationCount = 1
+      this.appState.pendingGenerationCount = 1
       this.appController.startASAP()
     }
   }
@@ -243,7 +246,7 @@ export default function sketch(p5: p5) {
 
       canvas.noStroke()
 
-      if (appState.pendingGenerationCount >= 2) {
+      if (this.appState.pendingGenerationCount >= 2) {
         canvas.fill(128, 255, 128)
       } else {
         canvas.fill(70, 140, 70)
@@ -259,7 +262,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appState.pendingGenerationCount = 1000000000
+      this.appState.pendingGenerationCount = 1000000000
       this.appController.startASAP()
     }
   }
@@ -281,11 +284,11 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      for (let s = appState.viewTimer; s < 900; s++) {
+      for (let s = this.appState.viewTimer; s < 900; s++) {
         this.appController.advanceSimulation()
       }
 
-      appState.viewTimer = 1021
+      this.appState.viewTimer = 1021
     }
   }
 
@@ -387,7 +390,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appState.viewTimer = 100000
+      this.appState.viewTimer = 100000
     }
   }
 
@@ -488,8 +491,10 @@ export default function sketch(p5: p5) {
       canvas.rect(this.xPosition, 340, 50, 50)
 
       let fs = 0
-      if (appState.selectedGeneration >= 1) {
-        fs = Math.floor(Math.log(appState.selectedGeneration) / Math.log(10))
+      if (this.appState.selectedGeneration >= 1) {
+        fs = Math.floor(
+          Math.log(this.appState.selectedGeneration) / Math.log(10)
+        )
       }
 
       const fontSize = FONT_SIZES[fs]
@@ -497,7 +502,7 @@ export default function sketch(p5: p5) {
       canvas.textFont(font, fontSize)
       canvas.fill(0)
       canvas.text(
-        appState.selectedGeneration,
+        this.appState.selectedGeneration,
         this.xPosition + 25,
         366 + fontSize * 0.3333
       )
@@ -523,17 +528,17 @@ export default function sketch(p5: p5) {
         this.xPositionMax
       )
 
-      const {generationCount} = appState
+      const {generationCount} = this.appState
 
       if (generationCount > 1) {
         // After 2 generations, the slider starts at generation 1.
-        appState.selectedGeneration =
+        this.appState.selectedGeneration =
           Math.round(
             ((this.xPosition - this.xPositionMin) * (generationCount - 1)) /
               this.xPositionRange
           ) + 1
       } else {
-        appState.selectedGeneration = Math.round(
+        this.appState.selectedGeneration = Math.round(
           ((this.xPosition - this.xPositionMin) * generationCount) /
             this.xPositionRange
         )
@@ -543,7 +548,7 @@ export default function sketch(p5: p5) {
     updatePosition(): void {
       // Update slider position to reflect change in generation range.
 
-      const {generationCount, selectedGeneration} = appState
+      const {generationCount, selectedGeneration} = this.appState
 
       if (selectedGeneration === generationCount) {
         // When selecting the latest generation, push the slider to max.
@@ -575,7 +580,7 @@ export default function sketch(p5: p5) {
     private getInitialPosition(): number {
       // Get initial slider position based on app state.
 
-      const {generationCount, selectedGeneration} = appState
+      const {generationCount, selectedGeneration} = this.appState
 
       if (selectedGeneration === generationCount) {
         // When selecting the latest generation, push the slider to max.
@@ -603,7 +608,7 @@ export default function sketch(p5: p5) {
       const {font} = appView
 
       this.simulationView = new SimulationView({
-        appState,
+        appState: this.appState,
         creatureDrawer,
         height: 600,
         p5,
@@ -621,6 +626,8 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
+      const {appState} = this
+
       const {canvas, font} = appView
 
       let x, y, px, py
@@ -730,7 +737,7 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.startButton = new StartViewStartButton({appController})
+      this.startButton = new StartViewStartButton({appController, appState})
     }
 
     initialize(): void {
@@ -769,7 +776,8 @@ export default function sketch(p5: p5) {
       super()
 
       const widgetConfig = {
-        appController
+        appController,
+        appState
       }
 
       this.popupSimulationView = new PopupSimulationView(widgetConfig)
@@ -1406,7 +1414,10 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.backButton = new GeneratedCreaturesBackButton({appController})
+      this.backButton = new GeneratedCreaturesBackButton({
+        appController,
+        appState
+      })
     }
 
     initialize(): void {
@@ -1472,7 +1483,8 @@ export default function sketch(p5: p5) {
       })
 
       const widgetConfig = {
-        appController
+        appController,
+        appState
       }
 
       this.skipButton = new StepByStepSkipButton(widgetConfig)
@@ -1618,7 +1630,8 @@ export default function sketch(p5: p5) {
       super()
 
       const widgetConfig = {
-        appController
+        appController,
+        appState
       }
 
       this.popupSimulationView = new PopupSimulationView(widgetConfig)
@@ -1712,7 +1725,10 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.skipButton = new SortingCreaturesSkipButton({appController})
+      this.skipButton = new SortingCreaturesSkipButton({
+        appController,
+        appState
+      })
     }
 
     draw(): void {
@@ -1774,7 +1790,8 @@ export default function sketch(p5: p5) {
       super()
 
       const widgetConfig = {
-        appController
+        appController,
+        appState
       }
 
       this.popupSimulationView = new PopupSimulationView(widgetConfig)
@@ -1868,7 +1885,8 @@ export default function sketch(p5: p5) {
       super()
 
       const widgetConfig = {
-        appController
+        appController,
+        appState
       }
 
       this.popupSimulationView = new PopupSimulationView(widgetConfig)
@@ -1975,7 +1993,10 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.backButton = new PropagatedCreaturesBackButton({appController})
+      this.backButton = new PropagatedCreaturesBackButton({
+        appController,
+        appState
+      })
     }
 
     initialize(): void {

@@ -672,7 +672,6 @@ export default function sketch(p5: p5) {
         popUpImage
       )
 
-      popUpImage.noStroke()
       popUpImage.pop()
 
       p5.image(popUpImage, px2, py2, 300, 300)

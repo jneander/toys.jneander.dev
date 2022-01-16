@@ -669,9 +669,161 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class GenerationViewActivity extends Activity {
+    draw(): void {
+      if (draggingSlider && appState.generationCount >= 1) {
+        generationSlider.onDrag()
+      }
+
+      p5.noStroke()
+      p5.fill(0)
+      p5.background(255, 200, 130)
+      p5.textFont(font, 32)
+      p5.textAlign(p5.LEFT)
+      p5.textFont(font, 96)
+      p5.text('Generation ' + Math.max(appState.selectedGeneration, 0), 20, 100)
+      p5.textFont(font, 28)
+
+      if (appState.generationCount == -1) {
+        p5.fill(0)
+        p5.text(
+          `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
+          20,
+          160
+        )
+        p5.text('They will be randomly created, and also very simple.', 20, 200)
+        generationViewCreateButton.draw()
+      } else {
+        simulateStepByStepButton.draw()
+        simulateQuickButton.draw()
+        simulateAsapButton.draw()
+        simulateAlapButton.draw()
+
+        p5.fill(0)
+        p5.text('Median ' + FITNESS_LABEL, 50, 160)
+        p5.textAlign(p5.CENTER)
+        p5.textAlign(p5.RIGHT)
+        p5.text(
+          Math.round(
+            appState.fitnessPercentileHistory[
+              Math.min(
+                appState.selectedGeneration,
+                appState.fitnessPercentileHistory.length - 1
+              )
+            ][14] * 1000
+          ) /
+            1000 +
+            ' ' +
+            FITNESS_UNIT_LABEL,
+          700,
+          160
+        )
+
+        if (
+          appState.generationCountDepictedInGraph !== appState.generationCount
+        ) {
+          drawGraph(975, 570)
+          appState.generationCountDepictedInGraph = appState.generationCount
+        }
+
+        drawHistogram(760, 410, 460, 280)
+        drawGraphImage()
+
+        if (appState.generationCount >= 1) {
+          generationSlider.draw()
+        }
+
+        if (appState.selectedGeneration >= 1) {
+          drawWorstMedianAndBestCreatures()
+        }
+
+        if (
+          appState.selectedGeneration > 0 &&
+          appState.pendingGenerationCount === 0 &&
+          !draggingSlider
+        ) {
+          const {cursorX, cursorY} = appView.getCursorPosition()
+
+          /*
+           * When the cursor is over the worst, median, or best creature, the popup
+           * simulation will be displayed for that creature.
+           */
+
+          let worstMedianOrBest: number | null = null
+
+          if (Math.abs(cursorY - 250) <= 70) {
+            if (Math.abs(cursorX - 990) <= 230) {
+              const modX = (cursorX - 760) % 160
+
+              if (modX < 140) {
+                worstMedianOrBest = Math.floor((cursorX - 760) / 160) - 3
+              }
+            }
+          }
+
+          if (worstMedianOrBest != null) {
+            appController.setPopupSimulationCreatureId(worstMedianOrBest)
+            statusWindowView.draw()
+          } else {
+            appController.clearPopupSimulation()
+          }
+        } else {
+          appController.clearPopupSimulation()
+        }
+      }
+
+      if (appState.pendingGenerationCount > 0) {
+        appState.pendingGenerationCount--
+
+        if (appState.pendingGenerationCount > 0) {
+          appController.startASAP()
+        }
+      } else {
+        appState.generationSimulationMode = GenerationSimulationMode.Off
+      }
+
+      if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
+        appController.setSimulationState(
+          appState.creaturesInLatestGeneration[appState.creaturesTested]
+        )
+        appController.finishGenerationSimulationFromIndex(0)
+        appController.sortCreatures()
+        appController.updateHistory()
+        appController.cullCreatures()
+        appController.propagateCreatures()
+        updateSelectedGenerationAndSliderPosition()
+      }
+    }
+
+    onMousePressed(): void {
+      if (appState.generationCount >= 1 && generationSlider.isUnderCursor()) {
+        draggingSlider = true
+      }
+    }
+
+    onMouseReleased(): void {
+      if (
+        appState.generationCount === -1 &&
+        generationViewCreateButton.isUnderCursor()
+      ) {
+        generationViewCreateButton.onClick()
+      } else if (appState.generationCount >= 0) {
+        if (simulateStepByStepButton.isUnderCursor()) {
+          simulateStepByStepButton.onClick()
+        } else if (simulateQuickButton.isUnderCursor()) {
+          simulateQuickButton.onClick()
+        } else if (simulateAsapButton.isUnderCursor()) {
+          simulateAsapButton.onClick()
+        } else if (simulateAlapButton.isUnderCursor()) {
+          simulateAlapButton.onClick()
+        }
+      }
+    }
+  }
+
   const activityClassByActivityId = {
     [ActivityId.Start]: StartActivity,
-    [ActivityId.GenerationView]: NullActivity,
+    [ActivityId.GenerationView]: GenerationViewActivity,
     [ActivityId.GeneratingCreatures]: NullActivity,
     [ActivityId.GeneratedCreatures]: NullActivity,
     [ActivityId.SimulationRunning]: NullActivity,
@@ -712,105 +864,6 @@ export default function sketch(p5: p5) {
       690
     )
     generatedCreaturesBackButton.draw()
-  }
-
-  function drawGenerationViewActivity(): void {
-    p5.noStroke()
-    p5.fill(0)
-    p5.background(255, 200, 130)
-    p5.textFont(font, 32)
-    p5.textAlign(p5.LEFT)
-    p5.textFont(font, 96)
-    p5.text('Generation ' + Math.max(appState.selectedGeneration, 0), 20, 100)
-    p5.textFont(font, 28)
-
-    if (appState.generationCount == -1) {
-      p5.fill(0)
-      p5.text(
-        `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
-        20,
-        160
-      )
-      p5.text('They will be randomly created, and also very simple.', 20, 200)
-      generationViewCreateButton.draw()
-    } else {
-      simulateStepByStepButton.draw()
-      simulateQuickButton.draw()
-      simulateAsapButton.draw()
-      simulateAlapButton.draw()
-
-      p5.fill(0)
-      p5.text('Median ' + FITNESS_LABEL, 50, 160)
-      p5.textAlign(p5.CENTER)
-      p5.textAlign(p5.RIGHT)
-      p5.text(
-        Math.round(
-          appState.fitnessPercentileHistory[
-            Math.min(
-              appState.selectedGeneration,
-              appState.fitnessPercentileHistory.length - 1
-            )
-          ][14] * 1000
-        ) /
-          1000 +
-          ' ' +
-          FITNESS_UNIT_LABEL,
-        700,
-        160
-      )
-
-      if (
-        appState.generationCountDepictedInGraph !== appState.generationCount
-      ) {
-        drawGraph(975, 570)
-        appState.generationCountDepictedInGraph = appState.generationCount
-      }
-
-      drawHistogram(760, 410, 460, 280)
-      drawGraphImage()
-
-      if (appState.generationCount >= 1) {
-        generationSlider.draw()
-      }
-
-      if (appState.selectedGeneration >= 1) {
-        drawWorstMedianAndBestCreatures()
-      }
-
-      if (
-        appState.selectedGeneration > 0 &&
-        appState.pendingGenerationCount === 0 &&
-        !draggingSlider
-      ) {
-        const {cursorX, cursorY} = appView.getCursorPosition()
-
-        /*
-         * When the cursor is over the worst, median, or best creature, the popup
-         * simulation will be displayed for that creature.
-         */
-
-        let worstMedianOrBest: number | null = null
-
-        if (Math.abs(cursorY - 250) <= 70) {
-          if (Math.abs(cursorX - 990) <= 230) {
-            const modX = (cursorX - 760) % 160
-
-            if (modX < 140) {
-              worstMedianOrBest = Math.floor((cursorX - 760) / 160) - 3
-            }
-          }
-        }
-
-        if (worstMedianOrBest != null) {
-          appController.setPopupSimulationCreatureId(worstMedianOrBest)
-          statusWindowView.draw()
-        } else {
-          appController.clearPopupSimulation()
-        }
-      } else {
-        appController.clearPopupSimulation()
-      }
-    }
   }
 
   function drawFinishedStepByStepActivity(): void {
@@ -1841,14 +1894,6 @@ export default function sketch(p5: p5) {
     if (appState.pendingGenerationCount >= 1) {
       appState.pendingGenerationCount = 0
     }
-
-    if (
-      appState.currentActivityId === ActivityId.GenerationView &&
-      appState.generationCount >= 1 &&
-      generationSlider.isUnderCursor()
-    ) {
-      draggingSlider = true
-    }
   }
 
   p5.mouseReleased = () => {
@@ -1859,25 +1904,6 @@ export default function sketch(p5: p5) {
     appState.currentActivity.onMouseReleased()
 
     if (
-      appState.currentActivityId === ActivityId.GenerationView &&
-      appState.generationCount == -1 &&
-      generationViewCreateButton.isUnderCursor()
-    ) {
-      generationViewCreateButton.onClick()
-    } else if (
-      appState.currentActivityId === ActivityId.GenerationView &&
-      appState.generationCount >= 0
-    ) {
-      if (simulateStepByStepButton.isUnderCursor()) {
-        simulateStepByStepButton.onClick()
-      } else if (simulateQuickButton.isUnderCursor()) {
-        simulateQuickButton.onClick()
-      } else if (simulateAsapButton.isUnderCursor()) {
-        simulateAsapButton.onClick()
-      } else if (simulateAlapButton.isUnderCursor()) {
-        simulateAlapButton.onClick()
-      }
-    } else if (
       appState.currentActivityId === ActivityId.GeneratedCreatures &&
       generatedCreaturesBackButton.isUnderCursor()
     ) {
@@ -1966,36 +1992,6 @@ export default function sketch(p5: p5) {
     }
 
     appState.currentActivity.draw()
-
-    if (appState.currentActivityId === ActivityId.GenerationView) {
-      if (draggingSlider && appState.generationCount >= 1) {
-        generationSlider.onDrag()
-      }
-
-      drawGenerationViewActivity()
-
-      if (appState.pendingGenerationCount > 0) {
-        appState.pendingGenerationCount--
-
-        if (appState.pendingGenerationCount > 0) {
-          appController.startASAP()
-        }
-      } else {
-        appState.generationSimulationMode = GenerationSimulationMode.Off
-      }
-
-      if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
-        appController.setSimulationState(
-          appState.creaturesInLatestGeneration[appState.creaturesTested]
-        )
-        appController.finishGenerationSimulationFromIndex(0)
-        appController.sortCreatures()
-        appController.updateHistory()
-        appController.cullCreatures()
-        appController.propagateCreatures()
-        updateSelectedGenerationAndSliderPosition()
-      }
-    }
 
     if (appState.currentActivityId === ActivityId.GeneratingCreatures) {
       appController.generateCreatures()

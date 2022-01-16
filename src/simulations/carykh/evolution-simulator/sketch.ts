@@ -612,16 +612,19 @@ export default function sketch(p5: p5) {
   }
 
   interface PopupSimulationViewConfig extends WidgetConfig {
+    simulationConfig: SimulationConfig
     simulationState: SimulationState
   }
 
   class PopupSimulationView extends Widget {
     private simulationView: SimulationView
+    private simulationConfig: SimulationConfig
     private simulationState: SimulationState
 
     constructor(config: PopupSimulationViewConfig) {
       super(config)
 
+      this.simulationConfig = config.simulationConfig
       this.simulationState = config.simulationState
 
       const {font} = this.appView
@@ -633,7 +636,7 @@ export default function sketch(p5: p5) {
         p5,
         postFont: font,
         showArrow: false,
-        simulationConfig,
+        simulationConfig: this.simulationConfig,
         simulationState: this.simulationState,
         statsFont: font,
         width: 600
@@ -812,6 +815,7 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
+        simulationConfig,
         simulationState
       }
 
@@ -1681,6 +1685,7 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
+        simulationConfig,
         simulationState
       }
 
@@ -1848,6 +1853,7 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
+        simulationConfig,
         simulationState
       }
 
@@ -1949,6 +1955,7 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
+        simulationConfig,
         simulationState
       }
 

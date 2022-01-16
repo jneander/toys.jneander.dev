@@ -858,11 +858,94 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class SimulationRunningActivity extends Activity {
+    draw(): void {
+      if (appState.viewTimer <= 900) {
+        for (let s = 0; s < simulationState.speed; s++) {
+          if (appState.viewTimer < 900) {
+            // For each point of speed, advance through one cycle of simulation.
+            appController.advanceSimulation()
+          }
+        }
+
+        updateCameraPosition()
+        drawStepByStepSimulationView()
+        drawStats(appView.width - 10, 0, 0.7)
+
+        stepByStepSkipButton.draw()
+        stepByStepPlaybackSpeedButton.draw()
+        stepByStepFinishButton.draw()
+      }
+
+      if (appState.viewTimer == 900) {
+        if (simulationState.speed < 30) {
+          // When the simulation speed is slow enough, display the creature's fitness.
+          drawStepByStepFinalFitness()
+        } else {
+          // When the simulation speed is too fast, skip ahead to next simulation using the timer.
+          appState.viewTimer = 1020
+        }
+
+        appController.setFitnessOfSimulationCreature()
+      }
+
+      if (appState.viewTimer >= 1020) {
+        appState.creaturesTested++
+
+        if (appState.creaturesTested < CREATURE_COUNT) {
+          appController.setSimulationState(
+            appState.creaturesInLatestGeneration[appState.creaturesTested]
+          )
+        } else {
+          appController.setActivityId(ActivityId.SimulationFinished)
+        }
+
+        simulationState.camera.x = 0
+      }
+
+      if (appState.viewTimer >= 900) {
+        appState.viewTimer += simulationState.speed
+      }
+    }
+
+    onMouseReleased(): void {
+      if (stepByStepSkipButton.isUnderCursor()) {
+        stepByStepSkipButton.onClick()
+      } else if (stepByStepPlaybackSpeedButton.isUnderCursor()) {
+        stepByStepPlaybackSpeedButton.onClick()
+      } else if (stepByStepFinishButton.isUnderCursor()) {
+        stepByStepFinishButton.onClick()
+      }
+    }
+
+    onMouseWheel(event: WheelEvent): void {
+      const delta = event.deltaX
+
+      if (delta < 0) {
+        simulationState.camera.zoom *= 0.9090909
+
+        if (simulationState.camera.zoom < 0.002) {
+          simulationState.camera.zoom = 0.002
+        }
+
+        p5.textFont(font, POST_FONT_SIZE)
+      } else if (delta > 0) {
+        simulationState.camera.zoom *= 1.1
+
+        if (simulationState.camera.zoom > 0.1) {
+          simulationState.camera.zoom = 0.1
+        }
+
+        p5.textFont(font, POST_FONT_SIZE)
+      }
+    }
+  }
+
   const activityClassByActivityId = {
     [ActivityId.Start]: StartActivity,
     [ActivityId.GenerationView]: GenerationViewActivity,
     [ActivityId.GenerateCreatures]: GenerateCreaturesActivity,
-    [ActivityId.SimulationRunning]: NullActivity,
+    [ActivityId.SimulationRunning]: SimulationRunningActivity,
     [ActivityId.SimulationFinished]: NullActivity,
     [ActivityId.FinishedStepByStep]: NullActivity,
     [ActivityId.SortingCreatures]: NullActivity,
@@ -1873,28 +1956,6 @@ export default function sketch(p5: p5) {
 
   p5.mouseWheel = (event: WheelEvent) => {
     appState.currentActivity.onMouseWheel(event)
-
-    const delta = event.deltaX
-
-    if (appState.currentActivityId === ActivityId.SimulationRunning) {
-      if (delta < 0) {
-        simulationState.camera.zoom *= 0.9090909
-
-        if (simulationState.camera.zoom < 0.002) {
-          simulationState.camera.zoom = 0.002
-        }
-
-        p5.textFont(font, POST_FONT_SIZE)
-      } else if (delta > 0) {
-        simulationState.camera.zoom *= 1.1
-
-        if (simulationState.camera.zoom > 0.1) {
-          simulationState.camera.zoom = 0.1
-        }
-
-        p5.textFont(font, POST_FONT_SIZE)
-      }
-    }
   }
 
   p5.mousePressed = () => {
@@ -1917,14 +1978,6 @@ export default function sketch(p5: p5) {
       sortCreaturesButton.isUnderCursor()
     ) {
       sortCreaturesButton.onClick()
-    } else if (appState.currentActivityId === ActivityId.SimulationRunning) {
-      if (stepByStepSkipButton.isUnderCursor()) {
-        stepByStepSkipButton.onClick()
-      } else if (stepByStepPlaybackSpeedButton.isUnderCursor()) {
-        stepByStepPlaybackSpeedButton.onClick()
-      } else if (stepByStepFinishButton.isUnderCursor()) {
-        stepByStepFinishButton.onClick()
-      }
     } else if (
       appState.currentActivityId === ActivityId.SortingCreatures &&
       sortingCreaturesSkipButton.isUnderCursor()
@@ -1996,57 +2049,6 @@ export default function sketch(p5: p5) {
     }
 
     appState.currentActivity.draw()
-
-    if (appState.currentActivityId === ActivityId.SimulationRunning) {
-      // simulate running
-
-      if (appState.viewTimer <= 900) {
-        for (let s = 0; s < simulationState.speed; s++) {
-          if (appState.viewTimer < 900) {
-            // For each point of speed, advance through one cycle of simulation.
-            appController.advanceSimulation()
-          }
-        }
-
-        updateCameraPosition()
-        drawStepByStepSimulationView()
-        drawStats(appView.width - 10, 0, 0.7)
-
-        stepByStepSkipButton.draw()
-        stepByStepPlaybackSpeedButton.draw()
-        stepByStepFinishButton.draw()
-      }
-
-      if (appState.viewTimer == 900) {
-        if (simulationState.speed < 30) {
-          // When the simulation speed is slow enough, display the creature's fitness.
-          drawStepByStepFinalFitness()
-        } else {
-          // When the simulation speed is too fast, skip ahead to next simulation using the timer.
-          appState.viewTimer = 1020
-        }
-
-        appController.setFitnessOfSimulationCreature()
-      }
-
-      if (appState.viewTimer >= 1020) {
-        appState.creaturesTested++
-
-        if (appState.creaturesTested < CREATURE_COUNT) {
-          appController.setSimulationState(
-            appState.creaturesInLatestGeneration[appState.creaturesTested]
-          )
-        } else {
-          appController.setActivityId(ActivityId.SimulationFinished)
-        }
-
-        simulationState.camera.x = 0
-      }
-
-      if (appState.viewTimer >= 900) {
-        appState.viewTimer += simulationState.speed
-      }
-    }
 
     if (appState.currentActivityId === ActivityId.SimulationFinished) {
       appController.sortCreatures()

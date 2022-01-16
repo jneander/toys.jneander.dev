@@ -548,7 +548,7 @@ export default function sketch(p5: p5) {
     }
   }
 
-  class StatusWindowView extends Widget {
+  class PopupSimulationView extends Widget {
     private simulationView: SimulationView
 
     constructor() {
@@ -675,7 +675,7 @@ export default function sketch(p5: p5) {
     }
   }
 
-  let statusWindowView: StatusWindowView
+  let popupSimulationView: PopupSimulationView
 
   class StartActivity extends Activity {
     private startButton: StartViewStartButton
@@ -828,7 +828,7 @@ export default function sketch(p5: p5) {
 
           if (worstMedianOrBest != null) {
             appController.setPopupSimulationCreatureId(worstMedianOrBest)
-            statusWindowView.draw()
+            popupSimulationView.draw()
           } else {
             appController.clearPopupSimulation()
           }
@@ -1543,7 +1543,7 @@ export default function sketch(p5: p5) {
       if (gridIndex != null) {
         const creatureId = appState.creatureIdsByGridIndex[gridIndex]
         appController.setPopupSimulationCreatureId(creatureId)
-        statusWindowView.draw()
+        popupSimulationView.draw()
       } else {
         appController.clearPopupSimulation()
       }
@@ -1682,7 +1682,7 @@ export default function sketch(p5: p5) {
 
       if (gridIndex != null) {
         appController.setPopupSimulationCreatureId(gridIndex)
-        statusWindowView.draw()
+        popupSimulationView.draw()
       } else {
         appController.clearPopupSimulation()
       }
@@ -1766,7 +1766,7 @@ export default function sketch(p5: p5) {
 
       if (gridIndex != null) {
         appController.setPopupSimulationCreatureId(gridIndex)
-        statusWindowView.draw()
+        popupSimulationView.draw()
       } else {
         appController.clearPopupSimulation()
       }
@@ -2004,7 +2004,7 @@ export default function sketch(p5: p5) {
       axonFont: font
     })
 
-    statusWindowView = new StatusWindowView()
+    popupSimulationView = new PopupSimulationView()
   }
 
   p5.draw = () => {

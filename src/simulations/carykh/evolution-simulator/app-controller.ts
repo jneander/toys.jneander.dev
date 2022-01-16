@@ -237,6 +237,11 @@ export class AppController {
     }
 
     appState.generationCount++
+
+    if (appState.selectedGeneration === appState.generationCount - 1) {
+      // Continue selecting latest generation.
+      appState.selectedGeneration = appState.generationCount
+    }
   }
 
   advanceSimulation(): void {

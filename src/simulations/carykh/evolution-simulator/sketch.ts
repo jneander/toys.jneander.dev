@@ -784,7 +784,7 @@ export default function sketch(p5: p5) {
         appController.updateHistory()
         appController.cullCreatures()
         appController.propagateCreatures()
-        updateSelectedGenerationAndSliderPosition()
+        updateGenerationSliderPosition()
       }
     }
 
@@ -1778,7 +1778,7 @@ export default function sketch(p5: p5) {
 
     initialize(): void {
       appController.propagateCreatures()
-      updateSelectedGenerationAndSliderPosition()
+      updateGenerationSliderPosition()
 
       appState.viewTimer = 0
       this.drawCreatureGrid()
@@ -2071,7 +2071,7 @@ export default function sketch(p5: p5) {
     p5.pop()
   }
 
-  function updateSelectedGenerationAndSliderPosition(): void {
+  function updateGenerationSliderPosition(): void {
     // Update slider position to reflect change in generation range.
 
     const {generationCount, selectedGeneration} = appState
@@ -2079,10 +2079,9 @@ export default function sketch(p5: p5) {
     const sliderXMin = 760
     const sliderXRange = sliderXMax - sliderXMin // 410
 
-    if (selectedGeneration === generationCount - 1) {
-      // Continue selecting latest generation.
+    if (selectedGeneration === generationCount) {
+      // When selecting the latest generation, push the slider to max.
       sliderX = sliderXMax
-      appState.selectedGeneration = generationCount
     } else {
       // Preserve previously-selected generation by shifting slider.
       let previousGenerationRange = generationCount - 1

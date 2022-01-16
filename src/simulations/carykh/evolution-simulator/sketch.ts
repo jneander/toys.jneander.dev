@@ -776,6 +776,7 @@ export default function sketch(p5: p5) {
 
         if (worstMedianOrBest != null) {
           appController.setPopupSimulationCreatureId(worstMedianOrBest)
+          statusWindowView.draw()
         } else {
           appController.clearPopupSimulation()
         }
@@ -798,6 +799,7 @@ export default function sketch(p5: p5) {
     if (gridIndex != null) {
       const creatureId = appState.creatureIdsByGridIndex[gridIndex]
       appController.setPopupSimulationCreatureId(creatureId)
+      statusWindowView.draw()
     } else {
       appController.clearPopupSimulation()
     }
@@ -841,6 +843,7 @@ export default function sketch(p5: p5) {
 
     if (gridIndex != null) {
       appController.setPopupSimulationCreatureId(gridIndex)
+      statusWindowView.draw()
     } else {
       appController.clearPopupSimulation()
     }
@@ -858,6 +861,7 @@ export default function sketch(p5: p5) {
 
     if (gridIndex != null) {
       appController.setPopupSimulationCreatureId(gridIndex)
+      statusWindowView.draw()
     } else {
       appController.clearPopupSimulation()
     }
@@ -2069,10 +2073,6 @@ export default function sketch(p5: p5) {
 
     if (appState.currentActivityId === ActivityId.PropagatedCreatures) {
       drawPropagatedCreaturesActivity()
-    }
-
-    if (appState.statusWindow >= -3) {
-      statusWindowView.draw()
     }
   }
 }

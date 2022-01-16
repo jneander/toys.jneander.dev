@@ -768,12 +768,12 @@ export default function sketch(p5: p5) {
       this.startButton = new StartViewStartButton({
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       })
     }
 
     initialize(): void {
-      const {canvas, width} = appView
+      const {canvas, width} = this.appView
 
       canvas.background(255)
       canvas.noStroke()
@@ -810,7 +810,7 @@ export default function sketch(p5: p5) {
       const widgetConfig = {
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       }
 
       const simulationWidgetConfig = {
@@ -829,8 +829,10 @@ export default function sketch(p5: p5) {
 
       this.draggingSlider = false
 
-      this.generationHistoryGraphics = appView.canvas.createGraphics(975, 150)
-      this.graphGraphics = appView.canvas.createGraphics(975, 570)
+      const {canvas} = this.appView
+
+      this.generationHistoryGraphics = canvas.createGraphics(975, 150)
+      this.graphGraphics = canvas.createGraphics(975, 570)
     }
 
     deinitialize(): void {
@@ -840,8 +842,7 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {appController, appState} = this
-
+      const {appController, appState, appView} = this
       const {canvas, font} = appView
 
       if (this.draggingSlider && appState.generationCount >= 1) {
@@ -1023,8 +1024,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawGraphImage(): void {
-      const {appState} = this
-
+      const {appState, appView} = this
       const {canvas, font} = appView
 
       canvas.image(this.graphGraphics, 50, 180, 650, 380)
@@ -1095,8 +1095,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawHistogram(x: number, y: number, hw: number, hh: number): void {
-      const {appState} = this
-
+      const {appState, appView} = this
       const {canvas, font} = appView
 
       let maxH = 1
@@ -1202,8 +1201,7 @@ export default function sketch(p5: p5) {
       graphWidth: number,
       graphHeight: number
     ): void {
-      const {appState} = this
-
+      const {appState, appView} = this
       const {canvas, font} = appView
 
       const gh = graphHeight
@@ -1279,8 +1277,7 @@ export default function sketch(p5: p5) {
       graphWidth: number,
       graphHeight: number
     ): void {
-      const {appState} = this
-
+      const {appState, appView} = this
       const {canvas} = appView
 
       this.generationHistoryGraphics.noStroke()
@@ -1388,7 +1385,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawWorstMedianAndBestCreatures(): void {
-      const {canvas, font} = appView
+      const {canvas, font} = this.appView
 
       canvas.noStroke()
       canvas.textAlign(canvas.CENTER)
@@ -1450,7 +1447,7 @@ export default function sketch(p5: p5) {
 
     private showUnit(i: number, unit: number): String {
       if (unit < 1) {
-        return appView.canvas.nf(i, 0, 2) + ''
+        return this.appView.canvas.nf(i, 0, 2) + ''
       }
 
       return toInt(i) + ''
@@ -1466,12 +1463,12 @@ export default function sketch(p5: p5) {
       this.backButton = new GeneratedCreaturesBackButton({
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       })
     }
 
     initialize(): void {
-      const {canvas, font, width} = appView
+      const {canvas, font, width} = this.appView
 
       this.appController.generateCreatures()
 
@@ -1517,7 +1514,7 @@ export default function sketch(p5: p5) {
     constructor(config: ActivityConfig) {
       super(config)
 
-      const {font} = appView
+      const {font} = this.appView
 
       this.simulationView = new SimulationView({
         appState: this.appState,
@@ -1535,7 +1532,7 @@ export default function sketch(p5: p5) {
       const widgetConfig = {
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       }
 
       const simulationWidgetConfig = {
@@ -1555,8 +1552,7 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {appController, appState} = this
-
+      const {appController, appState, appView} = this
       const {canvas, height, width} = appView
 
       if (appState.viewTimer <= 900) {
@@ -1619,7 +1615,7 @@ export default function sketch(p5: p5) {
     }
 
     onMouseWheel(event: WheelEvent): void {
-      const {canvas, font} = appView
+      const {canvas, font} = this.appView
 
       const delta = event.deltaX
 
@@ -1643,7 +1639,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawFinalFitness(): void {
-      const {canvas, font, height, width} = appView
+      const {canvas, font, height, width} = this.appView
 
       const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
 
@@ -1692,7 +1688,7 @@ export default function sketch(p5: p5) {
       const widgetConfig = {
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       }
 
       const simulationWidgetConfig = {
@@ -1710,7 +1706,7 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {canvas, height, screenGraphics, width} = appView
+      const {canvas, height, screenGraphics, width} = this.appView
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
@@ -1731,8 +1727,7 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      const {appController, appState} = this
-
+      const {appController, appState, appView} = this
       const {canvas, font, screenGraphics, width} = appView
 
       appController.sortCreatures()
@@ -1797,13 +1792,12 @@ export default function sketch(p5: p5) {
       this.skipButton = new SortingCreaturesSkipButton({
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       })
     }
 
     draw(): void {
-      const {appState} = this
-
+      const {appState, appView} = this
       const {canvas} = appView
 
       canvas.background(220, 253, 102)
@@ -1864,7 +1858,7 @@ export default function sketch(p5: p5) {
       const widgetConfig = {
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       }
 
       const simulationWidgetConfig = {
@@ -1882,7 +1876,7 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {canvas, height, screenGraphics, width} = appView
+      const {canvas, height, screenGraphics, width} = this.appView
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
@@ -1912,7 +1906,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawCreatureGrid(): void {
-      const {canvas, font, screenGraphics, width} = appView
+      const {canvas, font, screenGraphics, width} = this.appView
 
       screenGraphics.push()
       screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
@@ -1966,7 +1960,7 @@ export default function sketch(p5: p5) {
       const widgetConfig = {
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       }
 
       const simulationWidgetConfig = {
@@ -1984,7 +1978,7 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {canvas, height, screenGraphics, width} = appView
+      const {canvas, height, screenGraphics, width} = this.appView
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
@@ -2004,8 +1998,7 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      const {appState} = this
-
+      const {appState, appView} = this
       const {canvas, font, screenGraphics, width} = appView
 
       this.appController.cullCreatures()
@@ -2084,12 +2077,12 @@ export default function sketch(p5: p5) {
       this.backButton = new PropagatedCreaturesBackButton({
         appController: this.appController,
         appState: this.appState,
-        appView
+        appView: this.appView
       })
     }
 
     initialize(): void {
-      const {canvas, height, screenGraphics, width} = appView
+      const {canvas, height, screenGraphics, width} = this.appView
 
       this.appController.propagateCreatures()
 
@@ -2105,8 +2098,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawCreatureGrid(): void {
-      const {appState} = this
-
+      const {appState, appView} = this
       const {canvas, font, screenGraphics, width} = appView
 
       screenGraphics.push()
@@ -2261,7 +2253,8 @@ export default function sketch(p5: p5) {
       const ActivityClass = activityClassByActivityId[nextActivityId]
       appState.currentActivity = new ActivityClass({
         appController,
-        appState
+        appState,
+        appView
       })
       appState.currentActivityId = nextActivityId
 

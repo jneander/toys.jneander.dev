@@ -1,7 +1,9 @@
 import type {AppController} from '../app-controller'
+import type {AppState} from '../types'
 
 export interface ActivityConfig {
   appController: AppController
+  appState: AppState
 }
 
 export interface ActivityInterface {
@@ -15,9 +17,11 @@ export interface ActivityInterface {
 
 export abstract class Activity implements ActivityInterface {
   protected appController: AppController
+  protected appState: AppState
 
   constructor(config: ActivityConfig) {
     this.appController = config.appController
+    this.appState = config.appState
   }
 
   initialize(): void {}

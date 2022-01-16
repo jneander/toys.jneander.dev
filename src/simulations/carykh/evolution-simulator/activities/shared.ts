@@ -1,3 +1,9 @@
+import type {AppController} from '../app-controller'
+
+export interface ActivityConfig {
+  appController: AppController
+}
+
 export interface ActivityInterface {
   initialize(): void
   deinitialize(): void
@@ -8,6 +14,12 @@ export interface ActivityInterface {
 }
 
 export abstract class Activity implements ActivityInterface {
+  protected appController: AppController
+
+  constructor(config: ActivityConfig) {
+    this.appController = config.appController
+  }
+
   initialize(): void {}
   deinitialize(): void {}
   draw(): void {}

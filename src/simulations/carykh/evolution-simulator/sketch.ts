@@ -1062,6 +1062,32 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class SortedCreaturesActivity extends Activity {
+    draw(): void {
+      p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+
+      /*
+       * When the cursor is over any of the creature tiles, the popup simulation
+       * will be displayed for the associated creature.
+       */
+
+      const gridIndex = getGridIndexUnderCursor(40, 42)
+
+      if (gridIndex != null) {
+        appController.setPopupSimulationCreatureId(gridIndex)
+        statusWindowView.draw()
+      } else {
+        appController.clearPopupSimulation()
+      }
+    }
+
+    onMouseReleased(): void {
+      if (cullCreaturesButton.isUnderCursor()) {
+        cullCreaturesButton.onClick()
+      }
+    }
+  }
+
   const activityClassByActivityId = {
     [ActivityId.Start]: StartActivity,
     [ActivityId.GenerationView]: GenerationViewActivity,
@@ -1069,7 +1095,7 @@ export default function sketch(p5: p5) {
     [ActivityId.SimulationRunning]: SimulationRunningActivity,
     [ActivityId.SimulationFinished]: SimulationFinishedActivity,
     [ActivityId.SortingCreatures]: SortingCreaturesActivity,
-    [ActivityId.SortedCreatures]: NullActivity,
+    [ActivityId.SortedCreatures]: SortedCreaturesActivity,
     [ActivityId.CullingCreatures]: NullActivity,
     [ActivityId.CulledCreatures]: NullActivity,
     [ActivityId.PropagatingCreatures]: NullActivity,
@@ -1077,24 +1103,6 @@ export default function sketch(p5: p5) {
   }
 
   // ACTIVITY DRAWING
-
-  function drawSortedCreaturesActivity(): void {
-    p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
-
-    /*
-     * When the cursor is over any of the creature tiles, the popup simulation
-     * will be displayed for the associated creature.
-     */
-
-    const gridIndex = getGridIndexUnderCursor(40, 42)
-
-    if (gridIndex != null) {
-      appController.setPopupSimulationCreatureId(gridIndex)
-      statusWindowView.draw()
-    } else {
-      appController.clearPopupSimulation()
-    }
-  }
 
   function drawCulledCreaturesActivity(): void {
     p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
@@ -2008,11 +2016,6 @@ export default function sketch(p5: p5) {
     appState.currentActivity.onMouseReleased()
 
     if (
-      appState.currentActivityId === ActivityId.SortedCreatures &&
-      cullCreaturesButton.isUnderCursor()
-    ) {
-      cullCreaturesButton.onClick()
-    } else if (
       appState.currentActivityId === ActivityId.CulledCreatures &&
       propagateCreaturesButton.isUnderCursor()
     ) {
@@ -2089,10 +2092,6 @@ export default function sketch(p5: p5) {
       appState.viewTimer = 0
       drawPropagatedCreaturesScreenImage()
       appController.setActivityId(ActivityId.PropagatedCreatures)
-    }
-
-    if (appState.currentActivityId === ActivityId.SortedCreatures) {
-      drawSortedCreaturesActivity()
     }
 
     if (appState.currentActivityId === ActivityId.CulledCreatures) {

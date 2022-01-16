@@ -767,7 +767,7 @@ export default function sketch(p5: p5) {
 
       this.startButton = new StartViewStartButton({
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       })
     }
@@ -809,7 +809,7 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       }
 
@@ -840,7 +840,7 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {appController} = this
+      const {appController, appState} = this
 
       const {canvas, font} = appView
 
@@ -979,7 +979,7 @@ export default function sketch(p5: p5) {
 
     onMousePressed(): void {
       if (
-        appState.generationCount >= 1 &&
+        this.appState.generationCount >= 1 &&
         this.generationSlider.isUnderCursor()
       ) {
         this.draggingSlider = true
@@ -990,11 +990,11 @@ export default function sketch(p5: p5) {
       this.draggingSlider = false
 
       if (
-        appState.generationCount === -1 &&
+        this.appState.generationCount === -1 &&
         this.createButton.isUnderCursor()
       ) {
         this.createButton.onClick()
-      } else if (appState.generationCount >= 0) {
+      } else if (this.appState.generationCount >= 0) {
         if (this.stepByStepButton.isUnderCursor()) {
           this.stepByStepButton.onClick()
         } else if (this.quickButton.isUnderCursor()) {
@@ -1011,7 +1011,7 @@ export default function sketch(p5: p5) {
       this.generationHistoryGraphics.background(220)
       this.graphGraphics.background(220)
 
-      if (appState.generationCount >= 1) {
+      if (this.appState.generationCount >= 1) {
         this.drawLines(
           90,
           toInt(graphHeight * 0.05),
@@ -1023,6 +1023,8 @@ export default function sketch(p5: p5) {
     }
 
     private drawGraphImage(): void {
+      const {appState} = this
+
       const {canvas, font} = appView
 
       canvas.image(this.graphGraphics, 50, 180, 650, 380)
@@ -1093,6 +1095,8 @@ export default function sketch(p5: p5) {
     }
 
     private drawHistogram(x: number, y: number, hw: number, hh: number): void {
+      const {appState} = this
+
       const {canvas, font} = appView
 
       let maxH = 1
@@ -1198,6 +1202,8 @@ export default function sketch(p5: p5) {
       graphWidth: number,
       graphHeight: number
     ): void {
+      const {appState} = this
+
       const {canvas, font} = appView
 
       const gh = graphHeight
@@ -1273,6 +1279,8 @@ export default function sketch(p5: p5) {
       graphWidth: number,
       graphHeight: number
     ): void {
+      const {appState} = this
+
       const {canvas} = appView
 
       this.generationHistoryGraphics.noStroke()
@@ -1386,7 +1394,7 @@ export default function sketch(p5: p5) {
       canvas.textAlign(canvas.CENTER)
 
       const historyEntry =
-        appState.generationHistoryMap[appState.selectedGeneration]
+        this.appState.generationHistoryMap[this.appState.selectedGeneration]
 
       for (let k = 0; k < 3; k++) {
         canvas.fill(220)
@@ -1414,9 +1422,9 @@ export default function sketch(p5: p5) {
     private extreme(sign: number): number {
       let record = -sign
 
-      for (let i = 0; i < appState.generationCount; i++) {
+      for (let i = 0; i < this.appState.generationCount; i++) {
         const toTest =
-          appState.fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
+          this.appState.fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
 
         if (toTest * sign > record * sign) {
           record = toTest
@@ -1457,7 +1465,7 @@ export default function sketch(p5: p5) {
 
       this.backButton = new GeneratedCreaturesBackButton({
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       })
     }
@@ -1474,7 +1482,7 @@ export default function sketch(p5: p5) {
       for (let y = 0; y < 25; y++) {
         for (let x = 0; x < 40; x++) {
           const index = y * 40 + x
-          const creature = appState.creaturesInLatestGeneration[index]
+          const creature = this.appState.creaturesInLatestGeneration[index]
 
           creatureDrawer.drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, p5)
         }
@@ -1512,7 +1520,7 @@ export default function sketch(p5: p5) {
       const {font} = appView
 
       this.simulationView = new SimulationView({
-        appState,
+        appState: this.appState,
         creatureDrawer,
         height: 900,
         p5,
@@ -1526,7 +1534,7 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       }
 
@@ -1547,7 +1555,7 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {appController} = this
+      const {appController, appState} = this
 
       const {canvas, height, width} = appView
 
@@ -1683,7 +1691,7 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       }
 
@@ -1714,7 +1722,7 @@ export default function sketch(p5: p5) {
       const gridIndex = getGridIndexUnderCursor(40, 17)
 
       if (gridIndex != null) {
-        const creatureId = appState.creatureIdsByGridIndex[gridIndex]
+        const creatureId = this.appState.creatureIdsByGridIndex[gridIndex]
         this.appController.setPopupSimulationCreatureId(creatureId)
         this.popupSimulationView.draw()
       } else {
@@ -1723,7 +1731,7 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      const {appController} = this
+      const {appController, appState} = this
 
       const {canvas, font, screenGraphics, width} = appView
 
@@ -1788,12 +1796,14 @@ export default function sketch(p5: p5) {
 
       this.skipButton = new SortingCreaturesSkipButton({
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       })
     }
 
     draw(): void {
+      const {appState} = this
+
       const {canvas} = appView
 
       canvas.background(220, 253, 102)
@@ -1853,7 +1863,7 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       }
 
@@ -1910,7 +1920,7 @@ export default function sketch(p5: p5) {
       screenGraphics.noStroke()
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
-        const creature = appState.sortedCreatures[i]
+        const creature = this.appState.sortedCreatures[i]
         const gridIndex = i
 
         const gridX = gridIndex % 40
@@ -1955,7 +1965,7 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       }
 
@@ -1994,6 +2004,8 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
+      const {appState} = this
+
       const {canvas, font, screenGraphics, width} = appView
 
       this.appController.cullCreatures()
@@ -2071,7 +2083,7 @@ export default function sketch(p5: p5) {
 
       this.backButton = new PropagatedCreaturesBackButton({
         appController: this.appController,
-        appState,
+        appState: this.appState,
         appView
       })
     }
@@ -2081,7 +2093,7 @@ export default function sketch(p5: p5) {
 
       this.appController.propagateCreatures()
 
-      appState.viewTimer = 0
+      this.appState.viewTimer = 0
       this.drawCreatureGrid()
       canvas.image(screenGraphics, 0, 0, width, height)
     }
@@ -2093,6 +2105,8 @@ export default function sketch(p5: p5) {
     }
 
     private drawCreatureGrid(): void {
+      const {appState} = this
+
       const {canvas, font, screenGraphics, width} = appView
 
       screenGraphics.push()
@@ -2246,7 +2260,8 @@ export default function sketch(p5: p5) {
 
       const ActivityClass = activityClassByActivityId[nextActivityId]
       appState.currentActivity = new ActivityClass({
-        appController
+        appController,
+        appState
       })
       appState.currentActivityId = nextActivityId
 

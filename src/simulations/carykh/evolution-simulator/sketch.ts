@@ -627,13 +627,13 @@ export default function sketch(p5: p5) {
       this.simulationConfig = config.simulationConfig
       this.simulationState = config.simulationState
 
-      const {font} = this.appView
+      const {canvas, font} = this.appView
 
       this.simulationView = new SimulationView({
         appState: this.appState,
         creatureDrawer,
         height: 600,
-        p5,
+        p5: canvas,
         postFont: font,
         showArrow: false,
         simulationConfig: this.simulationConfig,
@@ -1404,7 +1404,7 @@ export default function sketch(p5: p5) {
 
         const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
 
-        creatureDrawer.drawCreature(creature, 0, 0, p5)
+        creatureDrawer.drawCreature(creature, 0, 0, canvas)
 
         canvas.pop()
       }
@@ -1481,7 +1481,12 @@ export default function sketch(p5: p5) {
           const index = y * 40 + x
           const creature = this.appState.creaturesInLatestGeneration[index]
 
-          creatureDrawer.drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, p5)
+          creatureDrawer.drawCreature(
+            creature,
+            x * 3 + 5.5,
+            y * 2.5 + 3,
+            canvas
+          )
         }
       }
 
@@ -1514,13 +1519,13 @@ export default function sketch(p5: p5) {
     constructor(config: ActivityConfig) {
       super(config)
 
-      const {font} = this.appView
+      const {canvas, font} = this.appView
 
       this.simulationView = new SimulationView({
         appState: this.appState,
         creatureDrawer,
         height: 900,
-        p5,
+        p5: canvas,
         postFont: font,
         showArrow: true,
         simulationConfig,
@@ -1817,7 +1822,12 @@ export default function sketch(p5: p5) {
         const x3 = this.interpolate(x1, x2, transition)
         const y3 = this.interpolate(y1, y2, transition)
 
-        creatureDrawer.drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, p5)
+        creatureDrawer.drawCreature(
+          creature,
+          x3 * 3 + 5.5,
+          y3 * 2.5 + 4,
+          canvas
+        )
       }
 
       canvas.pop()
@@ -2052,7 +2062,12 @@ export default function sketch(p5: p5) {
         const y = Math.floor(i / 40) + 1
 
         if (creature.alive) {
-          creatureDrawer.drawCreature(creature, x * 30 + 55, y * 25 + 40, p5)
+          creatureDrawer.drawCreature(
+            creature,
+            x * 30 + 55,
+            y * 25 + 40,
+            canvas
+          )
         } else {
           screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
         }

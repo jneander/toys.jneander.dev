@@ -1453,8 +1453,6 @@ export default function sketch(p5: p5) {
     private drawSimulationView(): void {
       const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
 
-      p5.background(120, 200, 255)
-
       p5.push()
 
       p5.translate(p5.width / 2.0, p5.height / 2.0)
@@ -1463,6 +1461,12 @@ export default function sketch(p5: p5) {
         -simulationState.camera.x * SCALE_TO_FIX_BUG,
         -simulationState.camera.y * SCALE_TO_FIX_BUG
       )
+
+      if (simulationState.timer < 900) {
+        p5.background(120, 200, 255)
+      } else {
+        p5.background(60, 100, 128)
+      }
 
       drawPosts(p5)
       drawGround(1600, 900, p5)

@@ -2156,6 +2156,8 @@ export default function sketch(p5: p5) {
     const {currentActivityId, nextActivityId} = appState
 
     if (nextActivityId !== currentActivityId) {
+      appState.currentActivity.deinitialize()
+
       const ActivityClass = activityClassByActivityId[nextActivityId]
       appState.currentActivity = new ActivityClass()
       appState.currentActivityId = nextActivityId

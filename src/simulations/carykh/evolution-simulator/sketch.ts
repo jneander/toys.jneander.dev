@@ -297,7 +297,19 @@ export default function sketch(p5: p5) {
     }
   }
 
+  interface StepByStepPlaybackSpeedButtonConfig extends WidgetConfig {
+    simulationState: SimulationState
+  }
+
   class StepByStepPlaybackSpeedButton extends Widget {
+    private simulationState: SimulationState
+
+    constructor(config: StepByStepPlaybackSpeedButtonConfig) {
+      super(config)
+
+      this.simulationState = config.simulationState
+    }
+
     draw(): void {
       const {canvas, font, height} = this.appView
 
@@ -306,7 +318,7 @@ export default function sketch(p5: p5) {
       canvas.fill(255)
       canvas.textAlign(canvas.CENTER)
       canvas.textFont(font, 32)
-      canvas.text('PB speed: x' + simulationState.speed, 240, height - 8)
+      canvas.text('PB speed: x' + this.simulationState.speed, 240, height - 8)
     }
 
     isUnderCursor(): boolean {
@@ -315,14 +327,14 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      simulationState.speed *= 2
+      this.simulationState.speed *= 2
 
-      if (simulationState.speed === 1024) {
-        simulationState.speed = 900
+      if (this.simulationState.speed === 1024) {
+        this.simulationState.speed = 900
       }
 
-      if (simulationState.speed >= 1800) {
-        simulationState.speed = 1
+      if (this.simulationState.speed >= 1800) {
+        this.simulationState.speed = 1
       }
     }
   }
@@ -599,11 +611,18 @@ export default function sketch(p5: p5) {
     }
   }
 
+  interface PopupSimulationViewConfig extends WidgetConfig {
+    simulationState: SimulationState
+  }
+
   class PopupSimulationView extends Widget {
     private simulationView: SimulationView
+    private simulationState: SimulationState
 
-    constructor(config: WidgetConfig) {
+    constructor(config: PopupSimulationViewConfig) {
       super(config)
+
+      this.simulationState = config.simulationState
 
       const {font} = this.appView
 
@@ -615,7 +634,7 @@ export default function sketch(p5: p5) {
         postFont: font,
         showArrow: false,
         simulationConfig,
-        simulationState,
+        simulationState: this.simulationState,
         statsFont: font,
         width: 600
       })
@@ -706,6 +725,8 @@ export default function sketch(p5: p5) {
     }
 
     private drawPopupSimulation(px: number, py: number): void {
+      const {camera, creature} = this.simulationState
+
       let py2 = py - 125
       if (py >= 360) {
         py2 -= 180
@@ -715,13 +736,11 @@ export default function sketch(p5: p5) {
 
       const px2 = Math.min(Math.max(px - 90, 10), 970)
 
-      simulationState.camera.zoom = 0.009
+      camera.zoom = 0.009
 
-      const {averageX, averageY} = averagePositionOfNodes(
-        simulationState.creature.nodes
-      )
-      simulationState.camera.x += (averageX - simulationState.camera.x) * 0.1
-      simulationState.camera.y += (averageY - simulationState.camera.y) * 0.1
+      const {averageX, averageY} = averagePositionOfNodes(creature.nodes)
+      camera.x += (averageX - camera.x) * 0.1
+      camera.y += (averageY - camera.y) * 0.1
 
       this.simulationView.draw()
 
@@ -791,7 +810,12 @@ export default function sketch(p5: p5) {
         appView
       }
 
-      this.popupSimulationView = new PopupSimulationView(widgetConfig)
+      const simulationWidgetConfig = {
+        ...widgetConfig,
+        simulationState
+      }
+
+      this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
       this.createButton = new GenerationViewCreateButton(widgetConfig)
       this.stepByStepButton = new SimulateStepByStepButton(widgetConfig)
       this.quickButton = new SimulateQuickButton(widgetConfig)
@@ -1500,8 +1524,15 @@ export default function sketch(p5: p5) {
         appView
       }
 
+      const simulationWidgetConfig = {
+        ...widgetConfig,
+        simulationState
+      }
+
       this.skipButton = new StepByStepSkipButton(widgetConfig)
-      this.playbackSpeedButton = new StepByStepPlaybackSpeedButton(widgetConfig)
+      this.playbackSpeedButton = new StepByStepPlaybackSpeedButton(
+        simulationWidgetConfig
+      )
       this.finishButton = new StepByStepFinishButton(widgetConfig)
     }
 
@@ -1648,7 +1679,12 @@ export default function sketch(p5: p5) {
         appView
       }
 
-      this.popupSimulationView = new PopupSimulationView(widgetConfig)
+      const simulationWidgetConfig = {
+        ...widgetConfig,
+        simulationState
+      }
+
+      this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
       this.sortCreaturesButton = new SortCreaturesButton(widgetConfig)
     }
 
@@ -1810,7 +1846,12 @@ export default function sketch(p5: p5) {
         appView
       }
 
-      this.popupSimulationView = new PopupSimulationView(widgetConfig)
+      const simulationWidgetConfig = {
+        ...widgetConfig,
+        simulationState
+      }
+
+      this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
       this.cullCreaturesButton = new CullCreaturesButton(widgetConfig)
     }
 
@@ -1906,7 +1947,12 @@ export default function sketch(p5: p5) {
         appView
       }
 
-      this.popupSimulationView = new PopupSimulationView(widgetConfig)
+      const simulationWidgetConfig = {
+        ...widgetConfig,
+        simulationState
+      }
+
+      this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
       this.propagateCreaturesButton = new PropagateCreaturesButton(widgetConfig)
     }
 

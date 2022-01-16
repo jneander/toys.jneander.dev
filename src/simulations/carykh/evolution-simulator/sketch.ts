@@ -1478,7 +1478,8 @@ export default function sketch(p5: p5) {
         0,
         p5
       )
-      drawArrow(averageX)
+
+      drawArrow(averageX, p5)
 
       p5.pop()
     }
@@ -2010,24 +2011,24 @@ export default function sketch(p5: p5) {
     }
   }
 
-  function drawArrow(x: number): void {
-    p5.textAlign(p5.CENTER)
-    p5.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
-    p5.noStroke()
-    p5.fill(120, 0, 255)
-    p5.rect(
+  function drawArrow(x: number, graphics: p5): void {
+    graphics.textAlign(graphics.CENTER)
+    graphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+    graphics.noStroke()
+    graphics.fill(120, 0, 255)
+    graphics.rect(
       (x - 1.7) * SCALE_TO_FIX_BUG,
       -4.8 * SCALE_TO_FIX_BUG,
       3.4 * SCALE_TO_FIX_BUG,
       1.1 * SCALE_TO_FIX_BUG
     )
-    p5.beginShape()
-    p5.vertex(x * SCALE_TO_FIX_BUG, -3.2 * SCALE_TO_FIX_BUG)
-    p5.vertex((x - 0.5) * SCALE_TO_FIX_BUG, -3.7 * SCALE_TO_FIX_BUG)
-    p5.vertex((x + 0.5) * SCALE_TO_FIX_BUG, -3.7 * SCALE_TO_FIX_BUG)
-    p5.endShape(p5.CLOSE)
-    p5.fill(255)
-    p5.text(
+    graphics.beginShape()
+    graphics.vertex(x * SCALE_TO_FIX_BUG, -3.2 * SCALE_TO_FIX_BUG)
+    graphics.vertex((x - 0.5) * SCALE_TO_FIX_BUG, -3.7 * SCALE_TO_FIX_BUG)
+    graphics.vertex((x + 0.5) * SCALE_TO_FIX_BUG, -3.7 * SCALE_TO_FIX_BUG)
+    graphics.endShape(graphics.CLOSE)
+    graphics.fill(255)
+    graphics.text(
       Math.round(x * 2) / 10 + ' m',
       x * SCALE_TO_FIX_BUG,
       -3.91 * SCALE_TO_FIX_BUG

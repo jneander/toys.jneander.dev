@@ -15,6 +15,7 @@ export class AppView {
   width: number
 
   canvas: p5
+  font: Font
   screenGraphics: Graphics
 
   constructor(config: AppViewConfig) {
@@ -22,6 +23,7 @@ export class AppView {
     this.scale = config.scale
     this.width = config.width
 
+    this.font = config.font
     this.canvas = config.p5
     const {canvas} = this
 

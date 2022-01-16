@@ -103,35 +103,54 @@ export default function sketch(p5: p5) {
   let creatureDrawer: CreatureDrawer
 
   interface SimulationViewConfig {
-    graphics: p5
     height: number
+    p5: p5
     showArrow: boolean
     width: number
   }
 
   class SimulationView {
+    graphics: Graphics
+
     private config: SimulationViewConfig
+    private simulationGraphics: Graphics
 
     constructor(config: SimulationViewConfig) {
       this.config = config
+
+      const {height, p5, width} = this.config
+
+      this.graphics = p5.createGraphics(width, height)
+      this.simulationGraphics = p5.createGraphics(width, height)
+    }
+
+    deinitialize(): void {
+      this.graphics.remove()
+      this.simulationGraphics.remove()
     }
 
     draw(): void {
-      const {graphics, showArrow} = this.config
+      const {showArrow} = this.config
+      const {graphics, simulationGraphics} = this
 
-      graphics.push()
+      simulationGraphics.push()
 
-      graphics.translate(graphics.width / 2.0, graphics.height / 2.0)
-      graphics.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
-      graphics.translate(
+      simulationGraphics.translate(
+        simulationGraphics.width / 2.0,
+        simulationGraphics.height / 2.0
+      )
+      simulationGraphics.scale(
+        1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG
+      )
+      simulationGraphics.translate(
         -simulationState.camera.x * SCALE_TO_FIX_BUG,
         -simulationState.camera.y * SCALE_TO_FIX_BUG
       )
 
       if (simulationState.timer < 900) {
-        graphics.background(120, 200, 255)
+        simulationGraphics.background(120, 200, 255)
       } else {
-        graphics.background(60, 100, 128)
+        simulationGraphics.background(60, 100, 128)
       }
 
       this.drawPosts()
@@ -142,44 +161,49 @@ export default function sketch(p5: p5) {
         simulationState.creature.muscles,
         0,
         0,
-        graphics
+        simulationGraphics
       )
 
       if (showArrow) {
         this.drawArrow()
       }
 
-      graphics.pop()
+      simulationGraphics.pop()
+
+      graphics.image(simulationGraphics, 0, 0)
     }
 
     private drawArrow(): void {
-      const {graphics} = this.config
+      const {simulationGraphics} = this
 
       const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
 
-      graphics.textAlign(graphics.CENTER)
-      graphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
-      graphics.noStroke()
-      graphics.fill(120, 0, 255)
-      graphics.rect(
+      simulationGraphics.textAlign(simulationGraphics.CENTER)
+      simulationGraphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+      simulationGraphics.noStroke()
+      simulationGraphics.fill(120, 0, 255)
+      simulationGraphics.rect(
         (averageX - 1.7) * SCALE_TO_FIX_BUG,
         -4.8 * SCALE_TO_FIX_BUG,
         3.4 * SCALE_TO_FIX_BUG,
         1.1 * SCALE_TO_FIX_BUG
       )
-      graphics.beginShape()
-      graphics.vertex(averageX * SCALE_TO_FIX_BUG, -3.2 * SCALE_TO_FIX_BUG)
-      graphics.vertex(
+      simulationGraphics.beginShape()
+      simulationGraphics.vertex(
+        averageX * SCALE_TO_FIX_BUG,
+        -3.2 * SCALE_TO_FIX_BUG
+      )
+      simulationGraphics.vertex(
         (averageX - 0.5) * SCALE_TO_FIX_BUG,
         -3.7 * SCALE_TO_FIX_BUG
       )
-      graphics.vertex(
+      simulationGraphics.vertex(
         (averageX + 0.5) * SCALE_TO_FIX_BUG,
         -3.7 * SCALE_TO_FIX_BUG
       )
-      graphics.endShape(graphics.CLOSE)
-      graphics.fill(255)
-      graphics.text(
+      simulationGraphics.endShape(simulationGraphics.CLOSE)
+      simulationGraphics.fill(255)
+      simulationGraphics.text(
         Math.round(averageX * 2) / 10 + ' m',
         averageX * SCALE_TO_FIX_BUG,
         -3.91 * SCALE_TO_FIX_BUG
@@ -187,7 +211,8 @@ export default function sketch(p5: p5) {
     }
 
     private drawGround(): void {
-      const {graphics, height, width} = this.config
+      const {height, width} = this.config
+      const {simulationGraphics} = this
 
       const {averageX, averageY} = averagePositionOfNodes(
         simulationState.creature.nodes
@@ -198,8 +223,8 @@ export default function sketch(p5: p5) {
         toInt(-averageY / simulationConfig.hazelStairs) - 10
       )
 
-      graphics.noStroke()
-      graphics.fill(0, 130, 0)
+      simulationGraphics.noStroke()
+      simulationGraphics.fill(0, 130, 0)
 
       const groundX =
         (simulationState.camera.x - simulationState.camera.zoom * (width / 2)) *
@@ -208,19 +233,19 @@ export default function sketch(p5: p5) {
       const groundW = simulationState.camera.zoom * width * SCALE_TO_FIX_BUG
       const groundH = simulationState.camera.zoom * height * SCALE_TO_FIX_BUG
 
-      graphics.rect(groundX, groundY, groundW, groundH)
+      simulationGraphics.rect(groundX, groundY, groundW, groundH)
 
       if (simulationConfig.hazelStairs > 0) {
         for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
-          graphics.fill(255, 255, 255, 128)
-          graphics.rect(
+          simulationGraphics.fill(255, 255, 255, 128)
+          simulationGraphics.rect(
             (averageX - 20) * SCALE_TO_FIX_BUG,
             -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
             40 * SCALE_TO_FIX_BUG,
             simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
           )
-          graphics.fill(255, 255, 255, 255)
-          graphics.rect(
+          simulationGraphics.fill(255, 255, 255, 255)
+          simulationGraphics.rect(
             (averageX - 20) * SCALE_TO_FIX_BUG,
             -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
             40 * SCALE_TO_FIX_BUG,
@@ -231,20 +256,20 @@ export default function sketch(p5: p5) {
     }
 
     private drawPosts(): void {
-      const {graphics} = this.config
+      const {simulationGraphics} = this
 
       const {averageX, averageY} = averagePositionOfNodes(
         simulationState.creature.nodes
       )
       const startPostY = Math.min(-8, toInt(averageY / 4) * 4 - 4)
 
-      if (graphics == null) {
+      if (simulationGraphics == null) {
         return
       }
 
-      graphics.textAlign(p5.CENTER)
-      graphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
-      graphics.noStroke()
+      simulationGraphics.textAlign(p5.CENTER)
+      simulationGraphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+      simulationGraphics.noStroke()
 
       for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
         for (
@@ -252,21 +277,21 @@ export default function sketch(p5: p5) {
           i <= toInt(averageX / 5 + 5);
           i++
         ) {
-          graphics.fill(255)
-          graphics.rect(
+          simulationGraphics.fill(255)
+          simulationGraphics.rect(
             (i * 5 - 0.1) * SCALE_TO_FIX_BUG,
             (-3.0 + postY) * SCALE_TO_FIX_BUG,
             0.2 * SCALE_TO_FIX_BUG,
             3 * SCALE_TO_FIX_BUG
           )
-          graphics.rect(
+          simulationGraphics.rect(
             (i * 5 - 1) * SCALE_TO_FIX_BUG,
             (-3.0 + postY) * SCALE_TO_FIX_BUG,
             2 * SCALE_TO_FIX_BUG,
             1 * SCALE_TO_FIX_BUG
           )
-          graphics.fill(120)
-          graphics.text(
+          simulationGraphics.fill(120)
+          simulationGraphics.text(
             i + ' m',
             i * 5 * SCALE_TO_FIX_BUG,
             (-2.17 + postY) * SCALE_TO_FIX_BUG
@@ -732,11 +757,15 @@ export default function sketch(p5: p5) {
       super()
 
       this.simulationView = new SimulationView({
-        graphics: popUpImage,
         height: 600,
+        p5,
         showArrow: false,
         width: 600
       })
+    }
+
+    deinitialize(): void {
+      this.simulationView.deinitialize()
     }
 
     draw(): void {
@@ -835,6 +864,14 @@ export default function sketch(p5: p5) {
       simulationState.camera.y += (averageY - simulationState.camera.y) * 0.1
 
       this.simulationView.draw()
+
+      popUpImage.image(
+        this.simulationView.graphics,
+        0,
+        0,
+        popUpImage.width,
+        popUpImage.height
+      )
 
       p5.image(popUpImage, px2, py2, 300, 300)
 
@@ -1528,8 +1565,8 @@ export default function sketch(p5: p5) {
       super()
 
       this.simulationView = new SimulationView({
-        graphics: p5,
         height: 900,
+        p5,
         showArrow: true,
         width: 1600
       })
@@ -1537,6 +1574,10 @@ export default function sketch(p5: p5) {
       this.skipButton = new StepByStepSkipButton()
       this.playbackSpeedButton = new StepByStepPlaybackSpeedButton()
       this.finishButton = new StepByStepFinishButton()
+    }
+
+    deinitialize(): void {
+      this.simulationView.deinitialize()
     }
 
     draw(): void {
@@ -1550,6 +1591,15 @@ export default function sketch(p5: p5) {
 
         this.updateCameraPosition()
         this.simulationView.draw()
+
+        appView.canvas.image(
+          this.simulationView.graphics,
+          0,
+          0,
+          appView.width,
+          appView.height
+        )
+
         drawStats(appView.width - 10, 0, 0.7)
 
         this.skipButton.draw()

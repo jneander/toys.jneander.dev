@@ -102,9 +102,15 @@ export default function sketch(p5: p5) {
   let creatureDrawer: CreatureDrawer
 
   interface SimulationViewConfig {
+    appState: AppState
+    creatureDrawer: CreatureDrawer
     height: number
     p5: p5
+    postFont: Font
     showArrow: boolean
+    simulationConfig: SimulationConfig
+    simulationState: SimulationState
+    statsFont: Font
     width: number
   }
 
@@ -142,12 +148,13 @@ export default function sketch(p5: p5) {
     }
 
     private drawArrow(): void {
+      const {postFont, simulationState} = this.config
       const {simulationGraphics} = this
 
       const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
 
       simulationGraphics.textAlign(simulationGraphics.CENTER)
-      simulationGraphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+      simulationGraphics.textFont(postFont, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
       simulationGraphics.noStroke()
       simulationGraphics.fill(120, 0, 255)
       simulationGraphics.rect(
@@ -179,7 +186,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawGround(): void {
-      const {height, width} = this.config
+      const {height, simulationConfig, simulationState, width} = this.config
       const {simulationGraphics} = this
 
       const {averageX, averageY} = averagePositionOfNodes(
@@ -224,6 +231,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawPosts(): void {
+      const {postFont, simulationState} = this.config
       const {simulationGraphics} = this
 
       const {averageX, averageY} = averagePositionOfNodes(
@@ -235,8 +243,8 @@ export default function sketch(p5: p5) {
         return
       }
 
-      simulationGraphics.textAlign(p5.CENTER)
-      simulationGraphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+      simulationGraphics.textAlign(simulationGraphics.CENTER)
+      simulationGraphics.textFont(postFont, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
       simulationGraphics.noStroke()
 
       for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
@@ -269,7 +277,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawSimulation(): void {
-      const {showArrow} = this.config
+      const {creatureDrawer, showArrow, simulationState} = this.config
       const {simulationGraphics} = this
 
       simulationGraphics.push()
@@ -311,7 +319,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawStats(): void {
-      const {width} = this.config
+      const {appState, simulationState, statsFont, width} = this.config
       const {statsGraphics} = this
 
       const x = width - 5
@@ -320,7 +328,7 @@ export default function sketch(p5: p5) {
       statsGraphics.clear()
 
       statsGraphics.textAlign(statsGraphics.RIGHT)
-      statsGraphics.textFont(font, 32)
+      statsGraphics.textFont(statsFont, 32)
       statsGraphics.fill(0)
 
       statsGraphics.push()
@@ -836,9 +844,15 @@ export default function sketch(p5: p5) {
       super()
 
       this.simulationView = new SimulationView({
+        appState,
+        creatureDrawer,
         height: 600,
         p5,
+        postFont: font,
         showArrow: false,
+        simulationConfig,
+        simulationState,
+        statsFont: font,
         width: 600
       })
     }
@@ -1635,9 +1649,15 @@ export default function sketch(p5: p5) {
       super()
 
       this.simulationView = new SimulationView({
+        appState,
+        creatureDrawer,
         height: 900,
         p5,
+        postFont: font,
         showArrow: true,
+        simulationConfig,
+        simulationState,
+        statsFont: font,
         width: 1600
       })
 

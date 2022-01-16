@@ -1,7 +1,7 @@
 import type Creature from './Creature'
 import type Muscle from './Muscle'
 import type Node from './Node'
-import {Activity} from './activities'
+import {ActivityInterface} from './activities'
 import {ActivityId, GenerationSimulationMode} from './constants'
 
 export type SimulationConfig = {
@@ -51,7 +51,7 @@ export type AppState = {
   creatureIdsByGridIndex: number[]
   creaturesInLatestGeneration: Creature[]
   creaturesTested: number
-  currentActivity: Activity
+  currentActivity: ActivityInterface
   currentActivityId: ActivityId | null
   fitnessPercentileHistory: Array<number[]>
   generationCount: number

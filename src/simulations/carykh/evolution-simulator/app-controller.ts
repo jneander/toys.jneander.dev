@@ -245,7 +245,7 @@ export class AppController {
   }
 
   setActivityId(activityId: ActivityId): void {
-    this.config.appState.currentActivityId = activityId
+    this.config.appState.nextActivityId = activityId
   }
 
   startASAP(): void {

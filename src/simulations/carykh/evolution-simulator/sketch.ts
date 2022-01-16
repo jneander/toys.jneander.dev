@@ -3,6 +3,7 @@ import type {Font, Graphics} from 'p5'
 
 import Creature from './Creature'
 import Simulation from './Simulation'
+import {Activity, NullActivity} from './activities'
 import {AppController} from './app-controller'
 import {
   ActivityId,
@@ -45,13 +46,15 @@ export default function sketch(p5: p5) {
     creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
     creaturesInLatestGeneration: new Array<Creature>(CREATURE_COUNT),
     creaturesTested: 0,
-    currentActivityId: ActivityId.Start,
+    currentActivity: new NullActivity(),
+    currentActivityId: null,
     fitnessPercentileHistory: [],
     generationCount: -1,
     generationCountDepictedInGraph: -1,
     generationHistoryMap: {},
     generationSimulationMode: GenerationSimulationMode.Off,
     histogramBarCounts: [],
+    nextActivityId: ActivityId.Start,
     pendingGenerationCount: 0,
     popupSimulationCreatureId: null,
     selectedGeneration: 0,
@@ -650,15 +653,39 @@ export default function sketch(p5: p5) {
   const propagatedCreaturesBackButton = new PropagatedCreaturesBackButton()
   const statusWindowView = new StatusWindowView()
 
-  // ACTIVITY DRAWING
+  class StartActivity extends Activity {
+    initialize(): void {
+      p5.background(255)
+      p5.noStroke()
+      p5.fill(0)
+      p5.text('EVOLUTION!', appView.width / 2, 200)
+      startViewStartButton.draw()
+    }
 
-  function drawStartActivity(): void {
-    p5.background(255)
-    p5.noStroke()
-    p5.fill(0)
-    p5.text('EVOLUTION!', appView.width / 2, 200)
-    startViewStartButton.draw()
+    onMouseReleased(): void {
+      if (startViewStartButton.isUnderCursor()) {
+        startViewStartButton.onClick()
+      }
+    }
   }
+
+  const activityClassByActivityId = {
+    [ActivityId.Start]: StartActivity,
+    [ActivityId.GenerationView]: NullActivity,
+    [ActivityId.GeneratingCreatures]: NullActivity,
+    [ActivityId.GeneratedCreatures]: NullActivity,
+    [ActivityId.SimulationRunning]: NullActivity,
+    [ActivityId.SimulationFinished]: NullActivity,
+    [ActivityId.FinishedStepByStep]: NullActivity,
+    [ActivityId.SortingCreatures]: NullActivity,
+    [ActivityId.SortedCreatures]: NullActivity,
+    [ActivityId.CullingCreatures]: NullActivity,
+    [ActivityId.CulledCreatures]: NullActivity,
+    [ActivityId.PropagatingCreatures]: NullActivity,
+    [ActivityId.PropagatedCreatures]: NullActivity
+  }
+
+  // ACTIVITY DRAWING
 
   function predrawGeneratedCreaturesActivity(): void {
     p5.background(220, 253, 102)
@@ -1783,6 +1810,8 @@ export default function sketch(p5: p5) {
   }
 
   p5.mouseWheel = (event: WheelEvent) => {
+    appState.currentActivity.onMouseWheel(event)
+
     const delta = event.deltaX
 
     if (appState.currentActivityId === ActivityId.SimulationRunning) {
@@ -1807,6 +1836,8 @@ export default function sketch(p5: p5) {
   }
 
   p5.mousePressed = () => {
+    appState.currentActivity.onMousePressed()
+
     if (appState.pendingGenerationCount >= 1) {
       appState.pendingGenerationCount = 0
     }
@@ -1825,12 +1856,9 @@ export default function sketch(p5: p5) {
     // When the popup simulation is running, mouse clicks will stop it.
     appState.showPopupSimulation = false
 
+    appState.currentActivity.onMouseReleased()
+
     if (
-      appState.currentActivityId === ActivityId.Start &&
-      startViewStartButton.isUnderCursor()
-    ) {
-      startViewStartButton.onClick()
-    } else if (
       appState.currentActivityId === ActivityId.GenerationView &&
       appState.generationCount == -1 &&
       generationViewCreateButton.isUnderCursor()
@@ -1927,9 +1955,17 @@ export default function sketch(p5: p5) {
   p5.draw = () => {
     p5.scale(appView.scale)
 
-    if (appState.currentActivityId === ActivityId.Start) {
-      drawStartActivity()
+    const {currentActivityId, nextActivityId} = appState
+
+    if (nextActivityId !== currentActivityId) {
+      const ActivityClass = activityClassByActivityId[nextActivityId]
+      appState.currentActivity = new ActivityClass()
+      appState.currentActivityId = nextActivityId
+
+      appState.currentActivity.initialize()
     }
+
+    appState.currentActivity.draw()
 
     if (appState.currentActivityId === ActivityId.GenerationView) {
       if (draggingSlider && appState.generationCount >= 1) {

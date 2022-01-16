@@ -648,7 +648,7 @@ export default function sketch(p5: p5) {
       simulationState.camera.y += (averageY - simulationState.camera.y) * 0.1
 
       popUpImage.push()
-      popUpImage.translate(225, 225)
+      popUpImage.translate(popUpImage.width / 2, popUpImage.height / 2)
       popUpImage.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
       popUpImage.translate(
         -simulationState.camera.x * SCALE_TO_FIX_BUG,

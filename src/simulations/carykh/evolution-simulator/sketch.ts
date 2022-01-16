@@ -682,7 +682,7 @@ export default function sketch(p5: p5) {
     }
   }
 
-  const statusWindowView = new StatusWindowView()
+  let statusWindowView: StatusWindowView
 
   class StartActivity extends Activity {
     private startButton: StartViewStartButton
@@ -2162,6 +2162,8 @@ export default function sketch(p5: p5) {
       axonColor: p5.color(255, 255, 0),
       axonFont: font
     })
+
+    statusWindowView = new StatusWindowView()
   }
 
   p5.draw = () => {

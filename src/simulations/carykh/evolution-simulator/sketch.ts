@@ -675,8 +675,6 @@ export default function sketch(p5: p5) {
     }
   }
 
-  let popupSimulationView: PopupSimulationView
-
   class StartActivity extends Activity {
     private startButton: StartViewStartButton
 
@@ -702,6 +700,7 @@ export default function sketch(p5: p5) {
   }
 
   class GenerationViewActivity extends Activity {
+    private popupSimulationView: PopupSimulationView
     private createButton: GenerationViewCreateButton
     private stepByStepButton: SimulateStepByStepButton
     private quickButton: SimulateQuickButton
@@ -717,6 +716,7 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
+      this.popupSimulationView = new PopupSimulationView()
       this.createButton = new GenerationViewCreateButton()
       this.stepByStepButton = new SimulateStepByStepButton()
       this.quickButton = new SimulateQuickButton()
@@ -731,6 +731,7 @@ export default function sketch(p5: p5) {
     }
 
     deinitialize(): void {
+      this.popupSimulationView.deinitialize()
       this.generationHistoryGraphics.remove()
       this.graphGraphics.remove()
     }
@@ -828,7 +829,7 @@ export default function sketch(p5: p5) {
 
           if (worstMedianOrBest != null) {
             appController.setPopupSimulationCreatureId(worstMedianOrBest)
-            popupSimulationView.draw()
+            this.popupSimulationView.draw()
           } else {
             appController.clearPopupSimulation()
           }
@@ -1522,12 +1523,18 @@ export default function sketch(p5: p5) {
   }
 
   class SimulationFinishedActivity extends Activity {
+    private popupSimulationView: PopupSimulationView
     private sortCreaturesButton: SortCreaturesButton
 
     constructor() {
       super()
 
+      this.popupSimulationView = new PopupSimulationView()
       this.sortCreaturesButton = new SortCreaturesButton()
+    }
+
+    deinitialize(): void {
+      this.popupSimulationView.deinitialize()
     }
 
     draw(): void {
@@ -1543,7 +1550,7 @@ export default function sketch(p5: p5) {
       if (gridIndex != null) {
         const creatureId = appState.creatureIdsByGridIndex[gridIndex]
         appController.setPopupSimulationCreatureId(creatureId)
-        popupSimulationView.draw()
+        this.popupSimulationView.draw()
       } else {
         appController.clearPopupSimulation()
       }
@@ -1662,12 +1669,18 @@ export default function sketch(p5: p5) {
   }
 
   class SortedCreaturesActivity extends Activity {
+    private popupSimulationView: PopupSimulationView
     private cullCreaturesButton: CullCreaturesButton
 
     constructor() {
       super()
 
+      this.popupSimulationView = new PopupSimulationView()
       this.cullCreaturesButton = new CullCreaturesButton()
+    }
+
+    deinitialize(): void {
+      this.popupSimulationView.deinitialize()
     }
 
     draw(): void {
@@ -1682,7 +1695,7 @@ export default function sketch(p5: p5) {
 
       if (gridIndex != null) {
         appController.setPopupSimulationCreatureId(gridIndex)
-        popupSimulationView.draw()
+        this.popupSimulationView.draw()
       } else {
         appController.clearPopupSimulation()
       }
@@ -1746,12 +1759,18 @@ export default function sketch(p5: p5) {
   }
 
   class CullCreaturesActivity extends Activity {
+    private popupSimulationView: PopupSimulationView
     private propagateCreaturesButton: PropagateCreaturesButton
 
     constructor() {
       super()
 
+      this.popupSimulationView = new PopupSimulationView()
       this.propagateCreaturesButton = new PropagateCreaturesButton()
+    }
+
+    deinitialize(): void {
+      this.popupSimulationView.deinitialize()
     }
 
     draw(): void {
@@ -1766,7 +1785,7 @@ export default function sketch(p5: p5) {
 
       if (gridIndex != null) {
         appController.setPopupSimulationCreatureId(gridIndex)
-        popupSimulationView.draw()
+        this.popupSimulationView.draw()
       } else {
         appController.clearPopupSimulation()
       }
@@ -2003,8 +2022,6 @@ export default function sketch(p5: p5) {
       axonColor: p5.color(255, 255, 0),
       axonFont: font
     })
-
-    popupSimulationView = new PopupSimulationView()
   }
 
   p5.draw = () => {

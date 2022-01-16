@@ -105,11 +105,13 @@ export default function sketch(p5: p5) {
 
   class StartViewStartButton extends Widget {
     draw(): void {
-      p5.noStroke()
-      p5.fill(100, 200, 100)
-      p5.rect(appView.width / 2 - 200, 300, 400, 200)
-      p5.fill(0)
-      p5.text('START', appView.width / 2, 430)
+      const {canvas, width} = appView
+
+      canvas.noStroke()
+      canvas.fill(100, 200, 100)
+      canvas.rect(width / 2 - 200, 300, 400, 200)
+      canvas.fill(0)
+      canvas.text('START', width / 2, 430)
     }
 
     isUnderCursor(): boolean {
@@ -123,11 +125,13 @@ export default function sketch(p5: p5) {
 
   class GenerationViewCreateButton extends Widget {
     draw(): void {
-      p5.noStroke()
-      p5.fill(100, 200, 100)
-      p5.rect(20, 250, 200, 100)
-      p5.fill(0)
-      p5.text('CREATE', 56, 312)
+      const {canvas} = appView
+
+      canvas.noStroke()
+      canvas.fill(100, 200, 100)
+      canvas.rect(20, 250, 200, 100)
+      canvas.fill(0)
+      canvas.text('CREATE', 56, 312)
     }
 
     isUnderCursor(): boolean {
@@ -141,13 +145,15 @@ export default function sketch(p5: p5) {
 
   class GeneratedCreaturesBackButton extends Widget {
     draw(): void {
-      p5.noStroke()
-      p5.fill(100, 100, 200)
-      p5.rect(900, 664, 260, 40)
-      p5.fill(0)
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 24)
-      p5.text('Back', appView.width - 250, 690)
+      const {canvas, width} = appView
+
+      canvas.noStroke()
+      canvas.fill(100, 100, 200)
+      canvas.rect(900, 664, 260, 40)
+      canvas.fill(0)
+      canvas.textAlign(canvas.CENTER)
+      canvas.textFont(font, 24)
+      canvas.text('Back', width - 250, 690)
     }
 
     isUnderCursor(): boolean {
@@ -162,11 +168,13 @@ export default function sketch(p5: p5) {
 
   class SimulateStepByStepButton extends Widget {
     draw(): void {
-      p5.noStroke()
-      p5.fill(100, 200, 100)
-      p5.rect(760, 20, 460, 40)
-      p5.fill(0)
-      p5.text('Do 1 step-by-step generation.', 770, 50)
+      const {canvas} = appView
+
+      canvas.noStroke()
+      canvas.fill(100, 200, 100)
+      canvas.rect(760, 20, 460, 40)
+      canvas.fill(0)
+      canvas.text('Do 1 step-by-step generation.', 770, 50)
     }
 
     isUnderCursor(): boolean {
@@ -180,11 +188,13 @@ export default function sketch(p5: p5) {
 
   class SimulateQuickButton extends Widget {
     draw(): void {
-      p5.noStroke()
-      p5.fill(100, 200, 100)
-      p5.rect(760, 70, 460, 40)
-      p5.fill(0)
-      p5.text('Do 1 quick generation.', 770, 100)
+      const {canvas} = appView
+
+      canvas.noStroke()
+      canvas.fill(100, 200, 100)
+      canvas.rect(760, 70, 460, 40)
+      canvas.fill(0)
+      canvas.text('Do 1 quick generation.', 770, 100)
     }
 
     isUnderCursor(): boolean {
@@ -198,11 +208,13 @@ export default function sketch(p5: p5) {
 
   class SimulateAsapButton extends Widget {
     draw(): void {
-      p5.noStroke()
-      p5.fill(100, 200, 100)
-      p5.rect(760, 120, 230, 40)
-      p5.fill(0)
-      p5.text('Do 1 gen ASAP.', 770, 150)
+      const {canvas} = appView
+
+      canvas.noStroke()
+      canvas.fill(100, 200, 100)
+      canvas.rect(760, 120, 230, 40)
+      canvas.fill(0)
+      canvas.text('Do 1 gen ASAP.', 770, 150)
     }
 
     isUnderCursor(): boolean {
@@ -217,17 +229,19 @@ export default function sketch(p5: p5) {
 
   class SimulateAlapButton extends Widget {
     draw(): void {
-      p5.noStroke()
+      const {canvas} = appView
+
+      canvas.noStroke()
 
       if (appState.pendingGenerationCount >= 2) {
-        p5.fill(128, 255, 128)
+        canvas.fill(128, 255, 128)
       } else {
-        p5.fill(70, 140, 70)
+        canvas.fill(70, 140, 70)
       }
 
-      p5.rect(990, 120, 230, 40)
-      p5.fill(0)
-      p5.text('Do gens ALAP.', 1000, 150)
+      canvas.rect(990, 120, 230, 40)
+      canvas.fill(0)
+      canvas.text('Do gens ALAP.', 1000, 150)
     }
 
     isUnderCursor(): boolean {
@@ -242,12 +256,14 @@ export default function sketch(p5: p5) {
 
   class StepByStepSkipButton extends Widget {
     draw(): void {
-      p5.fill(0)
-      p5.rect(0, appView.height - 40, 90, 40)
-      p5.fill(255)
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 32)
-      p5.text('SKIP', 45, appView.height - 8)
+      const {canvas, height} = appView
+
+      canvas.fill(0)
+      canvas.rect(0, height - 40, 90, 40)
+      canvas.fill(255)
+      canvas.textAlign(canvas.CENTER)
+      canvas.textFont(font, 32)
+      canvas.text('SKIP', 45, height - 8)
     }
 
     isUnderCursor(): boolean {
@@ -265,12 +281,18 @@ export default function sketch(p5: p5) {
 
   class StepByStepPlaybackSpeedButton extends Widget {
     draw(): void {
-      p5.fill(0)
-      p5.rect(120, appView.height - 40, 240, 40)
-      p5.fill(255)
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 32)
-      p5.text('PB speed: x' + simulationState.speed, 240, appView.height - 8)
+      const {canvas, height} = appView
+
+      canvas.fill(0)
+      canvas.rect(120, height - 40, 240, 40)
+      canvas.fill(255)
+      canvas.textAlign(canvas.CENTER)
+      canvas.textFont(font, 32)
+      canvas.text(
+        'PB speed: x' + simulationState.speed,
+        240,
+        appView.height - 8
+      )
     }
 
     isUnderCursor(): boolean {
@@ -292,12 +314,14 @@ export default function sketch(p5: p5) {
 
   class StepByStepFinishButton extends Widget {
     draw(): void {
-      p5.fill(0)
-      p5.rect(appView.width - 120, appView.height - 40, 120, 40)
-      p5.fill(255)
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 32)
-      p5.text('FINISH', appView.width - 60, appView.height - 8)
+      const {canvas, height, width} = appView
+
+      canvas.fill(0)
+      canvas.rect(width - 120, height - 40, 120, 40)
+      canvas.fill(255)
+      canvas.textAlign(canvas.CENTER)
+      canvas.textFont(font, 32)
+      canvas.text('FINISH', width - 60, height - 8)
     }
 
     isUnderCursor(): boolean {
@@ -316,13 +340,15 @@ export default function sketch(p5: p5) {
 
   class SortCreaturesButton extends Widget {
     draw(): void {
-      appView.screenGraphics.noStroke()
-      appView.screenGraphics.fill(100, 100, 200)
-      appView.screenGraphics.rect(900, 664, 260, 40)
-      appView.screenGraphics.fill(0)
-      appView.screenGraphics.textAlign(p5.CENTER)
-      appView.screenGraphics.textFont(font, 24)
-      appView.screenGraphics.text('Sort', appView.width - 250, 690)
+      const {canvas, screenGraphics, width} = appView
+
+      screenGraphics.noStroke()
+      screenGraphics.fill(100, 100, 200)
+      screenGraphics.rect(900, 664, 260, 40)
+      screenGraphics.fill(0)
+      screenGraphics.textAlign(canvas.CENTER)
+      screenGraphics.textFont(font, 24)
+      screenGraphics.text('Sort', width - 250, 690)
     }
 
     isUnderCursor(): boolean {
@@ -336,12 +362,14 @@ export default function sketch(p5: p5) {
 
   class SortingCreaturesSkipButton extends Widget {
     draw(): void {
-      p5.fill(0)
-      p5.rect(0, appView.height - 40, 90, 40)
-      p5.fill(255)
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 32)
-      p5.text('SKIP', 45, appView.height - 8)
+      const {canvas, height} = appView
+
+      canvas.fill(0)
+      canvas.rect(0, height - 40, 90, 40)
+      canvas.fill(255)
+      canvas.textAlign(canvas.CENTER)
+      canvas.textFont(font, 32)
+      canvas.text('SKIP', 45, height - 8)
     }
 
     isUnderCursor(): boolean {
@@ -355,15 +383,17 @@ export default function sketch(p5: p5) {
 
   class CullCreaturesButton extends Widget {
     draw(): void {
-      appView.screenGraphics.noStroke()
-      appView.screenGraphics.fill(100, 100, 200)
-      appView.screenGraphics.rect(900, 670, 260, 40)
-      appView.screenGraphics.fill(0)
-      appView.screenGraphics.textAlign(p5.CENTER)
-      appView.screenGraphics.textFont(font, 24)
-      appView.screenGraphics.text(
+      const {canvas, screenGraphics, width} = appView
+
+      screenGraphics.noStroke()
+      screenGraphics.fill(100, 100, 200)
+      screenGraphics.rect(900, 670, 260, 40)
+      screenGraphics.fill(0)
+      screenGraphics.textAlign(canvas.CENTER)
+      screenGraphics.textFont(font, 24)
+      screenGraphics.text(
         `Kill ${Math.floor(CREATURE_COUNT / 2)}`,
-        appView.width - 250,
+        width - 250,
         700
       )
     }
@@ -379,13 +409,15 @@ export default function sketch(p5: p5) {
 
   class PropagateCreaturesButton extends Widget {
     draw(): void {
-      appView.screenGraphics.noStroke()
-      appView.screenGraphics.fill(100, 100, 200)
-      appView.screenGraphics.rect(1050, 670, 160, 40)
-      appView.screenGraphics.fill(0)
-      appView.screenGraphics.textAlign(p5.CENTER)
-      appView.screenGraphics.textFont(font, 24)
-      appView.screenGraphics.text('Reproduce', appView.width - 150, 700)
+      const {canvas, screenGraphics, width} = appView
+
+      screenGraphics.noStroke()
+      screenGraphics.fill(100, 100, 200)
+      screenGraphics.rect(1050, 670, 160, 40)
+      screenGraphics.fill(0)
+      screenGraphics.textAlign(canvas.CENTER)
+      screenGraphics.textFont(font, 24)
+      screenGraphics.text('Reproduce', width - 150, 700)
     }
 
     isUnderCursor(): boolean {
@@ -399,13 +431,15 @@ export default function sketch(p5: p5) {
 
   class PropagatedCreaturesBackButton extends Widget {
     draw(): void {
-      appView.screenGraphics.noStroke()
-      appView.screenGraphics.fill(100, 100, 200)
-      appView.screenGraphics.rect(1050, 670, 160, 40)
-      appView.screenGraphics.fill(0)
-      appView.screenGraphics.textAlign(p5.CENTER)
-      appView.screenGraphics.textFont(font, 24)
-      appView.screenGraphics.text('Back', appView.width - 150, 700)
+      const {canvas, screenGraphics, width} = appView
+
+      screenGraphics.noStroke()
+      screenGraphics.fill(100, 100, 200)
+      screenGraphics.rect(1050, 670, 160, 40)
+      screenGraphics.fill(0)
+      screenGraphics.textAlign(canvas.CENTER)
+      screenGraphics.textFont(font, 24)
+      screenGraphics.text('Back', width - 150, 700)
     }
 
     isUnderCursor(): boolean {
@@ -434,12 +468,14 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      p5.noStroke()
-      p5.textAlign(p5.CENTER)
-      p5.fill(100)
-      p5.rect(760, 340, 460, 50)
-      p5.fill(220)
-      p5.rect(this.xPosition, 340, 50, 50)
+      const {canvas} = appView
+
+      canvas.noStroke()
+      canvas.textAlign(canvas.CENTER)
+      canvas.fill(100)
+      canvas.rect(760, 340, 460, 50)
+      canvas.fill(220)
+      canvas.rect(this.xPosition, 340, 50, 50)
 
       let fs = 0
       if (appState.selectedGeneration >= 1) {
@@ -448,9 +484,9 @@ export default function sketch(p5: p5) {
 
       const fontSize = FONT_SIZES[fs]
 
-      p5.textFont(font, fontSize)
-      p5.fill(0)
-      p5.text(
+      canvas.textFont(font, fontSize)
+      canvas.fill(0)
+      canvas.text(
         appState.selectedGeneration,
         this.xPosition + 25,
         366 + fontSize * 0.3333
@@ -573,14 +609,15 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
+      const {canvas} = appView
+
       let x, y, px, py
       let rank = appState.statusWindow + 1
-
       let creature
 
-      p5.stroke(Math.abs((p5.frameCount % 30) - 15) * 17) // oscillate between 0–255
-      p5.strokeWeight(3)
-      p5.noFill()
+      canvas.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
+      canvas.strokeWeight(3)
+      canvas.noFill()
 
       if (appState.statusWindow >= 0) {
         creature = appState.sortedCreatures[appState.statusWindow]
@@ -603,7 +640,7 @@ export default function sketch(p5: p5) {
           px -= 80
         }
 
-        p5.rect(x * 30 + 40, y * 25 + 17, 30, 25)
+        canvas.rect(x * 30 + 40, y * 25 + 17, 30, 25)
       } else {
         const historyEntry =
           appState.generationHistoryMap[appState.selectedGeneration]
@@ -614,27 +651,27 @@ export default function sketch(p5: p5) {
         y = 180
         px = x
         py = y
-        p5.rect(x, y, 140, 140)
+        canvas.rect(x, y, 140, 140)
 
         const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
         rank = ranks[appState.statusWindow + 3]
       }
 
-      p5.noStroke()
-      p5.fill(255)
-      p5.rect(px - 60, py, 120, 52)
-      p5.fill(0)
-      p5.textFont(font, 12)
-      p5.textAlign(p5.CENTER)
-      p5.text('#' + rank, px, py + 12)
-      p5.text('ID: ' + creature.id, px, py + 24)
-      p5.text('Fitness: ' + p5.nf(creature.fitness, 0, 3), px, py + 36)
-      p5.colorMode(p5.HSB, 1)
+      canvas.noStroke()
+      canvas.fill(255)
+      canvas.rect(px - 60, py, 120, 52)
+      canvas.fill(0)
+      canvas.textFont(font, 12)
+      canvas.textAlign(canvas.CENTER)
+      canvas.text('#' + rank, px, py + 12)
+      canvas.text('ID: ' + creature.id, px, py + 24)
+      canvas.text('Fitness: ' + canvas.nf(creature.fitness, 0, 3), px, py + 36)
+      canvas.colorMode(canvas.HSB, 1)
 
       const sp =
         (creature.nodes.length % 10) * 10 + (creature.muscles.length % 10)
-      p5.fill(appView.getColor(sp, true))
-      p5.text(
+      canvas.fill(appView.getColor(sp, true))
+      canvas.text(
         'Species: S' +
           (creature.nodes.length % 10) +
           '' +
@@ -642,7 +679,7 @@ export default function sketch(p5: p5) {
         px,
         py + 48
       )
-      p5.colorMode(p5.RGB, 255)
+      canvas.colorMode(canvas.RGB, 255)
 
       if (appState.showPopupSimulation) {
         this.drawPopupSimulation(px, py)
@@ -669,7 +706,7 @@ export default function sketch(p5: p5) {
 
       this.simulationView.draw()
 
-      p5.image(this.simulationView.graphics, px2, py2, 300, 300)
+      appView.canvas.image(this.simulationView.graphics, px2, py2, 300, 300)
 
       appController.advanceSimulation()
     }
@@ -685,10 +722,13 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      p5.background(255)
-      p5.noStroke()
-      p5.fill(0)
-      p5.text('EVOLUTION!', appView.width / 2, 200)
+      const {canvas, width} = appView
+
+      canvas.background(255)
+      canvas.noStroke()
+      canvas.fill(0)
+      canvas.text('EVOLUTION!', width / 2, 200)
+
       this.startButton.draw()
     }
 
@@ -726,8 +766,8 @@ export default function sketch(p5: p5) {
 
       this.draggingSlider = false
 
-      this.generationHistoryGraphics = p5.createGraphics(975, 150)
-      this.graphGraphics = p5.createGraphics(975, 570)
+      this.generationHistoryGraphics = appView.canvas.createGraphics(975, 150)
+      this.graphGraphics = appView.canvas.createGraphics(975, 570)
     }
 
     deinitialize(): void {
@@ -737,27 +777,37 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
+      const {canvas} = appView
+
       if (this.draggingSlider && appState.generationCount >= 1) {
         this.generationSlider.onDrag()
       }
 
-      p5.noStroke()
-      p5.fill(0)
-      p5.background(255, 200, 130)
-      p5.textFont(font, 32)
-      p5.textAlign(p5.LEFT)
-      p5.textFont(font, 96)
-      p5.text('Generation ' + Math.max(appState.selectedGeneration, 0), 20, 100)
-      p5.textFont(font, 28)
+      canvas.noStroke()
+      canvas.fill(0)
+      canvas.background(255, 200, 130)
+      canvas.textFont(font, 32)
+      canvas.textAlign(canvas.LEFT)
+      canvas.textFont(font, 96)
+      canvas.text(
+        'Generation ' + Math.max(appState.selectedGeneration, 0),
+        20,
+        100
+      )
+      canvas.textFont(font, 28)
 
       if (appState.generationCount == -1) {
-        p5.fill(0)
-        p5.text(
+        canvas.fill(0)
+        canvas.text(
           `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
           20,
           160
         )
-        p5.text('They will be randomly created, and also very simple.', 20, 200)
+        canvas.text(
+          'They will be randomly created, and also very simple.',
+          20,
+          200
+        )
         this.createButton.draw()
       } else {
         this.stepByStepButton.draw()
@@ -765,11 +815,11 @@ export default function sketch(p5: p5) {
         this.asapButton.draw()
         this.alapButton.draw()
 
-        p5.fill(0)
-        p5.text('Median ' + FITNESS_LABEL, 50, 160)
-        p5.textAlign(p5.CENTER)
-        p5.textAlign(p5.RIGHT)
-        p5.text(
+        canvas.fill(0)
+        canvas.text('Median ' + FITNESS_LABEL, 50, 160)
+        canvas.textAlign(canvas.CENTER)
+        canvas.textAlign(canvas.RIGHT)
+        canvas.text(
           Math.round(
             appState.fitnessPercentileHistory[
               Math.min(
@@ -908,21 +958,23 @@ export default function sketch(p5: p5) {
     }
 
     private drawGraphImage(): void {
-      p5.image(this.graphGraphics, 50, 180, 650, 380)
-      p5.image(this.generationHistoryGraphics, 50, 580, 650, 100)
+      const {canvas} = appView
+
+      canvas.image(this.graphGraphics, 50, 180, 650, 380)
+      canvas.image(this.generationHistoryGraphics, 50, 580, 650, 100)
 
       if (appState.generationCount >= 1) {
-        p5.stroke(0, 160, 0, 255)
-        p5.strokeWeight(3)
+        canvas.stroke(0, 160, 0, 255)
+        canvas.strokeWeight(3)
 
         const genWidth = 590.0 / appState.generationCount
         const lineX = 110 + appState.selectedGeneration * genWidth
 
-        p5.line(lineX, 180, lineX, 500 + 180)
+        canvas.line(lineX, 180, lineX, 500 + 180)
 
-        p5.textAlign(p5.LEFT)
-        p5.textFont(font, 12)
-        p5.noStroke()
+        canvas.textAlign(canvas.LEFT)
+        canvas.textFont(font, 12)
+        canvas.noStroke()
 
         const speciesCounts =
           appState.speciesCountsHistoryMap[appState.selectedGeneration] || []
@@ -953,29 +1005,31 @@ export default function sketch(p5: p5) {
                * emphasis to its style.
                */
 
-              p5.stroke(0)
-              p5.strokeWeight(2)
+              canvas.stroke(0)
+              canvas.strokeWeight(2)
             } else {
-              p5.noStroke()
+              canvas.noStroke()
             }
 
-            p5.fill(255, 255, 255)
-            p5.rect(lineX + 3, y, 56, 14)
-            p5.colorMode(p5.HSB, 1.0)
-            p5.fill(appView.getColor(speciesId, true))
+            canvas.fill(255, 255, 255)
+            canvas.rect(lineX + 3, y, 56, 14)
+            canvas.colorMode(canvas.HSB, 1.0)
+            canvas.fill(appView.getColor(speciesId, true))
             // Example label: "S45: 207"
-            p5.text(`S${speciesId}: ${count}`, lineX + 5, y + 11)
-            p5.colorMode(p5.RGB, 255)
+            canvas.text(`S${speciesId}: ${count}`, lineX + 5, y + 11)
+            canvas.colorMode(canvas.RGB, 255)
           }
 
           cumulativeStart += count
         })
 
-        p5.noStroke()
+        canvas.noStroke()
       }
     }
 
     private drawHistogram(x: number, y: number, hw: number, hh: number): void {
+      const {canvas} = appView
+
       let maxH = 1
 
       for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
@@ -986,18 +1040,18 @@ export default function sketch(p5: p5) {
         }
       }
 
-      p5.fill(200)
-      p5.noStroke()
-      p5.rect(x, y, hw, hh)
-      p5.fill(0, 0, 0)
+      canvas.fill(200)
+      canvas.noStroke()
+      canvas.rect(x, y, hw, hh)
+      canvas.fill(0, 0, 0)
 
       const barW = hw / HISTOGRAM_BAR_SPAN
       const multiplier = (hh / maxH) * 0.9
 
-      p5.textAlign(p5.LEFT)
-      p5.textFont(font, 16)
-      p5.stroke(128)
-      p5.strokeWeight(2)
+      canvas.textAlign(canvas.LEFT)
+      canvas.textFont(font, 16)
+      canvas.stroke(128)
+      canvas.strokeWeight(2)
 
       let unit = 100
 
@@ -1016,31 +1070,35 @@ export default function sketch(p5: p5) {
       for (let i = 0; i < hh / multiplier; i += unit) {
         let theY = y + hh - i * multiplier
 
-        p5.line(x, theY, x + hw, theY)
+        canvas.line(x, theY, x + hw, theY)
 
         if (i == 0) {
           theY -= 5
         }
 
-        p5.text(i, x + hw + 5, theY + 7)
+        canvas.text(i, x + hw + 5, theY + 7)
       }
 
-      p5.textAlign(p5.CENTER)
+      canvas.textAlign(canvas.CENTER)
 
       for (let i = HISTOGRAM_BAR_MIN; i <= HISTOGRAM_BAR_MAX; i += 10) {
         if (i == 0) {
-          p5.stroke(0, 0, 255)
+          canvas.stroke(0, 0, 255)
         } else {
-          p5.stroke(128)
+          canvas.stroke(128)
         }
 
         const theX = x + (i - HISTOGRAM_BAR_MIN) * barW
 
-        p5.text(p5.nf(i / HISTOGRAM_BARS_PER_METER, 0, 1), theX, y + hh + 14)
-        p5.line(theX, y, theX, y + hh)
+        canvas.text(
+          canvas.nf(i / HISTOGRAM_BARS_PER_METER, 0, 1),
+          theX,
+          y + hh + 14
+        )
+        canvas.line(theX, y, theX, y + hh)
       }
 
-      p5.noStroke()
+      canvas.noStroke()
 
       for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
         const h = Math.min(
@@ -1060,12 +1118,12 @@ export default function sketch(p5: p5) {
             ][14] * HISTOGRAM_BARS_PER_METER
           )
         ) {
-          p5.fill(255, 0, 0)
+          canvas.fill(255, 0, 0)
         } else {
-          p5.fill(0, 0, 0)
+          canvas.fill(0, 0, 0)
         }
 
-        p5.rect(x + i * barW, y + hh - h, barW, h)
+        canvas.rect(x + i * barW, y + hh - h, barW, h)
       }
     }
 
@@ -1075,6 +1133,8 @@ export default function sketch(p5: p5) {
       graphWidth: number,
       graphHeight: number
     ): void {
+      const {canvas} = appView
+
       const gh = graphHeight
       const genWidth = graphWidth / appState.generationCount
       const best = this.extreme(1)
@@ -1087,7 +1147,7 @@ export default function sketch(p5: p5) {
       this.graphGraphics.strokeWeight(2)
       this.graphGraphics.fill(150)
       this.graphGraphics.textFont(font, 18)
-      this.graphGraphics.textAlign(p5.RIGHT)
+      this.graphGraphics.textAlign(canvas.RIGHT)
 
       for (
         let i = Math.ceil((worst - (best - worst) / 18.0) / unit) * unit;
@@ -1120,7 +1180,7 @@ export default function sketch(p5: p5) {
           this.graphGraphics.stroke(255, 0, 0, 255)
           this.graphGraphics.strokeWeight(5)
         } else {
-          p5.stroke(0)
+          canvas.stroke(0)
 
           if (k == 0 || k == 28 || (k >= 10 && k <= 18)) {
             this.graphGraphics.strokeWeight(3)
@@ -1148,8 +1208,10 @@ export default function sketch(p5: p5) {
       graphWidth: number,
       graphHeight: number
     ): void {
+      const {canvas} = appView
+
       this.generationHistoryGraphics.noStroke()
-      this.generationHistoryGraphics.colorMode(p5.HSB, 1)
+      this.generationHistoryGraphics.colorMode(canvas.HSB, 1)
       this.generationHistoryGraphics.background(0, 0, 0.5)
 
       const generationWidth = graphWidth / appState.generationCount
@@ -1249,37 +1311,39 @@ export default function sketch(p5: p5) {
         })
       }
 
-      p5.colorMode(p5.RGB, 255)
+      canvas.colorMode(canvas.RGB, 255)
     }
 
     private drawWorstMedianAndBestCreatures(): void {
-      p5.noStroke()
-      p5.textAlign(p5.CENTER)
+      const {canvas} = appView
+
+      canvas.noStroke()
+      canvas.textAlign(canvas.CENTER)
 
       const historyEntry =
         appState.generationHistoryMap[appState.selectedGeneration]
 
       for (let k = 0; k < 3; k++) {
-        p5.fill(220)
-        p5.rect(760 + k * 160, 180, 140, 140)
+        canvas.fill(220)
+        canvas.rect(760 + k * 160, 180, 140, 140)
 
-        p5.push()
+        canvas.push()
 
-        p5.translate(830 + 160 * k, 290)
-        p5.scale(60.0 / SCALE_TO_FIX_BUG)
+        canvas.translate(830 + 160 * k, 290)
+        canvas.scale(60.0 / SCALE_TO_FIX_BUG)
 
         const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
 
         creatureDrawer.drawCreature(creature, 0, 0, p5)
 
-        p5.pop()
+        canvas.pop()
       }
 
-      p5.fill(0)
-      p5.textFont(font, 16)
-      p5.text('Worst Creature', 830, 310)
-      p5.text('Median Creature', 990, 310)
-      p5.text('Best Creature', 1150, 310)
+      canvas.fill(0)
+      canvas.textFont(font, 16)
+      canvas.text('Worst Creature', 830, 310)
+      canvas.text('Median Creature', 990, 310)
+      canvas.text('Best Creature', 1150, 310)
     }
 
     private extreme(sign: number): number {
@@ -1313,7 +1377,7 @@ export default function sketch(p5: p5) {
 
     private showUnit(i: number, unit: number): String {
       if (unit < 1) {
-        return p5.nf(i, 0, 2) + ''
+        return appView.canvas.nf(i, 0, 2) + ''
       }
 
       return toInt(i) + ''
@@ -1330,11 +1394,13 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
+      const {canvas, width} = appView
+
       appController.generateCreatures()
 
-      p5.background(220, 253, 102)
-      p5.push()
-      p5.scale(10.0 / SCALE_TO_FIX_BUG)
+      canvas.background(220, 253, 102)
+      canvas.push()
+      canvas.scale(10.0 / SCALE_TO_FIX_BUG)
 
       for (let y = 0; y < 25; y++) {
         for (let x = 0; x < 40; x++) {
@@ -1345,14 +1411,14 @@ export default function sketch(p5: p5) {
         }
       }
 
-      p5.pop()
-      p5.noStroke()
-      p5.fill(0)
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 24)
-      p5.text(
+      canvas.pop()
+      canvas.noStroke()
+      canvas.fill(0)
+      canvas.textAlign(canvas.CENTER)
+      canvas.textFont(font, 24)
+      canvas.text(
         `Here are your ${CREATURE_COUNT} randomly generated creatures!!!`,
-        appView.width / 2 - 200,
+        width / 2 - 200,
         690
       )
       this.backButton.draw()
@@ -1397,6 +1463,8 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
+      const {canvas, height, width} = appView
+
       if (appState.viewTimer <= 900) {
         for (let s = 0; s < simulationState.speed; s++) {
           if (appState.viewTimer < 900) {
@@ -1408,13 +1476,7 @@ export default function sketch(p5: p5) {
         this.updateCameraPosition()
         this.simulationView.draw()
 
-        appView.canvas.image(
-          this.simulationView.graphics,
-          0,
-          0,
-          appView.width,
-          appView.height
-        )
+        canvas.image(this.simulationView.graphics, 0, 0, width, height)
 
         this.skipButton.draw()
         this.playbackSpeedButton.draw()
@@ -1463,6 +1525,8 @@ export default function sketch(p5: p5) {
     }
 
     onMouseWheel(event: WheelEvent): void {
+      const {canvas} = appView
+
       const delta = event.deltaX
 
       if (delta < 0) {
@@ -1472,7 +1536,7 @@ export default function sketch(p5: p5) {
           simulationState.camera.zoom = 0.002
         }
 
-        p5.textFont(font, POST_FONT_SIZE)
+        canvas.textFont(font, POST_FONT_SIZE)
       } else if (delta > 0) {
         simulationState.camera.zoom *= 1.1
 
@@ -1480,25 +1544,27 @@ export default function sketch(p5: p5) {
           simulationState.camera.zoom = 0.1
         }
 
-        p5.textFont(font, POST_FONT_SIZE)
+        canvas.textFont(font, POST_FONT_SIZE)
       }
     }
 
     private drawFinalFitness(): void {
+      const {canvas, height, width} = appView
+
       const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
 
-      p5.noStroke()
-      p5.fill(0, 0, 0, 130)
-      p5.rect(0, 0, appView.width, appView.height)
-      p5.fill(0, 0, 0, 255)
-      p5.rect(appView.width / 2 - 500, 200, 1000, 240)
-      p5.fill(255, 0, 0)
-      p5.textAlign(p5.CENTER)
-      p5.textFont(font, 96)
-      p5.text("Creature's " + FITNESS_LABEL + ':', appView.width / 2, 300)
-      p5.text(
-        p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
-        appView.width / 2,
+      canvas.noStroke()
+      canvas.fill(0, 0, 0, 130)
+      canvas.rect(0, 0, width, height)
+      canvas.fill(0, 0, 0, 255)
+      canvas.rect(width / 2 - 500, 200, 1000, 240)
+      canvas.fill(255, 0, 0)
+      canvas.textAlign(canvas.CENTER)
+      canvas.textFont(font, 96)
+      canvas.text("Creature's " + FITNESS_LABEL + ':', width / 2, 300)
+      canvas.text(
+        canvas.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
+        width / 2,
         400
       )
     }
@@ -1538,7 +1604,9 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+      const {canvas, height, screenGraphics, width} = appView
+
+      canvas.image(screenGraphics, 0, 0, width, height)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
@@ -1557,16 +1625,18 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
+      const {canvas, screenGraphics, width} = appView
+
       appController.sortCreatures()
       appController.updateHistory()
 
       appState.viewTimer = 0
       appController.updateCreatureIdsByGridIndex()
 
-      appView.screenGraphics.push()
-      appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-      appView.screenGraphics.background(220, 253, 102)
-      appView.screenGraphics.noStroke()
+      screenGraphics.push()
+      screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+      screenGraphics.background(220, 253, 102)
+      screenGraphics.noStroke()
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const creature = appState.sortedCreatures[i]
@@ -1579,28 +1649,28 @@ export default function sketch(p5: p5) {
           creature,
           gridX * 3 + 5.5,
           gridY * 2.5 + 4,
-          appView.screenGraphics
+          screenGraphics
         )
       }
-      appView.screenGraphics.pop()
+      screenGraphics.pop()
 
-      appView.screenGraphics.push()
-      appView.screenGraphics.scale(1.5)
+      screenGraphics.push()
+      screenGraphics.scale(1.5)
 
-      appView.screenGraphics.textAlign(p5.CENTER)
-      appView.screenGraphics.textFont(font, 24)
-      appView.screenGraphics.fill(100, 100, 200)
-      appView.screenGraphics.noStroke()
+      screenGraphics.textAlign(canvas.CENTER)
+      screenGraphics.textFont(font, 24)
+      screenGraphics.fill(100, 100, 200)
+      screenGraphics.noStroke()
 
-      appView.screenGraphics.fill(0)
-      appView.screenGraphics.text(
+      screenGraphics.fill(0)
+      screenGraphics.text(
         "All 1,000 creatures have been tested.  Now let's sort them!",
-        appView.width / 2 - 200,
+        width / 2 - 200,
         690
       )
       this.sortCreaturesButton.draw()
 
-      appView.screenGraphics.pop()
+      screenGraphics.pop()
     }
 
     onMouseReleased(): void {
@@ -1620,9 +1690,11 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      p5.background(220, 253, 102)
-      p5.push()
-      p5.scale(10.0 / SCALE_TO_FIX_BUG)
+      const {canvas} = appView
+
+      canvas.background(220, 253, 102)
+      canvas.push()
+      canvas.scale(10.0 / SCALE_TO_FIX_BUG)
 
       const transition =
         0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
@@ -1640,7 +1712,7 @@ export default function sketch(p5: p5) {
         creatureDrawer.drawCreature(creature, x3 * 3 + 5.5, y3 * 2.5 + 4, p5)
       }
 
-      p5.pop()
+      canvas.pop()
 
       this.skipButton.draw()
       if (
@@ -1684,7 +1756,9 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+      const {canvas, height, screenGraphics, width} = appView
+
+      canvas.image(screenGraphics, 0, 0, width, height)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
@@ -1712,10 +1786,12 @@ export default function sketch(p5: p5) {
     }
 
     private drawCreatureGrid(): void {
-      appView.screenGraphics.push()
-      appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-      appView.screenGraphics.background(220, 253, 102)
-      appView.screenGraphics.noStroke()
+      const {canvas, screenGraphics, width} = appView
+
+      screenGraphics.push()
+      screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+      screenGraphics.background(220, 253, 102)
+      screenGraphics.noStroke()
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const creature = appState.sortedCreatures[i]
@@ -1728,33 +1804,29 @@ export default function sketch(p5: p5) {
           creature,
           gridX * 3 + 5.5,
           gridY * 2.5 + 4,
-          appView.screenGraphics
+          screenGraphics
         )
       }
-      appView.screenGraphics.pop()
+      screenGraphics.pop()
 
-      appView.screenGraphics.push()
-      appView.screenGraphics.scale(1.5)
+      screenGraphics.push()
+      screenGraphics.scale(1.5)
 
-      appView.screenGraphics.textAlign(p5.CENTER)
-      appView.screenGraphics.textFont(font, 24)
-      appView.screenGraphics.fill(100, 100, 200)
-      appView.screenGraphics.noStroke()
+      screenGraphics.textAlign(canvas.CENTER)
+      screenGraphics.textFont(font, 24)
+      screenGraphics.fill(100, 100, 200)
+      screenGraphics.noStroke()
 
-      appView.screenGraphics.fill(0)
-      appView.screenGraphics.text(
-        'Fastest creatures at the top!',
-        appView.width / 2,
-        30
-      )
-      appView.screenGraphics.text(
+      screenGraphics.fill(0)
+      screenGraphics.text('Fastest creatures at the top!', width / 2, 30)
+      screenGraphics.text(
         'Slowest creatures at the bottom. (Going backward = slow)',
-        appView.width / 2 - 200,
+        width / 2 - 200,
         700
       )
       this.cullCreaturesButton.draw()
 
-      appView.screenGraphics.pop()
+      screenGraphics.pop()
     }
   }
 
@@ -1774,7 +1846,9 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+      const {canvas, height, screenGraphics, width} = appView
+
+      canvas.image(screenGraphics, 0, 0, width, height)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
@@ -1792,13 +1866,15 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
+      const {canvas, screenGraphics, width} = appView
+
       appController.cullCreatures()
       appState.viewTimer = 0
 
-      appView.screenGraphics.push()
-      appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-      appView.screenGraphics.background(220, 253, 102)
-      appView.screenGraphics.noStroke()
+      screenGraphics.push()
+      screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+      screenGraphics.background(220, 253, 102)
+      screenGraphics.noStroke()
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const creature = appState.sortedCreatures[i]
@@ -1811,28 +1887,28 @@ export default function sketch(p5: p5) {
           creature,
           gridX * 3 + 5.5,
           gridY * 2.5 + 4,
-          appView.screenGraphics
+          screenGraphics
         )
       }
-      appView.screenGraphics.pop()
+      screenGraphics.pop()
 
-      appView.screenGraphics.push()
-      appView.screenGraphics.scale(1.5)
+      screenGraphics.push()
+      screenGraphics.scale(1.5)
 
-      appView.screenGraphics.textAlign(p5.CENTER)
-      appView.screenGraphics.textFont(font, 24)
-      appView.screenGraphics.fill(100, 100, 200)
-      appView.screenGraphics.noStroke()
+      screenGraphics.textAlign(canvas.CENTER)
+      screenGraphics.textFont(font, 24)
+      screenGraphics.fill(100, 100, 200)
+      screenGraphics.noStroke()
 
-      appView.screenGraphics.fill(0)
-      appView.screenGraphics.text(
+      screenGraphics.fill(0)
+      screenGraphics.text(
         'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
-        appView.width / 2,
+        width / 2,
         30
       )
-      appView.screenGraphics.text(
+      screenGraphics.text(
         'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
-        appView.width / 2 - 130,
+        width / 2 - 130,
         700
       )
       this.propagateCreaturesButton.draw()
@@ -1845,11 +1921,11 @@ export default function sketch(p5: p5) {
         if (creature.alive) {
           creatureDrawer.drawCreature(creature, x * 30 + 55, y * 25 + 40, p5)
         } else {
-          appView.screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
+          screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
         }
       }
 
-      appView.screenGraphics.pop()
+      screenGraphics.pop()
     }
 
     onMouseReleased(): void {
@@ -1869,11 +1945,13 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
+      const {canvas, height, screenGraphics, width} = appView
+
       appController.propagateCreatures()
 
       appState.viewTimer = 0
       this.drawCreatureGrid()
-      p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+      canvas.image(screenGraphics, 0, 0, width, height)
     }
 
     onMouseReleased(): void {
@@ -1883,10 +1961,12 @@ export default function sketch(p5: p5) {
     }
 
     private drawCreatureGrid(): void {
-      appView.screenGraphics.push()
-      appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-      appView.screenGraphics.background(220, 253, 102)
-      appView.screenGraphics.noStroke()
+      const {canvas, screenGraphics, width} = appView
+
+      screenGraphics.push()
+      screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+      screenGraphics.background(220, 253, 102)
+      screenGraphics.noStroke()
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
         let creature = appState.sortedCreatures[i]
@@ -1902,35 +1982,35 @@ export default function sketch(p5: p5) {
           creature,
           gridX * 3 + 5.5,
           gridY * 2.5 + 4,
-          appView.screenGraphics
+          screenGraphics
         )
       }
-      appView.screenGraphics.pop()
+      screenGraphics.pop()
 
-      appView.screenGraphics.push()
-      appView.screenGraphics.scale(1.5)
+      screenGraphics.push()
+      screenGraphics.scale(1.5)
 
-      appView.screenGraphics.textAlign(p5.CENTER)
-      appView.screenGraphics.textFont(font, 24)
-      appView.screenGraphics.fill(100, 100, 200)
-      appView.screenGraphics.noStroke()
+      screenGraphics.textAlign(canvas.CENTER)
+      screenGraphics.textFont(font, 24)
+      screenGraphics.fill(100, 100, 200)
+      screenGraphics.noStroke()
 
-      appView.screenGraphics.fill(0)
-      appView.screenGraphics.text(
+      screenGraphics.fill(0)
+      screenGraphics.text(
         'These are the 1000 creatures of generation #' +
           (appState.generationCount + 1) +
           '.',
-        appView.width / 2,
+        width / 2,
         30
       )
-      appView.screenGraphics.text(
+      screenGraphics.text(
         'What perils will they face?  Find out next time!',
-        appView.width / 2 - 130,
+        width / 2 - 130,
         700
       )
       this.backButton.draw()
 
-      appView.screenGraphics.pop()
+      screenGraphics.pop()
     }
   }
 

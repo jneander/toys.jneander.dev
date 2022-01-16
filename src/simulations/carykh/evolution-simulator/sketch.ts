@@ -130,45 +130,9 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {showArrow} = this.config
       const {graphics, simulationGraphics} = this
 
-      simulationGraphics.push()
-
-      simulationGraphics.translate(
-        simulationGraphics.width / 2.0,
-        simulationGraphics.height / 2.0
-      )
-      simulationGraphics.scale(
-        1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG
-      )
-      simulationGraphics.translate(
-        -simulationState.camera.x * SCALE_TO_FIX_BUG,
-        -simulationState.camera.y * SCALE_TO_FIX_BUG
-      )
-
-      if (simulationState.timer < 900) {
-        simulationGraphics.background(120, 200, 255)
-      } else {
-        simulationGraphics.background(60, 100, 128)
-      }
-
-      this.drawPosts()
-      this.drawGround()
-
-      creatureDrawer.drawCreaturePieces(
-        simulationState.creature.nodes,
-        simulationState.creature.muscles,
-        0,
-        0,
-        simulationGraphics
-      )
-
-      if (showArrow) {
-        this.drawArrow()
-      }
-
-      simulationGraphics.pop()
+      this.drawSimulation()
 
       graphics.image(simulationGraphics, 0, 0)
     }
@@ -298,6 +262,48 @@ export default function sketch(p5: p5) {
           )
         }
       }
+    }
+
+    private drawSimulation(): void {
+      const {showArrow} = this.config
+      const {simulationGraphics} = this
+
+      simulationGraphics.push()
+
+      simulationGraphics.translate(
+        simulationGraphics.width / 2.0,
+        simulationGraphics.height / 2.0
+      )
+      simulationGraphics.scale(
+        1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG
+      )
+      simulationGraphics.translate(
+        -simulationState.camera.x * SCALE_TO_FIX_BUG,
+        -simulationState.camera.y * SCALE_TO_FIX_BUG
+      )
+
+      if (simulationState.timer < 900) {
+        simulationGraphics.background(120, 200, 255)
+      } else {
+        simulationGraphics.background(60, 100, 128)
+      }
+
+      this.drawPosts()
+      this.drawGround()
+
+      creatureDrawer.drawCreaturePieces(
+        simulationState.creature.nodes,
+        simulationState.creature.muscles,
+        0,
+        0,
+        simulationGraphics
+      )
+
+      if (showArrow) {
+        this.drawArrow()
+      }
+
+      simulationGraphics.pop()
     }
   }
 

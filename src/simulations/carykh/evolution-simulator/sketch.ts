@@ -99,7 +99,17 @@ export default function sketch(p5: p5) {
 
   let creatureDrawer: CreatureDrawer
 
+  interface WidgetConfig {
+    appController: AppController
+  }
+
   abstract class Widget {
+    protected appController: AppController
+
+    constructor(config: WidgetConfig) {
+      this.appController = config.appController
+    }
+
     abstract draw(): void
   }
 
@@ -119,7 +129,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.GenerationView)
+      this.appController.setActivityId(ActivityId.GenerationView)
     }
   }
 
@@ -139,7 +149,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.GenerateCreatures)
+      this.appController.setActivityId(ActivityId.GenerateCreatures)
     }
   }
 
@@ -162,7 +172,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       appState.generationCount = 0
-      appController.setActivityId(ActivityId.GenerationView)
+      this.appController.setActivityId(ActivityId.GenerationView)
     }
   }
 
@@ -182,7 +192,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.performStepByStepSimulation()
+      this.appController.performStepByStepSimulation()
     }
   }
 
@@ -202,7 +212,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.performQuickGenerationSimulation()
+      this.appController.performQuickGenerationSimulation()
     }
   }
 
@@ -223,7 +233,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       appState.pendingGenerationCount = 1
-      appController.startASAP()
+      this.appController.startASAP()
     }
   }
 
@@ -250,7 +260,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       appState.pendingGenerationCount = 1000000000
-      appController.startASAP()
+      this.appController.startASAP()
     }
   }
 
@@ -272,7 +282,7 @@ export default function sketch(p5: p5) {
 
     onClick(): void {
       for (let s = appState.viewTimer; s < 900; s++) {
-        appController.advanceSimulation()
+        this.appController.advanceSimulation()
       }
 
       appState.viewTimer = 1021
@@ -334,7 +344,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.finishGenerationSimulation()
+      this.appController.finishGenerationSimulation()
     }
   }
 
@@ -356,7 +366,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.SortingCreatures)
+      this.appController.setActivityId(ActivityId.SortingCreatures)
     }
   }
 
@@ -403,7 +413,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.CullCreatures)
+      this.appController.setActivityId(ActivityId.CullCreatures)
     }
   }
 
@@ -425,7 +435,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.PropagateCreatures)
+      this.appController.setActivityId(ActivityId.PropagateCreatures)
     }
   }
 
@@ -447,7 +457,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.GenerationView)
+      this.appController.setActivityId(ActivityId.GenerationView)
     }
   }
 
@@ -457,8 +467,8 @@ export default function sketch(p5: p5) {
     private xPositionMin: number
     private xPositionRange: number
 
-    constructor() {
-      super()
+    constructor(config: WidgetConfig) {
+      super(config)
 
       this.xPositionMax = 1170
       this.xPositionMin = 760
@@ -587,8 +597,8 @@ export default function sketch(p5: p5) {
   class PopupSimulationView extends Widget {
     private simulationView: SimulationView
 
-    constructor() {
-      super()
+    constructor(config: WidgetConfig) {
+      super(config)
 
       const {font} = appView
 
@@ -710,7 +720,7 @@ export default function sketch(p5: p5) {
 
       appView.canvas.image(this.simulationView.graphics, px2, py2, 300, 300)
 
-      appController.advanceSimulation()
+      this.appController.advanceSimulation()
     }
   }
 
@@ -720,7 +730,7 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.startButton = new StartViewStartButton()
+      this.startButton = new StartViewStartButton({appController})
     }
 
     initialize(): void {
@@ -758,13 +768,17 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.popupSimulationView = new PopupSimulationView()
-      this.createButton = new GenerationViewCreateButton()
-      this.stepByStepButton = new SimulateStepByStepButton()
-      this.quickButton = new SimulateQuickButton()
-      this.asapButton = new SimulateAsapButton()
-      this.alapButton = new SimulateAlapButton()
-      this.generationSlider = new GenerationSlider()
+      const widgetConfig = {
+        appController
+      }
+
+      this.popupSimulationView = new PopupSimulationView(widgetConfig)
+      this.createButton = new GenerationViewCreateButton(widgetConfig)
+      this.stepByStepButton = new SimulateStepByStepButton(widgetConfig)
+      this.quickButton = new SimulateQuickButton(widgetConfig)
+      this.asapButton = new SimulateAsapButton(widgetConfig)
+      this.alapButton = new SimulateAlapButton(widgetConfig)
+      this.generationSlider = new GenerationSlider(widgetConfig)
 
       this.draggingSlider = false
 
@@ -1392,7 +1406,7 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.backButton = new GeneratedCreaturesBackButton()
+      this.backButton = new GeneratedCreaturesBackButton({appController})
     }
 
     initialize(): void {
@@ -1457,9 +1471,13 @@ export default function sketch(p5: p5) {
         width: 1600
       })
 
-      this.skipButton = new StepByStepSkipButton()
-      this.playbackSpeedButton = new StepByStepPlaybackSpeedButton()
-      this.finishButton = new StepByStepFinishButton()
+      const widgetConfig = {
+        appController
+      }
+
+      this.skipButton = new StepByStepSkipButton(widgetConfig)
+      this.playbackSpeedButton = new StepByStepPlaybackSpeedButton(widgetConfig)
+      this.finishButton = new StepByStepFinishButton(widgetConfig)
     }
 
     deinitialize(): void {
@@ -1599,8 +1617,12 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.popupSimulationView = new PopupSimulationView()
-      this.sortCreaturesButton = new SortCreaturesButton()
+      const widgetConfig = {
+        appController
+      }
+
+      this.popupSimulationView = new PopupSimulationView(widgetConfig)
+      this.sortCreaturesButton = new SortCreaturesButton(widgetConfig)
     }
 
     deinitialize(): void {
@@ -1690,7 +1712,7 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.skipButton = new SortingCreaturesSkipButton()
+      this.skipButton = new SortingCreaturesSkipButton({appController})
     }
 
     draw(): void {
@@ -1751,8 +1773,12 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.popupSimulationView = new PopupSimulationView()
-      this.cullCreaturesButton = new CullCreaturesButton()
+      const widgetConfig = {
+        appController
+      }
+
+      this.popupSimulationView = new PopupSimulationView(widgetConfig)
+      this.cullCreaturesButton = new CullCreaturesButton(widgetConfig)
     }
 
     deinitialize(): void {
@@ -1841,8 +1867,12 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.popupSimulationView = new PopupSimulationView()
-      this.propagateCreaturesButton = new PropagateCreaturesButton()
+      const widgetConfig = {
+        appController
+      }
+
+      this.popupSimulationView = new PopupSimulationView(widgetConfig)
+      this.propagateCreaturesButton = new PropagateCreaturesButton(widgetConfig)
     }
 
     deinitialize(): void {
@@ -1945,7 +1975,7 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.backButton = new PropagatedCreaturesBackButton()
+      this.backButton = new PropagatedCreaturesBackButton({appController})
     }
 
     initialize(): void {

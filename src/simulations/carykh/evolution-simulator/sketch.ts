@@ -2014,7 +2014,6 @@ export default function sketch(p5: p5) {
         }
       } else if (
         appState.currentActivityId === ActivityId.SortedCreatures ||
-        appState.currentActivityId === ActivityId.CullingCreatures ||
         appState.currentActivityId === ActivityId.CulledCreatures
       ) {
         idOfCreatureUnderCursor = getGridIndexUnderCursor(40, 42)

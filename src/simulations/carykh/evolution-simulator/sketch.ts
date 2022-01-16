@@ -615,44 +615,54 @@ export default function sketch(p5: p5) {
     }
   }
 
-  const startViewStartButton = new StartViewStartButton()
-  const generationViewCreateButton = new GenerationViewCreateButton()
-  const generatedCreaturesBackButton = new GeneratedCreaturesBackButton()
-  const simulateStepByStepButton = new SimulateStepByStepButton()
-  const simulateQuickButton = new SimulateQuickButton()
-  const simulateAsapButton = new SimulateAsapButton()
-  const simulateAlapButton = new SimulateAlapButton()
-  const generationSlider = new GenerationSlider()
-  const stepByStepSkipButton = new StepByStepSkipButton()
-  const stepByStepPlaybackSpeedButton = new StepByStepPlaybackSpeedButton()
-  const stepByStepFinishButton = new StepByStepFinishButton()
-  const sortCreaturesButton = new SortCreaturesButton()
-  const sortingCreaturesSkipButton = new SortingCreaturesSkipButton()
-  const cullCreaturesButton = new CullCreaturesButton()
-  const propagateCreaturesButton = new PropagateCreaturesButton()
-  const propagatedCreaturesBackButton = new PropagatedCreaturesBackButton()
   const statusWindowView = new StatusWindowView()
 
   class StartActivity extends Activity {
+    private startButton: StartViewStartButton
+
+    constructor() {
+      super()
+
+      this.startButton = new StartViewStartButton()
+    }
+
     initialize(): void {
       p5.background(255)
       p5.noStroke()
       p5.fill(0)
       p5.text('EVOLUTION!', appView.width / 2, 200)
-      startViewStartButton.draw()
+      this.startButton.draw()
     }
 
     onMouseReleased(): void {
-      if (startViewStartButton.isUnderCursor()) {
-        startViewStartButton.onClick()
+      if (this.startButton.isUnderCursor()) {
+        this.startButton.onClick()
       }
     }
   }
 
   class GenerationViewActivity extends Activity {
+    private createButton: GenerationViewCreateButton
+    private stepByStepButton: SimulateStepByStepButton
+    private quickButton: SimulateQuickButton
+    private asapButton: SimulateAsapButton
+    private alapButton: SimulateAlapButton
+    private generationSlider: GenerationSlider
+
+    constructor() {
+      super()
+
+      this.createButton = new GenerationViewCreateButton()
+      this.stepByStepButton = new SimulateStepByStepButton()
+      this.quickButton = new SimulateQuickButton()
+      this.asapButton = new SimulateAsapButton()
+      this.alapButton = new SimulateAlapButton()
+      this.generationSlider = new GenerationSlider()
+    }
+
     draw(): void {
       if (draggingSlider && appState.generationCount >= 1) {
-        generationSlider.onDrag()
+        this.generationSlider.onDrag()
       }
 
       p5.noStroke()
@@ -672,12 +682,12 @@ export default function sketch(p5: p5) {
           160
         )
         p5.text('They will be randomly created, and also very simple.', 20, 200)
-        generationViewCreateButton.draw()
+        this.createButton.draw()
       } else {
-        simulateStepByStepButton.draw()
-        simulateQuickButton.draw()
-        simulateAsapButton.draw()
-        simulateAlapButton.draw()
+        this.stepByStepButton.draw()
+        this.quickButton.draw()
+        this.asapButton.draw()
+        this.alapButton.draw()
 
         p5.fill(0)
         p5.text('Median ' + FITNESS_LABEL, 50, 160)
@@ -710,7 +720,7 @@ export default function sketch(p5: p5) {
         this.drawGraphImage()
 
         if (appState.generationCount >= 1) {
-          generationSlider.draw()
+          this.generationSlider.draw()
         }
 
         if (appState.selectedGeneration >= 1) {
@@ -776,7 +786,10 @@ export default function sketch(p5: p5) {
     }
 
     onMousePressed(): void {
-      if (appState.generationCount >= 1 && generationSlider.isUnderCursor()) {
+      if (
+        appState.generationCount >= 1 &&
+        this.generationSlider.isUnderCursor()
+      ) {
         draggingSlider = true
       }
     }
@@ -784,18 +797,18 @@ export default function sketch(p5: p5) {
     onMouseReleased(): void {
       if (
         appState.generationCount === -1 &&
-        generationViewCreateButton.isUnderCursor()
+        this.createButton.isUnderCursor()
       ) {
-        generationViewCreateButton.onClick()
+        this.createButton.onClick()
       } else if (appState.generationCount >= 0) {
-        if (simulateStepByStepButton.isUnderCursor()) {
-          simulateStepByStepButton.onClick()
-        } else if (simulateQuickButton.isUnderCursor()) {
-          simulateQuickButton.onClick()
-        } else if (simulateAsapButton.isUnderCursor()) {
-          simulateAsapButton.onClick()
-        } else if (simulateAlapButton.isUnderCursor()) {
-          simulateAlapButton.onClick()
+        if (this.stepByStepButton.isUnderCursor()) {
+          this.stepByStepButton.onClick()
+        } else if (this.quickButton.isUnderCursor()) {
+          this.quickButton.onClick()
+        } else if (this.asapButton.isUnderCursor()) {
+          this.asapButton.onClick()
+        } else if (this.alapButton.isUnderCursor()) {
+          this.alapButton.onClick()
         }
       }
     }
@@ -1226,6 +1239,14 @@ export default function sketch(p5: p5) {
   }
 
   class GenerateCreaturesActivity extends Activity {
+    private backButton: GeneratedCreaturesBackButton
+
+    constructor() {
+      super()
+
+      this.backButton = new GeneratedCreaturesBackButton()
+    }
+
     initialize(): void {
       appController.generateCreatures()
 
@@ -1252,17 +1273,29 @@ export default function sketch(p5: p5) {
         appView.width / 2 - 200,
         690
       )
-      generatedCreaturesBackButton.draw()
+      this.backButton.draw()
     }
 
     onMouseReleased(): void {
-      if (generatedCreaturesBackButton.isUnderCursor()) {
-        generatedCreaturesBackButton.onClick()
+      if (this.backButton.isUnderCursor()) {
+        this.backButton.onClick()
       }
     }
   }
 
   class SimulationRunningActivity extends Activity {
+    private skipButton: StepByStepSkipButton
+    private playbackSpeedButton: StepByStepPlaybackSpeedButton
+    private finishButton: StepByStepFinishButton
+
+    constructor() {
+      super()
+
+      this.skipButton = new StepByStepSkipButton()
+      this.playbackSpeedButton = new StepByStepPlaybackSpeedButton()
+      this.finishButton = new StepByStepFinishButton()
+    }
+
     draw(): void {
       if (appState.viewTimer <= 900) {
         for (let s = 0; s < simulationState.speed; s++) {
@@ -1276,9 +1309,9 @@ export default function sketch(p5: p5) {
         this.drawSimulationView()
         drawStats(appView.width - 10, 0, 0.7)
 
-        stepByStepSkipButton.draw()
-        stepByStepPlaybackSpeedButton.draw()
-        stepByStepFinishButton.draw()
+        this.skipButton.draw()
+        this.playbackSpeedButton.draw()
+        this.finishButton.draw()
       }
 
       if (appState.viewTimer == 900) {
@@ -1313,12 +1346,12 @@ export default function sketch(p5: p5) {
     }
 
     onMouseReleased(): void {
-      if (stepByStepSkipButton.isUnderCursor()) {
-        stepByStepSkipButton.onClick()
-      } else if (stepByStepPlaybackSpeedButton.isUnderCursor()) {
-        stepByStepPlaybackSpeedButton.onClick()
-      } else if (stepByStepFinishButton.isUnderCursor()) {
-        stepByStepFinishButton.onClick()
+      if (this.skipButton.isUnderCursor()) {
+        this.skipButton.onClick()
+      } else if (this.playbackSpeedButton.isUnderCursor()) {
+        this.playbackSpeedButton.onClick()
+      } else if (this.finishButton.isUnderCursor()) {
+        this.finishButton.onClick()
       }
     }
 
@@ -1411,6 +1444,14 @@ export default function sketch(p5: p5) {
   }
 
   class SimulationFinishedActivity extends Activity {
+    private sortCreaturesButton: SortCreaturesButton
+
+    constructor() {
+      super()
+
+      this.sortCreaturesButton = new SortCreaturesButton()
+    }
+
     draw(): void {
       p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
 
@@ -1472,19 +1513,27 @@ export default function sketch(p5: p5) {
         appView.width / 2 - 200,
         690
       )
-      sortCreaturesButton.draw()
+      this.sortCreaturesButton.draw()
 
       appView.screenGraphics.pop()
     }
 
     onMouseReleased(): void {
-      if (sortCreaturesButton.isUnderCursor()) {
-        sortCreaturesButton.onClick()
+      if (this.sortCreaturesButton.isUnderCursor()) {
+        this.sortCreaturesButton.onClick()
       }
     }
   }
 
   class SortingCreaturesActivity extends Activity {
+    private skipButton: SortingCreaturesSkipButton
+
+    constructor() {
+      super()
+
+      this.skipButton = new SortingCreaturesSkipButton()
+    }
+
     draw(): void {
       p5.background(220, 253, 102)
       p5.push()
@@ -1508,7 +1557,7 @@ export default function sketch(p5: p5) {
 
       p5.pop()
 
-      sortingCreaturesSkipButton.draw()
+      this.skipButton.draw()
       if (
         appState.generationSimulationMode === GenerationSimulationMode.Quick
       ) {
@@ -1524,8 +1573,8 @@ export default function sketch(p5: p5) {
     }
 
     onMouseReleased(): void {
-      if (sortingCreaturesSkipButton.isUnderCursor()) {
-        sortingCreaturesSkipButton.onClick()
+      if (this.skipButton.isUnderCursor()) {
+        this.skipButton.onClick()
       }
     }
 
@@ -1535,6 +1584,14 @@ export default function sketch(p5: p5) {
   }
 
   class SortedCreaturesActivity extends Activity {
+    private cullCreaturesButton: CullCreaturesButton
+
+    constructor() {
+      super()
+
+      this.cullCreaturesButton = new CullCreaturesButton()
+    }
+
     draw(): void {
       p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
 
@@ -1558,8 +1615,8 @@ export default function sketch(p5: p5) {
     }
 
     onMouseReleased(): void {
-      if (cullCreaturesButton.isUnderCursor()) {
-        cullCreaturesButton.onClick()
+      if (this.cullCreaturesButton.isUnderCursor()) {
+        this.cullCreaturesButton.onClick()
       }
     }
 
@@ -1604,13 +1661,21 @@ export default function sketch(p5: p5) {
         appView.width / 2 - 200,
         700
       )
-      cullCreaturesButton.draw()
+      this.cullCreaturesButton.draw()
 
       appView.screenGraphics.pop()
     }
   }
 
   class CullCreaturesActivity extends Activity {
+    private propagateCreaturesButton: PropagateCreaturesButton
+
+    constructor() {
+      super()
+
+      this.propagateCreaturesButton = new PropagateCreaturesButton()
+    }
+
     draw(): void {
       p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
 
@@ -1673,7 +1738,7 @@ export default function sketch(p5: p5) {
         appView.width / 2 - 130,
         700
       )
-      propagateCreaturesButton.draw()
+      this.propagateCreaturesButton.draw()
 
       for (let i = 0; i < CREATURE_COUNT; i++) {
         const creature = appState.sortedCreatures[i]
@@ -1691,13 +1756,21 @@ export default function sketch(p5: p5) {
     }
 
     onMouseReleased(): void {
-      if (propagateCreaturesButton.isUnderCursor()) {
-        propagateCreaturesButton.onClick()
+      if (this.propagateCreaturesButton.isUnderCursor()) {
+        this.propagateCreaturesButton.onClick()
       }
     }
   }
 
   class PropagateCreaturesActivity extends Activity {
+    private backButton: PropagatedCreaturesBackButton
+
+    constructor() {
+      super()
+
+      this.backButton = new PropagatedCreaturesBackButton()
+    }
+
     initialize(): void {
       appController.propagateCreatures()
       updateSelectedGenerationAndSliderPosition()
@@ -1708,8 +1781,8 @@ export default function sketch(p5: p5) {
     }
 
     onMouseReleased(): void {
-      if (propagatedCreaturesBackButton.isUnderCursor()) {
-        propagatedCreaturesBackButton.onClick()
+      if (this.backButton.isUnderCursor()) {
+        this.backButton.onClick()
       }
     }
 
@@ -1759,7 +1832,7 @@ export default function sketch(p5: p5) {
         appView.width / 2 - 130,
         700
       )
-      propagatedCreaturesBackButton.draw()
+      this.backButton.draw()
 
       appView.screenGraphics.pop()
     }

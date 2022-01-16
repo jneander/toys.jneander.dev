@@ -647,32 +647,7 @@ export default function sketch(p5: p5) {
       simulationState.camera.x += (averageX - simulationState.camera.x) * 0.1
       simulationState.camera.y += (averageY - simulationState.camera.y) * 0.1
 
-      popUpImage.push()
-      popUpImage.translate(popUpImage.width / 2, popUpImage.height / 2)
-      popUpImage.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
-      popUpImage.translate(
-        -simulationState.camera.x * SCALE_TO_FIX_BUG,
-        -simulationState.camera.y * SCALE_TO_FIX_BUG
-      )
-
-      if (simulationState.timer < 900) {
-        popUpImage.background(120, 200, 255)
-      } else {
-        popUpImage.background(60, 100, 128)
-      }
-
-      drawPosts(popUpImage)
-      drawGround(600, 600, popUpImage)
-
-      creatureDrawer.drawCreaturePieces(
-        simulationState.creature.nodes,
-        simulationState.creature.muscles,
-        0,
-        0,
-        popUpImage
-      )
-
-      popUpImage.pop()
+      drawSimulationView(600, 600, popUpImage, false)
 
       p5.image(popUpImage, px2, py2, 300, 300)
 
@@ -1379,7 +1354,7 @@ export default function sketch(p5: p5) {
         }
 
         this.updateCameraPosition()
-        this.drawSimulationView()
+        drawSimulationView(1600, 900, p5, true)
         drawStats(appView.width - 10, 0, 0.7)
 
         this.skipButton.draw()
@@ -1448,40 +1423,6 @@ export default function sketch(p5: p5) {
 
         p5.textFont(font, POST_FONT_SIZE)
       }
-    }
-
-    private drawSimulationView(): void {
-      const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
-
-      p5.push()
-
-      p5.translate(p5.width / 2.0, p5.height / 2.0)
-      p5.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
-      p5.translate(
-        -simulationState.camera.x * SCALE_TO_FIX_BUG,
-        -simulationState.camera.y * SCALE_TO_FIX_BUG
-      )
-
-      if (simulationState.timer < 900) {
-        p5.background(120, 200, 255)
-      } else {
-        p5.background(60, 100, 128)
-      }
-
-      drawPosts(p5)
-      drawGround(1600, 900, p5)
-
-      creatureDrawer.drawCreaturePieces(
-        simulationState.creature.nodes,
-        simulationState.creature.muscles,
-        0,
-        0,
-        p5
-      )
-
-      drawArrow(averageX, p5)
-
-      p5.pop()
     }
 
     private drawFinalFitness(): void {
@@ -1929,6 +1870,47 @@ export default function sketch(p5: p5) {
   }
 
   // COMPONENT DRAWING
+
+  function drawSimulationView(
+    width: number,
+    height: number,
+    graphics: p5,
+    showArrow: boolean
+  ): void {
+    const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
+
+    graphics.push()
+
+    graphics.translate(graphics.width / 2.0, graphics.height / 2.0)
+    graphics.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
+    graphics.translate(
+      -simulationState.camera.x * SCALE_TO_FIX_BUG,
+      -simulationState.camera.y * SCALE_TO_FIX_BUG
+    )
+
+    if (simulationState.timer < 900) {
+      graphics.background(120, 200, 255)
+    } else {
+      graphics.background(60, 100, 128)
+    }
+
+    drawPosts(graphics)
+    drawGround(width, height, graphics)
+
+    creatureDrawer.drawCreaturePieces(
+      simulationState.creature.nodes,
+      simulationState.creature.muscles,
+      0,
+      0,
+      graphics
+    )
+
+    if (showArrow) {
+      drawArrow(averageX, graphics)
+    }
+
+    graphics.pop()
+  }
 
   function drawGround(width: number, height: number, graphics: p5): void {
     const {averageX, averageY} = averagePositionOfNodes(

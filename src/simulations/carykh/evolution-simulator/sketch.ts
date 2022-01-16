@@ -39,8 +39,6 @@ export default function sketch(p5: p5) {
   let popUpImage: Graphics
   let segBarImage: Graphics
 
-  let sliderX = 1170
-
   const appState: AppState = {
     creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
     creaturesInLatestGeneration: new Array<Creature>(CREATURE_COUNT),
@@ -423,13 +421,28 @@ export default function sketch(p5: p5) {
   }
 
   class GenerationSlider extends Widget {
+    private xPosition: number
+    private xPositionMax: number
+    private xPositionMin: number
+    private xPositionRange: number
+
+    constructor() {
+      super()
+
+      this.xPositionMax = 1170
+      this.xPositionMin = 760
+      this.xPositionRange = this.xPositionMax - this.xPositionMin // 410
+
+      this.xPosition = this.getInitialPosition()
+    }
+
     draw(): void {
       p5.noStroke()
       p5.textAlign(p5.CENTER)
       p5.fill(100)
       p5.rect(760, 340, 460, 50)
       p5.fill(220)
-      p5.rect(sliderX, 340, 50, 50)
+      p5.rect(this.xPosition, 340, 50, 50)
 
       let fs = 0
       if (appState.selectedGeneration >= 1) {
@@ -442,30 +455,29 @@ export default function sketch(p5: p5) {
       p5.fill(0)
       p5.text(
         appState.selectedGeneration,
-        sliderX + 25,
+        this.xPosition + 25,
         366 + fontSize * 0.3333
       )
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(sliderX, 340, 50, 50)
+      return appView.rectIsUnderCursor(this.xPosition, 340, 50, 50)
     }
 
     onDrag(): void {
       const {cursorX} = appView.getCursorPosition()
-
-      const sliderXMax = 1170
-      const sliderXMin = 760
-      const sliderXRange = sliderXMax - sliderXMin // 410
 
       /*
        * Update the slider position with a sluggish effect. This avoids some
        * perceived jitter in the control resulting from the frame rate.
        */
 
-      sliderX = Math.min(
-        Math.max(sliderX + (cursorX - 25 - sliderX) * 0.5, sliderXMin),
-        sliderXMax
+      this.xPosition = Math.min(
+        Math.max(
+          this.xPosition + (cursorX - 25 - this.xPosition) * 0.5,
+          this.xPositionMin
+        ),
+        this.xPositionMax
       )
 
       const {generationCount} = appState
@@ -474,13 +486,68 @@ export default function sketch(p5: p5) {
         // After 2 generations, the slider starts at generation 1.
         appState.selectedGeneration =
           Math.round(
-            ((sliderX - sliderXMin) * (generationCount - 1)) / sliderXRange
+            ((this.xPosition - this.xPositionMin) * (generationCount - 1)) /
+              this.xPositionRange
           ) + 1
       } else {
         appState.selectedGeneration = Math.round(
-          ((sliderX - sliderXMin) * generationCount) / sliderXRange
+          ((this.xPosition - this.xPositionMin) * generationCount) /
+            this.xPositionRange
         )
       }
+    }
+
+    updatePosition(): void {
+      // Update slider position to reflect change in generation range.
+
+      const {generationCount, selectedGeneration} = appState
+
+      if (selectedGeneration === generationCount) {
+        // When selecting the latest generation, push the slider to max.
+        this.xPosition = this.xPositionMax
+        return
+      }
+
+      // Preserve previously-selected generation by shifting slider.
+      let previousGenerationRange = generationCount - 1
+      if (previousGenerationRange > 1) {
+        previousGenerationRange--
+      }
+
+      let currentGenerationRange = generationCount
+      if (generationCount > 1) {
+        // After 2 generations, the slider starts at generation 1.
+        currentGenerationRange--
+      }
+
+      let sliderPercentage =
+        (this.xPosition - this.xPositionMin) / this.xPositionRange
+      sliderPercentage *= previousGenerationRange / currentGenerationRange
+
+      this.xPosition = Math.round(
+        sliderPercentage * this.xPositionRange + this.xPositionMin
+      )
+    }
+
+    private getInitialPosition(): number {
+      // Get initial slider position based on app state.
+
+      const {generationCount, selectedGeneration} = appState
+
+      if (selectedGeneration === generationCount) {
+        // When selecting the latest generation, push the slider to max.
+        return this.xPositionMax
+      }
+
+      let sliderPercentage = 1
+      if (generationCount > 1) {
+        // After 2 generations, the slider starts at generation 1.
+        sliderPercentage = (selectedGeneration - 1) / (generationCount - 1)
+      }
+
+      return Math.round(
+        sliderPercentage * this.xPositionRange + this.xPositionMin
+      )
     }
   }
 
@@ -784,7 +851,8 @@ export default function sketch(p5: p5) {
         appController.updateHistory()
         appController.cullCreatures()
         appController.propagateCreatures()
-        updateGenerationSliderPosition()
+
+        this.generationSlider.updatePosition()
       }
     }
 
@@ -1778,7 +1846,6 @@ export default function sketch(p5: p5) {
 
     initialize(): void {
       appController.propagateCreatures()
-      updateGenerationSliderPosition()
 
       appState.viewTimer = 0
       this.drawCreatureGrid()
@@ -2069,37 +2136,6 @@ export default function sketch(p5: p5) {
     )
 
     p5.pop()
-  }
-
-  function updateGenerationSliderPosition(): void {
-    // Update slider position to reflect change in generation range.
-
-    const {generationCount, selectedGeneration} = appState
-    const sliderXMax = 1170
-    const sliderXMin = 760
-    const sliderXRange = sliderXMax - sliderXMin // 410
-
-    if (selectedGeneration === generationCount) {
-      // When selecting the latest generation, push the slider to max.
-      sliderX = sliderXMax
-    } else {
-      // Preserve previously-selected generation by shifting slider.
-      let previousGenerationRange = generationCount - 1
-      if (previousGenerationRange > 1) {
-        previousGenerationRange--
-      }
-
-      let currentGenerationRange = generationCount
-      if (generationCount > 1) {
-        // After 2 generations, the slider starts at generation 1.
-        currentGenerationRange--
-      }
-
-      let sliderPercentage = (sliderX - sliderXMin) / sliderXRange
-      sliderPercentage *= previousGenerationRange / currentGenerationRange
-
-      sliderX = Math.round(sliderPercentage * sliderXRange + sliderXMin)
-    }
   }
 
   p5.mouseWheel = (event: WheelEvent) => {

@@ -419,7 +419,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.PropagatingCreatures)
+      appController.setActivityId(ActivityId.PropagateCreatures)
     }
   }
 
@@ -1175,6 +1175,23 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class PropagateCreaturesActivity extends Activity {
+    initialize(): void {
+      appController.propagateCreatures()
+      updateSelectedGenerationAndSliderPosition()
+
+      appState.viewTimer = 0
+      drawPropagatedCreaturesScreenImage()
+      p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+    }
+
+    onMouseReleased(): void {
+      if (propagatedCreaturesBackButton.isUnderCursor()) {
+        propagatedCreaturesBackButton.onClick()
+      }
+    }
+  }
+
   const activityClassByActivityId = {
     [ActivityId.Start]: StartActivity,
     [ActivityId.GenerationView]: GenerationViewActivity,
@@ -1184,14 +1201,7 @@ export default function sketch(p5: p5) {
     [ActivityId.SortingCreatures]: SortingCreaturesActivity,
     [ActivityId.SortedCreatures]: SortedCreaturesActivity,
     [ActivityId.CullCreatures]: CullCreaturesActivity,
-    [ActivityId.PropagatingCreatures]: NullActivity,
-    [ActivityId.PropagatedCreatures]: NullActivity
-  }
-
-  // ACTIVITY DRAWING
-
-  function drawPropagatedCreaturesActivity(): void {
-    p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+    [ActivityId.PropagateCreatures]: PropagateCreaturesActivity
   }
 
   // COMPONENT DRAWING
@@ -2024,13 +2034,6 @@ export default function sketch(p5: p5) {
     appState.showPopupSimulation = false
 
     appState.currentActivity.onMouseReleased()
-
-    if (
-      appState.currentActivityId === ActivityId.PropagatedCreatures &&
-      propagatedCreaturesBackButton.isUnderCursor()
-    ) {
-      propagatedCreaturesBackButton.onClick()
-    }
   }
 
   p5.preload = () => {
@@ -2081,18 +2084,5 @@ export default function sketch(p5: p5) {
     }
 
     appState.currentActivity.draw()
-
-    if (appState.currentActivityId === ActivityId.PropagatingCreatures) {
-      appController.propagateCreatures()
-      updateSelectedGenerationAndSliderPosition()
-
-      appState.viewTimer = 0
-      drawPropagatedCreaturesScreenImage()
-      appController.setActivityId(ActivityId.PropagatedCreatures)
-    }
-
-    if (appState.currentActivityId === ActivityId.PropagatedCreatures) {
-      drawPropagatedCreaturesActivity()
-    }
   }
 }

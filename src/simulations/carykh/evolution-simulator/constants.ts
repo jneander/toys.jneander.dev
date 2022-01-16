@@ -32,8 +32,7 @@ export enum ActivityId {
   SortingCreatures = 'SORTING_CREATURES',
   SortedCreatures = 'SORTED_CREATURES',
   CullCreatures = 'CULL_CREATURES',
-  PropagatingCreatures = 'PROPAGATING_CREATURES',
-  PropagatedCreatures = 'PROPAGATED_CREATURES'
+  PropagateCreatures = 'PROPAGATE_CREATURES'
 }
 
 export enum GenerationSimulationMode {

@@ -519,7 +519,7 @@ export default function sketch(p5: p5) {
       if (appState.statusWindow >= 0) {
         creature = appState.sortedCreatures[appState.statusWindow]
 
-        if (appState.currentActivityId === ActivityId.FinishedStepByStep) {
+        if (appState.currentActivityId === ActivityId.SimulationFinished) {
           const id = creatureIdToIndex(creature.id)
           x = id % 40
           y = Math.floor(id / 40)
@@ -941,13 +941,86 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class SimulationFinishedActivity extends Activity {
+    draw(): void {
+      p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+
+      /*
+       * When the cursor is over any of the creature tiles, the popup simulation
+       * will be displayed for the associated creature.
+       */
+
+      const gridIndex = getGridIndexUnderCursor(40, 17)
+
+      if (gridIndex != null) {
+        const creatureId = appState.creatureIdsByGridIndex[gridIndex]
+        appController.setPopupSimulationCreatureId(creatureId)
+        statusWindowView.draw()
+      } else {
+        appController.clearPopupSimulation()
+      }
+    }
+
+    initialize(): void {
+      appController.sortCreatures()
+      appController.updateHistory()
+
+      appState.viewTimer = 0
+      appController.updateCreatureIdsByGridIndex()
+
+      appView.screenGraphics.push()
+      appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
+      appView.screenGraphics.background(220, 253, 102)
+      appView.screenGraphics.noStroke()
+
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const creature = appState.sortedCreatures[i]
+        const gridIndex = creatureIdToIndex(creature.id)
+
+        const gridX = gridIndex % 40
+        const gridY = Math.floor(gridIndex / 40)
+
+        creatureDrawer.drawCreature(
+          creature,
+          gridX * 3 + 5.5,
+          gridY * 2.5 + 4,
+          appView.screenGraphics
+        )
+      }
+      appView.screenGraphics.pop()
+
+      appView.screenGraphics.push()
+      appView.screenGraphics.scale(1.5)
+
+      appView.screenGraphics.textAlign(p5.CENTER)
+      appView.screenGraphics.textFont(font, 24)
+      appView.screenGraphics.fill(100, 100, 200)
+      appView.screenGraphics.noStroke()
+
+      appView.screenGraphics.fill(0)
+      appView.screenGraphics.text(
+        "All 1,000 creatures have been tested.  Now let's sort them!",
+        appView.width / 2 - 200,
+        690
+      )
+      sortCreaturesButton.draw()
+
+      appView.screenGraphics.pop()
+    }
+
+    onMouseReleased(): void {
+      if (sortCreaturesButton.isUnderCursor()) {
+        sortCreaturesButton.onClick()
+      }
+    }
+  }
+
   const activityClassByActivityId = {
     [ActivityId.Start]: StartActivity,
     [ActivityId.GenerationView]: GenerationViewActivity,
     [ActivityId.GenerateCreatures]: GenerateCreaturesActivity,
     [ActivityId.SimulationRunning]: SimulationRunningActivity,
-    [ActivityId.SimulationFinished]: NullActivity,
-    [ActivityId.FinishedStepByStep]: NullActivity,
+    [ActivityId.SimulationFinished]: SimulationFinishedActivity,
     [ActivityId.SortingCreatures]: NullActivity,
     [ActivityId.SortedCreatures]: NullActivity,
     [ActivityId.CullingCreatures]: NullActivity,
@@ -957,25 +1030,6 @@ export default function sketch(p5: p5) {
   }
 
   // ACTIVITY DRAWING
-
-  function drawFinishedStepByStepActivity(): void {
-    p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
-
-    /*
-     * When the cursor is over any of the creature tiles, the popup simulation
-     * will be displayed for the associated creature.
-     */
-
-    const gridIndex = getGridIndexUnderCursor(40, 17)
-
-    if (gridIndex != null) {
-      const creatureId = appState.creatureIdsByGridIndex[gridIndex]
-      appController.setPopupSimulationCreatureId(creatureId)
-      statusWindowView.draw()
-    } else {
-      appController.clearPopupSimulation()
-    }
-  }
 
   function drawSortingCreaturesActivity(): void {
     p5.background(220, 253, 102)
@@ -1087,47 +1141,6 @@ export default function sketch(p5: p5) {
       700
     )
     cullCreaturesButton.draw()
-
-    appView.screenGraphics.pop()
-  }
-
-  function drawSimulationFinishedScreenImage(): void {
-    appView.screenGraphics.push()
-    appView.screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-    appView.screenGraphics.background(220, 253, 102)
-    appView.screenGraphics.noStroke()
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.sortedCreatures[i]
-      const gridIndex = creatureIdToIndex(creature.id)
-
-      const gridX = gridIndex % 40
-      const gridY = Math.floor(gridIndex / 40)
-
-      creatureDrawer.drawCreature(
-        creature,
-        gridX * 3 + 5.5,
-        gridY * 2.5 + 4,
-        appView.screenGraphics
-      )
-    }
-    appView.screenGraphics.pop()
-
-    appView.screenGraphics.push()
-    appView.screenGraphics.scale(1.5)
-
-    appView.screenGraphics.textAlign(p5.CENTER)
-    appView.screenGraphics.textFont(font, 24)
-    appView.screenGraphics.fill(100, 100, 200)
-    appView.screenGraphics.noStroke()
-
-    appView.screenGraphics.fill(0)
-    appView.screenGraphics.text(
-      "All 1,000 creatures have been tested.  Now let's sort them!",
-      appView.width / 2 - 200,
-      690
-    )
-    sortCreaturesButton.draw()
 
     appView.screenGraphics.pop()
   }
@@ -1974,11 +1987,6 @@ export default function sketch(p5: p5) {
     appState.currentActivity.onMouseReleased()
 
     if (
-      appState.currentActivityId === ActivityId.FinishedStepByStep &&
-      sortCreaturesButton.isUnderCursor()
-    ) {
-      sortCreaturesButton.onClick()
-    } else if (
       appState.currentActivityId === ActivityId.SortingCreatures &&
       sortingCreaturesSkipButton.isUnderCursor()
     ) {
@@ -2050,16 +2058,6 @@ export default function sketch(p5: p5) {
 
     appState.currentActivity.draw()
 
-    if (appState.currentActivityId === ActivityId.SimulationFinished) {
-      appController.sortCreatures()
-      appController.updateHistory()
-
-      appState.viewTimer = 0
-      appController.updateCreatureIdsByGridIndex()
-      drawSimulationFinishedScreenImage()
-      appController.setActivityId(ActivityId.FinishedStepByStep)
-    }
-
     if (appState.currentActivityId === ActivityId.SortingCreatures) {
       drawSortingCreaturesActivity()
 
@@ -2093,10 +2091,6 @@ export default function sketch(p5: p5) {
       appState.viewTimer = 0
       drawPropagatedCreaturesScreenImage()
       appController.setActivityId(ActivityId.PropagatedCreatures)
-    }
-
-    if (appState.currentActivityId === ActivityId.FinishedStepByStep) {
-      drawFinishedStepByStepActivity()
     }
 
     if (appState.currentActivityId === ActivityId.SortedCreatures) {

@@ -787,6 +787,20 @@ export default function sketch(p5: p5) {
 
   function drawFinishedStepByStepActivity(): void {
     p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+
+    /*
+     * When the cursor is over any of the creature tiles, the popup simulation
+     * will be displayed for the associated creature.
+     */
+
+    const gridIndex = getGridIndexUnderCursor(40, 17)
+
+    if (gridIndex != null) {
+      const creatureId = appState.creatureIdsByGridIndex[gridIndex]
+      appController.setPopupSimulationCreatureId(creatureId)
+    } else {
+      appController.clearPopupSimulation()
+    }
   }
 
   function drawSortingCreaturesActivity(): void {
@@ -817,10 +831,36 @@ export default function sketch(p5: p5) {
 
   function drawSortedCreaturesActivity(): void {
     p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+
+    /*
+     * When the cursor is over any of the creature tiles, the popup simulation
+     * will be displayed for the associated creature.
+     */
+
+    const gridIndex = getGridIndexUnderCursor(40, 42)
+
+    if (gridIndex != null) {
+      appController.setPopupSimulationCreatureId(gridIndex)
+    } else {
+      appController.clearPopupSimulation()
+    }
   }
 
   function drawCulledCreaturesActivity(): void {
     p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
+
+    /*
+     * When the cursor is over any of the creature tiles, the popup simulation
+     * will be displayed for the associated creature.
+     */
+
+    const gridIndex = getGridIndexUnderCursor(40, 42)
+
+    if (gridIndex != null) {
+      appController.setPopupSimulationCreatureId(gridIndex)
+    } else {
+      appController.clearPopupSimulation()
+    }
   }
 
   function drawPropagatedCreaturesActivity(): void {
@@ -1996,36 +2036,6 @@ export default function sketch(p5: p5) {
         drawSortedCreaturesScreenImage()
         appController.setActivityId(ActivityId.SortedCreatures)
       }
-    }
-
-    if (appState.pendingGenerationCount == 0 && !draggingSlider) {
-      /*
-       * When the cursor is over any of the creature tiles, the popup simulation
-       * will be displayed for the associated creature.
-       */
-
-      let idOfCreatureUnderCursor: number | null = null
-
-      if (appState.currentActivityId === ActivityId.FinishedStepByStep) {
-        const gridIndex = getGridIndexUnderCursor(40, 17)
-
-        if (gridIndex != null) {
-          idOfCreatureUnderCursor = appState.creatureIdsByGridIndex[gridIndex]
-        }
-      } else if (
-        appState.currentActivityId === ActivityId.SortedCreatures ||
-        appState.currentActivityId === ActivityId.CulledCreatures
-      ) {
-        idOfCreatureUnderCursor = getGridIndexUnderCursor(40, 42)
-      }
-
-      if (idOfCreatureUnderCursor != null) {
-        appController.setPopupSimulationCreatureId(idOfCreatureUnderCursor)
-      } else {
-        appController.clearPopupSimulation()
-      }
-    } else if (appState.currentActivityId !== ActivityId.GenerationView) {
-      appController.clearPopupSimulation()
     }
 
     if (appState.currentActivityId === ActivityId.CullingCreatures) {

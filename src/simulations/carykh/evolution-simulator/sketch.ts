@@ -3,7 +3,7 @@ import type {Font, Graphics} from 'p5'
 
 import Creature from './Creature'
 import Simulation from './Simulation'
-import {Activity, NullActivity} from './activities'
+import {Activity, ActivityConfig, NullActivity} from './activities'
 import {AppController} from './app-controller'
 import {
   ActivityId,
@@ -762,11 +762,11 @@ export default function sketch(p5: p5) {
   class StartActivity extends Activity {
     private startButton: StartViewStartButton
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       this.startButton = new StartViewStartButton({
-        appController,
+        appController: this.appController,
         appState,
         appView
       })
@@ -804,11 +804,11 @@ export default function sketch(p5: p5) {
     private generationHistoryGraphics: Graphics
     private graphGraphics: Graphics
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       const widgetConfig = {
-        appController,
+        appController: this.appController,
         appState,
         appView
       }
@@ -840,6 +840,8 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
+      const {appController} = this
+
       const {canvas, font} = appView
 
       if (this.draggingSlider && appState.generationCount >= 1) {
@@ -1450,11 +1452,11 @@ export default function sketch(p5: p5) {
   class GenerateCreaturesActivity extends Activity {
     private backButton: GeneratedCreaturesBackButton
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       this.backButton = new GeneratedCreaturesBackButton({
-        appController,
+        appController: this.appController,
         appState,
         appView
       })
@@ -1463,7 +1465,7 @@ export default function sketch(p5: p5) {
     initialize(): void {
       const {canvas, font, width} = appView
 
-      appController.generateCreatures()
+      this.appController.generateCreatures()
 
       canvas.background(220, 253, 102)
       canvas.push()
@@ -1504,8 +1506,8 @@ export default function sketch(p5: p5) {
     private playbackSpeedButton: StepByStepPlaybackSpeedButton
     private finishButton: StepByStepFinishButton
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       const {font} = appView
 
@@ -1523,7 +1525,7 @@ export default function sketch(p5: p5) {
       })
 
       const widgetConfig = {
-        appController,
+        appController: this.appController,
         appState,
         appView
       }
@@ -1545,6 +1547,8 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
+      const {appController} = this
+
       const {canvas, height, width} = appView
 
       if (appState.viewTimer <= 900) {
@@ -1674,11 +1678,11 @@ export default function sketch(p5: p5) {
     private popupSimulationView: PopupSimulationView
     private sortCreaturesButton: SortCreaturesButton
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       const widgetConfig = {
-        appController,
+        appController: this.appController,
         appState,
         appView
       }
@@ -1711,14 +1715,16 @@ export default function sketch(p5: p5) {
 
       if (gridIndex != null) {
         const creatureId = appState.creatureIdsByGridIndex[gridIndex]
-        appController.setPopupSimulationCreatureId(creatureId)
+        this.appController.setPopupSimulationCreatureId(creatureId)
         this.popupSimulationView.draw()
       } else {
-        appController.clearPopupSimulation()
+        this.appController.clearPopupSimulation()
       }
     }
 
     initialize(): void {
+      const {appController} = this
+
       const {canvas, font, screenGraphics, width} = appView
 
       appController.sortCreatures()
@@ -1777,11 +1783,11 @@ export default function sketch(p5: p5) {
   class SortingCreaturesActivity extends Activity {
     private skipButton: SortingCreaturesSkipButton
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       this.skipButton = new SortingCreaturesSkipButton({
-        appController,
+        appController: this.appController,
         appState,
         appView
       })
@@ -1823,7 +1829,7 @@ export default function sketch(p5: p5) {
 
       if (appState.viewTimer > 60 * Math.PI) {
         appState.viewTimer = 0
-        appController.setActivityId(ActivityId.SortedCreatures)
+        this.appController.setActivityId(ActivityId.SortedCreatures)
       }
     }
 
@@ -1842,11 +1848,11 @@ export default function sketch(p5: p5) {
     private popupSimulationView: PopupSimulationView
     private cullCreaturesButton: CullCreaturesButton
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       const widgetConfig = {
-        appController,
+        appController: this.appController,
         appState,
         appView
       }
@@ -1878,10 +1884,10 @@ export default function sketch(p5: p5) {
       const gridIndex = getGridIndexUnderCursor(40, 42)
 
       if (gridIndex != null) {
-        appController.setPopupSimulationCreatureId(gridIndex)
+        this.appController.setPopupSimulationCreatureId(gridIndex)
         this.popupSimulationView.draw()
       } else {
-        appController.clearPopupSimulation()
+        this.appController.clearPopupSimulation()
       }
     }
 
@@ -1944,11 +1950,11 @@ export default function sketch(p5: p5) {
     private popupSimulationView: PopupSimulationView
     private propagateCreaturesButton: PropagateCreaturesButton
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       const widgetConfig = {
-        appController,
+        appController: this.appController,
         appState,
         appView
       }
@@ -1980,17 +1986,17 @@ export default function sketch(p5: p5) {
       const gridIndex = getGridIndexUnderCursor(40, 42)
 
       if (gridIndex != null) {
-        appController.setPopupSimulationCreatureId(gridIndex)
+        this.appController.setPopupSimulationCreatureId(gridIndex)
         this.popupSimulationView.draw()
       } else {
-        appController.clearPopupSimulation()
+        this.appController.clearPopupSimulation()
       }
     }
 
     initialize(): void {
       const {canvas, font, screenGraphics, width} = appView
 
-      appController.cullCreatures()
+      this.appController.cullCreatures()
       appState.viewTimer = 0
 
       screenGraphics.push()
@@ -2060,11 +2066,11 @@ export default function sketch(p5: p5) {
   class PropagateCreaturesActivity extends Activity {
     private backButton: PropagatedCreaturesBackButton
 
-    constructor() {
-      super()
+    constructor(config: ActivityConfig) {
+      super(config)
 
       this.backButton = new PropagatedCreaturesBackButton({
-        appController,
+        appController: this.appController,
         appState,
         appView
       })
@@ -2073,7 +2079,7 @@ export default function sketch(p5: p5) {
     initialize(): void {
       const {canvas, height, screenGraphics, width} = appView
 
-      appController.propagateCreatures()
+      this.appController.propagateCreatures()
 
       appState.viewTimer = 0
       this.drawCreatureGrid()
@@ -2239,7 +2245,9 @@ export default function sketch(p5: p5) {
       appState.currentActivity.deinitialize()
 
       const ActivityClass = activityClassByActivityId[nextActivityId]
-      appState.currentActivity = new ActivityClass()
+      appState.currentActivity = new ActivityClass({
+        appController
+      })
       appState.currentActivityId = nextActivityId
 
       appState.currentActivity.initialize()

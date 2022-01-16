@@ -1929,7 +1929,9 @@ export default function sketch(p5: p5) {
 
     if (appState.currentActivityId === ActivityId.Start) {
       drawStartActivity()
-    } else if (appState.currentActivityId === ActivityId.GenerationView) {
+    }
+
+    if (appState.currentActivityId === ActivityId.GenerationView) {
       if (draggingSlider && appState.generationCount >= 1) {
         generationSlider.onDrag()
       }
@@ -1957,7 +1959,9 @@ export default function sketch(p5: p5) {
         appController.propagateCreatures()
         updateSelectedGenerationAndSliderPosition()
       }
-    } else if (appState.currentActivityId === ActivityId.GeneratingCreatures) {
+    }
+
+    if (appState.currentActivityId === ActivityId.GeneratingCreatures) {
       appController.generateCreatures()
       predrawGeneratedCreaturesActivity()
       appController.setActivityId(ActivityId.GeneratedCreatures)

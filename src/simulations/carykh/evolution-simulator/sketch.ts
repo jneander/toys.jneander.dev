@@ -1050,7 +1050,6 @@ export default function sketch(p5: p5) {
 
       if (appState.viewTimer > 60 * Math.PI) {
         appState.viewTimer = 0
-        drawSortedCreaturesScreenImage()
         appController.setActivityId(ActivityId.SortedCreatures)
       }
     }
@@ -1079,6 +1078,10 @@ export default function sketch(p5: p5) {
       } else {
         appController.clearPopupSimulation()
       }
+    }
+
+    initialize(): void {
+      drawSortedCreaturesScreenImage()
     }
 
     onMouseReleased(): void {

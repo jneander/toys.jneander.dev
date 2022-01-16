@@ -26,8 +26,7 @@ export const FITNESS_PERCENTILE_CREATURE_INDICES = [
 export enum ActivityId {
   Start = 'START',
   GenerationView = 'GENERATION_VIEW',
-  GeneratingCreatures = 'GENERATING_CREATURES',
-  GeneratedCreatures = 'GENERATED_CREATURES',
+  GenerateCreatures = 'GENERATE_CREATURES',
   SimulationRunning = 'SIMULATION_RUNNING',
   SimulationFinished = 'SIMULATION_FINISHED',
   FinishedStepByStep = 'FINISHED_STEP_BY_STEP',

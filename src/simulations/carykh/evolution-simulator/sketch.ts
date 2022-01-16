@@ -161,7 +161,7 @@ export default function sketch(p5: p5) {
     }
 
     onClick(): void {
-      appController.setActivityId(ActivityId.GeneratingCreatures)
+      appController.setActivityId(ActivityId.GenerateCreatures)
     }
   }
 
@@ -821,11 +821,47 @@ export default function sketch(p5: p5) {
     }
   }
 
+  class GenerateCreaturesActivity extends Activity {
+    initialize(): void {
+      appController.generateCreatures()
+
+      p5.background(220, 253, 102)
+      p5.push()
+      p5.scale(10.0 / SCALE_TO_FIX_BUG)
+
+      for (let y = 0; y < 25; y++) {
+        for (let x = 0; x < 40; x++) {
+          const index = y * 40 + x
+          const creature = appState.creaturesInLatestGeneration[index]
+
+          creatureDrawer.drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, p5)
+        }
+      }
+
+      p5.pop()
+      p5.noStroke()
+      p5.fill(0)
+      p5.textAlign(p5.CENTER)
+      p5.textFont(font, 24)
+      p5.text(
+        `Here are your ${CREATURE_COUNT} randomly generated creatures!!!`,
+        appView.width / 2 - 200,
+        690
+      )
+      generatedCreaturesBackButton.draw()
+    }
+
+    onMouseReleased(): void {
+      if (generatedCreaturesBackButton.isUnderCursor()) {
+        generatedCreaturesBackButton.onClick()
+      }
+    }
+  }
+
   const activityClassByActivityId = {
     [ActivityId.Start]: StartActivity,
     [ActivityId.GenerationView]: GenerationViewActivity,
-    [ActivityId.GeneratingCreatures]: NullActivity,
-    [ActivityId.GeneratedCreatures]: NullActivity,
+    [ActivityId.GenerateCreatures]: GenerateCreaturesActivity,
     [ActivityId.SimulationRunning]: NullActivity,
     [ActivityId.SimulationFinished]: NullActivity,
     [ActivityId.FinishedStepByStep]: NullActivity,
@@ -838,33 +874,6 @@ export default function sketch(p5: p5) {
   }
 
   // ACTIVITY DRAWING
-
-  function predrawGeneratedCreaturesActivity(): void {
-    p5.background(220, 253, 102)
-    p5.push()
-    p5.scale(10.0 / SCALE_TO_FIX_BUG)
-
-    for (let y = 0; y < 25; y++) {
-      for (let x = 0; x < 40; x++) {
-        const index = y * 40 + x
-        const creature = appState.creaturesInLatestGeneration[index]
-
-        creatureDrawer.drawCreature(creature, x * 3 + 5.5, y * 2.5 + 3, p5)
-      }
-    }
-
-    p5.pop()
-    p5.noStroke()
-    p5.fill(0)
-    p5.textAlign(p5.CENTER)
-    p5.textFont(font, 24)
-    p5.text(
-      `Here are your ${CREATURE_COUNT} randomly generated creatures!!!`,
-      appView.width / 2 - 200,
-      690
-    )
-    generatedCreaturesBackButton.draw()
-  }
 
   function drawFinishedStepByStepActivity(): void {
     p5.image(appView.screenGraphics, 0, 0, appView.width, appView.height)
@@ -1904,11 +1913,6 @@ export default function sketch(p5: p5) {
     appState.currentActivity.onMouseReleased()
 
     if (
-      appState.currentActivityId === ActivityId.GeneratedCreatures &&
-      generatedCreaturesBackButton.isUnderCursor()
-    ) {
-      generatedCreaturesBackButton.onClick()
-    } else if (
       appState.currentActivityId === ActivityId.FinishedStepByStep &&
       sortCreaturesButton.isUnderCursor()
     ) {
@@ -1992,12 +1996,6 @@ export default function sketch(p5: p5) {
     }
 
     appState.currentActivity.draw()
-
-    if (appState.currentActivityId === ActivityId.GeneratingCreatures) {
-      appController.generateCreatures()
-      predrawGeneratedCreaturesActivity()
-      appController.setActivityId(ActivityId.GeneratedCreatures)
-    }
 
     if (appState.currentActivityId === ActivityId.SimulationRunning) {
       // simulate running

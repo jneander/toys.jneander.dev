@@ -102,6 +102,180 @@ export default function sketch(p5: p5) {
 
   let creatureDrawer: CreatureDrawer
 
+  interface SimulationViewConfig {
+    graphics: p5
+    height: number
+    showArrow: boolean
+    width: number
+  }
+
+  class SimulationView {
+    private config: SimulationViewConfig
+
+    constructor(config: SimulationViewConfig) {
+      this.config = config
+    }
+
+    draw(): void {
+      const {graphics, showArrow} = this.config
+
+      graphics.push()
+
+      graphics.translate(graphics.width / 2.0, graphics.height / 2.0)
+      graphics.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
+      graphics.translate(
+        -simulationState.camera.x * SCALE_TO_FIX_BUG,
+        -simulationState.camera.y * SCALE_TO_FIX_BUG
+      )
+
+      if (simulationState.timer < 900) {
+        graphics.background(120, 200, 255)
+      } else {
+        graphics.background(60, 100, 128)
+      }
+
+      this.drawPosts()
+      this.drawGround()
+
+      creatureDrawer.drawCreaturePieces(
+        simulationState.creature.nodes,
+        simulationState.creature.muscles,
+        0,
+        0,
+        graphics
+      )
+
+      if (showArrow) {
+        this.drawArrow()
+      }
+
+      graphics.pop()
+    }
+
+    private drawArrow(): void {
+      const {graphics} = this.config
+
+      const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
+
+      graphics.textAlign(graphics.CENTER)
+      graphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+      graphics.noStroke()
+      graphics.fill(120, 0, 255)
+      graphics.rect(
+        (averageX - 1.7) * SCALE_TO_FIX_BUG,
+        -4.8 * SCALE_TO_FIX_BUG,
+        3.4 * SCALE_TO_FIX_BUG,
+        1.1 * SCALE_TO_FIX_BUG
+      )
+      graphics.beginShape()
+      graphics.vertex(averageX * SCALE_TO_FIX_BUG, -3.2 * SCALE_TO_FIX_BUG)
+      graphics.vertex(
+        (averageX - 0.5) * SCALE_TO_FIX_BUG,
+        -3.7 * SCALE_TO_FIX_BUG
+      )
+      graphics.vertex(
+        (averageX + 0.5) * SCALE_TO_FIX_BUG,
+        -3.7 * SCALE_TO_FIX_BUG
+      )
+      graphics.endShape(graphics.CLOSE)
+      graphics.fill(255)
+      graphics.text(
+        Math.round(averageX * 2) / 10 + ' m',
+        averageX * SCALE_TO_FIX_BUG,
+        -3.91 * SCALE_TO_FIX_BUG
+      )
+    }
+
+    private drawGround(): void {
+      const {graphics, height, width} = this.config
+
+      const {averageX, averageY} = averagePositionOfNodes(
+        simulationState.creature.nodes
+      )
+
+      const stairDrawStart = Math.max(
+        1,
+        toInt(-averageY / simulationConfig.hazelStairs) - 10
+      )
+
+      graphics.noStroke()
+      graphics.fill(0, 130, 0)
+
+      const groundX =
+        (simulationState.camera.x - simulationState.camera.zoom * (width / 2)) *
+        SCALE_TO_FIX_BUG
+      const groundY = 0
+      const groundW = simulationState.camera.zoom * width * SCALE_TO_FIX_BUG
+      const groundH = simulationState.camera.zoom * height * SCALE_TO_FIX_BUG
+
+      graphics.rect(groundX, groundY, groundW, groundH)
+
+      if (simulationConfig.hazelStairs > 0) {
+        for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
+          graphics.fill(255, 255, 255, 128)
+          graphics.rect(
+            (averageX - 20) * SCALE_TO_FIX_BUG,
+            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
+            40 * SCALE_TO_FIX_BUG,
+            simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
+          )
+          graphics.fill(255, 255, 255, 255)
+          graphics.rect(
+            (averageX - 20) * SCALE_TO_FIX_BUG,
+            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
+            40 * SCALE_TO_FIX_BUG,
+            simulationConfig.hazelStairs * 0.15 * SCALE_TO_FIX_BUG
+          )
+        }
+      }
+    }
+
+    private drawPosts(): void {
+      const {graphics} = this.config
+
+      const {averageX, averageY} = averagePositionOfNodes(
+        simulationState.creature.nodes
+      )
+      const startPostY = Math.min(-8, toInt(averageY / 4) * 4 - 4)
+
+      if (graphics == null) {
+        return
+      }
+
+      graphics.textAlign(p5.CENTER)
+      graphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+      graphics.noStroke()
+
+      for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
+        for (
+          let i = toInt(averageX / 5 - 5);
+          i <= toInt(averageX / 5 + 5);
+          i++
+        ) {
+          graphics.fill(255)
+          graphics.rect(
+            (i * 5 - 0.1) * SCALE_TO_FIX_BUG,
+            (-3.0 + postY) * SCALE_TO_FIX_BUG,
+            0.2 * SCALE_TO_FIX_BUG,
+            3 * SCALE_TO_FIX_BUG
+          )
+          graphics.rect(
+            (i * 5 - 1) * SCALE_TO_FIX_BUG,
+            (-3.0 + postY) * SCALE_TO_FIX_BUG,
+            2 * SCALE_TO_FIX_BUG,
+            1 * SCALE_TO_FIX_BUG
+          )
+          graphics.fill(120)
+          graphics.text(
+            i + ' m',
+            i * 5 * SCALE_TO_FIX_BUG,
+            (-2.17 + postY) * SCALE_TO_FIX_BUG
+          )
+        }
+      }
+    }
+  }
+
   abstract class Widget {
     abstract draw(): void
   }
@@ -552,6 +726,19 @@ export default function sketch(p5: p5) {
   }
 
   class StatusWindowView extends Widget {
+    private simulationView: SimulationView
+
+    constructor() {
+      super()
+
+      this.simulationView = new SimulationView({
+        graphics: popUpImage,
+        height: 600,
+        showArrow: false,
+        width: 600
+      })
+    }
+
     draw(): void {
       let x, y, px, py
       let rank = appState.statusWindow + 1
@@ -647,7 +834,7 @@ export default function sketch(p5: p5) {
       simulationState.camera.x += (averageX - simulationState.camera.x) * 0.1
       simulationState.camera.y += (averageY - simulationState.camera.y) * 0.1
 
-      drawSimulationView(600, 600, popUpImage, false)
+      this.simulationView.draw()
 
       p5.image(popUpImage, px2, py2, 300, 300)
 
@@ -1332,12 +1519,20 @@ export default function sketch(p5: p5) {
   }
 
   class SimulationRunningActivity extends Activity {
+    private simulationView: SimulationView
     private skipButton: StepByStepSkipButton
     private playbackSpeedButton: StepByStepPlaybackSpeedButton
     private finishButton: StepByStepFinishButton
 
     constructor() {
       super()
+
+      this.simulationView = new SimulationView({
+        graphics: p5,
+        height: 900,
+        showArrow: true,
+        width: 1600
+      })
 
       this.skipButton = new StepByStepSkipButton()
       this.playbackSpeedButton = new StepByStepPlaybackSpeedButton()
@@ -1354,7 +1549,7 @@ export default function sketch(p5: p5) {
         }
 
         this.updateCameraPosition()
-        drawSimulationView(1600, 900, p5, true)
+        this.simulationView.draw()
         drawStats(appView.width - 10, 0, 0.7)
 
         this.skipButton.draw()
@@ -1867,154 +2062,6 @@ export default function sketch(p5: p5) {
     [ActivityId.SortedCreatures]: SortedCreaturesActivity,
     [ActivityId.CullCreatures]: CullCreaturesActivity,
     [ActivityId.PropagateCreatures]: PropagateCreaturesActivity
-  }
-
-  // COMPONENT DRAWING
-
-  function drawSimulationView(
-    width: number,
-    height: number,
-    graphics: p5,
-    showArrow: boolean
-  ): void {
-    const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
-
-    graphics.push()
-
-    graphics.translate(graphics.width / 2.0, graphics.height / 2.0)
-    graphics.scale(1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG)
-    graphics.translate(
-      -simulationState.camera.x * SCALE_TO_FIX_BUG,
-      -simulationState.camera.y * SCALE_TO_FIX_BUG
-    )
-
-    if (simulationState.timer < 900) {
-      graphics.background(120, 200, 255)
-    } else {
-      graphics.background(60, 100, 128)
-    }
-
-    drawPosts(graphics)
-    drawGround(width, height, graphics)
-
-    creatureDrawer.drawCreaturePieces(
-      simulationState.creature.nodes,
-      simulationState.creature.muscles,
-      0,
-      0,
-      graphics
-    )
-
-    if (showArrow) {
-      drawArrow(averageX, graphics)
-    }
-
-    graphics.pop()
-  }
-
-  function drawGround(width: number, height: number, graphics: p5): void {
-    const {averageX, averageY} = averagePositionOfNodes(
-      simulationState.creature.nodes
-    )
-
-    const stairDrawStart = Math.max(
-      1,
-      toInt(-averageY / simulationConfig.hazelStairs) - 10
-    )
-
-    graphics.noStroke()
-    graphics.fill(0, 130, 0)
-
-    const groundX =
-      (simulationState.camera.x - simulationState.camera.zoom * (width / 2)) *
-      SCALE_TO_FIX_BUG
-    const groundY = 0
-    const groundW = simulationState.camera.zoom * width * SCALE_TO_FIX_BUG
-    const groundH = simulationState.camera.zoom * height * SCALE_TO_FIX_BUG
-
-    graphics.rect(groundX, groundY, groundW, groundH)
-
-    if (simulationConfig.hazelStairs > 0) {
-      for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
-        graphics.fill(255, 255, 255, 128)
-        graphics.rect(
-          (averageX - 20) * SCALE_TO_FIX_BUG,
-          -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
-          40 * SCALE_TO_FIX_BUG,
-          simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
-        )
-        graphics.fill(255, 255, 255, 255)
-        graphics.rect(
-          (averageX - 20) * SCALE_TO_FIX_BUG,
-          -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
-          40 * SCALE_TO_FIX_BUG,
-          simulationConfig.hazelStairs * 0.15 * SCALE_TO_FIX_BUG
-        )
-      }
-    }
-  }
-
-  function drawPosts(graphics: p5): void {
-    const {averageX, averageY} = averagePositionOfNodes(
-      simulationState.creature.nodes
-    )
-    const startPostY = Math.min(-8, toInt(averageY / 4) * 4 - 4)
-
-    if (graphics == null) {
-      return
-    }
-
-    graphics.textAlign(p5.CENTER)
-    graphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
-    graphics.noStroke()
-
-    for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
-      for (let i = toInt(averageX / 5 - 5); i <= toInt(averageX / 5 + 5); i++) {
-        graphics.fill(255)
-        graphics.rect(
-          (i * 5 - 0.1) * SCALE_TO_FIX_BUG,
-          (-3.0 + postY) * SCALE_TO_FIX_BUG,
-          0.2 * SCALE_TO_FIX_BUG,
-          3 * SCALE_TO_FIX_BUG
-        )
-        graphics.rect(
-          (i * 5 - 1) * SCALE_TO_FIX_BUG,
-          (-3.0 + postY) * SCALE_TO_FIX_BUG,
-          2 * SCALE_TO_FIX_BUG,
-          1 * SCALE_TO_FIX_BUG
-        )
-        graphics.fill(120)
-        graphics.text(
-          i + ' m',
-          i * 5 * SCALE_TO_FIX_BUG,
-          (-2.17 + postY) * SCALE_TO_FIX_BUG
-        )
-      }
-    }
-  }
-
-  function drawArrow(x: number, graphics: p5): void {
-    graphics.textAlign(graphics.CENTER)
-    graphics.textFont(font, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
-    graphics.noStroke()
-    graphics.fill(120, 0, 255)
-    graphics.rect(
-      (x - 1.7) * SCALE_TO_FIX_BUG,
-      -4.8 * SCALE_TO_FIX_BUG,
-      3.4 * SCALE_TO_FIX_BUG,
-      1.1 * SCALE_TO_FIX_BUG
-    )
-    graphics.beginShape()
-    graphics.vertex(x * SCALE_TO_FIX_BUG, -3.2 * SCALE_TO_FIX_BUG)
-    graphics.vertex((x - 0.5) * SCALE_TO_FIX_BUG, -3.7 * SCALE_TO_FIX_BUG)
-    graphics.vertex((x + 0.5) * SCALE_TO_FIX_BUG, -3.7 * SCALE_TO_FIX_BUG)
-    graphics.endShape(graphics.CLOSE)
-    graphics.fill(255)
-    graphics.text(
-      Math.round(x * 2) / 10 + ' m',
-      x * SCALE_TO_FIX_BUG,
-      -3.91 * SCALE_TO_FIX_BUG
-    )
   }
 
   function getGridIndexUnderCursor(

@@ -662,7 +662,8 @@ export default function sketch(p5: p5) {
       }
 
       drawPosts(2)
-      drawGround(2)
+      drawGround(600, 600, popUpImage)
+
       creatureDrawer.drawCreaturePieces(
         simulationState.creature.nodes,
         simulationState.creature.muscles,
@@ -1465,7 +1466,8 @@ export default function sketch(p5: p5) {
       )
 
       drawPosts(0)
-      drawGround(0)
+      drawGround(1600, 900, p5)
+
       creatureDrawer.drawCreaturePieces(
         simulationState.creature.nodes,
         simulationState.creature.muscles,
@@ -1924,7 +1926,7 @@ export default function sketch(p5: p5) {
 
   // COMPONENT DRAWING
 
-  function drawGround(toImage: number): void {
+  function drawGround(width: number, height: number, graphics: p5): void {
     const {averageX, averageY} = averagePositionOfNodes(
       simulationState.creature.nodes
     )
@@ -1934,63 +1936,34 @@ export default function sketch(p5: p5) {
       toInt(-averageY / simulationConfig.hazelStairs) - 10
     )
 
-    if (toImage == 0) {
-      p5.noStroke()
-      p5.fill(0, 130, 0)
-      p5.rect(
-        (simulationState.camera.x - simulationState.camera.zoom * 800.0) *
-          SCALE_TO_FIX_BUG,
-        0 * SCALE_TO_FIX_BUG,
-        simulationState.camera.zoom * 1600.0 * SCALE_TO_FIX_BUG,
-        simulationState.camera.zoom * 900.0 * SCALE_TO_FIX_BUG
-      )
+    graphics.noStroke()
+    graphics.fill(0, 130, 0)
 
-      if (simulationConfig.hazelStairs > 0) {
-        for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
-          p5.fill(255, 255, 255, 128)
-          p5.rect(
-            (averageX - 20) * SCALE_TO_FIX_BUG,
-            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
-            40 * SCALE_TO_FIX_BUG,
-            simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
-          )
-          p5.fill(255, 255, 255, 255)
-          p5.rect(
-            (averageX - 20) * SCALE_TO_FIX_BUG,
-            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
-            40 * SCALE_TO_FIX_BUG,
-            simulationConfig.hazelStairs * 0.15 * SCALE_TO_FIX_BUG
-          )
-        }
-      }
-    } else if (toImage == 2) {
-      popUpImage.noStroke()
-      popUpImage.fill(0, 130, 0)
-      popUpImage.rect(
-        (simulationState.camera.x - simulationState.camera.zoom * 300.0) *
-          SCALE_TO_FIX_BUG,
-        0 * SCALE_TO_FIX_BUG,
-        simulationState.camera.zoom * 600.0 * SCALE_TO_FIX_BUG,
-        simulationState.camera.zoom * 600.0 * SCALE_TO_FIX_BUG
-      )
+    const groundX =
+      (simulationState.camera.x - simulationState.camera.zoom * (width / 2)) *
+      SCALE_TO_FIX_BUG
+    const groundY = 0
+    const groundW = simulationState.camera.zoom * width * SCALE_TO_FIX_BUG
+    const groundH = simulationState.camera.zoom * height * SCALE_TO_FIX_BUG
 
-      if (simulationConfig.hazelStairs > 0) {
-        for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
-          popUpImage.fill(255, 255, 255, 128)
-          popUpImage.rect(
-            (averageX - 20) * SCALE_TO_FIX_BUG,
-            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
-            40 * SCALE_TO_FIX_BUG,
-            simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
-          )
-          popUpImage.fill(255, 255, 255, 255)
-          popUpImage.rect(
-            (averageX - 20) * SCALE_TO_FIX_BUG,
-            -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
-            40 * SCALE_TO_FIX_BUG,
-            simulationConfig.hazelStairs * 0.15 * SCALE_TO_FIX_BUG
-          )
-        }
+    graphics.rect(groundX, groundY, groundW, groundH)
+
+    if (simulationConfig.hazelStairs > 0) {
+      for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
+        graphics.fill(255, 255, 255, 128)
+        graphics.rect(
+          (averageX - 20) * SCALE_TO_FIX_BUG,
+          -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
+          40 * SCALE_TO_FIX_BUG,
+          simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
+        )
+        graphics.fill(255, 255, 255, 255)
+        graphics.rect(
+          (averageX - 20) * SCALE_TO_FIX_BUG,
+          -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
+          40 * SCALE_TO_FIX_BUG,
+          simulationConfig.hazelStairs * 0.15 * SCALE_TO_FIX_BUG
+        )
       }
     }
   }

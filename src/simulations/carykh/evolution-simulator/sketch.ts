@@ -36,7 +36,6 @@ export default function sketch(p5: p5) {
 
   let font: Font
   let graphImage: Graphics
-  let popUpImage: Graphics
   let segBarImage: Graphics
 
   const appState: AppState = {
@@ -945,15 +944,7 @@ export default function sketch(p5: p5) {
 
       this.simulationView.draw()
 
-      popUpImage.image(
-        this.simulationView.graphics,
-        0,
-        0,
-        popUpImage.width,
-        popUpImage.height
-      )
-
-      p5.image(popUpImage, px2, py2, 300, 300)
+      p5.image(this.simulationView.graphics, px2, py2, 300, 300)
 
       appController.advanceSimulation()
     }
@@ -2264,11 +2255,9 @@ export default function sketch(p5: p5) {
     appState.histogramBarCounts.push(new Array(HISTOGRAM_BAR_SPAN).fill(0))
 
     graphImage = p5.createGraphics(975, 570)
-    popUpImage = p5.createGraphics(450, 450)
     segBarImage = p5.createGraphics(975, 150)
 
     segBarImage.background(220)
-    popUpImage.background(220)
 
     creatureDrawer = new CreatureDrawer({
       axonColor: p5.color(255, 255, 0),

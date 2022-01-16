@@ -1506,6 +1506,38 @@ export default function sketch(p5: p5) {
     return toInt(i) + ''
   }
 
+  function getGridIndexUnderCursor(
+    gridStartX: number,
+    gridStartY: number
+  ): number | null {
+    const creaturesPerRow = 40
+
+    const gridWidth = 1200
+    const gridHeight = 625
+
+    const creatureTileWidth = 30
+    const creatureTileHeight = 25
+
+    if (
+      appView.rectIsUnderCursor(
+        gridStartX,
+        gridStartY,
+        gridWidth - 1,
+        gridHeight - 1
+      )
+    ) {
+      const {cursorX, cursorY} = appView.getCursorPosition()
+
+      return (
+        Math.floor((cursorX - gridStartX) / creatureTileWidth) +
+        Math.floor((cursorY - gridStartY) / creatureTileHeight) *
+          creaturesPerRow
+      )
+    }
+
+    return null
+  }
+
   function drawHistogram(x: number, y: number, hw: number, hh: number): void {
     let maxH = 1
 
@@ -1966,16 +1998,7 @@ export default function sketch(p5: p5) {
       }
     }
 
-    const {cursorX, cursorY} = appView.getCursorPosition()
-
-    if (
-      (appState.currentActivityId === ActivityId.FinishedStepByStep ||
-        appState.currentActivityId === ActivityId.SortedCreatures ||
-        appState.currentActivityId === ActivityId.CullingCreatures ||
-        appState.currentActivityId === ActivityId.CulledCreatures) &&
-      appState.pendingGenerationCount == 0 &&
-      !draggingSlider
-    ) {
+    if (appState.pendingGenerationCount == 0 && !draggingSlider) {
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
        * will be displayed for the associated creature.
@@ -1983,26 +2006,18 @@ export default function sketch(p5: p5) {
 
       let idOfCreatureUnderCursor: number | null = null
 
-      if (Math.abs(cursorX - 639.5) <= 599.5) {
-        if (
-          appState.currentActivityId === ActivityId.FinishedStepByStep &&
-          Math.abs(cursorY - 329) <= 312
-        ) {
-          idOfCreatureUnderCursor =
-            appState.creatureIdsByGridIndex[
-              Math.floor((cursorX - 40) / 30) +
-                Math.floor((cursorY - 17) / 25) * 40
-            ]
-        } else if (
-          (appState.currentActivityId === ActivityId.SortedCreatures ||
-            appState.currentActivityId === ActivityId.CullingCreatures ||
-            appState.currentActivityId === ActivityId.CulledCreatures) &&
-          Math.abs(cursorY - 354) <= 312
-        ) {
-          idOfCreatureUnderCursor =
-            Math.floor((cursorX - 40) / 30) +
-            Math.floor((cursorY - 42) / 25) * 40
+      if (appState.currentActivityId === ActivityId.FinishedStepByStep) {
+        const gridIndex = getGridIndexUnderCursor(40, 17)
+
+        if (gridIndex != null) {
+          idOfCreatureUnderCursor = appState.creatureIdsByGridIndex[gridIndex]
         }
+      } else if (
+        appState.currentActivityId === ActivityId.SortedCreatures ||
+        appState.currentActivityId === ActivityId.CullingCreatures ||
+        appState.currentActivityId === ActivityId.CulledCreatures
+      ) {
+        idOfCreatureUnderCursor = getGridIndexUnderCursor(40, 42)
       }
 
       if (idOfCreatureUnderCursor != null) {

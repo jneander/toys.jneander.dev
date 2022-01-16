@@ -102,15 +102,18 @@ export default function sketch(p5: p5) {
   interface WidgetConfig {
     appController: AppController
     appState: AppState
+    appView: AppView
   }
 
   abstract class Widget {
     protected appController: AppController
     protected appState: AppState
+    protected appView: AppView
 
     constructor(config: WidgetConfig) {
       this.appController = config.appController
       this.appState = config.appState
+      this.appView = config.appView
     }
 
     abstract draw(): void
@@ -118,7 +121,7 @@ export default function sketch(p5: p5) {
 
   class StartViewStartButton extends Widget {
     draw(): void {
-      const {canvas, width} = appView
+      const {canvas, width} = this.appView
 
       canvas.noStroke()
       canvas.fill(100, 200, 100)
@@ -128,6 +131,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
+      const {appView} = this
       return appView.rectIsUnderCursor(appView.width / 2 - 200, 300, 400, 200)
     }
 
@@ -138,7 +142,7 @@ export default function sketch(p5: p5) {
 
   class GenerationViewCreateButton extends Widget {
     draw(): void {
-      const {canvas} = appView
+      const {canvas} = this.appView
 
       canvas.noStroke()
       canvas.fill(100, 200, 100)
@@ -148,7 +152,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(20, 250, 200, 100)
+      return this.appView.rectIsUnderCursor(20, 250, 200, 100)
     }
 
     onClick(): void {
@@ -158,7 +162,7 @@ export default function sketch(p5: p5) {
 
   class GeneratedCreaturesBackButton extends Widget {
     draw(): void {
-      const {canvas, font, width} = appView
+      const {canvas, font, width} = this.appView
 
       canvas.noStroke()
       canvas.fill(100, 100, 200)
@@ -170,7 +174,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(900, 664, 260, 40)
+      return this.appView.rectIsUnderCursor(900, 664, 260, 40)
     }
 
     onClick(): void {
@@ -181,7 +185,7 @@ export default function sketch(p5: p5) {
 
   class SimulateStepByStepButton extends Widget {
     draw(): void {
-      const {canvas} = appView
+      const {canvas} = this.appView
 
       canvas.noStroke()
       canvas.fill(100, 200, 100)
@@ -191,7 +195,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(760, 20, 460, 40)
+      return this.appView.rectIsUnderCursor(760, 20, 460, 40)
     }
 
     onClick(): void {
@@ -201,7 +205,7 @@ export default function sketch(p5: p5) {
 
   class SimulateQuickButton extends Widget {
     draw(): void {
-      const {canvas} = appView
+      const {canvas} = this.appView
 
       canvas.noStroke()
       canvas.fill(100, 200, 100)
@@ -211,7 +215,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(760, 70, 460, 40)
+      return this.appView.rectIsUnderCursor(760, 70, 460, 40)
     }
 
     onClick(): void {
@@ -221,7 +225,7 @@ export default function sketch(p5: p5) {
 
   class SimulateAsapButton extends Widget {
     draw(): void {
-      const {canvas} = appView
+      const {canvas} = this.appView
 
       canvas.noStroke()
       canvas.fill(100, 200, 100)
@@ -231,7 +235,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(760, 120, 230, 40)
+      return this.appView.rectIsUnderCursor(760, 120, 230, 40)
     }
 
     onClick(): void {
@@ -242,7 +246,7 @@ export default function sketch(p5: p5) {
 
   class SimulateAlapButton extends Widget {
     draw(): void {
-      const {canvas} = appView
+      const {canvas} = this.appView
 
       canvas.noStroke()
 
@@ -258,7 +262,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(990, 120, 230, 40)
+      return this.appView.rectIsUnderCursor(990, 120, 230, 40)
     }
 
     onClick(): void {
@@ -269,7 +273,7 @@ export default function sketch(p5: p5) {
 
   class StepByStepSkipButton extends Widget {
     draw(): void {
-      const {canvas, font, height} = appView
+      const {canvas, font, height} = this.appView
 
       canvas.fill(0)
       canvas.rect(0, height - 40, 90, 40)
@@ -280,6 +284,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
+      const {appView} = this
       return appView.rectIsUnderCursor(0, appView.height - 40, 90, 40)
     }
 
@@ -294,21 +299,18 @@ export default function sketch(p5: p5) {
 
   class StepByStepPlaybackSpeedButton extends Widget {
     draw(): void {
-      const {canvas, font, height} = appView
+      const {canvas, font, height} = this.appView
 
       canvas.fill(0)
       canvas.rect(120, height - 40, 240, 40)
       canvas.fill(255)
       canvas.textAlign(canvas.CENTER)
       canvas.textFont(font, 32)
-      canvas.text(
-        'PB speed: x' + simulationState.speed,
-        240,
-        appView.height - 8
-      )
+      canvas.text('PB speed: x' + simulationState.speed, 240, height - 8)
     }
 
     isUnderCursor(): boolean {
+      const {appView} = this
       return appView.rectIsUnderCursor(120, appView.height - 40, 240, 40)
     }
 
@@ -327,7 +329,7 @@ export default function sketch(p5: p5) {
 
   class StepByStepFinishButton extends Widget {
     draw(): void {
-      const {canvas, font, height, width} = appView
+      const {canvas, font, height, width} = this.appView
 
       canvas.fill(0)
       canvas.rect(width - 120, height - 40, 120, 40)
@@ -338,12 +340,9 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(
-        appView.width - 120,
-        appView.height - 40,
-        120,
-        40
-      )
+      const {height, width} = this.appView
+
+      return this.appView.rectIsUnderCursor(width - 120, height - 40, 120, 40)
     }
 
     onClick(): void {
@@ -353,7 +352,7 @@ export default function sketch(p5: p5) {
 
   class SortCreaturesButton extends Widget {
     draw(): void {
-      const {canvas, font, screenGraphics, width} = appView
+      const {canvas, font, screenGraphics, width} = this.appView
 
       screenGraphics.noStroke()
       screenGraphics.fill(100, 100, 200)
@@ -365,7 +364,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(900, 664, 260, 40)
+      return this.appView.rectIsUnderCursor(900, 664, 260, 40)
     }
 
     onClick(): void {
@@ -375,7 +374,7 @@ export default function sketch(p5: p5) {
 
   class SortingCreaturesSkipButton extends Widget {
     draw(): void {
-      const {canvas, font, height} = appView
+      const {canvas, font, height} = this.appView
 
       canvas.fill(0)
       canvas.rect(0, height - 40, 90, 40)
@@ -386,6 +385,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
+      const {appView} = this
       return appView.rectIsUnderCursor(0, appView.height - 40, 90, 40)
     }
 
@@ -396,7 +396,7 @@ export default function sketch(p5: p5) {
 
   class CullCreaturesButton extends Widget {
     draw(): void {
-      const {canvas, font, screenGraphics, width} = appView
+      const {canvas, font, screenGraphics, width} = this.appView
 
       screenGraphics.noStroke()
       screenGraphics.fill(100, 100, 200)
@@ -412,7 +412,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(900, 670, 260, 40)
+      return this.appView.rectIsUnderCursor(900, 670, 260, 40)
     }
 
     onClick(): void {
@@ -422,7 +422,7 @@ export default function sketch(p5: p5) {
 
   class PropagateCreaturesButton extends Widget {
     draw(): void {
-      const {canvas, font, screenGraphics, width} = appView
+      const {canvas, font, screenGraphics, width} = this.appView
 
       screenGraphics.noStroke()
       screenGraphics.fill(100, 100, 200)
@@ -434,7 +434,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(1050, 670, 160, 40)
+      return this.appView.rectIsUnderCursor(1050, 670, 160, 40)
     }
 
     onClick(): void {
@@ -444,7 +444,7 @@ export default function sketch(p5: p5) {
 
   class PropagatedCreaturesBackButton extends Widget {
     draw(): void {
-      const {canvas, font, screenGraphics, width} = appView
+      const {canvas, font, screenGraphics, width} = this.appView
 
       screenGraphics.noStroke()
       screenGraphics.fill(100, 100, 200)
@@ -456,7 +456,7 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(1050, 670, 160, 40)
+      return this.appView.rectIsUnderCursor(1050, 670, 160, 40)
     }
 
     onClick(): void {
@@ -481,7 +481,7 @@ export default function sketch(p5: p5) {
     }
 
     draw(): void {
-      const {canvas, font} = appView
+      const {canvas, font} = this.appView
 
       canvas.noStroke()
       canvas.textAlign(canvas.CENTER)
@@ -509,11 +509,11 @@ export default function sketch(p5: p5) {
     }
 
     isUnderCursor(): boolean {
-      return appView.rectIsUnderCursor(this.xPosition, 340, 50, 50)
+      return this.appView.rectIsUnderCursor(this.xPosition, 340, 50, 50)
     }
 
     onDrag(): void {
-      const {cursorX} = appView.getCursorPosition()
+      const {cursorX} = this.appView.getCursorPosition()
 
       /*
        * Update the slider position with a sluggish effect. This avoids some
@@ -605,7 +605,7 @@ export default function sketch(p5: p5) {
     constructor(config: WidgetConfig) {
       super(config)
 
-      const {font} = appView
+      const {font} = this.appView
 
       this.simulationView = new SimulationView({
         appState: this.appState,
@@ -628,7 +628,7 @@ export default function sketch(p5: p5) {
     draw(): void {
       const {appState} = this
 
-      const {canvas, font} = appView
+      const {canvas, font} = this.appView
 
       let x, y, px, py
       let rank = appState.statusWindow + 1
@@ -689,7 +689,7 @@ export default function sketch(p5: p5) {
 
       const sp =
         (creature.nodes.length % 10) * 10 + (creature.muscles.length % 10)
-      canvas.fill(appView.getColor(sp, true))
+      canvas.fill(this.appView.getColor(sp, true))
       canvas.text(
         'Species: S' +
           (creature.nodes.length % 10) +
@@ -725,7 +725,13 @@ export default function sketch(p5: p5) {
 
       this.simulationView.draw()
 
-      appView.canvas.image(this.simulationView.graphics, px2, py2, 300, 300)
+      this.appView.canvas.image(
+        this.simulationView.graphics,
+        px2,
+        py2,
+        300,
+        300
+      )
 
       this.appController.advanceSimulation()
     }
@@ -737,7 +743,11 @@ export default function sketch(p5: p5) {
     constructor() {
       super()
 
-      this.startButton = new StartViewStartButton({appController, appState})
+      this.startButton = new StartViewStartButton({
+        appController,
+        appState,
+        appView
+      })
     }
 
     initialize(): void {
@@ -777,7 +787,8 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController,
-        appState
+        appState,
+        appView
       }
 
       this.popupSimulationView = new PopupSimulationView(widgetConfig)
@@ -1416,7 +1427,8 @@ export default function sketch(p5: p5) {
 
       this.backButton = new GeneratedCreaturesBackButton({
         appController,
-        appState
+        appState,
+        appView
       })
     }
 
@@ -1484,7 +1496,8 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController,
-        appState
+        appState,
+        appView
       }
 
       this.skipButton = new StepByStepSkipButton(widgetConfig)
@@ -1631,7 +1644,8 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController,
-        appState
+        appState,
+        appView
       }
 
       this.popupSimulationView = new PopupSimulationView(widgetConfig)
@@ -1727,7 +1741,8 @@ export default function sketch(p5: p5) {
 
       this.skipButton = new SortingCreaturesSkipButton({
         appController,
-        appState
+        appState,
+        appView
       })
     }
 
@@ -1791,7 +1806,8 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController,
-        appState
+        appState,
+        appView
       }
 
       this.popupSimulationView = new PopupSimulationView(widgetConfig)
@@ -1886,7 +1902,8 @@ export default function sketch(p5: p5) {
 
       const widgetConfig = {
         appController,
-        appState
+        appState,
+        appView
       }
 
       this.popupSimulationView = new PopupSimulationView(widgetConfig)
@@ -1995,7 +2012,8 @@ export default function sketch(p5: p5) {
 
       this.backButton = new PropagatedCreaturesBackButton({
         appController,
-        appState
+        appState,
+        appView
       })
     }
 

@@ -760,6 +760,8 @@ export default function sketch(p5: p5) {
   }
 
   interface CreatureGridConfig {
+    appView: AppView
+
     getCreatureAndGridIndexFn: (index: number) => {
       creature: Creature
       gridIndex: number
@@ -769,21 +771,38 @@ export default function sketch(p5: p5) {
   class CreatureGridView {
     private config: CreatureGridConfig
 
+    graphics: Graphics
+
     constructor(config: CreatureGridConfig) {
       this.config = config
+
+      const creatureTileWidth = 30
+      const creatureTileHeight = 25
+      const creaturesPerRow = 40
+      const creaturesPerColumn = CREATURE_COUNT / creaturesPerRow
+
+      const width = (creaturesPerRow + 1) * creatureTileWidth
+      const height = (creaturesPerColumn + 1) * creatureTileHeight
+
+      this.graphics = config.appView.canvas.createGraphics(width, height)
+    }
+
+    deinitialize(): void {
+      this.graphics.remove()
     }
 
     draw(): void {
       const {getCreatureAndGridIndexFn} = this.config
+      const {graphics} = this
 
       const scale = 10
       const creatureWidth = 30
       const creatureHeight = 25
       const creaturesPerRow = 40
 
-      creatureGridGraphics.clear()
-      creatureGridGraphics.push()
-      creatureGridGraphics.scale(scale / SCALE_TO_FIX_BUG)
+      graphics.clear()
+      graphics.push()
+      graphics.scale(scale / SCALE_TO_FIX_BUG)
 
       const creatureScale = 0.1
 
@@ -813,7 +832,7 @@ export default function sketch(p5: p5) {
             creature,
             creatureCenterX,
             creatureBottomY,
-            creatureGridGraphics
+            graphics
           )
         } else {
           const blankLeftX =
@@ -821,17 +840,12 @@ export default function sketch(p5: p5) {
           const blankTopY =
             (gridY * scaledCreatureHeight + blankMarginY) * SCALE_TO_FIX_BUG
 
-          creatureGridGraphics.fill(0)
-          creatureGridGraphics.rect(
-            blankLeftX,
-            blankTopY,
-            blankWidth,
-            blankHeight
-          )
+          graphics.fill(0)
+          graphics.rect(blankLeftX, blankTopY, blankWidth, blankHeight)
         }
       }
 
-      creatureGridGraphics.pop()
+      graphics.pop()
     }
   }
 
@@ -1544,13 +1558,20 @@ export default function sketch(p5: p5) {
         }
       }
 
-      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
+      this.creatureGridView = new CreatureGridView({
+        appView: this.appView,
+        getCreatureAndGridIndexFn
+      })
 
       this.backButton = new GeneratedCreaturesBackButton({
         appController: this.appController,
         appState: this.appState,
         appView: this.appView
       })
+    }
+
+    deinitialize(): void {
+      this.creatureGridView.deinitialize()
     }
 
     initialize(): void {
@@ -1572,7 +1593,11 @@ export default function sketch(p5: p5) {
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 5 // 17 minus vertical grid margin
 
-      this.appView.canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+      this.appView.canvas.image(
+        this.creatureGridView.graphics,
+        gridStartX,
+        gridStartY
+      )
     }
 
     private drawInterface(): void {
@@ -1781,7 +1806,10 @@ export default function sketch(p5: p5) {
         return {creature, gridIndex}
       }
 
-      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
+      this.creatureGridView = new CreatureGridView({
+        appView: this.appView,
+        getCreatureAndGridIndexFn
+      })
 
       const widgetConfig = {
         appController: this.appController,
@@ -1800,6 +1828,7 @@ export default function sketch(p5: p5) {
     }
 
     deinitialize(): void {
+      this.creatureGridView.deinitialize()
       this.popupSimulationView.deinitialize()
     }
 
@@ -1811,7 +1840,7 @@ export default function sketch(p5: p5) {
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 5 // 17 minus vertical grid margin
 
-      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+      canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
@@ -1958,7 +1987,10 @@ export default function sketch(p5: p5) {
         }
       }
 
-      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
+      this.creatureGridView = new CreatureGridView({
+        appView: this.appView,
+        getCreatureAndGridIndexFn
+      })
 
       const widgetConfig = {
         appController: this.appController,
@@ -1977,6 +2009,7 @@ export default function sketch(p5: p5) {
     }
 
     deinitialize(): void {
+      this.creatureGridView.deinitialize()
       this.popupSimulationView.deinitialize()
     }
 
@@ -1988,7 +2021,7 @@ export default function sketch(p5: p5) {
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 28 // 40 minus vertical grid margin
 
-      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+      canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
@@ -2057,7 +2090,10 @@ export default function sketch(p5: p5) {
         }
       }
 
-      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
+      this.creatureGridView = new CreatureGridView({
+        appView: this.appView,
+        getCreatureAndGridIndexFn
+      })
 
       const widgetConfig = {
         appController: this.appController,
@@ -2076,6 +2112,7 @@ export default function sketch(p5: p5) {
     }
 
     deinitialize(): void {
+      this.creatureGridView.deinitialize()
       this.popupSimulationView.deinitialize()
     }
 
@@ -2087,7 +2124,7 @@ export default function sketch(p5: p5) {
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 28 // 40 minus vertical grid margin
 
-      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+      canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
@@ -2163,13 +2200,20 @@ export default function sketch(p5: p5) {
         return {creature, gridIndex: index}
       }
 
-      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
+      this.creatureGridView = new CreatureGridView({
+        appView: this.appView,
+        getCreatureAndGridIndexFn
+      })
 
       this.backButton = new PropagatedCreaturesBackButton({
         appController: this.appController,
         appState: this.appState,
         appView: this.appView
       })
+    }
+
+    deinitialize(): void {
+      this.creatureGridView.deinitialize()
     }
 
     initialize(): void {
@@ -2194,7 +2238,7 @@ export default function sketch(p5: p5) {
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 28 // 40 minus vertical grid margin
 
-      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+      canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
     }
 
     private drawInterface(): void {
@@ -2243,8 +2287,6 @@ export default function sketch(p5: p5) {
     [ActivityId.CullCreatures]: CullCreaturesActivity,
     [ActivityId.PropagateCreatures]: PropagateCreaturesActivity
   }
-
-  let creatureGridGraphics: Graphics
 
   function getGridIndexUnderCursor(
     gridStartX: number,
@@ -2322,16 +2364,6 @@ export default function sketch(p5: p5) {
       axonColor: p5.color(255, 255, 0),
       axonFont: appView.font
     })
-
-    const creatureTileWidth = 30
-    const creatureTileHeight = 25
-    const creaturesPerRow = 40
-    const creaturesPerColumn = CREATURE_COUNT / creaturesPerRow
-
-    const width = (creaturesPerRow + 1) * creatureTileWidth
-    const height = (creaturesPerColumn + 1) * creatureTileHeight
-
-    creatureGridGraphics = p5.createGraphics(width, height)
   }
 
   p5.draw = () => {

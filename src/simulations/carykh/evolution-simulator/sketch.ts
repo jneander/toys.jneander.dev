@@ -97,8 +97,6 @@ export default function sketch(p5: p5) {
 
   let appView: AppView
 
-  let creatureDrawer: CreatureDrawer
-
   interface WidgetConfig {
     appController: AppController
     appState: AppState
@@ -631,7 +629,7 @@ export default function sketch(p5: p5) {
 
       this.simulationView = new SimulationView({
         appState: this.appState,
-        creatureDrawer,
+        creatureDrawer: new CreatureDrawer({appView: this.appView}),
         height: 600,
         p5: canvas,
         postFont: font,
@@ -770,11 +768,14 @@ export default function sketch(p5: p5) {
 
   class CreatureGridView {
     private config: CreatureGridConfig
+    private creatureDrawer: CreatureDrawer
 
     graphics: Graphics
 
     constructor(config: CreatureGridConfig) {
       this.config = config
+
+      this.creatureDrawer = new CreatureDrawer({appView: config.appView})
 
       const creatureTileWidth = 30
       const creatureTileHeight = 25
@@ -828,7 +829,7 @@ export default function sketch(p5: p5) {
           const creatureCenterX = gridX * scaledCreatureWidth + marginX
           const creatureBottomY = gridY * scaledCreatureHeight + marginY
 
-          creatureDrawer.drawCreature(
+          this.creatureDrawer.drawCreature(
             creature,
             creatureCenterX,
             creatureBottomY,
@@ -923,6 +924,8 @@ export default function sketch(p5: p5) {
     private alapButton: SimulateAlapButton
     private generationSlider: GenerationSlider
 
+    private creatureDrawer: CreatureDrawer
+
     private draggingSlider: boolean
 
     private generationHistoryGraphics: Graphics
@@ -930,6 +933,8 @@ export default function sketch(p5: p5) {
 
     constructor(config: ActivityConfig) {
       super(config)
+
+      this.creatureDrawer = new CreatureDrawer({appView: this.appView})
 
       const widgetConfig = {
         appController: this.appController,
@@ -1528,7 +1533,7 @@ export default function sketch(p5: p5) {
 
         const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
 
-        creatureDrawer.drawCreature(creature, 0, 0, canvas)
+        this.creatureDrawer.drawCreature(creature, 0, 0, canvas)
 
         canvas.pop()
       }
@@ -1665,7 +1670,7 @@ export default function sketch(p5: p5) {
 
       this.simulationView = new SimulationView({
         appState: this.appState,
-        creatureDrawer,
+        creatureDrawer: new CreatureDrawer({appView: this.appView}),
         height: 900,
         p5: canvas,
         postFont: font,
@@ -1938,10 +1943,14 @@ export default function sketch(p5: p5) {
   }
 
   class SortingCreaturesActivity extends Activity {
+    private creatureDrawer: CreatureDrawer
+
     private skipButton: SortingCreaturesSkipButton
 
     constructor(config: ActivityConfig) {
       super(config)
+
+      this.creatureDrawer = new CreatureDrawer({appView: this.appView})
 
       this.skipButton = new SortingCreaturesSkipButton({
         appController: this.appController,
@@ -1971,7 +1980,7 @@ export default function sketch(p5: p5) {
         const x3 = this.interpolate(x1, x2, transition)
         const y3 = this.interpolate(y1, y2, transition)
 
-        creatureDrawer.drawCreature(
+        this.creatureDrawer.drawCreature(
           creature,
           x3 * 3 + 5.5,
           y3 * 2.5 + 4,
@@ -2364,10 +2373,6 @@ export default function sketch(p5: p5) {
       new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0.0)
     )
     appState.histogramBarCounts.push(new Array(HISTOGRAM_BAR_SPAN).fill(0))
-
-    creatureDrawer = new CreatureDrawer({
-      appView
-    })
   }
 
   p5.draw = () => {

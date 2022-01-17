@@ -1,6 +1,7 @@
 export * from './cull-creatures-activity'
 export * from './generate-creatures-activity'
 export * from './generation-view-activity'
+export * from './propagate-creatures-activity'
 export * from './shared'
 export * from './simulation-finished-activity'
 export * from './simulation-running-activity'

@@ -1468,10 +1468,19 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      const {canvas, font, width} = this.appView
-
       this.appController.generateCreatures()
 
+      this.drawInterface()
+      this.drawCreatureGrid()
+    }
+
+    onMouseReleased(): void {
+      if (this.backButton.isUnderCursor()) {
+        this.backButton.onClick()
+      }
+    }
+
+    private drawCreatureGrid(): void {
       const getCreatureAndGridIndex = (index: number) => {
         return {
           creature: this.appState.creaturesInLatestGeneration[index],
@@ -1479,13 +1488,18 @@ export default function sketch(p5: p5) {
         }
       }
 
+      drawCreatureGrid(getCreatureAndGridIndex)
+
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 5 // 17 minus vertical grid margin
 
-      drawCreatureGrid(getCreatureAndGridIndex)
+      this.appView.canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+    }
+
+    private drawInterface(): void {
+      const {canvas, font, width} = this.appView
 
       canvas.background(220, 253, 102)
-      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
 
       canvas.noStroke()
       canvas.fill(0)
@@ -1497,12 +1511,6 @@ export default function sketch(p5: p5) {
         690
       )
       this.backButton.draw()
-    }
-
-    onMouseReleased(): void {
-      if (this.backButton.isUnderCursor()) {
-        this.backButton.onClick()
-      }
     }
   }
 
@@ -1733,8 +1741,7 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      const {appController, appState, appView} = this
-      const {canvas, font, screenGraphics, width} = appView
+      const {appController, appState} = this
 
       appController.sortCreatures()
       appController.updateHistory()
@@ -1742,6 +1749,17 @@ export default function sketch(p5: p5) {
       appState.viewTimer = 0
       appController.updateCreatureIdsByGridIndex()
 
+      this.drawInterface()
+      this.drawCreatureGrid()
+    }
+
+    onMouseReleased(): void {
+      if (this.sortCreaturesButton.isUnderCursor()) {
+        this.sortCreaturesButton.onClick()
+      }
+    }
+
+    private drawCreatureGrid(): void {
       const getCreatureAndGridIndex = (index: number) => {
         const creature = appState.sortedCreatures[index]
         const gridIndex = creatureIdToIndex(creature.id)
@@ -1750,6 +1768,10 @@ export default function sketch(p5: p5) {
       }
 
       drawCreatureGrid(getCreatureAndGridIndex)
+    }
+
+    private drawInterface(): void {
+      const {canvas, font, screenGraphics, width} = this.appView
 
       screenGraphics.background(220, 253, 102)
 
@@ -1770,12 +1792,6 @@ export default function sketch(p5: p5) {
       this.sortCreaturesButton.draw()
 
       screenGraphics.pop()
-    }
-
-    onMouseReleased(): void {
-      if (this.sortCreaturesButton.isUnderCursor()) {
-        this.sortCreaturesButton.onClick()
-      }
     }
   }
 
@@ -1902,6 +1918,7 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
+      this.drawInterface()
       this.drawCreatureGrid()
     }
 
@@ -1912,8 +1929,6 @@ export default function sketch(p5: p5) {
     }
 
     private drawCreatureGrid(): void {
-      const {canvas, font, screenGraphics, width} = this.appView
-
       const getCreatureAndGridIndex = (index: number) => {
         return {
           creature: this.appState.sortedCreatures[index],
@@ -1922,6 +1937,10 @@ export default function sketch(p5: p5) {
       }
 
       drawCreatureGrid(getCreatureAndGridIndex)
+    }
+
+    private drawInterface(): void {
+      const {canvas, font, screenGraphics, width} = this.appView
 
       screenGraphics.background(220, 253, 102)
 
@@ -1999,12 +2018,20 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      const {appState, appView} = this
-      const {canvas, font, screenGraphics, width} = appView
-
       this.appController.cullCreatures()
-      appState.viewTimer = 0
+      this.appState.viewTimer = 0
 
+      this.drawInterface()
+      this.drawCreatureGrid()
+    }
+
+    onMouseReleased(): void {
+      if (this.propagateCreaturesButton.isUnderCursor()) {
+        this.propagateCreaturesButton.onClick()
+      }
+    }
+
+    private drawCreatureGrid(): void {
       const getCreatureAndGridIndex = (index: number) => {
         return {
           creature: this.appState.sortedCreatures[index],
@@ -2013,6 +2040,10 @@ export default function sketch(p5: p5) {
       }
 
       drawCreatureGrid(getCreatureAndGridIndex)
+    }
+
+    private drawInterface(): void {
+      const {canvas, font, screenGraphics, width} = this.appView
 
       screenGraphics.background(220, 253, 102)
 
@@ -2039,12 +2070,6 @@ export default function sketch(p5: p5) {
 
       screenGraphics.pop()
     }
-
-    onMouseReleased(): void {
-      if (this.propagateCreaturesButton.isUnderCursor()) {
-        this.propagateCreaturesButton.onClick()
-      }
-    }
   }
 
   class PropagateCreaturesActivity extends Activity {
@@ -2061,19 +2086,11 @@ export default function sketch(p5: p5) {
     }
 
     initialize(): void {
-      const {canvas, height, screenGraphics, width} = this.appView
-
       this.appController.propagateCreatures()
       this.appState.viewTimer = 0
 
+      this.drawInterface()
       this.drawCreatureGrid()
-
-      canvas.image(screenGraphics, 0, 0, width, height)
-
-      const gridStartX = 25 // 40 minus horizontal grid margin
-      const gridStartY = 28 // 40 minus vertical grid margin
-
-      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
     }
 
     onMouseReleased(): void {
@@ -2084,7 +2101,6 @@ export default function sketch(p5: p5) {
 
     private drawCreatureGrid(): void {
       const {appState, appView} = this
-      const {canvas, font, screenGraphics, width} = appView
 
       const getCreatureAndGridIndex = (index: number) => {
         let creature = appState.sortedCreatures[index]
@@ -2095,6 +2111,16 @@ export default function sketch(p5: p5) {
       }
 
       drawCreatureGrid(getCreatureAndGridIndex)
+
+      const gridStartX = 25 // 40 minus horizontal grid margin
+      const gridStartY = 28 // 40 minus vertical grid margin
+
+      appView.canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+    }
+
+    private drawInterface(): void {
+      const {appState, appView} = this
+      const {canvas, font, height, screenGraphics, width} = appView
 
       screenGraphics.background(220, 253, 102)
 
@@ -2122,6 +2148,8 @@ export default function sketch(p5: p5) {
       this.backButton.draw()
 
       screenGraphics.pop()
+
+      canvas.image(screenGraphics, 0, 0, width, height)
     }
   }
 

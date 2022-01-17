@@ -944,8 +944,8 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
-        simulationConfig,
-        simulationState
+        simulationConfig: this.simulationConfig,
+        simulationState: this.simulationState
       }
 
       this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
@@ -1675,8 +1675,8 @@ export default function sketch(p5: p5) {
         p5: canvas,
         postFont: font,
         showArrow: true,
-        simulationConfig,
-        simulationState,
+        simulationConfig: this.simulationConfig,
+        simulationState: this.simulationState,
         statsFont: font,
         width: 1600
       })
@@ -1689,7 +1689,7 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
-        simulationState
+        simulationState: this.simulationState
       }
 
       this.skipButton = new StepByStepSkipButton(widgetConfig)
@@ -1708,7 +1708,7 @@ export default function sketch(p5: p5) {
       const {canvas, height, width} = appView
 
       if (appState.viewTimer <= 900) {
-        for (let s = 0; s < simulationState.speed; s++) {
+        for (let s = 0; s < this.simulationState.speed; s++) {
           if (appState.viewTimer < 900) {
             // For each point of speed, advance through one cycle of simulation.
             appController.advanceSimulation()
@@ -1726,7 +1726,7 @@ export default function sketch(p5: p5) {
       }
 
       if (appState.viewTimer == 900) {
-        if (simulationState.speed < 30) {
+        if (this.simulationState.speed < 30) {
           // When the simulation speed is slow enough, display the creature's fitness.
           this.drawFinalFitness()
         } else {
@@ -1748,11 +1748,11 @@ export default function sketch(p5: p5) {
           appController.setActivityId(ActivityId.SimulationFinished)
         }
 
-        simulationState.camera.x = 0
+        this.simulationState.camera.x = 0
       }
 
       if (appState.viewTimer >= 900) {
-        appState.viewTimer += simulationState.speed
+        appState.viewTimer += this.simulationState.speed
       }
     }
 
@@ -1772,18 +1772,18 @@ export default function sketch(p5: p5) {
       const delta = event.deltaX
 
       if (delta < 0) {
-        simulationState.camera.zoom *= 0.9090909
+        this.simulationState.camera.zoom *= 0.9090909
 
-        if (simulationState.camera.zoom < 0.002) {
-          simulationState.camera.zoom = 0.002
+        if (this.simulationState.camera.zoom < 0.002) {
+          this.simulationState.camera.zoom = 0.002
         }
 
         canvas.textFont(font, POST_FONT_SIZE)
       } else if (delta > 0) {
-        simulationState.camera.zoom *= 1.1
+        this.simulationState.camera.zoom *= 1.1
 
-        if (simulationState.camera.zoom > 0.1) {
-          simulationState.camera.zoom = 0.1
+        if (this.simulationState.camera.zoom > 0.1) {
+          this.simulationState.camera.zoom = 0.1
         }
 
         canvas.textFont(font, POST_FONT_SIZE)
@@ -1793,7 +1793,9 @@ export default function sketch(p5: p5) {
     private drawFinalFitness(): void {
       const {canvas, font, height, width} = this.appView
 
-      const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
+      const {averageX} = averagePositionOfNodes(
+        this.simulationState.creature.nodes
+      )
 
       canvas.noStroke()
       canvas.fill(0, 0, 0, 130)
@@ -1813,19 +1815,19 @@ export default function sketch(p5: p5) {
 
     private updateCameraPosition(): void {
       const {averageX, averageY} = averagePositionOfNodes(
-        simulationState.creature.nodes
+        this.simulationState.creature.nodes
       )
 
-      if (simulationState.speed < 30) {
-        for (let s = 0; s < simulationState.speed; s++) {
-          simulationState.camera.x +=
-            (averageX - simulationState.camera.x) * 0.06
-          simulationState.camera.y +=
-            (averageY - simulationState.camera.y) * 0.06
+      if (this.simulationState.speed < 30) {
+        for (let s = 0; s < this.simulationState.speed; s++) {
+          this.simulationState.camera.x +=
+            (averageX - this.simulationState.camera.x) * 0.06
+          this.simulationState.camera.y +=
+            (averageY - this.simulationState.camera.y) * 0.06
         }
       } else {
-        simulationState.camera.x = averageX
-        simulationState.camera.y = averageY
+        this.simulationState.camera.x = averageX
+        this.simulationState.camera.y = averageY
       }
     }
   }
@@ -1858,8 +1860,8 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
-        simulationConfig,
-        simulationState
+        simulationConfig: this.simulationConfig,
+        simulationState: this.simulationState
       }
 
       this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
@@ -2044,8 +2046,8 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
-        simulationConfig,
-        simulationState
+        simulationConfig: this.simulationConfig,
+        simulationState: this.simulationState
       }
 
       this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
@@ -2148,8 +2150,8 @@ export default function sketch(p5: p5) {
 
       const simulationWidgetConfig = {
         ...widgetConfig,
-        simulationConfig,
-        simulationState
+        simulationConfig: this.simulationConfig,
+        simulationState: this.simulationState
       }
 
       this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
@@ -2387,7 +2389,9 @@ export default function sketch(p5: p5) {
       appState.currentActivity = new ActivityClass({
         appController,
         appState,
-        appView
+        appView,
+        simulationConfig,
+        simulationState
       })
       appState.currentActivityId = nextActivityId
 

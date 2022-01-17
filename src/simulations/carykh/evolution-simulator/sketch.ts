@@ -847,6 +847,40 @@ export default function sketch(p5: p5) {
 
       graphics.pop()
     }
+
+    getGridIndexUnderCursor(
+      gridStartX: number,
+      gridStartY: number
+    ): number | null {
+      const {appView} = this.config
+
+      const creaturesPerRow = 40
+
+      const gridWidth = 1200
+      const gridHeight = 625
+
+      const creatureTileWidth = 30
+      const creatureTileHeight = 25
+
+      if (
+        appView.rectIsUnderCursor(
+          gridStartX,
+          gridStartY,
+          gridWidth - 1,
+          gridHeight - 1
+        )
+      ) {
+        const {cursorX, cursorY} = appView.getCursorPosition()
+
+        return (
+          Math.floor((cursorX - gridStartX) / creatureTileWidth) +
+          Math.floor((cursorY - gridStartY) / creatureTileHeight) *
+            creaturesPerRow
+        )
+      }
+
+      return null
+    }
   }
 
   class StartActivity extends Activity {
@@ -1834,20 +1868,21 @@ export default function sketch(p5: p5) {
 
     draw(): void {
       const {canvas, height, screenGraphics, width} = this.appView
+      const {creatureGridView} = this
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 5 // 17 minus vertical grid margin
 
-      canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
+      canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
        * will be displayed for the associated creature.
        */
 
-      const gridIndex = getGridIndexUnderCursor(40, 17)
+      const gridIndex = creatureGridView.getGridIndexUnderCursor(40, 17)
 
       if (gridIndex != null) {
         const creatureId = this.appState.creatureIdsByGridIndex[gridIndex]
@@ -2015,20 +2050,21 @@ export default function sketch(p5: p5) {
 
     draw(): void {
       const {canvas, height, screenGraphics, width} = this.appView
+      const {creatureGridView} = this
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 28 // 40 minus vertical grid margin
 
-      canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
+      canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
        * will be displayed for the associated creature.
        */
 
-      const gridIndex = getGridIndexUnderCursor(40, 42)
+      const gridIndex = creatureGridView.getGridIndexUnderCursor(40, 42)
 
       if (gridIndex != null) {
         this.appController.setPopupSimulationCreatureId(gridIndex)
@@ -2118,20 +2154,21 @@ export default function sketch(p5: p5) {
 
     draw(): void {
       const {canvas, height, screenGraphics, width} = this.appView
+      const {creatureGridView} = this
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 28 // 40 minus vertical grid margin
 
-      canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
+      canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
 
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
        * will be displayed for the associated creature.
        */
 
-      const gridIndex = getGridIndexUnderCursor(40, 42)
+      const gridIndex = creatureGridView.getGridIndexUnderCursor(40, 42)
 
       if (gridIndex != null) {
         this.appController.setPopupSimulationCreatureId(gridIndex)
@@ -2286,38 +2323,6 @@ export default function sketch(p5: p5) {
     [ActivityId.SortedCreatures]: SortedCreaturesActivity,
     [ActivityId.CullCreatures]: CullCreaturesActivity,
     [ActivityId.PropagateCreatures]: PropagateCreaturesActivity
-  }
-
-  function getGridIndexUnderCursor(
-    gridStartX: number,
-    gridStartY: number
-  ): number | null {
-    const creaturesPerRow = 40
-
-    const gridWidth = 1200
-    const gridHeight = 625
-
-    const creatureTileWidth = 30
-    const creatureTileHeight = 25
-
-    if (
-      appView.rectIsUnderCursor(
-        gridStartX,
-        gridStartY,
-        gridWidth - 1,
-        gridHeight - 1
-      )
-    ) {
-      const {cursorX, cursorY} = appView.getCursorPosition()
-
-      return (
-        Math.floor((cursorX - gridStartX) / creatureTileWidth) +
-        Math.floor((cursorY - gridStartY) / creatureTileHeight) *
-          creaturesPerRow
-      )
-    }
-
-    return null
   }
 
   p5.mouseWheel = (event: WheelEvent) => {

@@ -1472,25 +1472,21 @@ export default function sketch(p5: p5) {
 
       this.appController.generateCreatures()
 
-      canvas.background(220, 253, 102)
-      canvas.push()
-      canvas.scale(10.0 / SCALE_TO_FIX_BUG)
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        const creature = this.appState.creaturesInLatestGeneration[i]
-
-        const gridX = i % 40
-        const gridY = Math.floor(i / 40)
-
-        creatureDrawer.drawCreature(
-          creature,
-          gridX * 3 + 5.5,
-          gridY * 2.5 + 3,
-          canvas
-        )
+      const getCreatureAndGridIndex = (index: number) => {
+        return {
+          creature: this.appState.creaturesInLatestGeneration[index],
+          gridIndex: index
+        }
       }
 
-      canvas.pop()
+      const gridStartX = 25 // 40 minus horizontal grid margin
+      const gridStartY = 5 // 17 minus vertical grid margin
+
+      drawCreatureGrid(getCreatureAndGridIndex)
+
+      canvas.background(220, 253, 102)
+      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+
       canvas.noStroke()
       canvas.fill(0)
       canvas.textAlign(canvas.CENTER)
@@ -1715,6 +1711,11 @@ export default function sketch(p5: p5) {
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
+      const gridStartX = 25 // 40 minus horizontal grid margin
+      const gridStartY = 5 // 17 minus vertical grid margin
+
+      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
        * will be displayed for the associated creature.
@@ -1741,26 +1742,16 @@ export default function sketch(p5: p5) {
       appState.viewTimer = 0
       appController.updateCreatureIdsByGridIndex()
 
-      screenGraphics.push()
-      screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-      screenGraphics.background(220, 253, 102)
-      screenGraphics.noStroke()
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        const creature = appState.sortedCreatures[i]
+      const getCreatureAndGridIndex = (index: number) => {
+        const creature = appState.sortedCreatures[index]
         const gridIndex = creatureIdToIndex(creature.id)
 
-        const gridX = gridIndex % 40
-        const gridY = Math.floor(gridIndex / 40)
-
-        creatureDrawer.drawCreature(
-          creature,
-          gridX * 3 + 5.5,
-          gridY * 2.5 + 4,
-          screenGraphics
-        )
+        return {creature, gridIndex}
       }
-      screenGraphics.pop()
+
+      drawCreatureGrid(getCreatureAndGridIndex)
+
+      screenGraphics.background(220, 253, 102)
 
       screenGraphics.push()
       screenGraphics.scale(1.5)
@@ -1890,6 +1881,11 @@ export default function sketch(p5: p5) {
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
+      const gridStartX = 25 // 40 minus horizontal grid margin
+      const gridStartY = 28 // 40 minus vertical grid margin
+
+      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
        * will be displayed for the associated creature.
@@ -1918,26 +1914,16 @@ export default function sketch(p5: p5) {
     private drawCreatureGrid(): void {
       const {canvas, font, screenGraphics, width} = this.appView
 
-      screenGraphics.push()
-      screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-      screenGraphics.background(220, 253, 102)
-      screenGraphics.noStroke()
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        const creature = this.appState.sortedCreatures[i]
-        const gridIndex = i
-
-        const gridX = gridIndex % 40
-        const gridY = Math.floor(gridIndex / 40) + 1
-
-        creatureDrawer.drawCreature(
-          creature,
-          gridX * 3 + 5.5,
-          gridY * 2.5 + 4,
-          screenGraphics
-        )
+      const getCreatureAndGridIndex = (index: number) => {
+        return {
+          creature: this.appState.sortedCreatures[index],
+          gridIndex: index
+        }
       }
-      screenGraphics.pop()
+
+      drawCreatureGrid(getCreatureAndGridIndex)
+
+      screenGraphics.background(220, 253, 102)
 
       screenGraphics.push()
       screenGraphics.scale(1.5)
@@ -1992,6 +1978,11 @@ export default function sketch(p5: p5) {
 
       canvas.image(screenGraphics, 0, 0, width, height)
 
+      const gridStartX = 25 // 40 minus horizontal grid margin
+      const gridStartY = 28 // 40 minus vertical grid margin
+
+      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+
       /*
        * When the cursor is over any of the creature tiles, the popup simulation
        * will be displayed for the associated creature.
@@ -2014,26 +2005,16 @@ export default function sketch(p5: p5) {
       this.appController.cullCreatures()
       appState.viewTimer = 0
 
-      screenGraphics.push()
-      screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-      screenGraphics.background(220, 253, 102)
-      screenGraphics.noStroke()
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        const creature = appState.sortedCreatures[i]
-        const gridIndex = i
-
-        const gridX = gridIndex % 40
-        const gridY = Math.floor(gridIndex / 40) + 1
-
-        creatureDrawer.drawCreature(
-          creature,
-          gridX * 3 + 5.5,
-          gridY * 2.5 + 4,
-          screenGraphics
-        )
+      const getCreatureAndGridIndex = (index: number) => {
+        return {
+          creature: this.appState.sortedCreatures[index],
+          gridIndex: index
+        }
       }
-      screenGraphics.pop()
+
+      drawCreatureGrid(getCreatureAndGridIndex)
+
+      screenGraphics.background(220, 253, 102)
 
       screenGraphics.push()
       screenGraphics.scale(1.5)
@@ -2055,23 +2036,6 @@ export default function sketch(p5: p5) {
         700
       )
       this.propagateCreaturesButton.draw()
-
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        const creature = appState.sortedCreatures[i]
-        const x = i % 40
-        const y = Math.floor(i / 40) + 1
-
-        if (creature.alive) {
-          creatureDrawer.drawCreature(
-            creature,
-            x * 30 + 55,
-            y * 25 + 40,
-            canvas
-          )
-        } else {
-          screenGraphics.rect(x * 30 + 40, y * 25 + 17, 30, 25)
-        }
-      }
 
       screenGraphics.pop()
     }
@@ -2100,10 +2064,16 @@ export default function sketch(p5: p5) {
       const {canvas, height, screenGraphics, width} = this.appView
 
       this.appController.propagateCreatures()
-
       this.appState.viewTimer = 0
+
       this.drawCreatureGrid()
+
       canvas.image(screenGraphics, 0, 0, width, height)
+
+      const gridStartX = 25 // 40 minus horizontal grid margin
+      const gridStartY = 28 // 40 minus vertical grid margin
+
+      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
     }
 
     onMouseReleased(): void {
@@ -2116,29 +2086,17 @@ export default function sketch(p5: p5) {
       const {appState, appView} = this
       const {canvas, font, screenGraphics, width} = appView
 
-      screenGraphics.push()
-      screenGraphics.scale(15.0 / SCALE_TO_FIX_BUG)
-      screenGraphics.background(220, 253, 102)
-      screenGraphics.noStroke()
+      const getCreatureAndGridIndex = (index: number) => {
+        let creature = appState.sortedCreatures[index]
+        const latestIndex = creatureIdToIndex(creature.id)
+        creature = appState.creaturesInLatestGeneration[latestIndex]
 
-      for (let i = 0; i < CREATURE_COUNT; i++) {
-        let creature = appState.sortedCreatures[i]
-        const index = creatureIdToIndex(creature.id)
-        creature = appState.creaturesInLatestGeneration[index]
-
-        const gridIndex = i
-
-        const gridX = gridIndex % 40
-        const gridY = Math.floor(gridIndex / 40) + 1
-
-        creatureDrawer.drawCreature(
-          creature,
-          gridX * 3 + 5.5,
-          gridY * 2.5 + 4,
-          screenGraphics
-        )
+        return {creature, gridIndex: index}
       }
-      screenGraphics.pop()
+
+      drawCreatureGrid(getCreatureAndGridIndex)
+
+      screenGraphics.background(220, 253, 102)
 
       screenGraphics.push()
       screenGraphics.scale(1.5)
@@ -2177,6 +2135,72 @@ export default function sketch(p5: p5) {
     [ActivityId.SortedCreatures]: SortedCreaturesActivity,
     [ActivityId.CullCreatures]: CullCreaturesActivity,
     [ActivityId.PropagateCreatures]: PropagateCreaturesActivity
+  }
+
+  let creatureGridGraphics: Graphics
+
+  function drawCreatureGrid(
+    getCreatureAndGridIndexFn: (index: number) => {
+      creature: Creature
+      gridIndex: number
+    }
+  ): void {
+    const scale = 10
+    const creatureWidth = 30
+    const creatureHeight = 25
+    const creaturesPerRow = 40
+
+    creatureGridGraphics.clear()
+    creatureGridGraphics.push()
+    creatureGridGraphics.scale(scale / SCALE_TO_FIX_BUG)
+
+    const creatureScale = 0.1
+
+    const scaledCreatureWidth = creatureWidth * creatureScale
+    const scaledCreatureHeight = creatureHeight * creatureScale
+
+    const marginX = scaledCreatureWidth
+    const marginY = scaledCreatureHeight / 2 + scaledCreatureHeight
+
+    const blankMarginX = scaledCreatureWidth / 2
+    const blankMarginY = scaledCreatureHeight / 2
+
+    const blankWidth = scaledCreatureWidth * SCALE_TO_FIX_BUG
+    const blankHeight = scaledCreatureHeight * SCALE_TO_FIX_BUG
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
+
+      const gridX = gridIndex % creaturesPerRow
+      const gridY = Math.floor(gridIndex / creaturesPerRow)
+
+      if (creature.alive) {
+        const creatureCenterX = gridX * scaledCreatureWidth + marginX
+        const creatureBottomY = gridY * scaledCreatureHeight + marginY
+
+        creatureDrawer.drawCreature(
+          creature,
+          creatureCenterX,
+          creatureBottomY,
+          creatureGridGraphics
+        )
+      } else {
+        const blankLeftX =
+          (gridX * scaledCreatureWidth + blankMarginX) * SCALE_TO_FIX_BUG
+        const blankTopY =
+          (gridY * scaledCreatureHeight + blankMarginY) * SCALE_TO_FIX_BUG
+
+        creatureGridGraphics.fill(0)
+        creatureGridGraphics.rect(
+          blankLeftX,
+          blankTopY,
+          blankWidth,
+          blankHeight
+        )
+      }
+    }
+
+    creatureGridGraphics.pop()
   }
 
   function getGridIndexUnderCursor(
@@ -2255,6 +2279,16 @@ export default function sketch(p5: p5) {
       axonColor: p5.color(255, 255, 0),
       axonFont: appView.font
     })
+
+    const creatureTileWidth = 30
+    const creatureTileHeight = 25
+    const creaturesPerRow = 40
+    const creaturesPerColumn = CREATURE_COUNT / creaturesPerRow
+
+    const width = (creaturesPerRow + 1) * creatureTileWidth
+    const height = (creaturesPerColumn + 1) * creatureTileHeight
+
+    creatureGridGraphics = p5.createGraphics(width, height)
   }
 
   p5.draw = () => {

@@ -759,6 +759,82 @@ export default function sketch(p5: p5) {
     }
   }
 
+  interface CreatureGridConfig {
+    getCreatureAndGridIndexFn: (index: number) => {
+      creature: Creature
+      gridIndex: number
+    }
+  }
+
+  class CreatureGridView {
+    private config: CreatureGridConfig
+
+    constructor(config: CreatureGridConfig) {
+      this.config = config
+    }
+
+    draw(): void {
+      const {getCreatureAndGridIndexFn} = this.config
+
+      const scale = 10
+      const creatureWidth = 30
+      const creatureHeight = 25
+      const creaturesPerRow = 40
+
+      creatureGridGraphics.clear()
+      creatureGridGraphics.push()
+      creatureGridGraphics.scale(scale / SCALE_TO_FIX_BUG)
+
+      const creatureScale = 0.1
+
+      const scaledCreatureWidth = creatureWidth * creatureScale
+      const scaledCreatureHeight = creatureHeight * creatureScale
+
+      const marginX = scaledCreatureWidth
+      const marginY = scaledCreatureHeight / 2 + scaledCreatureHeight
+
+      const blankMarginX = scaledCreatureWidth / 2
+      const blankMarginY = scaledCreatureHeight / 2
+
+      const blankWidth = scaledCreatureWidth * SCALE_TO_FIX_BUG
+      const blankHeight = scaledCreatureHeight * SCALE_TO_FIX_BUG
+
+      for (let i = 0; i < CREATURE_COUNT; i++) {
+        const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
+
+        const gridX = gridIndex % creaturesPerRow
+        const gridY = Math.floor(gridIndex / creaturesPerRow)
+
+        if (creature.alive) {
+          const creatureCenterX = gridX * scaledCreatureWidth + marginX
+          const creatureBottomY = gridY * scaledCreatureHeight + marginY
+
+          creatureDrawer.drawCreature(
+            creature,
+            creatureCenterX,
+            creatureBottomY,
+            creatureGridGraphics
+          )
+        } else {
+          const blankLeftX =
+            (gridX * scaledCreatureWidth + blankMarginX) * SCALE_TO_FIX_BUG
+          const blankTopY =
+            (gridY * scaledCreatureHeight + blankMarginY) * SCALE_TO_FIX_BUG
+
+          creatureGridGraphics.fill(0)
+          creatureGridGraphics.rect(
+            blankLeftX,
+            blankTopY,
+            blankWidth,
+            blankHeight
+          )
+        }
+      }
+
+      creatureGridGraphics.pop()
+    }
+  }
+
   class StartActivity extends Activity {
     private startButton: StartViewStartButton
 
@@ -1455,10 +1531,20 @@ export default function sketch(p5: p5) {
   }
 
   class GenerateCreaturesActivity extends Activity {
+    private creatureGridView: CreatureGridView
     private backButton: GeneratedCreaturesBackButton
 
     constructor(config: ActivityConfig) {
       super(config)
+
+      const getCreatureAndGridIndexFn = (index: number) => {
+        return {
+          creature: this.appState.creaturesInLatestGeneration[index],
+          gridIndex: index
+        }
+      }
+
+      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
 
       this.backButton = new GeneratedCreaturesBackButton({
         appController: this.appController,
@@ -1481,14 +1567,7 @@ export default function sketch(p5: p5) {
     }
 
     private drawCreatureGrid(): void {
-      const getCreatureAndGridIndex = (index: number) => {
-        return {
-          creature: this.appState.creaturesInLatestGeneration[index],
-          gridIndex: index
-        }
-      }
-
-      drawCreatureGrid(getCreatureAndGridIndex)
+      this.creatureGridView.draw()
 
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 5 // 17 minus vertical grid margin
@@ -1688,11 +1767,21 @@ export default function sketch(p5: p5) {
   }
 
   class SimulationFinishedActivity extends Activity {
+    private creatureGridView: CreatureGridView
     private popupSimulationView: PopupSimulationView
     private sortCreaturesButton: SortCreaturesButton
 
     constructor(config: ActivityConfig) {
       super(config)
+
+      const getCreatureAndGridIndexFn = (index: number) => {
+        const creature = this.appState.sortedCreatures[index]
+        const gridIndex = creatureIdToIndex(creature.id)
+
+        return {creature, gridIndex}
+      }
+
+      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
 
       const widgetConfig = {
         appController: this.appController,
@@ -1750,24 +1839,13 @@ export default function sketch(p5: p5) {
       appController.updateCreatureIdsByGridIndex()
 
       this.drawInterface()
-      this.drawCreatureGrid()
+      this.creatureGridView.draw()
     }
 
     onMouseReleased(): void {
       if (this.sortCreaturesButton.isUnderCursor()) {
         this.sortCreaturesButton.onClick()
       }
-    }
-
-    private drawCreatureGrid(): void {
-      const getCreatureAndGridIndex = (index: number) => {
-        const creature = appState.sortedCreatures[index]
-        const gridIndex = creatureIdToIndex(creature.id)
-
-        return {creature, gridIndex}
-      }
-
-      drawCreatureGrid(getCreatureAndGridIndex)
     }
 
     private drawInterface(): void {
@@ -1866,11 +1944,21 @@ export default function sketch(p5: p5) {
   }
 
   class SortedCreaturesActivity extends Activity {
+    private creatureGridView: CreatureGridView
     private popupSimulationView: PopupSimulationView
     private cullCreaturesButton: CullCreaturesButton
 
     constructor(config: ActivityConfig) {
       super(config)
+
+      const getCreatureAndGridIndexFn = (index: number) => {
+        return {
+          creature: this.appState.sortedCreatures[index],
+          gridIndex: index
+        }
+      }
+
+      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
 
       const widgetConfig = {
         appController: this.appController,
@@ -1919,24 +2007,13 @@ export default function sketch(p5: p5) {
 
     initialize(): void {
       this.drawInterface()
-      this.drawCreatureGrid()
+      this.creatureGridView.draw()
     }
 
     onMouseReleased(): void {
       if (this.cullCreaturesButton.isUnderCursor()) {
         this.cullCreaturesButton.onClick()
       }
-    }
-
-    private drawCreatureGrid(): void {
-      const getCreatureAndGridIndex = (index: number) => {
-        return {
-          creature: this.appState.sortedCreatures[index],
-          gridIndex: index
-        }
-      }
-
-      drawCreatureGrid(getCreatureAndGridIndex)
     }
 
     private drawInterface(): void {
@@ -1966,11 +2043,21 @@ export default function sketch(p5: p5) {
   }
 
   class CullCreaturesActivity extends Activity {
+    private creatureGridView: CreatureGridView
     private popupSimulationView: PopupSimulationView
     private propagateCreaturesButton: PropagateCreaturesButton
 
     constructor(config: ActivityConfig) {
       super(config)
+
+      const getCreatureAndGridIndexFn = (index: number) => {
+        return {
+          creature: this.appState.sortedCreatures[index],
+          gridIndex: index
+        }
+      }
+
+      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
 
       const widgetConfig = {
         appController: this.appController,
@@ -2022,24 +2109,13 @@ export default function sketch(p5: p5) {
       this.appState.viewTimer = 0
 
       this.drawInterface()
-      this.drawCreatureGrid()
+      this.creatureGridView.draw()
     }
 
     onMouseReleased(): void {
       if (this.propagateCreaturesButton.isUnderCursor()) {
         this.propagateCreaturesButton.onClick()
       }
-    }
-
-    private drawCreatureGrid(): void {
-      const getCreatureAndGridIndex = (index: number) => {
-        return {
-          creature: this.appState.sortedCreatures[index],
-          gridIndex: index
-        }
-      }
-
-      drawCreatureGrid(getCreatureAndGridIndex)
     }
 
     private drawInterface(): void {
@@ -2073,10 +2149,21 @@ export default function sketch(p5: p5) {
   }
 
   class PropagateCreaturesActivity extends Activity {
+    private creatureGridView: CreatureGridView
     private backButton: PropagatedCreaturesBackButton
 
     constructor(config: ActivityConfig) {
       super(config)
+
+      const getCreatureAndGridIndexFn = (index: number) => {
+        let creature = this.appState.sortedCreatures[index]
+        const latestIndex = creatureIdToIndex(creature.id)
+        creature = this.appState.creaturesInLatestGeneration[latestIndex]
+
+        return {creature, gridIndex: index}
+      }
+
+      this.creatureGridView = new CreatureGridView({getCreatureAndGridIndexFn})
 
       this.backButton = new PropagatedCreaturesBackButton({
         appController: this.appController,
@@ -2100,22 +2187,14 @@ export default function sketch(p5: p5) {
     }
 
     private drawCreatureGrid(): void {
-      const {appState, appView} = this
+      const {canvas} = this.appView
 
-      const getCreatureAndGridIndex = (index: number) => {
-        let creature = appState.sortedCreatures[index]
-        const latestIndex = creatureIdToIndex(creature.id)
-        creature = appState.creaturesInLatestGeneration[latestIndex]
-
-        return {creature, gridIndex: index}
-      }
-
-      drawCreatureGrid(getCreatureAndGridIndex)
+      this.creatureGridView.draw()
 
       const gridStartX = 25 // 40 minus horizontal grid margin
       const gridStartY = 28 // 40 minus vertical grid margin
 
-      appView.canvas.image(creatureGridGraphics, gridStartX, gridStartY)
+      canvas.image(creatureGridGraphics, gridStartX, gridStartY)
     }
 
     private drawInterface(): void {
@@ -2166,70 +2245,6 @@ export default function sketch(p5: p5) {
   }
 
   let creatureGridGraphics: Graphics
-
-  function drawCreatureGrid(
-    getCreatureAndGridIndexFn: (index: number) => {
-      creature: Creature
-      gridIndex: number
-    }
-  ): void {
-    const scale = 10
-    const creatureWidth = 30
-    const creatureHeight = 25
-    const creaturesPerRow = 40
-
-    creatureGridGraphics.clear()
-    creatureGridGraphics.push()
-    creatureGridGraphics.scale(scale / SCALE_TO_FIX_BUG)
-
-    const creatureScale = 0.1
-
-    const scaledCreatureWidth = creatureWidth * creatureScale
-    const scaledCreatureHeight = creatureHeight * creatureScale
-
-    const marginX = scaledCreatureWidth
-    const marginY = scaledCreatureHeight / 2 + scaledCreatureHeight
-
-    const blankMarginX = scaledCreatureWidth / 2
-    const blankMarginY = scaledCreatureHeight / 2
-
-    const blankWidth = scaledCreatureWidth * SCALE_TO_FIX_BUG
-    const blankHeight = scaledCreatureHeight * SCALE_TO_FIX_BUG
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
-
-      const gridX = gridIndex % creaturesPerRow
-      const gridY = Math.floor(gridIndex / creaturesPerRow)
-
-      if (creature.alive) {
-        const creatureCenterX = gridX * scaledCreatureWidth + marginX
-        const creatureBottomY = gridY * scaledCreatureHeight + marginY
-
-        creatureDrawer.drawCreature(
-          creature,
-          creatureCenterX,
-          creatureBottomY,
-          creatureGridGraphics
-        )
-      } else {
-        const blankLeftX =
-          (gridX * scaledCreatureWidth + blankMarginX) * SCALE_TO_FIX_BUG
-        const blankTopY =
-          (gridY * scaledCreatureHeight + blankMarginY) * SCALE_TO_FIX_BUG
-
-        creatureGridGraphics.fill(0)
-        creatureGridGraphics.rect(
-          blankLeftX,
-          blankTopY,
-          blankWidth,
-          blankHeight
-        )
-      }
-    }
-
-    creatureGridGraphics.pop()
-  }
 
   function getGridIndexUnderCursor(
     gridStartX: number,

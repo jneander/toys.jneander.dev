@@ -10,20 +10,24 @@ import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   NODE_OPERATION_LABELS_BY_ID
 } from './node-operations'
+import type {AppView} from './views'
 
 const NODE_TEXT_LINE_MULTIPLIER_Y1 = -0.08 // These are for the lines of text on each node.
 const NODE_TEXT_LINE_MULTIPLIER_Y2 = 0.35
 
 export interface CreatureDrawerConfig {
-  axonColor: Color
-  axonFont: Font
+  appView: AppView
 }
 
 export class CreatureDrawer {
-  private config: CreatureDrawerConfig
+  private axonColor: Color
+  private axonFont: Font
 
   constructor(config: CreatureDrawerConfig) {
-    this.config = config
+    const {appView} = config
+
+    this.axonColor = appView.canvas.color(255, 255, 0)
+    this.axonFont = appView.font
   }
 
   drawCreature(creature: Creature, x: number, y: number, graphics: p5): void {
@@ -81,7 +85,7 @@ export class CreatureDrawer {
     }
 
     graphics.textAlign(graphics.CENTER)
-    graphics.textFont(this.config.axonFont, 0.4 * node.mass * SCALE_TO_FIX_BUG)
+    graphics.textFont(this.axonFont, 0.4 * node.mass * SCALE_TO_FIX_BUG)
     graphics.text(
       graphics.nf(node.value, 0, 2),
       (node.positionX + x) * SCALE_TO_FIX_BUG,
@@ -136,7 +140,7 @@ export class CreatureDrawer {
     const arrowHeadSize = 0.1
     const angle = Math.atan2(y2 - y1, x2 - x1)
 
-    graphics.stroke(this.config.axonColor)
+    graphics.stroke(this.axonColor)
     graphics.strokeWeight(0.03 * SCALE_TO_FIX_BUG)
     graphics.line(
       x1 * SCALE_TO_FIX_BUG,
@@ -214,12 +218,9 @@ export class CreatureDrawer {
 
       const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
 
-      graphics.fill(this.config.axonColor)
+      graphics.fill(this.axonColor)
       graphics.textAlign(graphics.CENTER)
-      graphics.textFont(
-        this.config.axonFont,
-        0.4 * averageMass * SCALE_TO_FIX_BUG
-      )
+      graphics.textFont(this.axonFont, 0.4 * averageMass * SCALE_TO_FIX_BUG)
       graphics.text(
         graphics.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
         muscleMidX * SCALE_TO_FIX_BUG,

@@ -2366,8 +2366,7 @@ export default function sketch(p5: p5) {
     appState.histogramBarCounts.push(new Array(HISTOGRAM_BAR_SPAN).fill(0))
 
     creatureDrawer = new CreatureDrawer({
-      axonColor: p5.color(255, 255, 0),
-      axonFont: appView.font
+      appView
     })
   }
 

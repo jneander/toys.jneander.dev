@@ -8,7 +8,9 @@ import {AppController} from './app-controller'
 import {
   ActivityId,
   CREATURE_COUNT,
+  FITNESS_LABEL,
   FITNESS_PERCENTILE_CREATURE_INDICES,
+  FITNESS_UNIT_LABEL,
   GenerationSimulationMode,
   HISTOGRAM_BARS_PER_METER,
   HISTOGRAM_BAR_MAX,
@@ -28,8 +30,6 @@ import type {AppState, SimulationConfig, SimulationState} from './types'
 import {AppView, SimulationView} from './views'
 
 export default function sketch(p5: p5) {
-  const FITNESS_LABEL = 'Distance'
-  const FITNESS_UNIT_LABEL = 'm'
   const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
   const FRAME_RATE = 60 // target frames per second
   const SEED = 0

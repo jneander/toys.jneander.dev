@@ -1,5 +1,6 @@
 export * from './generate-creatures-activity'
 export * from './generation-view-activity'
 export * from './shared'
+export * from './simulation-finished-activity'
 export * from './simulation-running-activity'
 export * from './start-activity'

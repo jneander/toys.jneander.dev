@@ -27,7 +27,7 @@ import {
 } from './helpers'
 import {toInt} from './math'
 import type {AppState, SimulationConfig, SimulationState} from './types'
-import {AppView, SimulationView} from './views'
+import {AppView, SimulationView, Widget, WidgetConfig} from './views'
 
 export default function sketch(p5: p5) {
   const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
@@ -96,26 +96,6 @@ export default function sketch(p5: p5) {
   })
 
   let appView: AppView
-
-  interface WidgetConfig {
-    appController: AppController
-    appState: AppState
-    appView: AppView
-  }
-
-  abstract class Widget {
-    protected appController: AppController
-    protected appState: AppState
-    protected appView: AppView
-
-    constructor(config: WidgetConfig) {
-      this.appController = config.appController
-      this.appState = config.appState
-      this.appView = config.appView
-    }
-
-    abstract draw(): void
-  }
 
   class StartViewStartButton extends Widget {
     draw(): void {

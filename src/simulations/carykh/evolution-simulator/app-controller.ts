@@ -1,5 +1,5 @@
 import type Creature from './Creature'
-import type Simulation from './Simulation'
+import type CreatureSimulation from './CreatureSimulation'
 import {
   ActivityId,
   CREATURE_COUNT,
@@ -29,7 +29,7 @@ const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 export interface AppControllerConfig {
   appState: AppState
   randomFractFn: RandomNumberFn
-  simulation: Simulation
+  simulation: CreatureSimulation
   simulationState: SimulationState
 }
 

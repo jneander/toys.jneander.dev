@@ -5,7 +5,12 @@ import {POST_FONT_SIZE, SCALE_TO_FIX_BUG} from '../constants'
 import type {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import {toInt} from '../math'
-import type {AppState, SimulationConfig, SimulationState} from '../types'
+import type {
+  AppState,
+  SimulationCameraState,
+  SimulationConfig,
+  SimulationState
+} from '../types'
 
 export interface SimulationViewConfig {
   appState: AppState
@@ -24,12 +29,20 @@ export interface SimulationViewConfig {
 export class SimulationView {
   graphics: Graphics
 
+  private cameraState: SimulationCameraState
+
   private config: SimulationViewConfig
   private simulationGraphics: Graphics
   private statsGraphics: Graphics
 
   constructor(config: SimulationViewConfig) {
     this.config = config
+
+    this.cameraState = {
+      x: 0,
+      y: 0,
+      zoom: 0.015
+    }
 
     const {height, p5, width} = this.config
 
@@ -56,26 +69,22 @@ export class SimulationView {
   }
 
   setCameraPosition(x: number, y: number): void {
-    const {camera} = this.config.simulationState
-
-    camera.x = x
-    camera.y = y
+    this.cameraState.x = x
+    this.cameraState.y = y
   }
 
   setCameraZoom(zoom: number): void {
-    const {camera} = this.config.simulationState
-
-    camera.zoom = Math.min(0.1, Math.max(0.002, zoom))
+    this.cameraState.zoom = Math.min(0.1, Math.max(0.002, zoom))
   }
 
   zoomIn(): void {
-    const {zoom} = this.config.simulationState.camera
+    const {zoom} = this.cameraState
 
     this.setCameraZoom(zoom / 1.1)
   }
 
   zoomOut(): void {
-    const {zoom} = this.config.simulationState.camera
+    const {zoom} = this.cameraState
 
     this.setCameraZoom(zoom * 1.1)
   }
@@ -120,7 +129,7 @@ export class SimulationView {
 
   private drawGround(): void {
     const {height, simulationConfig, simulationState, width} = this.config
-    const {simulationGraphics} = this
+    const {cameraState, simulationGraphics} = this
 
     const {averageX, averageY} = averagePositionOfNodes(
       simulationState.creature.nodes
@@ -135,11 +144,10 @@ export class SimulationView {
     simulationGraphics.fill(0, 130, 0)
 
     const groundX =
-      (simulationState.camera.x - simulationState.camera.zoom * (width / 2)) *
-      SCALE_TO_FIX_BUG
+      (cameraState.x - cameraState.zoom * (width / 2)) * SCALE_TO_FIX_BUG
     const groundY = 0
-    const groundW = simulationState.camera.zoom * width * SCALE_TO_FIX_BUG
-    const groundH = simulationState.camera.zoom * height * SCALE_TO_FIX_BUG
+    const groundW = cameraState.zoom * width * SCALE_TO_FIX_BUG
+    const groundH = cameraState.zoom * height * SCALE_TO_FIX_BUG
 
     simulationGraphics.rect(groundX, groundY, groundW, groundH)
 
@@ -207,7 +215,7 @@ export class SimulationView {
 
   private drawSimulation(): void {
     const {creatureDrawer, showArrow, simulationState} = this.config
-    const {simulationGraphics} = this
+    const {cameraState, simulationGraphics} = this
 
     simulationGraphics.push()
 
@@ -215,12 +223,10 @@ export class SimulationView {
       simulationGraphics.width / 2.0,
       simulationGraphics.height / 2.0
     )
-    simulationGraphics.scale(
-      1.0 / simulationState.camera.zoom / SCALE_TO_FIX_BUG
-    )
+    simulationGraphics.scale(1.0 / cameraState.zoom / SCALE_TO_FIX_BUG)
     simulationGraphics.translate(
-      -simulationState.camera.x * SCALE_TO_FIX_BUG,
-      -simulationState.camera.y * SCALE_TO_FIX_BUG
+      -cameraState.x * SCALE_TO_FIX_BUG,
+      -cameraState.y * SCALE_TO_FIX_BUG
     )
 
     if (simulationState.timer < 900) {
@@ -318,6 +324,7 @@ export class SimulationView {
 
   private updateCameraPosition(): void {
     const {cameraSpeed, simulationState} = this.config
+    const {cameraState} = this
 
     const {averageX, averageY} = averagePositionOfNodes(
       simulationState.creature.nodes
@@ -325,14 +332,12 @@ export class SimulationView {
 
     if (simulationState.speed < 30) {
       for (let s = 0; s < simulationState.speed; s++) {
-        simulationState.camera.x +=
-          (averageX - simulationState.camera.x) * cameraSpeed
-        simulationState.camera.y +=
-          (averageY - simulationState.camera.y) * cameraSpeed
+        cameraState.x += (averageX - cameraState.x) * cameraSpeed
+        cameraState.y += (averageY - cameraState.y) * cameraSpeed
       }
     } else {
-      simulationState.camera.x = averageX
-      simulationState.camera.y = averageY
+      cameraState.x = averageX
+      cameraState.y = averageY
     }
   }
 }

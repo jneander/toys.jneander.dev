@@ -25,7 +25,6 @@ export type SimulationCreatureState = {
 }
 
 export type SimulationState = {
-  camera: SimulationCameraState
   creature: SimulationCreatureState
   speed: number
   timer: number

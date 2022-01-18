@@ -100,8 +100,6 @@ export class SimulationRunningActivity extends Activity {
       } else {
         appController.setActivityId(ActivityId.SimulationFinished)
       }
-
-      this.simulationState.camera.x = 0
     }
 
     if (appState.viewTimer >= 900) {

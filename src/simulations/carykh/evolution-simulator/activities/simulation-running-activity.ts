@@ -123,17 +123,9 @@ export class SimulationRunningActivity extends Activity {
     const delta = event.deltaX
 
     if (delta < 0) {
-      this.simulationState.camera.zoom *= 0.9090909
-
-      if (this.simulationState.camera.zoom < 0.002) {
-        this.simulationState.camera.zoom = 0.002
-      }
+      this.simulationView.zoomIn()
     } else if (delta > 0) {
-      this.simulationState.camera.zoom *= 1.1
-
-      if (this.simulationState.camera.zoom > 0.1) {
-        this.simulationState.camera.zoom = 0.1
-      }
+      this.simulationView.zoomOut()
     }
   }
 

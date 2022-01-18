@@ -23,6 +23,7 @@ export class SimulationRunningActivity extends Activity {
 
     this.simulationView = new SimulationView({
       appState: this.appState,
+      cameraSpeed: 0.06,
       creatureDrawer: new CreatureDrawer({appView: this.appView}),
       height: 900,
       p5: canvas,
@@ -68,7 +69,6 @@ export class SimulationRunningActivity extends Activity {
         }
       }
 
-      this.updateCameraPosition()
       this.simulationView.draw()
 
       canvas.image(this.simulationView.graphics, 0, 0, width, height)
@@ -150,24 +150,6 @@ export class SimulationRunningActivity extends Activity {
       width / 2,
       400
     )
-  }
-
-  private updateCameraPosition(): void {
-    const {averageX, averageY} = averagePositionOfNodes(
-      this.simulationState.creature.nodes
-    )
-
-    if (this.simulationState.speed < 30) {
-      for (let s = 0; s < this.simulationState.speed; s++) {
-        this.simulationState.camera.x +=
-          (averageX - this.simulationState.camera.x) * 0.06
-        this.simulationState.camera.y +=
-          (averageY - this.simulationState.camera.y) * 0.06
-      }
-    } else {
-      this.simulationState.camera.x = averageX
-      this.simulationState.camera.y = averageY
-    }
   }
 }
 

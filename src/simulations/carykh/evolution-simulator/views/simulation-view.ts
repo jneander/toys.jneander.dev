@@ -9,6 +9,7 @@ import type {AppState, SimulationConfig, SimulationState} from '../types'
 
 export interface SimulationViewConfig {
   appState: AppState
+  cameraSpeed: number
   creatureDrawer: CreatureDrawer
   height: number
   p5: p5
@@ -46,6 +47,7 @@ export class SimulationView {
   draw(): void {
     const {graphics, simulationGraphics, statsGraphics} = this
 
+    this.updateCameraPosition()
     this.drawSimulation()
     this.drawStats()
 
@@ -307,5 +309,25 @@ export class SimulationView {
     )
 
     statsGraphics.pop()
+  }
+
+  private updateCameraPosition(): void {
+    const {cameraSpeed, simulationState} = this.config
+
+    const {averageX, averageY} = averagePositionOfNodes(
+      simulationState.creature.nodes
+    )
+
+    if (simulationState.speed < 30) {
+      for (let s = 0; s < simulationState.speed; s++) {
+        simulationState.camera.x +=
+          (averageX - simulationState.camera.x) * cameraSpeed
+        simulationState.camera.y +=
+          (averageY - simulationState.camera.y) * cameraSpeed
+      }
+    } else {
+      simulationState.camera.x = averageX
+      simulationState.camera.y = averageY
+    }
   }
 }

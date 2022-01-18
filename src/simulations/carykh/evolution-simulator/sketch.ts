@@ -2,7 +2,7 @@ import type p5 from 'p5'
 import type {Font} from 'p5'
 
 import Creature from './Creature'
-import Simulation from './Simulation'
+import CreatureSimulation from './CreatureSimulation'
 import {
   CullCreaturesActivity,
   GenerateCreaturesActivity,
@@ -75,7 +75,7 @@ export default function sketch(p5: p5) {
     timer: 0
   }
 
-  const simulation = new Simulation(simulationState, simulationConfig)
+  const simulation = new CreatureSimulation(simulationState, simulationConfig)
 
   const appController = new AppController({
     appState,

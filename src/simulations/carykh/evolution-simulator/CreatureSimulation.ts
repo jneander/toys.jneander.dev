@@ -22,7 +22,7 @@ import {
 } from './node-operations'
 import type {SimulationConfig, SimulationState} from './types'
 
-export default class Simulation {
+export default class CreatureSimulation {
   private config: SimulationConfig
   private state: SimulationState
 

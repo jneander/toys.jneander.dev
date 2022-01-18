@@ -161,93 +161,6 @@ export default class Simulation {
     }
   }
 
-  applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
-    let target = muscle.previousTarget
-
-    if (muscle.axon >= 0 && muscle.axon < nodes.length) {
-      target = muscle.length * nodes[muscle.axon].getClampedValue()
-    } else {
-      target = muscle.length
-    }
-
-    const ni1 = nodes[muscle.nodeConnection1]
-    const ni2 = nodes[muscle.nodeConnection2]
-
-    const distance = dist2d(
-      ni1.positionX,
-      ni1.positionY,
-      ni2.positionX,
-      ni2.positionY
-    )
-    const angle = Math.atan2(
-      ni1.positionY - ni2.positionY,
-      ni1.positionX - ni2.positionX
-    )
-
-    const force = Math.min(Math.max(1 - distance / target, -0.4), 0.4)
-    ni1.velocityX += (Math.cos(angle) * force * muscle.rigidity) / ni1.mass
-    ni1.velocityY += (Math.sin(angle) * force * muscle.rigidity) / ni1.mass
-    ni2.velocityX -= (Math.cos(angle) * force * muscle.rigidity) / ni2.mass
-    ni2.velocityY -= (Math.sin(angle) * force * muscle.rigidity) / ni2.mass
-
-    this.state.creature.energyUsed = Math.max(
-      this.state.creature.energyUsed +
-        Math.abs(muscle.previousTarget - target) *
-          muscle.rigidity *
-          ENERGY_UNIT,
-      0
-    )
-
-    muscle.previousTarget = target
-  }
-
-  applyForcesToNode(node: Node): void {
-    node.velocityX *= AIR_FRICTION
-    node.velocityY *= AIR_FRICTION
-    node.positionY += node.velocityY
-    node.positionX += node.velocityX
-    const acc = dist2d(
-      node.velocityX,
-      node.velocityY,
-      node.previousVelocityX,
-      node.previousVelocityY
-    )
-    this.state.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
-    node.previousVelocityX = node.velocityX
-    node.previousVelocityY = node.velocityY
-  }
-
-  applyGravityToNode(node: Node): void {
-    node.velocityY += GRAVITY
-  }
-
-  applyCollisionsToNode(node: Node): void {
-    node.pressure = 0
-    let dif = node.positionY + node.mass / 2
-
-    if (dif >= 0) {
-      this.pressNodeAgainstGround(node, 0)
-    }
-
-    if (
-      node.positionY > node.previousPositionY &&
-      this.config.hazelStairs >= 0
-    ) {
-      const bottomPointNow = node.positionY + node.mass / 2
-      const bottomPointPrev = node.previousPositionY + node.mass / 2
-      const levelNow = Math.ceil(bottomPointNow / this.config.hazelStairs)
-      const levelPrev = Math.ceil(bottomPointPrev / this.config.hazelStairs)
-
-      if (levelNow > levelPrev) {
-        const groundLevel = levelPrev * this.config.hazelStairs
-        this.pressNodeAgainstGround(node, groundLevel)
-      }
-    }
-
-    node.previousPositionY = node.positionY
-    node.previousPositionX = node.positionX
-  }
-
   modifyCreature(creature: Creature, id: number): Creature {
     const modifiedCreature = new Creature(
       id,
@@ -313,7 +226,98 @@ export default class Simulation {
     return modifiedCreature
   }
 
-  modifyMuscle(muscle: Muscle, nodeCount: number, mutability: number): Muscle {
+  private applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
+    let target = muscle.previousTarget
+
+    if (muscle.axon >= 0 && muscle.axon < nodes.length) {
+      target = muscle.length * nodes[muscle.axon].getClampedValue()
+    } else {
+      target = muscle.length
+    }
+
+    const ni1 = nodes[muscle.nodeConnection1]
+    const ni2 = nodes[muscle.nodeConnection2]
+
+    const distance = dist2d(
+      ni1.positionX,
+      ni1.positionY,
+      ni2.positionX,
+      ni2.positionY
+    )
+    const angle = Math.atan2(
+      ni1.positionY - ni2.positionY,
+      ni1.positionX - ni2.positionX
+    )
+
+    const force = Math.min(Math.max(1 - distance / target, -0.4), 0.4)
+    ni1.velocityX += (Math.cos(angle) * force * muscle.rigidity) / ni1.mass
+    ni1.velocityY += (Math.sin(angle) * force * muscle.rigidity) / ni1.mass
+    ni2.velocityX -= (Math.cos(angle) * force * muscle.rigidity) / ni2.mass
+    ni2.velocityY -= (Math.sin(angle) * force * muscle.rigidity) / ni2.mass
+
+    this.state.creature.energyUsed = Math.max(
+      this.state.creature.energyUsed +
+        Math.abs(muscle.previousTarget - target) *
+          muscle.rigidity *
+          ENERGY_UNIT,
+      0
+    )
+
+    muscle.previousTarget = target
+  }
+
+  private applyForcesToNode(node: Node): void {
+    node.velocityX *= AIR_FRICTION
+    node.velocityY *= AIR_FRICTION
+    node.positionY += node.velocityY
+    node.positionX += node.velocityX
+    const acc = dist2d(
+      node.velocityX,
+      node.velocityY,
+      node.previousVelocityX,
+      node.previousVelocityY
+    )
+    this.state.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
+    node.previousVelocityX = node.velocityX
+    node.previousVelocityY = node.velocityY
+  }
+
+  private applyGravityToNode(node: Node): void {
+    node.velocityY += GRAVITY
+  }
+
+  private applyCollisionsToNode(node: Node): void {
+    node.pressure = 0
+    let dif = node.positionY + node.mass / 2
+
+    if (dif >= 0) {
+      this.pressNodeAgainstGround(node, 0)
+    }
+
+    if (
+      node.positionY > node.previousPositionY &&
+      this.config.hazelStairs >= 0
+    ) {
+      const bottomPointNow = node.positionY + node.mass / 2
+      const bottomPointPrev = node.previousPositionY + node.mass / 2
+      const levelNow = Math.ceil(bottomPointNow / this.config.hazelStairs)
+      const levelPrev = Math.ceil(bottomPointPrev / this.config.hazelStairs)
+
+      if (levelNow > levelPrev) {
+        const groundLevel = levelPrev * this.config.hazelStairs
+        this.pressNodeAgainstGround(node, groundLevel)
+      }
+    }
+
+    node.previousPositionY = node.positionY
+    node.previousPositionX = node.positionX
+  }
+
+  private modifyMuscle(
+    muscle: Muscle,
+    nodeCount: number,
+    mutability: number
+  ): Muscle {
     let newc1 = muscle.nodeConnection1
     let newc2 = muscle.nodeConnection2
     let newAxon = muscle.axon
@@ -349,7 +353,7 @@ export default class Simulation {
     return new Muscle(newAxon, newc1, newc2, newLen, newR)
   }
 
-  modifyNode(node: Node, mutability: number, nodeNum: number): Node {
+  private modifyNode(node: Node, mutability: number, nodeNum: number): Node {
     const newX =
       node.positionX + this.reducedRandomForMutation() * 0.5 * mutability
     const newY =
@@ -402,7 +406,7 @@ export default class Simulation {
     )
   }
 
-  processNodeAxons(node: Node, nodes: Node[]): void {
+  private processNodeAxons(node: Node, nodes: Node[]): void {
     const axonValue1 = nodes[node.axon1].value
     const axonValue2 = nodes[node.axon2].value
 
@@ -446,7 +450,7 @@ export default class Simulation {
     }
   }
 
-  addRandomNode(creature: Creature): void {
+  private addRandomNode(creature: Creature): void {
     const parentNode = this.randomInt(0, creature.nodes.length)
     const ang1 = this.randomFloat(0, 2 * Math.PI)
     const distance = Math.sqrt(this.randomFloat(0, 1))
@@ -491,7 +495,7 @@ export default class Simulation {
     this.addRandomMuscle(creature, nextClosestNode, creature.nodes.length - 1)
   }
 
-  addRandomMuscle(creature: Creature, tc1: number, tc2: number): void {
+  private addRandomMuscle(creature: Creature, tc1: number, tc2: number): void {
     const axon = this.getNewMuscleAxon(creature.nodes.length)
 
     if (tc1 == -1) {
@@ -522,7 +526,7 @@ export default class Simulation {
     )
   }
 
-  removeRandomNode(creature: Creature): void {
+  private removeRandomNode(creature: Creature): void {
     const choice = this.randomInt(0, creature.nodes.length)
     creature.nodes.splice(choice, 1)
 
@@ -550,7 +554,7 @@ export default class Simulation {
     }
   }
 
-  removeRandomMuscle(creature: Creature): void {
+  private removeRandomMuscle(creature: Creature): void {
     const choice = this.randomInt(0, creature.muscles.length)
     creature.muscles.splice(choice, 1)
   }

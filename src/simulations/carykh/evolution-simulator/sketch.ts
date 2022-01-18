@@ -62,12 +62,6 @@ export default function sketch(p5: p5) {
   }
 
   const simulationState: SimulationState = {
-    camera: {
-      x: 0,
-      y: 0,
-      zoom: 0.015
-    },
-
     creature: {
       averageNodeNausea: 0,
       energyUsed: 0,

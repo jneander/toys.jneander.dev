@@ -36,6 +36,8 @@ export class PopupSimulationView extends Widget {
       statsFont: font,
       width: 600
     })
+
+    this.simulationView.setCameraZoom(0.009)
   }
 
   deinitialize(): void {
@@ -123,8 +125,6 @@ export class PopupSimulationView extends Widget {
   }
 
   private drawPopupSimulation(px: number, py: number): void {
-    const {camera} = this.simulationState
-
     let py2 = py - 125
     if (py >= 360) {
       py2 -= 180
@@ -133,8 +133,6 @@ export class PopupSimulationView extends Widget {
     }
 
     const px2 = Math.min(Math.max(px - 90, 10), 970)
-
-    camera.zoom = 0.009
 
     this.simulationView.draw()
 

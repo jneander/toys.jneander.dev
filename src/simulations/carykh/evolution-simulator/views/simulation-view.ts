@@ -55,24 +55,29 @@ export class SimulationView {
     graphics.image(statsGraphics, 0, 0)
   }
 
+  setCameraPosition(x: number, y: number): void {
+    const {camera} = this.config.simulationState
+
+    camera.x = x
+    camera.y = y
+  }
+
+  setCameraZoom(zoom: number): void {
+    const {camera} = this.config.simulationState
+
+    camera.zoom = Math.min(0.1, Math.max(0.002, zoom))
+  }
+
   zoomIn(): void {
-    const {simulationState} = this.config
+    const {zoom} = this.config.simulationState.camera
 
-    simulationState.camera.zoom *= 0.9090909
-
-    if (simulationState.camera.zoom < 0.002) {
-      simulationState.camera.zoom = 0.002
-    }
+    this.setCameraZoom(zoom / 1.1)
   }
 
   zoomOut(): void {
-    const {simulationState} = this.config
+    const {zoom} = this.config.simulationState.camera
 
-    simulationState.camera.zoom *= 1.1
-
-    if (simulationState.camera.zoom > 0.1) {
-      simulationState.camera.zoom = 0.1
-    }
+    this.setCameraZoom(zoom * 1.1)
   }
 
   private drawArrow(): void {

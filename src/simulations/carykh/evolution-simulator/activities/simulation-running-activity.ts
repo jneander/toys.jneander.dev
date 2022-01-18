@@ -35,6 +35,9 @@ export class SimulationRunningActivity extends Activity {
       width: 1600
     })
 
+    this.simulationView.setCameraZoom(0.01)
+    this.simulationView.setCameraPosition(0, 0)
+
     const widgetConfig = {
       appController: this.appController,
       appState: this.appState,
@@ -97,6 +100,9 @@ export class SimulationRunningActivity extends Activity {
         appController.setSimulationState(
           appState.creaturesInLatestGeneration[appState.creaturesTested]
         )
+
+        this.simulationView.setCameraZoom(0.01)
+        this.simulationView.setCameraPosition(0, 0)
       } else {
         appController.setActivityId(ActivityId.SimulationFinished)
       }

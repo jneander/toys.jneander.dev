@@ -312,9 +312,6 @@ export class AppController {
 
     appState.viewTimer = 0
     simulationState.creature.id = simulationCreature.id
-    simulationState.camera.zoom = 0.01
-    simulationState.camera.x = 0
-    simulationState.camera.y = 0
     simulationState.timer = 0
     simulationState.creature.energyUsed = 0
     simulationState.creature.totalNodeNausea = 0

@@ -1,6 +1,6 @@
-import Creature from './Creature'
-import Muscle from './Muscle'
-import Node from './Node'
+import Creature from '../Creature'
+import Muscle from '../Muscle'
+import Node from '../Node'
 import {
   AIR_FRICTION,
   BIG_MUTATION_CHANCE,
@@ -12,17 +12,17 @@ import {
   NAUSEA_UNIT,
   NODE_MASS_DEFAULT,
   PRESSURE_UNIT
-} from './constants'
-import {randomArrayValue} from './helpers'
-import {dist2d, toInt} from './math'
+} from '../constants'
+import {randomArrayValue} from '../helpers'
+import {dist2d, toInt} from '../math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   NodeOperationId,
   NODE_OPERATION_IDS
-} from './node-operations'
-import type {SimulationConfig, SimulationState} from './types'
+} from '../node-operations'
+import type {SimulationConfig, SimulationState} from '../types'
 
-export default class CreatureSimulation {
+export class CreatureSimulation {
   private config: SimulationConfig
   private state: SimulationState
 

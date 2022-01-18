@@ -1,5 +1,4 @@
 import type Creature from './Creature'
-import type CreatureSimulation from './CreatureSimulation'
 import {
   ActivityId,
   CREATURE_COUNT,
@@ -15,6 +14,7 @@ import {
   historyEntryKeyForStatusWindow,
   speciesIdForCreature
 } from './helpers'
+import type {CreatureSimulation} from './simulation'
 import type {
   AppState,
   GenerationHistoryEntry,

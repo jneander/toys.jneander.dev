@@ -2,7 +2,6 @@ import type p5 from 'p5'
 import type {Font} from 'p5'
 
 import Creature from './Creature'
-import CreatureSimulation from './CreatureSimulation'
 import {
   CullCreaturesActivity,
   GenerateCreaturesActivity,
@@ -23,6 +22,7 @@ import {
   GenerationSimulationMode,
   HISTOGRAM_BAR_SPAN
 } from './constants'
+import {CreatureSimulation} from './simulation'
 import type {AppState, SimulationConfig, SimulationState} from './types'
 import {AppView} from './views'
 

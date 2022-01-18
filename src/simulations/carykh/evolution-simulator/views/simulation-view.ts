@@ -53,6 +53,26 @@ export class SimulationView {
     graphics.image(statsGraphics, 0, 0)
   }
 
+  zoomIn(): void {
+    const {simulationState} = this.config
+
+    simulationState.camera.zoom *= 0.9090909
+
+    if (simulationState.camera.zoom < 0.002) {
+      simulationState.camera.zoom = 0.002
+    }
+  }
+
+  zoomOut(): void {
+    const {simulationState} = this.config
+
+    simulationState.camera.zoom *= 1.1
+
+    if (simulationState.camera.zoom > 0.1) {
+      simulationState.camera.zoom = 0.1
+    }
+  }
+
   private drawArrow(): void {
     const {postFont, simulationState} = this.config
     const {simulationGraphics} = this

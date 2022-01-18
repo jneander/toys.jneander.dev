@@ -2,8 +2,7 @@ import {
   ActivityId,
   CREATURE_COUNT,
   FITNESS_LABEL,
-  FITNESS_UNIT_LABEL,
-  POST_FONT_SIZE
+  FITNESS_UNIT_LABEL
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
@@ -121,8 +120,6 @@ export class SimulationRunningActivity extends Activity {
   }
 
   onMouseWheel(event: WheelEvent): void {
-    const {canvas, font} = this.appView
-
     const delta = event.deltaX
 
     if (delta < 0) {
@@ -131,16 +128,12 @@ export class SimulationRunningActivity extends Activity {
       if (this.simulationState.camera.zoom < 0.002) {
         this.simulationState.camera.zoom = 0.002
       }
-
-      canvas.textFont(font, POST_FONT_SIZE)
     } else if (delta > 0) {
       this.simulationState.camera.zoom *= 1.1
 
       if (this.simulationState.camera.zoom > 0.1) {
         this.simulationState.camera.zoom = 0.1
       }
-
-      canvas.textFont(font, POST_FONT_SIZE)
     }
   }
 

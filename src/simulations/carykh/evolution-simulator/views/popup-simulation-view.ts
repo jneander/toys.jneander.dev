@@ -1,10 +1,6 @@
 import {CreatureDrawer} from '../creature-drawer'
 import {ActivityId, CREATURE_COUNT} from '../constants'
-import {
-  averagePositionOfNodes,
-  creatureIdToIndex,
-  historyEntryKeyForStatusWindow
-} from '../helpers'
+import {creatureIdToIndex, historyEntryKeyForStatusWindow} from '../helpers'
 import type {SimulationConfig, SimulationState} from '../types'
 import {Widget, WidgetConfig} from './shared'
 import {SimulationView} from './simulation-view'
@@ -29,6 +25,7 @@ export class PopupSimulationView extends Widget {
 
     this.simulationView = new SimulationView({
       appState: this.appState,
+      cameraSpeed: 0.1,
       creatureDrawer: new CreatureDrawer({appView: this.appView}),
       height: 600,
       p5: canvas,
@@ -126,7 +123,7 @@ export class PopupSimulationView extends Widget {
   }
 
   private drawPopupSimulation(px: number, py: number): void {
-    const {camera, creature} = this.simulationState
+    const {camera} = this.simulationState
 
     let py2 = py - 125
     if (py >= 360) {
@@ -138,10 +135,6 @@ export class PopupSimulationView extends Widget {
     const px2 = Math.min(Math.max(px - 90, 10), 970)
 
     camera.zoom = 0.009
-
-    const {averageX, averageY} = averagePositionOfNodes(creature.nodes)
-    camera.x += (averageX - camera.x) * 0.1
-    camera.y += (averageY - camera.y) * 0.1
 
     this.simulationView.draw()
 

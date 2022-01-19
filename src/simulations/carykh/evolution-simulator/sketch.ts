@@ -22,7 +22,7 @@ import {
   GenerationSimulationMode,
   HISTOGRAM_BAR_SPAN
 } from './constants'
-import {CreatureSimulation, SimulationConfig} from './simulation'
+import type {SimulationConfig} from './simulation'
 import type {AppState, SimulationState} from './types'
 import {AppView} from './views'
 
@@ -73,13 +73,11 @@ export default function sketch(p5: p5) {
     timer: 0
   }
 
-  const simulation = new CreatureSimulation(simulationState, simulationConfig)
-
   const appController = new AppController({
     appState,
     randomFractFn: (minInclusive: number, maxExclusive: number) =>
       p5.random(minInclusive, maxExclusive),
-    simulation,
+    simulationConfig,
     simulationState
   })
 

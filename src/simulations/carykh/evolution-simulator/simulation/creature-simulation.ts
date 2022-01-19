@@ -2,7 +2,6 @@ import Creature from '../Creature'
 import Muscle from '../Muscle'
 import Node from '../Node'
 import {
-  AIR_FRICTION,
   BIG_MUTATION_CHANCE,
   FRICTION,
   GRAVITY,
@@ -11,7 +10,11 @@ import {
   NODE_MASS_DEFAULT,
   PRESSURE_UNIT
 } from '../constants'
-import {adjustNodesToCenter} from '../creatures'
+import {
+  adjustNodesToCenter,
+  applyForceToMuscle,
+  applyForcesToNode
+} from '../creatures'
 import {randomArrayValue} from '../helpers'
 import {dist2d, toInt} from '../math'
 import {
@@ -104,7 +107,7 @@ export class CreatureSimulation {
     const {muscles, nodeCaches, nodes} = this.state.creature
 
     for (let i = 0; i < muscles.length; i++) {
-      this.applyForceToMuscle(muscles[i], nodes)
+      applyForceToMuscle(muscles[i], nodes)
     }
 
     for (let i = 0; i < nodes.length; i++) {
@@ -112,7 +115,7 @@ export class CreatureSimulation {
       const nodeCache = nodeCaches[i]
 
       this.applyGravityToNode(node)
-      this.applyForcesToNode(node)
+      applyForcesToNode(node)
       this.applyCollisionsToNode(node, nodeCache)
       this.processNodeAxons(node, nodeCache, nodes)
     }
@@ -193,43 +196,6 @@ export class CreatureSimulation {
     adjustNodesToCenter(nodes)
 
     return modifiedCreature
-  }
-
-  private applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
-    let target
-
-    if (muscle.axon >= 0 && muscle.axon < nodes.length) {
-      target = muscle.length * nodes[muscle.axon].getClampedValue()
-    } else {
-      target = muscle.length
-    }
-
-    const ni1 = nodes[muscle.nodeConnection1]
-    const ni2 = nodes[muscle.nodeConnection2]
-
-    const distance = dist2d(
-      ni1.positionX,
-      ni1.positionY,
-      ni2.positionX,
-      ni2.positionY
-    )
-    const angle = Math.atan2(
-      ni1.positionY - ni2.positionY,
-      ni1.positionX - ni2.positionX
-    )
-
-    const force = Math.min(Math.max(1 - distance / target, -0.4), 0.4)
-    ni1.velocityX += (Math.cos(angle) * force * muscle.rigidity) / ni1.mass
-    ni1.velocityY += (Math.sin(angle) * force * muscle.rigidity) / ni1.mass
-    ni2.velocityX -= (Math.cos(angle) * force * muscle.rigidity) / ni2.mass
-    ni2.velocityY -= (Math.sin(angle) * force * muscle.rigidity) / ni2.mass
-  }
-
-  private applyForcesToNode(node: Node): void {
-    node.velocityX *= AIR_FRICTION
-    node.velocityY *= AIR_FRICTION
-    node.positionY += node.velocityY
-    node.positionX += node.velocityX
   }
 
   private applyGravityToNode(node: Node): void {
@@ -656,11 +622,11 @@ export class CreatureSimulation {
   private stabilizeNodesAndMuscles(nodes: Node[], muscles: Muscle[]): void {
     for (let j = 0; j < 200; j++) {
       for (let i = 0; i < muscles.length; i++) {
-        this.applyForceToMuscle(muscles[i], nodes)
+        applyForceToMuscle(muscles[i], nodes)
       }
 
       for (let i = 0; i < nodes.length; i++) {
-        this.applyForcesToNode(nodes[i])
+        applyForcesToNode(nodes[i])
       }
     }
 

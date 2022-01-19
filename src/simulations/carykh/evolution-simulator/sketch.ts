@@ -65,6 +65,7 @@ export default function sketch(p5: p5) {
     creature: {
       id: 0,
       muscles: [],
+      nodeCaches: [],
       nodes: []
     },
 

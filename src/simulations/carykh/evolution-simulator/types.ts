@@ -15,9 +15,16 @@ export type SimulationCameraState = {
   zoom: number
 }
 
+export type SimulationNodeCache = {
+  nextValue: number
+  previousPositionX: number
+  previousPositionY: number
+}
+
 export type SimulationCreatureState = {
   id: number
   muscles: Muscle[]
+  nodeCaches: SimulationNodeCache[]
   nodes: Node[]
 }
 

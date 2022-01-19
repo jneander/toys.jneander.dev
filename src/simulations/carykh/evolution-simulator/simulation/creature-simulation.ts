@@ -201,7 +201,7 @@ export class CreatureSimulation {
   }
 
   private applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
-    let target = muscle.previousTarget
+    let target
 
     if (muscle.axon >= 0 && muscle.axon < nodes.length) {
       target = muscle.length * nodes[muscle.axon].getClampedValue()
@@ -228,8 +228,6 @@ export class CreatureSimulation {
     ni1.velocityY += (Math.sin(angle) * force * muscle.rigidity) / ni1.mass
     ni2.velocityX -= (Math.cos(angle) * force * muscle.rigidity) / ni2.mass
     ni2.velocityY -= (Math.sin(angle) * force * muscle.rigidity) / ni2.mass
-
-    muscle.previousTarget = target
   }
 
   private applyForcesToNode(node: Node): void {

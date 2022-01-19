@@ -10,12 +10,9 @@ export default class Node {
   positionY: number
   velocityX: number
   velocityY: number
-  previousPositionX: number
-  previousPositionY: number
   mass: number
   friction: number
   value: number
-  valueToBe: number
   pressure: number
 
   // INT
@@ -39,15 +36,15 @@ export default class Node {
     axon1: number,
     axon2: number
   ) {
-    this.previousPositionX = this.positionX = positionX
-    this.previousPositionY = this.positionY = positionY
+    this.positionX = positionX
+    this.positionY = positionY
     this.velocityX = velocityX
     this.velocityY = velocityY
 
     this.mass = mass
     this.friction = friction
 
-    this.value = this.valueToBe = value
+    this.value = value
     this.operation = operationId
     this.axon1 = axon1
     this.axon2 = axon2
@@ -62,10 +59,6 @@ export default class Node {
       Math.max(this.value, MIN_MUSCLE_LENGTH_INCLUSIVE),
       MAX_MUSCLE_LENGTH_INCLUSIVE
     )
-  }
-
-  realizeMathValues(): void {
-    this.value = this.valueToBe
   }
 
   clone(): Node {

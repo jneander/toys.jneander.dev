@@ -19,7 +19,11 @@ import {
   NodeOperationId,
   NODE_OPERATION_IDS
 } from '../node-operations'
-import type {SimulationConfig, SimulationState} from '../types'
+import type {
+  SimulationConfig,
+  SimulationNodeCache,
+  SimulationState
+} from '../types'
 
 export class CreatureSimulation {
   private config: SimulationConfig
@@ -97,21 +101,24 @@ export class CreatureSimulation {
   }
 
   advance(): void {
-    for (let i = 0; i < this.state.creature.muscles.length; i++) {
-      const {muscles, nodes} = this.state.creature
+    const {muscles, nodeCaches, nodes} = this.state.creature
+
+    for (let i = 0; i < muscles.length; i++) {
       this.applyForceToMuscle(muscles[i], nodes)
     }
 
-    for (let i = 0; i < this.state.creature.nodes.length; i++) {
-      const ni = this.state.creature.nodes[i]
-      this.applyGravityToNode(ni)
-      this.applyForcesToNode(ni)
-      this.applyCollisionsToNode(ni)
-      this.processNodeAxons(ni, this.state.creature.nodes)
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
+      const nodeCache = nodeCaches[i]
+
+      this.applyGravityToNode(node)
+      this.applyForcesToNode(node)
+      this.applyCollisionsToNode(node, nodeCache)
+      this.processNodeAxons(node, nodeCache, nodes)
     }
 
-    for (let i = 0; i < this.state.creature.nodes.length; i++) {
-      this.state.creature.nodes[i].realizeMathValues()
+    for (let i = 0; i < nodes.length; i++) {
+      nodes[i].value = nodeCaches[i].nextValue
     }
 
     this.state.timer++
@@ -241,7 +248,10 @@ export class CreatureSimulation {
     node.velocityY += GRAVITY
   }
 
-  private applyCollisionsToNode(node: Node): void {
+  private applyCollisionsToNode(
+    node: Node,
+    nodeCache: SimulationNodeCache
+  ): void {
     node.pressure = 0
     let dif = node.positionY + node.mass / 2
 
@@ -250,11 +260,11 @@ export class CreatureSimulation {
     }
 
     if (
-      node.positionY > node.previousPositionY &&
+      node.positionY > nodeCache.previousPositionY &&
       this.config.hazelStairs >= 0
     ) {
       const bottomPointNow = node.positionY + node.mass / 2
-      const bottomPointPrev = node.previousPositionY + node.mass / 2
+      const bottomPointPrev = nodeCache.previousPositionY + node.mass / 2
       const levelNow = Math.ceil(bottomPointNow / this.config.hazelStairs)
       const levelPrev = Math.ceil(bottomPointPrev / this.config.hazelStairs)
 
@@ -264,8 +274,8 @@ export class CreatureSimulation {
       }
     }
 
-    node.previousPositionY = node.positionY
-    node.previousPositionX = node.positionX
+    nodeCache.previousPositionY = node.positionY
+    nodeCache.previousPositionX = node.positionX
   }
 
   private modifyMuscle(
@@ -361,7 +371,11 @@ export class CreatureSimulation {
     )
   }
 
-  private processNodeAxons(node: Node, nodes: Node[]): void {
+  private processNodeAxons(
+    node: Node,
+    nodeCache: SimulationNodeCache,
+    nodes: Node[]
+  ): void {
     const axonValue1 = nodes[node.axon1].value
     const axonValue2 = nodes[node.axon2].value
 
@@ -369,39 +383,39 @@ export class CreatureSimulation {
       // constant
     } else if (node.operation === NodeOperationId.TimeInSeconds) {
       // time
-      node.valueToBe = this.state.timer / 60.0
+      nodeCache.nextValue = this.state.timer / 60.0
     } else if (node.operation === NodeOperationId.NodePositionXFifthed) {
       // x - coordinate
-      node.valueToBe = node.positionX * 0.2
+      nodeCache.nextValue = node.positionX * 0.2
     } else if (
       node.operation === NodeOperationId.NegativeNodePositionYFifthed
     ) {
       // node.y - coordinate
-      node.valueToBe = -node.positionY * 0.2
+      nodeCache.nextValue = -node.positionY * 0.2
     } else if (node.operation === NodeOperationId.AddAxons) {
       // plus
-      node.valueToBe = axonValue1 + axonValue2
+      nodeCache.nextValue = axonValue1 + axonValue2
     } else if (node.operation === NodeOperationId.SubtractAxon2FromAxon1) {
       // minus
-      node.valueToBe = axonValue1 - axonValue2
+      nodeCache.nextValue = axonValue1 - axonValue2
     } else if (node.operation === NodeOperationId.MultiplyAxons) {
       // times
-      node.valueToBe = axonValue1 * axonValue2
+      nodeCache.nextValue = axonValue1 * axonValue2
     } else if (node.operation === NodeOperationId.DivideAxon2FromAxon1) {
       // divide
-      node.valueToBe = axonValue2 === 0 ? 0 : axonValue1 / axonValue2
+      nodeCache.nextValue = axonValue2 === 0 ? 0 : axonValue1 / axonValue2
     } else if (node.operation === NodeOperationId.ModuloAxon1WithAxon2) {
       // modulus
-      node.valueToBe = axonValue2 === 0 ? 0 : axonValue1 % axonValue2
+      nodeCache.nextValue = axonValue2 === 0 ? 0 : axonValue1 % axonValue2
     } else if (node.operation === NodeOperationId.SineOfAxon1) {
       // sin
-      node.valueToBe = Math.sin(axonValue1)
+      nodeCache.nextValue = Math.sin(axonValue1)
     } else if (node.operation === NodeOperationId.SigmoidOfAxon1) {
       // sig
-      node.valueToBe = 1 / (1 + Math.pow(2.71828182846, -axonValue1))
+      nodeCache.nextValue = 1 / (1 + Math.pow(2.71828182846, -axonValue1))
     } else if (node.operation === NodeOperationId.NodePressure) {
       // pressure
-      node.valueToBe = node.pressure
+      nodeCache.nextValue = node.pressure
     }
   }
 

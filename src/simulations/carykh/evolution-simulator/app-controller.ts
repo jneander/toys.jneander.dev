@@ -304,11 +304,22 @@ export class AppController {
   setSimulationState(simulationCreature: Creature): void {
     const {appState, simulationState} = this.config
 
+    simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
+      muscle.clone()
+    )
+
     simulationState.creature.nodes = simulationCreature.nodes.map(node =>
       node.clone()
     )
-    simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
-      muscle.clone()
+
+    simulationState.creature.nodeCaches = simulationState.creature.nodes.map(
+      node => {
+        return {
+          nextValue: node.value,
+          previousPositionX: node.positionX,
+          previousPositionY: node.positionY
+        }
+      }
     )
 
     appState.viewTimer = 0

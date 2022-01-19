@@ -13,6 +13,7 @@ import {
   NODE_MASS_DEFAULT,
   PRESSURE_UNIT
 } from '../constants'
+import {adjustNodesToCenter} from '../creatures'
 import {randomArrayValue} from '../helpers'
 import {dist2d, toInt} from '../math'
 import {
@@ -87,7 +88,7 @@ export class CreatureSimulation {
     }
 
     this.stabilizeNodesAndMuscles(nodes, muscles)
-    this.adjustNodesToCenter(nodes)
+    adjustNodesToCenter(nodes)
 
     const heartbeat = this.randomFloat(40, 80)
     const creature = new Creature(id, nodes, muscles, 0, true, heartbeat, 1.0)
@@ -136,28 +137,6 @@ export class CreatureSimulation {
       const ni = nodes[i]
       ni.velocityX = 0
       ni.velocityY = 0
-    }
-  }
-
-  adjustNodesToCenter(nodes: Node[]): void {
-    let avx = 0
-    let lowY = -1000
-
-    for (let i = 0; i < nodes.length; i++) {
-      const ni = nodes[i]
-      avx += ni.positionX
-
-      if (ni.positionY + ni.mass / 2 > lowY) {
-        lowY = ni.positionY + ni.mass / 2
-      }
-    }
-
-    avx /= nodes.length
-
-    for (let i = 0; i < nodes.length; i++) {
-      const ni = nodes[i]
-      ni.positionX -= avx
-      ni.positionY -= lowY
     }
   }
 

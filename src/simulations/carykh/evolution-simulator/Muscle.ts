@@ -4,7 +4,6 @@ export default class Muscle {
   nodeConnection2: number
   length: number
   rigidity: number
-  previousTarget: number
 
   constructor(
     axon: number,
@@ -14,7 +13,7 @@ export default class Muscle {
     rigidity: number
   ) {
     this.axon = axon
-    this.previousTarget = this.length = length
+    this.length = length
     this.nodeConnection1 = nodeConnection1
     this.nodeConnection2 = nodeConnection2
     this.rigidity = rigidity

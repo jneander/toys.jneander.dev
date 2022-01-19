@@ -304,20 +304,6 @@ export class SimulationView {
       0,
       160
     )
-    statsGraphics.text(
-      'Energy used: ' +
-        statsGraphics.nf(simulationState.creature.energyUsed, 0, 2) +
-        ' yums',
-      0,
-      192
-    )
-    statsGraphics.text(
-      'A.N.Nausea: ' +
-        statsGraphics.nf(simulationState.creature.averageNodeNausea, 0, 2) +
-        ' blehs',
-      0,
-      224
-    )
 
     statsGraphics.pop()
   }

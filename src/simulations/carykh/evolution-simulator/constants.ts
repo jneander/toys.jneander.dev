@@ -1,7 +1,6 @@
 export const AIR_FRICTION = 0.95
 export const BIG_MUTATION_CHANCE = 0.06
 export const CREATURE_COUNT = 1000
-export const ENERGY_UNIT = 20
 export const FITNESS_LABEL = 'Distance'
 export const FITNESS_UNIT_LABEL = 'm'
 export const FRICTION = 4
@@ -10,7 +9,6 @@ export const HISTOGRAM_BARS_PER_METER = 5
 export const HISTOGRAM_BAR_MIN = -10
 export const HISTOGRAM_BAR_MAX = 100
 export const HISTOGRAM_BAR_SPAN = HISTOGRAM_BAR_MAX - HISTOGRAM_BAR_MIN
-export const NAUSEA_UNIT = 5
 export const POST_FONT_SIZE = 0.96
 export const PRESSURE_UNIT = 500.0 / 2.37
 export const SCALE_TO_FIX_BUG = 1000

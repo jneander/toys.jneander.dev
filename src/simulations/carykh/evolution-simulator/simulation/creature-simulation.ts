@@ -4,12 +4,10 @@ import Node from '../Node'
 import {
   AIR_FRICTION,
   BIG_MUTATION_CHANCE,
-  ENERGY_UNIT,
   FRICTION,
   GRAVITY,
   MAX_MUSCLE_LENGTH_INCLUSIVE,
   MIN_MUSCLE_LENGTH_INCLUSIVE,
-  NAUSEA_UNIT,
   NODE_MASS_DEFAULT,
   PRESSURE_UNIT
 } from '../constants'
@@ -115,9 +113,6 @@ export class CreatureSimulation {
     for (let i = 0; i < this.state.creature.nodes.length; i++) {
       this.state.creature.nodes[i].realizeMathValues()
     }
-
-    this.state.creature.averageNodeNausea =
-      this.state.creature.totalNodeNausea / this.state.creature.nodes.length
 
     this.state.timer++
   }
@@ -234,14 +229,6 @@ export class CreatureSimulation {
     ni2.velocityX -= (Math.cos(angle) * force * muscle.rigidity) / ni2.mass
     ni2.velocityY -= (Math.sin(angle) * force * muscle.rigidity) / ni2.mass
 
-    this.state.creature.energyUsed = Math.max(
-      this.state.creature.energyUsed +
-        Math.abs(muscle.previousTarget - target) *
-          muscle.rigidity *
-          ENERGY_UNIT,
-      0
-    )
-
     muscle.previousTarget = target
   }
 
@@ -250,13 +237,6 @@ export class CreatureSimulation {
     node.velocityY *= AIR_FRICTION
     node.positionY += node.velocityY
     node.positionX += node.velocityX
-    const acc = dist2d(
-      node.velocityX,
-      node.velocityY,
-      node.previousVelocityX,
-      node.previousVelocityY
-    )
-    this.state.creature.totalNodeNausea += acc * acc * NAUSEA_UNIT
     node.previousVelocityX = node.velocityX
     node.previousVelocityY = node.velocityY
   }

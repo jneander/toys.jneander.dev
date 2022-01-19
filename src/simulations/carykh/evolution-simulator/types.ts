@@ -16,12 +16,9 @@ export type SimulationCameraState = {
 }
 
 export type SimulationCreatureState = {
-  averageNodeNausea: number
-  energyUsed: number
   id: number
   muscles: Muscle[]
   nodes: Node[]
-  totalNodeNausea: number
 }
 
 export type SimulationState = {

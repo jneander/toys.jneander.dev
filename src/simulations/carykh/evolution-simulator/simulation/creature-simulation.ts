@@ -204,6 +204,12 @@ export class CreatureSimulation {
 
     this.resolveCreatureIssues(modifiedCreature)
 
+    // Stabilize and adjust mutated offspring
+    const {muscles, nodes} = modifiedCreature
+
+    this.stabilizeNodesAndMuscles(nodes, muscles)
+    adjustNodesToCenter(nodes)
+
     return modifiedCreature
   }
 

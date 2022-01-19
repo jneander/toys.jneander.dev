@@ -8,7 +8,6 @@ import {
   HISTOGRAM_BAR_MIN,
   HISTOGRAM_BAR_SPAN
 } from './constants'
-import {adjustNodesToCenter} from './creatures'
 import {
   averagePositionOfNodes,
   creatureIdToIndex,
@@ -223,12 +222,6 @@ export class AppController {
         survivingCreature,
         culledCreature.id + CREATURE_COUNT
       )
-
-      // Stabilize and adjust mutated offspring
-      const {muscles, nodes} = appState.sortedCreatures[culledCreatureIndex]
-
-      simulation.stabilizeNodesAndMuscles(nodes, muscles)
-      adjustNodesToCenter(nodes)
     }
 
     for (let i = 0; i < CREATURE_COUNT; i++) {

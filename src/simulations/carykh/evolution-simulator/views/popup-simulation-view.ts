@@ -1,7 +1,8 @@
 import {CreatureDrawer} from '../creature-drawer'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {creatureIdToIndex, historyEntryKeyForStatusWindow} from '../helpers'
-import type {SimulationConfig, SimulationState} from '../types'
+import type {SimulationConfig} from '../simulation'
+import type {SimulationState} from '../types'
 import {Widget, WidgetConfig} from './shared'
 import {SimulationView} from './simulation-view'
 

@@ -4,10 +4,15 @@ import {applyForceToMuscle, applyForcesToNode} from '../creatures'
 import {toInt} from '../math'
 import {NodeOperationId} from '../node-operations'
 import type {
-  SimulationConfig,
+  RandomNumberFn,
   SimulationNodeCache,
   SimulationState
 } from '../types'
+
+export type SimulationConfig = {
+  hazelStairs: number
+  randomFractFn: RandomNumberFn
+}
 
 export class CreatureSimulation {
   private config: SimulationConfig

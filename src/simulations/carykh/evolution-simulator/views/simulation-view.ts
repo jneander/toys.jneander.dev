@@ -5,12 +5,8 @@ import {POST_FONT_SIZE, SCALE_TO_FIX_BUG} from '../constants'
 import type {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import {toInt} from '../math'
-import type {
-  AppState,
-  SimulationCameraState,
-  SimulationConfig,
-  SimulationState
-} from '../types'
+import type {SimulationConfig} from '../simulation'
+import type {AppState, SimulationCameraState, SimulationState} from '../types'
 
 export interface SimulationViewConfig {
   appState: AppState

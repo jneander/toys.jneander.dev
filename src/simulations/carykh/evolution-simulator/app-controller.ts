@@ -15,7 +15,7 @@ import {
   historyEntryKeyForStatusWindow,
   speciesIdForCreature
 } from './helpers'
-import type {CreatureSimulation} from './simulation'
+import {CreatureSimulation, SimulationConfig} from './simulation'
 import type {
   AppState,
   GenerationHistoryEntry,
@@ -30,7 +30,7 @@ const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 export interface AppControllerConfig {
   appState: AppState
   randomFractFn: RandomNumberFn
-  simulation: CreatureSimulation
+  simulationConfig: SimulationConfig
   simulationState: SimulationState
 }
 
@@ -38,13 +38,19 @@ export class AppController {
   private config: AppControllerConfig
 
   private creatureManipulator: CreatureManipulator
+  private creatureSimulation: CreatureSimulation
 
   constructor(config: AppControllerConfig) {
     this.config = config
 
-    this.creatureManipulator = new CreatureManipulator({
-      randomFractFn: config.randomFractFn
-    })
+    const {randomFractFn, simulationConfig, simulationState} = config
+
+    this.creatureManipulator = new CreatureManipulator({randomFractFn})
+
+    this.creatureSimulation = new CreatureSimulation(
+      simulationState,
+      simulationConfig
+    )
   }
 
   generateCreatures(): void {
@@ -247,7 +253,7 @@ export class AppController {
   }
 
   advanceSimulation(): void {
-    this.config.simulation.advance()
+    this.creatureSimulation.advance()
     this.config.appState.viewTimer++
   }
 

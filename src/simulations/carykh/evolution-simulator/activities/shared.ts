@@ -1,5 +1,6 @@
 import type {AppController} from '../app-controller'
-import type {AppState, SimulationConfig, SimulationState} from '../types'
+import type {SimulationConfig} from '../simulation'
+import type {AppState, SimulationState} from '../types'
 import type {AppView} from '../views'
 
 export interface ActivityConfig {

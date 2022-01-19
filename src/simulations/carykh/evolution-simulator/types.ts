@@ -4,11 +4,6 @@ import type Node from './Node'
 import {ActivityInterface} from './activities'
 import {ActivityId, GenerationSimulationMode} from './constants'
 
-export type SimulationConfig = {
-  hazelStairs: number
-  randomFractFn: RandomNumberFn
-}
-
 export type SimulationCameraState = {
   x: number
   y: number

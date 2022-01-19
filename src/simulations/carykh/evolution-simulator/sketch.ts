@@ -22,8 +22,8 @@ import {
   GenerationSimulationMode,
   HISTOGRAM_BAR_SPAN
 } from './constants'
-import {CreatureSimulation} from './simulation'
-import type {AppState, SimulationConfig, SimulationState} from './types'
+import {CreatureSimulation, SimulationConfig} from './simulation'
+import type {AppState, SimulationState} from './types'
 import {AppView} from './views'
 
 export default function sketch(p5: p5) {

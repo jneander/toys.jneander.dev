@@ -235,8 +235,6 @@ export class CreatureSimulation {
     node.velocityY *= AIR_FRICTION
     node.positionY += node.velocityY
     node.positionX += node.velocityX
-    node.previousVelocityX = node.velocityX
-    node.previousVelocityY = node.velocityY
   }
 
   private applyGravityToNode(node: Node): void {

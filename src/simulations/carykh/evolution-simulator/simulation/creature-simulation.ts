@@ -124,24 +124,6 @@ export class CreatureSimulation {
     this.state.timer++
   }
 
-  stabilizeNodesAndMuscles(nodes: Node[], muscles: Muscle[]): void {
-    for (let j = 0; j < 200; j++) {
-      for (let i = 0; i < muscles.length; i++) {
-        this.applyForceToMuscle(muscles[i], nodes)
-      }
-
-      for (let i = 0; i < nodes.length; i++) {
-        this.applyForcesToNode(nodes[i])
-      }
-    }
-
-    for (let i = 0; i < nodes.length; i++) {
-      const ni = nodes[i]
-      ni.velocityX = 0
-      ni.velocityY = 0
-    }
-  }
-
   modifyCreature(creature: Creature, id: number): Creature {
     const modifiedCreature = new Creature(
       id,
@@ -668,6 +650,24 @@ export class CreatureSimulation {
         ni.operation = NodeOperationId.Constant
         ni.value = this.randomFloat(0, 1)
       }
+    }
+  }
+
+  private stabilizeNodesAndMuscles(nodes: Node[], muscles: Muscle[]): void {
+    for (let j = 0; j < 200; j++) {
+      for (let i = 0; i < muscles.length; i++) {
+        this.applyForceToMuscle(muscles[i], nodes)
+      }
+
+      for (let i = 0; i < nodes.length; i++) {
+        this.applyForcesToNode(nodes[i])
+      }
+    }
+
+    for (let i = 0; i < nodes.length; i++) {
+      const ni = nodes[i]
+      ni.velocityX = 0
+      ni.velocityY = 0
     }
   }
 

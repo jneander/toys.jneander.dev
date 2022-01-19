@@ -8,6 +8,7 @@ import {
   HISTOGRAM_BAR_MIN,
   HISTOGRAM_BAR_SPAN
 } from './constants'
+import {CreatureManipulator} from './creatures'
 import {
   averagePositionOfNodes,
   creatureIdToIndex,
@@ -36,15 +37,21 @@ export interface AppControllerConfig {
 export class AppController {
   private config: AppControllerConfig
 
+  private creatureManipulator: CreatureManipulator
+
   constructor(config: AppControllerConfig) {
     this.config = config
+
+    this.creatureManipulator = new CreatureManipulator({
+      randomFractFn: config.randomFractFn
+    })
   }
 
   generateCreatures(): void {
-    const {appState, simulation} = this.config
+    const {appState} = this.config
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = simulation.generateCreature(i + 1)
+      const creature = this.creatureManipulator.generateCreature(i + 1)
       appState.creaturesInLatestGeneration[i] = creature
     }
   }
@@ -196,7 +203,7 @@ export class AppController {
   }
 
   propagateCreatures(): void {
-    const {appState, simulation} = this.config
+    const {appState} = this.config
 
     // Reproduce and mutate
 
@@ -218,10 +225,11 @@ export class AppController {
       // Next generation includes a clone and mutated offspring
       appState.sortedCreatures[survivingCreatureIndex] =
         survivingCreature.clone(survivingCreature.id + CREATURE_COUNT)
-      appState.sortedCreatures[culledCreatureIndex] = simulation.modifyCreature(
-        survivingCreature,
-        culledCreature.id + CREATURE_COUNT
-      )
+      appState.sortedCreatures[culledCreatureIndex] =
+        this.creatureManipulator.modifyCreature(
+          survivingCreature,
+          culledCreature.id + CREATURE_COUNT
+        )
     }
 
     for (let i = 0; i < CREATURE_COUNT; i++) {

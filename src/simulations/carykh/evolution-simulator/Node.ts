@@ -12,8 +12,6 @@ export default class Node {
   velocityY: number
   previousPositionX: number
   previousPositionY: number
-  previousVelocityX: number
-  previousVelocityY: number
   mass: number
   friction: number
   value: number
@@ -43,8 +41,8 @@ export default class Node {
   ) {
     this.previousPositionX = this.positionX = positionX
     this.previousPositionY = this.positionY = positionY
-    this.previousVelocityX = this.velocityX = velocityX
-    this.previousVelocityY = this.velocityY = velocityY
+    this.velocityX = velocityX
+    this.velocityY = velocityY
 
     this.mass = mass
     this.friction = friction

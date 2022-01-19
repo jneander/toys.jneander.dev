@@ -314,9 +314,6 @@ export class AppController {
     appState.viewTimer = 0
     simulationState.creature.id = simulationCreature.id
     simulationState.timer = 0
-    simulationState.creature.energyUsed = 0
-    simulationState.creature.totalNodeNausea = 0
-    simulationState.creature.averageNodeNausea = 0
   }
 
   setFitnessOfSimulationCreature(): void {

@@ -63,12 +63,9 @@ export default function sketch(p5: p5) {
 
   const simulationState: SimulationState = {
     creature: {
-      averageNodeNausea: 0,
-      energyUsed: 0,
       id: 0,
       muscles: [],
-      nodes: [],
-      totalNodeNausea: 0
+      nodes: []
     },
 
     speed: 1,

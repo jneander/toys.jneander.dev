@@ -148,7 +148,7 @@ export class CreatureSimulation {
   }
 
   private randomFloat(minInclusive: number, maxExclusive: number): number {
-    return this.config.randomFloatFn(minInclusive, maxExclusive)
+    return this.config.randomFractFn(minInclusive, maxExclusive)
   }
 
   private randomInt(minInclusive: number, maxExclusive: number): number {

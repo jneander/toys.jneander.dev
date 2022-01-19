@@ -6,7 +6,7 @@ import {ActivityId, GenerationSimulationMode} from './constants'
 
 export type SimulationConfig = {
   hazelStairs: number
-  randomFloatFn: RandomNumberFn
+  randomFractFn: RandomNumberFn
 }
 
 export type SimulationCameraState = {

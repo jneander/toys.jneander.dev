@@ -267,13 +267,7 @@ export class SimulationView {
     statsGraphics.translate(x, y)
     statsGraphics.text('Creature ID: ' + simulationState.creature.id, 0, 32)
 
-    let timeShow: number
-    if (simulationState.speed > 60) {
-      timeShow =
-        toInt((appState.viewTimer + appState.creaturesTested * 37) / 60) % 15
-    } else {
-      timeShow = appState.viewTimer / 60
-    }
+    const timeShow = appState.viewTimer / 60
 
     statsGraphics.text(
       'Time: ' + statsGraphics.nf(timeShow, 0, 2) + ' / 15 sec.',

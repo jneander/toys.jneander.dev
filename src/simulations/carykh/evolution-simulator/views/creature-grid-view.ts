@@ -5,7 +5,7 @@ import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import type {AppView} from './app-view'
 
-export interface CreatureGridConfig {
+export interface CreatureGridViewConfig {
   appView: AppView
 
   getCreatureAndGridIndexFn: (index: number) => {
@@ -15,12 +15,12 @@ export interface CreatureGridConfig {
 }
 
 export class CreatureGridView {
-  private config: CreatureGridConfig
+  private config: CreatureGridViewConfig
   private creatureDrawer: CreatureDrawer
 
   graphics: Graphics
 
-  constructor(config: CreatureGridConfig) {
+  constructor(config: CreatureGridViewConfig) {
     this.config = config
 
     this.creatureDrawer = new CreatureDrawer({appView: config.appView})

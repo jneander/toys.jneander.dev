@@ -25,7 +25,6 @@ export class PopupSimulationView extends Widget {
     const {canvas, font} = this.appView
 
     this.simulationView = new SimulationView({
-      appState: this.appState,
       cameraSpeed: 0.1,
       creatureDrawer: new CreatureDrawer({appView: this.appView}),
       height: 600,

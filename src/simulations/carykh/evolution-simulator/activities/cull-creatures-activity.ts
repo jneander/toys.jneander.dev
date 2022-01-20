@@ -1,11 +1,20 @@
+import type {Graphics} from 'p5'
+
 import {ActivityId} from '../constants'
-import {CreatureGridView, PopupSimulationView, Widget} from '../views'
+import {
+  CreatureGridView,
+  PopupSimulationView,
+  Widget,
+  WidgetConfig
+} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class CullCreaturesActivity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
   private propagateCreaturesButton: PropagateCreaturesButton
+
+  private graphics: Graphics
 
   constructor(config: ActivityConfig) {
     super(config)
@@ -16,6 +25,8 @@ export class CullCreaturesActivity extends Activity {
         gridIndex: index
       }
     }
+
+    this.graphics = this.appView.canvas.createGraphics(1920, 1080)
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
@@ -34,20 +45,28 @@ export class CullCreaturesActivity extends Activity {
       simulationState: this.simulationState
     }
 
+    const propagateCreaturesButtonConfig = {
+      ...widgetConfig,
+      graphics: this.graphics
+    }
+
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-    this.propagateCreaturesButton = new PropagateCreaturesButton(widgetConfig)
+    this.propagateCreaturesButton = new PropagateCreaturesButton(
+      propagateCreaturesButtonConfig
+    )
   }
 
   deinitialize(): void {
+    this.graphics.remove()
     this.creatureGridView.deinitialize()
     this.popupSimulationView.deinitialize()
   }
 
   draw(): void {
-    const {canvas, height, screenGraphics, width} = this.appView
-    const {creatureGridView} = this
+    const {canvas, height, width} = this.appView
+    const {creatureGridView, graphics} = this
 
-    canvas.image(screenGraphics, 0, 0, width, height)
+    canvas.image(graphics, 0, 0, width, height)
 
     const gridStartX = 25 // 40 minus horizontal grid margin
     const gridStartY = 28 // 40 minus vertical grid margin
@@ -83,46 +102,60 @@ export class CullCreaturesActivity extends Activity {
   }
 
   private drawInterface(): void {
-    const {canvas, font, screenGraphics, width} = this.appView
+    const {canvas, font, width} = this.appView
+    const {graphics} = this
 
-    screenGraphics.background(220, 253, 102)
+    graphics.background(220, 253, 102)
 
-    screenGraphics.push()
-    screenGraphics.scale(1.5)
+    graphics.push()
+    graphics.scale(1.5)
 
-    screenGraphics.textAlign(canvas.CENTER)
-    screenGraphics.textFont(font, 24)
-    screenGraphics.fill(100, 100, 200)
-    screenGraphics.noStroke()
+    graphics.textAlign(canvas.CENTER)
+    graphics.textFont(font, 24)
+    graphics.fill(100, 100, 200)
+    graphics.noStroke()
 
-    screenGraphics.fill(0)
-    screenGraphics.text(
+    graphics.fill(0)
+    graphics.text(
       'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
       width / 2,
       30
     )
-    screenGraphics.text(
+    graphics.text(
       'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
       width / 2 - 130,
       700
     )
     this.propagateCreaturesButton.draw()
 
-    screenGraphics.pop()
+    graphics.pop()
   }
 }
 
-class PropagateCreaturesButton extends Widget {
-  draw(): void {
-    const {canvas, font, screenGraphics, width} = this.appView
+interface SkipButtonConfig extends WidgetConfig {
+  graphics: Graphics
+}
 
-    screenGraphics.noStroke()
-    screenGraphics.fill(100, 100, 200)
-    screenGraphics.rect(1050, 670, 160, 40)
-    screenGraphics.fill(0)
-    screenGraphics.textAlign(canvas.CENTER)
-    screenGraphics.textFont(font, 24)
-    screenGraphics.text('Reproduce', width - 150, 700)
+class PropagateCreaturesButton extends Widget {
+  private graphics: Graphics
+
+  constructor(config: SkipButtonConfig) {
+    super(config)
+
+    this.graphics = config.graphics
+  }
+
+  draw(): void {
+    const {canvas, font, width} = this.appView
+    const {graphics} = this
+
+    graphics.noStroke()
+    graphics.fill(100, 100, 200)
+    graphics.rect(1050, 670, 160, 40)
+    graphics.fill(0)
+    graphics.textAlign(canvas.CENTER)
+    graphics.textFont(font, 24)
+    graphics.text('Reproduce', width - 150, 700)
   }
 
   isUnderCursor(): boolean {

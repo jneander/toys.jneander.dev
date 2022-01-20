@@ -1,11 +1,15 @@
+import type {Graphics} from 'p5'
+
 import {ActivityId} from '../constants'
 import {creatureIdToIndex} from '../helpers'
-import {CreatureGridView, Widget} from '../views'
+import {CreatureGridView, Widget, WidgetConfig} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class PropagateCreaturesActivity extends Activity {
   private creatureGridView: CreatureGridView
   private backButton: BackButton
+
+  private graphics: Graphics
 
   constructor(config: ActivityConfig) {
     super(config)
@@ -18,6 +22,8 @@ export class PropagateCreaturesActivity extends Activity {
       return {creature, gridIndex: index}
     }
 
+    this.graphics = this.appView.canvas.createGraphics(1920, 1080)
+
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
       getCreatureAndGridIndexFn
@@ -26,11 +32,13 @@ export class PropagateCreaturesActivity extends Activity {
     this.backButton = new BackButton({
       appController: this.appController,
       appState: this.appState,
-      appView: this.appView
+      appView: this.appView,
+      graphics: this.graphics
     })
   }
 
   deinitialize(): void {
+    this.graphics.remove()
     this.creatureGridView.deinitialize()
   }
 
@@ -59,51 +67,63 @@ export class PropagateCreaturesActivity extends Activity {
   }
 
   private drawInterface(): void {
-    const {appState, appView} = this
-    const {canvas, font, height, screenGraphics, width} = appView
+    const {appState, appView, graphics} = this
+    const {canvas, font, height, width} = appView
 
-    screenGraphics.background(220, 253, 102)
+    graphics.background(220, 253, 102)
 
-    screenGraphics.push()
-    screenGraphics.scale(1.5)
+    graphics.push()
+    graphics.scale(1.5)
 
-    screenGraphics.textAlign(canvas.CENTER)
-    screenGraphics.textFont(font, 24)
-    screenGraphics.fill(100, 100, 200)
-    screenGraphics.noStroke()
+    graphics.textAlign(canvas.CENTER)
+    graphics.textFont(font, 24)
+    graphics.fill(100, 100, 200)
+    graphics.noStroke()
 
-    screenGraphics.fill(0)
-    screenGraphics.text(
+    graphics.fill(0)
+    graphics.text(
       'These are the 1000 creatures of generation #' +
         (appState.generationCount + 1) +
         '.',
       width / 2,
       30
     )
-    screenGraphics.text(
+    graphics.text(
       'What perils will they face?  Find out next time!',
       width / 2 - 130,
       700
     )
     this.backButton.draw()
 
-    screenGraphics.pop()
+    graphics.pop()
 
-    canvas.image(screenGraphics, 0, 0, width, height)
+    canvas.image(graphics, 0, 0, width, height)
   }
 }
 
-class BackButton extends Widget {
-  draw(): void {
-    const {canvas, font, screenGraphics, width} = this.appView
+interface SkipButtonConfig extends WidgetConfig {
+  graphics: Graphics
+}
 
-    screenGraphics.noStroke()
-    screenGraphics.fill(100, 100, 200)
-    screenGraphics.rect(1050, 670, 160, 40)
-    screenGraphics.fill(0)
-    screenGraphics.textAlign(canvas.CENTER)
-    screenGraphics.textFont(font, 24)
-    screenGraphics.text('Back', width - 150, 700)
+class BackButton extends Widget {
+  private graphics: Graphics
+
+  constructor(config: SkipButtonConfig) {
+    super(config)
+
+    this.graphics = config.graphics
+  }
+  draw(): void {
+    const {canvas, font, width} = this.appView
+    const {graphics} = this
+
+    graphics.noStroke()
+    graphics.fill(100, 100, 200)
+    graphics.rect(1050, 670, 160, 40)
+    graphics.fill(0)
+    graphics.textAlign(canvas.CENTER)
+    graphics.textFont(font, 24)
+    graphics.text('Back', width - 150, 700)
   }
 
   isUnderCursor(): boolean {

@@ -1,5 +1,5 @@
 import type p5 from 'p5'
-import type {Color, Font, Graphics} from 'p5'
+import type {Color, Font} from 'p5'
 
 export interface AppViewConfig {
   font: Font
@@ -16,7 +16,6 @@ export class AppView {
 
   canvas: p5
   font: Font
-  screenGraphics: Graphics
 
   constructor(config: AppViewConfig) {
     this.height = config.height
@@ -29,8 +28,6 @@ export class AppView {
 
     // Create a 1024x576 Canvas
     canvas.createCanvas(this.width * this.scale, this.height * this.scale)
-
-    this.screenGraphics = canvas.createGraphics(1920, 1080)
 
     canvas.ellipseMode(canvas.CENTER)
     canvas.textFont(config.font, 96)

@@ -1,11 +1,20 @@
+import type {Graphics} from 'p5'
+
 import {ActivityId, CREATURE_COUNT} from '../constants'
-import {CreatureGridView, PopupSimulationView, Widget} from '../views'
+import {
+  CreatureGridView,
+  PopupSimulationView,
+  Widget,
+  WidgetConfig
+} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class SortedCreaturesActivity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
   private cullCreaturesButton: CullCreaturesButton
+
+  private graphics: Graphics
 
   constructor(config: ActivityConfig) {
     super(config)
@@ -16,6 +25,8 @@ export class SortedCreaturesActivity extends Activity {
         gridIndex: index
       }
     }
+
+    this.graphics = this.appView.canvas.createGraphics(1920, 1080)
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
@@ -34,20 +45,28 @@ export class SortedCreaturesActivity extends Activity {
       simulationState: this.simulationState
     }
 
+    const cullCreaturesButtonConfig = {
+      ...widgetConfig,
+      graphics: this.graphics
+    }
+
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-    this.cullCreaturesButton = new CullCreaturesButton(widgetConfig)
+    this.cullCreaturesButton = new CullCreaturesButton(
+      cullCreaturesButtonConfig
+    )
   }
 
   deinitialize(): void {
+    this.graphics.remove()
     this.creatureGridView.deinitialize()
     this.popupSimulationView.deinitialize()
   }
 
   draw(): void {
-    const {canvas, height, screenGraphics, width} = this.appView
-    const {creatureGridView} = this
+    const {canvas, height, width} = this.appView
+    const {creatureGridView, graphics} = this
 
-    canvas.image(screenGraphics, 0, 0, width, height)
+    canvas.image(graphics, 0, 0, width, height)
 
     const gridStartX = 25 // 40 minus horizontal grid margin
     const gridStartY = 28 // 40 minus vertical grid margin
@@ -81,46 +100,56 @@ export class SortedCreaturesActivity extends Activity {
   }
 
   private drawInterface(): void {
-    const {canvas, font, screenGraphics, width} = this.appView
+    const {canvas, font, width} = this.appView
+    const {graphics} = this
 
-    screenGraphics.background(220, 253, 102)
+    graphics.background(220, 253, 102)
 
-    screenGraphics.push()
-    screenGraphics.scale(1.5)
+    graphics.push()
+    graphics.scale(1.5)
 
-    screenGraphics.textAlign(canvas.CENTER)
-    screenGraphics.textFont(font, 24)
-    screenGraphics.fill(100, 100, 200)
-    screenGraphics.noStroke()
+    graphics.textAlign(canvas.CENTER)
+    graphics.textFont(font, 24)
+    graphics.fill(100, 100, 200)
+    graphics.noStroke()
 
-    screenGraphics.fill(0)
-    screenGraphics.text('Fastest creatures at the top!', width / 2, 30)
-    screenGraphics.text(
+    graphics.fill(0)
+    graphics.text('Fastest creatures at the top!', width / 2, 30)
+    graphics.text(
       'Slowest creatures at the bottom. (Going backward = slow)',
       width / 2 - 200,
       700
     )
     this.cullCreaturesButton.draw()
 
-    screenGraphics.pop()
+    graphics.pop()
   }
 }
 
-class CullCreaturesButton extends Widget {
-  draw(): void {
-    const {canvas, font, screenGraphics, width} = this.appView
+interface CullCreaturesButtonConfig extends WidgetConfig {
+  graphics: Graphics
+}
 
-    screenGraphics.noStroke()
-    screenGraphics.fill(100, 100, 200)
-    screenGraphics.rect(900, 670, 260, 40)
-    screenGraphics.fill(0)
-    screenGraphics.textAlign(canvas.CENTER)
-    screenGraphics.textFont(font, 24)
-    screenGraphics.text(
-      `Kill ${Math.floor(CREATURE_COUNT / 2)}`,
-      width - 250,
-      700
-    )
+class CullCreaturesButton extends Widget {
+  private graphics: Graphics
+
+  constructor(config: CullCreaturesButtonConfig) {
+    super(config)
+
+    this.graphics = config.graphics
+  }
+
+  draw(): void {
+    const {canvas, font, width} = this.appView
+    const {graphics} = this
+
+    graphics.noStroke()
+    graphics.fill(100, 100, 200)
+    graphics.rect(900, 670, 260, 40)
+    graphics.fill(0)
+    graphics.textAlign(canvas.CENTER)
+    graphics.textFont(font, 24)
+    graphics.text(`Kill ${Math.floor(CREATURE_COUNT / 2)}`, width - 250, 700)
   }
 
   isUnderCursor(): boolean {

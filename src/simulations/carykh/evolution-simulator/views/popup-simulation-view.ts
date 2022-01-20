@@ -1,7 +1,7 @@
 import {CreatureDrawer} from '../creature-drawer'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {creatureIdToIndex, historyEntryKeyForStatusWindow} from '../helpers'
-import type {SimulationConfig} from '../simulation'
+import {CreatureSimulation, SimulationConfig} from '../simulation'
 import type {SimulationState} from '../types'
 import {Widget, WidgetConfig} from './shared'
 import {SimulationView} from './simulation-view'
@@ -15,12 +15,17 @@ export class PopupSimulationView extends Widget {
   private simulationView: SimulationView
   private simulationConfig: SimulationConfig
   private simulationState: SimulationState
+  private creatureSimulation: CreatureSimulation
 
   constructor(config: PopupSimulationViewConfig) {
     super(config)
 
     this.simulationConfig = config.simulationConfig
     this.simulationState = config.simulationState
+    this.creatureSimulation = new CreatureSimulation(
+      this.simulationState,
+      this.simulationConfig
+    )
 
     const {canvas, font} = this.appView
 
@@ -138,6 +143,6 @@ export class PopupSimulationView extends Widget {
 
     this.appView.canvas.image(this.simulationView.graphics, px2, py2, 300, 300)
 
-    this.appController.advanceSimulation()
+    this.creatureSimulation.advance()
   }
 }

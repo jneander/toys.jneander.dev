@@ -5,13 +5,15 @@ import {
   SCALE_TO_FIX_BUG
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
-import {Widget} from '../views'
+import {Widget, WidgetConfig} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class SortingCreaturesActivity extends Activity {
   private creatureDrawer: CreatureDrawer
 
   private skipButton: SortingCreaturesSkipButton
+
+  private activityTimer: number
 
   constructor(config: ActivityConfig) {
     super(config)
@@ -21,8 +23,14 @@ export class SortingCreaturesActivity extends Activity {
     this.skipButton = new SortingCreaturesSkipButton({
       appController: this.appController,
       appState: this.appState,
-      appView: this.appView
+      appView: this.appView,
+
+      onClick: () => {
+        this.activityTimer = 100000
+      }
     })
+
+    this.activityTimer = 0
   }
 
   draw(): void {
@@ -34,7 +42,7 @@ export class SortingCreaturesActivity extends Activity {
     canvas.scale(10.0 / SCALE_TO_FIX_BUG)
 
     const transition =
-      0.5 - 0.5 * Math.cos(Math.min(appState.viewTimer / 60, Math.PI))
+      0.5 - 0.5 * Math.cos(Math.min(this.activityTimer / 60, Math.PI))
 
     for (let i1 = 0; i1 < CREATURE_COUNT; i1++) {
       const creature = appState.sortedCreatures[i1]
@@ -58,13 +66,12 @@ export class SortingCreaturesActivity extends Activity {
 
     this.skipButton.draw()
     if (appState.generationSimulationMode === GenerationSimulationMode.Quick) {
-      appState.viewTimer += 10
+      this.activityTimer += 10
     } else {
-      appState.viewTimer += 2
+      this.activityTimer += 2
     }
 
-    if (appState.viewTimer > 60 * Math.PI) {
-      appState.viewTimer = 0
+    if (this.activityTimer > 60 * Math.PI) {
       this.appController.setActivityId(ActivityId.SortedCreatures)
     }
   }
@@ -80,7 +87,19 @@ export class SortingCreaturesActivity extends Activity {
   }
 }
 
+interface SkipButtonConfig extends WidgetConfig {
+  onClick(): void
+}
+
 class SortingCreaturesSkipButton extends Widget {
+  onClick: () => void
+
+  constructor(config: SkipButtonConfig) {
+    super(config)
+
+    this.onClick = config.onClick
+  }
+
   draw(): void {
     const {canvas, font, height} = this.appView
 
@@ -95,9 +114,5 @@ class SortingCreaturesSkipButton extends Widget {
   isUnderCursor(): boolean {
     const {appView} = this
     return appView.rectIsUnderCursor(0, appView.height - 40, 90, 40)
-  }
-
-  onClick(): void {
-    this.appState.viewTimer = 100000
   }
 }

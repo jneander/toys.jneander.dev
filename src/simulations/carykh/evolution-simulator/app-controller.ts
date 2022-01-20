@@ -68,9 +68,7 @@ export class AppController {
     simulationState.speed = 1
     appState.creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    this.setSimulationState(
-      appState.creaturesInLatestGeneration[appState.creaturesTested]
-    )
+    this.setSimulationState(appState.creaturesInLatestGeneration[0])
     this.setActivityId(ActivityId.SimulationRunning)
   }
 

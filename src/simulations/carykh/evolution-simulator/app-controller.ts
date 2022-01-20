@@ -3,7 +3,6 @@ import {
   ActivityId,
   CREATURE_COUNT,
   FITNESS_PERCENTILE_CREATURE_INDICES,
-  GenerationSimulationMode,
   HISTOGRAM_BARS_PER_METER,
   HISTOGRAM_BAR_MIN,
   HISTOGRAM_BAR_SPAN
@@ -60,25 +59,6 @@ export class AppController {
       const creature = this.creatureManipulator.generateCreature(i + 1)
       appState.creaturesInLatestGeneration[i] = creature
     }
-  }
-
-  performStepByStepSimulation(): void {
-    const {appState, simulationState} = this.config
-
-    simulationState.speed = 1
-    appState.creaturesTested = 0
-    appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    this.setSimulationState(appState.creaturesInLatestGeneration[0])
-    this.setActivityId(ActivityId.SimulationRunning)
-  }
-
-  performQuickGenerationSimulation(): void {
-    const {appState} = this.config
-
-    appState.creaturesTested = 0
-    appState.generationSimulationMode = GenerationSimulationMode.Quick
-    this.finishGenerationSimulationFromIndex(0)
-    this.setActivityId(ActivityId.SimulationFinished)
   }
 
   finishGenerationSimulationFromIndex(creatureIndex: number): void {
@@ -237,13 +217,6 @@ export class AppController {
 
   setActivityId(activityId: ActivityId): void {
     this.config.appState.nextActivityId = activityId
-  }
-
-  startASAP(): void {
-    const {appState} = this.config
-
-    appState.generationSimulationMode = GenerationSimulationMode.ASAP
-    appState.creaturesTested = 0
   }
 
   setPopupSimulationCreatureId(id: number): void {

@@ -67,7 +67,7 @@ export class GenerationViewActivity extends Activity {
       ...widgetConfig,
 
       onClick: () => {
-        this.appController.performStepByStepSimulation()
+        this.performStepByStepSimulation()
       }
     })
 
@@ -75,7 +75,7 @@ export class GenerationViewActivity extends Activity {
       ...widgetConfig,
 
       onClick: () => {
-        this.appController.performQuickGenerationSimulation()
+        this.performQuickGenerationSimulation()
       }
     })
 
@@ -83,8 +83,7 @@ export class GenerationViewActivity extends Activity {
       ...widgetConfig,
 
       onClick: () => {
-        this.appState.pendingGenerationCount = 1
-        this.appController.startASAP()
+        this.performAsapGenerationSimulation()
       }
     })
 
@@ -92,8 +91,7 @@ export class GenerationViewActivity extends Activity {
       ...widgetConfig,
 
       onClick: () => {
-        this.appState.pendingGenerationCount = 1000000000
-        this.appController.startASAP()
+        this.startAlapGenerationSimulation()
       }
     })
 
@@ -230,7 +228,7 @@ export class GenerationViewActivity extends Activity {
       appState.pendingGenerationCount--
 
       if (appState.pendingGenerationCount > 0) {
-        appController.startASAP()
+        this.startGenerationSimulation()
       }
     } else {
       appState.generationSimulationMode = GenerationSimulationMode.Off
@@ -692,6 +690,40 @@ export class GenerationViewActivity extends Activity {
     }
 
     return record
+  }
+
+  private performStepByStepSimulation(): void {
+    const {appController, appState, simulationState} = this
+
+    simulationState.speed = 1
+    appState.creaturesTested = 0
+    appState.generationSimulationMode = GenerationSimulationMode.StepByStep
+    appController.setSimulationState(appState.creaturesInLatestGeneration[0])
+    appController.setActivityId(ActivityId.SimulationRunning)
+  }
+
+  private performQuickGenerationSimulation(): void {
+    const {appController, appState} = this
+
+    appState.creaturesTested = 0
+    appState.generationSimulationMode = GenerationSimulationMode.Quick
+    appController.finishGenerationSimulationFromIndex(0)
+    appController.setActivityId(ActivityId.SimulationFinished)
+  }
+
+  private performAsapGenerationSimulation(): void {
+    this.appState.pendingGenerationCount = 1
+    this.startGenerationSimulation()
+  }
+
+  private startAlapGenerationSimulation(): void {
+    this.appState.pendingGenerationCount = 1000000000
+    this.startGenerationSimulation()
+  }
+
+  private startGenerationSimulation(): void {
+    this.appState.generationSimulationMode = GenerationSimulationMode.ASAP
+    this.appState.creaturesTested = 0
   }
 
   private setUnit(best: number, worst: number): number {

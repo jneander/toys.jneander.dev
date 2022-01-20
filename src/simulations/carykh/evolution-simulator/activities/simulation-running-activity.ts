@@ -16,6 +16,8 @@ export class SimulationRunningActivity extends Activity {
   private playbackSpeedButton: StepByStepPlaybackSpeedButton
   private finishButton: StepByStepFinishButton
 
+  private activityTimer: number
+
   constructor(config: ActivityConfig) {
     super(config)
 
@@ -48,11 +50,18 @@ export class SimulationRunningActivity extends Activity {
       simulationState: this.simulationState
     }
 
-    this.skipButton = new StepByStepSkipButton(widgetConfig)
+    const skipButtonConfig = {
+      ...widgetConfig,
+      onClick: this.handleSkip.bind(this)
+    }
+
+    this.skipButton = new StepByStepSkipButton(skipButtonConfig)
     this.playbackSpeedButton = new StepByStepPlaybackSpeedButton(
       simulationWidgetConfig
     )
     this.finishButton = new StepByStepFinishButton(widgetConfig)
+
+    this.activityTimer = 0
   }
 
   deinitialize(): void {
@@ -63,11 +72,11 @@ export class SimulationRunningActivity extends Activity {
     const {appController, appState, appView} = this
     const {canvas, height, width} = appView
 
-    if (appState.viewTimer <= 900) {
+    if (this.activityTimer <= 900) {
       for (let s = 0; s < this.simulationState.speed; s++) {
-        if (appState.viewTimer < 900) {
+        if (this.activityTimer < 900) {
           // For each point of speed, advance through one cycle of simulation.
-          appController.advanceSimulation()
+          this.advanceSimulation()
         }
       }
 
@@ -80,19 +89,19 @@ export class SimulationRunningActivity extends Activity {
       this.finishButton.draw()
     }
 
-    if (appState.viewTimer == 900) {
+    if (this.activityTimer == 900) {
       if (this.simulationState.speed < 30) {
         // When the simulation speed is slow enough, display the creature's fitness.
         this.drawFinalFitness()
       } else {
         // When the simulation speed is too fast, skip ahead to next simulation using the timer.
-        appState.viewTimer = 1020
+        this.activityTimer = 1020
       }
 
       appController.setFitnessOfSimulationCreature()
     }
 
-    if (appState.viewTimer >= 1020) {
+    if (this.activityTimer >= 1020) {
       appState.creaturesTested++
 
       if (appState.creaturesTested < CREATURE_COUNT) {
@@ -100,6 +109,7 @@ export class SimulationRunningActivity extends Activity {
           appState.creaturesInLatestGeneration[appState.creaturesTested]
         )
 
+        this.activityTimer = 0
         this.simulationView.setCameraZoom(0.01)
         this.simulationView.setCameraPosition(0, 0)
       } else {
@@ -107,8 +117,8 @@ export class SimulationRunningActivity extends Activity {
       }
     }
 
-    if (appState.viewTimer >= 900) {
-      appState.viewTimer += this.simulationState.speed
+    if (this.activityTimer >= 900) {
+      this.activityTimer += this.simulationState.speed
     }
   }
 
@@ -130,6 +140,11 @@ export class SimulationRunningActivity extends Activity {
     } else if (delta > 0) {
       this.simulationView.zoomOut()
     }
+  }
+
+  private advanceSimulation(): void {
+    this.appController.advanceSimulation()
+    this.activityTimer++
   }
 
   private drawFinalFitness(): void {
@@ -154,9 +169,29 @@ export class SimulationRunningActivity extends Activity {
       400
     )
   }
+
+  private handleSkip(): void {
+    for (let count = this.activityTimer; count < 900; count++) {
+      this.advanceSimulation()
+    }
+
+    this.activityTimer = 1021
+  }
+}
+
+interface SkipButtonConfig extends WidgetConfig {
+  onClick(): void
 }
 
 class StepByStepSkipButton extends Widget {
+  onClick: () => void
+
+  constructor(config: SkipButtonConfig) {
+    super(config)
+
+    this.onClick = config.onClick
+  }
+
   draw(): void {
     const {canvas, font, height} = this.appView
 
@@ -171,14 +206,6 @@ class StepByStepSkipButton extends Widget {
   isUnderCursor(): boolean {
     const {appView} = this
     return appView.rectIsUnderCursor(0, appView.height - 40, 90, 40)
-  }
-
-  onClick(): void {
-    for (let s = this.appState.viewTimer; s < 900; s++) {
-      this.appController.advanceSimulation()
-    }
-
-    this.appState.viewTimer = 1021
   }
 }
 

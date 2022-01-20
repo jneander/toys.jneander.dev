@@ -21,3 +21,17 @@ export abstract class Widget {
 
   abstract draw(): void
 }
+
+export interface ButtonWidgetConfig extends WidgetConfig {
+  onClick(): void
+}
+
+export abstract class ButtonWidget extends Widget {
+  onClick: () => void
+
+  constructor(config: ButtonWidgetConfig) {
+    super(config)
+
+    this.onClick = config.onClick
+  }
+}

@@ -72,12 +72,10 @@ export class SimulationFinishedActivity extends Activity {
   }
 
   initialize(): void {
-    const {appController, appState} = this
+    const {appController} = this
 
     appController.sortCreatures()
     appController.updateHistory()
-
-    appState.viewTimer = 0
     appController.updateCreatureIdsByGridIndex()
 
     this.drawInterface()

@@ -51,8 +51,7 @@ export default function sketch(p5: p5) {
     showPopupSimulation: false,
     sortedCreatures: [],
     speciesCountsHistoryMap: {},
-    statusWindow: -4,
-    viewTimer: 0
+    statusWindow: -4
   }
 
   const simulationConfig: SimulationConfig = {

@@ -65,5 +65,4 @@ export type AppState = {
   sortedCreatures: Creature[]
   speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
   statusWindow: number
-  viewTimer: number
 }

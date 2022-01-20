@@ -3,10 +3,10 @@ import type {Graphics} from 'p5'
 import {ActivityId} from '../constants'
 import {creatureIdToIndex} from '../helpers'
 import {
+  ButtonWidget,
+  ButtonWidgetConfig,
   CreatureGridView,
-  PopupSimulationView,
-  Widget,
-  WidgetConfig
+  PopupSimulationView
 } from '../views'
 import {Activity, ActivityConfig} from './shared'
 
@@ -46,15 +46,16 @@ export class SimulationFinishedActivity extends Activity {
       simulationState: this.simulationState
     }
 
-    const sortCreaturesButtonConfig = {
-      ...widgetConfig,
-      graphics: this.graphics
-    }
-
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-    this.sortCreaturesButton = new SortCreaturesButton(
-      sortCreaturesButtonConfig
-    )
+
+    this.sortCreaturesButton = new SortCreaturesButton({
+      ...widgetConfig,
+      graphics: this.graphics,
+
+      onClick: () => {
+        this.appController.setActivityId(ActivityId.SortingCreatures)
+      }
+    })
   }
 
   deinitialize(): void {
@@ -133,11 +134,11 @@ export class SimulationFinishedActivity extends Activity {
   }
 }
 
-interface SortCreaturesButtonConfig extends WidgetConfig {
+interface SortCreaturesButtonConfig extends ButtonWidgetConfig {
   graphics: Graphics
 }
 
-class SortCreaturesButton extends Widget {
+class SortCreaturesButton extends ButtonWidget {
   private graphics: Graphics
 
   constructor(config: SortCreaturesButtonConfig) {
@@ -161,9 +162,5 @@ class SortCreaturesButton extends Widget {
 
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(900, 664, 260, 40)
-  }
-
-  onClick(): void {
-    this.appController.setActivityId(ActivityId.SortingCreatures)
   }
 }

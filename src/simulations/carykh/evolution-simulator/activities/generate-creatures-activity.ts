@@ -1,5 +1,5 @@
 import {ActivityId, CREATURE_COUNT} from '../constants'
-import {CreatureGridView, Widget} from '../views'
+import {ButtonWidget, CreatureGridView} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class GenerateCreaturesActivity extends Activity {
@@ -24,7 +24,12 @@ export class GenerateCreaturesActivity extends Activity {
     this.backButton = new BackButton({
       appController: this.appController,
       appState: this.appState,
-      appView: this.appView
+      appView: this.appView,
+
+      onClick: () => {
+        this.appState.generationCount = 0
+        this.appController.setActivityId(ActivityId.GenerationView)
+      }
     })
   }
 
@@ -76,7 +81,7 @@ export class GenerateCreaturesActivity extends Activity {
   }
 }
 
-class BackButton extends Widget {
+class BackButton extends ButtonWidget {
   draw(): void {
     const {canvas, font, width} = this.appView
 
@@ -91,10 +96,5 @@ class BackButton extends Widget {
 
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(900, 664, 260, 40)
-  }
-
-  onClick(): void {
-    this.appState.generationCount = 0
-    this.appController.setActivityId(ActivityId.GenerationView)
   }
 }

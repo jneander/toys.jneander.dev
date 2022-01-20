@@ -2,10 +2,10 @@ import type {Graphics} from 'p5'
 
 import {ActivityId} from '../constants'
 import {
+  ButtonWidget,
+  ButtonWidgetConfig,
   CreatureGridView,
-  PopupSimulationView,
-  Widget,
-  WidgetConfig
+  PopupSimulationView
 } from '../views'
 import {Activity, ActivityConfig} from './shared'
 
@@ -45,15 +45,16 @@ export class CullCreaturesActivity extends Activity {
       simulationState: this.simulationState
     }
 
-    const propagateCreaturesButtonConfig = {
-      ...widgetConfig,
-      graphics: this.graphics
-    }
-
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-    this.propagateCreaturesButton = new PropagateCreaturesButton(
-      propagateCreaturesButtonConfig
-    )
+
+    this.propagateCreaturesButton = new PropagateCreaturesButton({
+      ...widgetConfig,
+      graphics: this.graphics,
+
+      onClick: () => {
+        this.appController.setActivityId(ActivityId.PropagateCreatures)
+      }
+    })
   }
 
   deinitialize(): void {
@@ -132,11 +133,11 @@ export class CullCreaturesActivity extends Activity {
   }
 }
 
-interface SkipButtonConfig extends WidgetConfig {
+interface SkipButtonConfig extends ButtonWidgetConfig {
   graphics: Graphics
 }
 
-class PropagateCreaturesButton extends Widget {
+class PropagateCreaturesButton extends ButtonWidget {
   private graphics: Graphics
 
   constructor(config: SkipButtonConfig) {
@@ -160,9 +161,5 @@ class PropagateCreaturesButton extends Widget {
 
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(1050, 670, 160, 40)
-  }
-
-  onClick(): void {
-    this.appController.setActivityId(ActivityId.PropagateCreatures)
   }
 }

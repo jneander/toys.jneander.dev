@@ -1,5 +1,5 @@
 import {ActivityId} from '../constants'
-import {Widget} from '../views'
+import {ButtonWidget} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class StartActivity extends Activity {
@@ -11,7 +11,11 @@ export class StartActivity extends Activity {
     this.startButton = new StartButton({
       appController: this.appController,
       appState: this.appState,
-      appView: this.appView
+      appView: this.appView,
+
+      onClick: () => {
+        this.appController.setActivityId(ActivityId.GenerationView)
+      }
     })
   }
 
@@ -33,7 +37,7 @@ export class StartActivity extends Activity {
   }
 }
 
-class StartButton extends Widget {
+class StartButton extends ButtonWidget {
   draw(): void {
     const {canvas, width} = this.appView
 
@@ -47,9 +51,5 @@ class StartButton extends Widget {
   isUnderCursor(): boolean {
     const {appView} = this
     return appView.rectIsUnderCursor(appView.width / 2 - 200, 300, 400, 200)
-  }
-
-  onClick(): void {
-    this.appController.setActivityId(ActivityId.GenerationView)
   }
 }

@@ -7,7 +7,7 @@ import {
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import type {SimulationState} from '../types'
-import {ButtonWidget, SimulationView, Widget, WidgetConfig} from '../views'
+import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class SimulationRunningActivity extends Activity {
@@ -45,19 +45,36 @@ export class SimulationRunningActivity extends Activity {
       appView: this.appView
     }
 
-    const simulationWidgetConfig = {
+    this.skipButton = new SkipButton({
       ...widgetConfig,
-      simulationState: this.simulationState
-    }
 
-    const skipButtonConfig = {
-      ...widgetConfig,
       onClick: this.handleSkip.bind(this)
-    }
+    })
 
-    this.skipButton = new SkipButton(skipButtonConfig)
-    this.playbackSpeedButton = new PlaybackSpeedButton(simulationWidgetConfig)
-    this.finishButton = new FinishButton(widgetConfig)
+    this.playbackSpeedButton = new PlaybackSpeedButton({
+      ...widgetConfig,
+      simulationState: this.simulationState,
+
+      onClick: () => {
+        this.simulationState.speed *= 2
+
+        if (this.simulationState.speed === 1024) {
+          this.simulationState.speed = 900
+        }
+
+        if (this.simulationState.speed >= 1800) {
+          this.simulationState.speed = 1
+        }
+      }
+    })
+
+    this.finishButton = new FinishButton({
+      ...widgetConfig,
+
+      onClick: () => {
+        this.appController.finishGenerationSimulation()
+      }
+    })
 
     this.activityTimer = 0
   }
@@ -195,11 +212,11 @@ class SkipButton extends ButtonWidget {
   }
 }
 
-interface StepByStepPlaybackSpeedButtonConfig extends WidgetConfig {
+interface StepByStepPlaybackSpeedButtonConfig extends ButtonWidgetConfig {
   simulationState: SimulationState
 }
 
-class PlaybackSpeedButton extends Widget {
+class PlaybackSpeedButton extends ButtonWidget {
   private simulationState: SimulationState
 
   constructor(config: StepByStepPlaybackSpeedButtonConfig) {
@@ -223,21 +240,9 @@ class PlaybackSpeedButton extends Widget {
     const {appView} = this
     return appView.rectIsUnderCursor(120, appView.height - 40, 240, 40)
   }
-
-  onClick(): void {
-    this.simulationState.speed *= 2
-
-    if (this.simulationState.speed === 1024) {
-      this.simulationState.speed = 900
-    }
-
-    if (this.simulationState.speed >= 1800) {
-      this.simulationState.speed = 1
-    }
-  }
 }
 
-class FinishButton extends Widget {
+class FinishButton extends ButtonWidget {
   draw(): void {
     const {canvas, font, height, width} = this.appView
 
@@ -253,9 +258,5 @@ class FinishButton extends Widget {
     const {height, width} = this.appView
 
     return this.appView.rectIsUnderCursor(width - 120, height - 40, 120, 40)
-  }
-
-  onClick(): void {
-    this.appController.finishGenerationSimulation()
   }
 }

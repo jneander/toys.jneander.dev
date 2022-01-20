@@ -22,7 +22,6 @@ export class SimulationRunningActivity extends Activity {
     const {canvas, font} = this.appView
 
     this.simulationView = new SimulationView({
-      appState: this.appState,
       cameraSpeed: 0.06,
       creatureDrawer: new CreatureDrawer({appView: this.appView}),
       height: 900,

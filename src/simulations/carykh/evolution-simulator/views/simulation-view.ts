@@ -6,10 +6,9 @@ import type {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import {toInt} from '../math'
 import type {SimulationConfig} from '../simulation'
-import type {AppState, SimulationCameraState, SimulationState} from '../types'
+import type {SimulationCameraState, SimulationState} from '../types'
 
 export interface SimulationViewConfig {
-  appState: AppState
   cameraSpeed: number
   creatureDrawer: CreatureDrawer
   height: number
@@ -250,7 +249,7 @@ export class SimulationView {
   }
 
   private drawStats(): void {
-    const {appState, simulationState, statsFont, width} = this.config
+    const {simulationState, statsFont, width} = this.config
     const {statsGraphics} = this
 
     const x = width - 5
@@ -267,7 +266,7 @@ export class SimulationView {
     statsGraphics.translate(x, y)
     statsGraphics.text('Creature ID: ' + simulationState.creature.id, 0, 32)
 
-    const timeShow = appState.viewTimer / 60
+    const timeShow = simulationState.timer / 60
 
     statsGraphics.text(
       'Time: ' + statsGraphics.nf(timeShow, 0, 2) + ' / 15 sec.',

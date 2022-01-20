@@ -2,10 +2,10 @@ import type {Graphics} from 'p5'
 
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {
-  CreatureGridView,
   PopupSimulationView,
-  Widget,
-  WidgetConfig
+  ButtonWidget,
+  ButtonWidgetConfig,
+  CreatureGridView
 } from '../views'
 import {Activity, ActivityConfig} from './shared'
 
@@ -45,15 +45,15 @@ export class SortedCreaturesActivity extends Activity {
       simulationState: this.simulationState
     }
 
-    const cullCreaturesButtonConfig = {
-      ...widgetConfig,
-      graphics: this.graphics
-    }
-
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-    this.cullCreaturesButton = new CullCreaturesButton(
-      cullCreaturesButtonConfig
-    )
+    this.cullCreaturesButton = new CullCreaturesButton({
+      ...widgetConfig,
+      graphics: this.graphics,
+
+      onClick: () => {
+        this.appController.setActivityId(ActivityId.CullCreatures)
+      }
+    })
   }
 
   deinitialize(): void {
@@ -126,11 +126,11 @@ export class SortedCreaturesActivity extends Activity {
   }
 }
 
-interface CullCreaturesButtonConfig extends WidgetConfig {
+interface CullCreaturesButtonConfig extends ButtonWidgetConfig {
   graphics: Graphics
 }
 
-class CullCreaturesButton extends Widget {
+class CullCreaturesButton extends ButtonWidget {
   private graphics: Graphics
 
   constructor(config: CullCreaturesButtonConfig) {
@@ -154,9 +154,5 @@ class CullCreaturesButton extends Widget {
 
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(900, 670, 260, 40)
-  }
-
-  onClick(): void {
-    this.appController.setActivityId(ActivityId.CullCreatures)
   }
 }

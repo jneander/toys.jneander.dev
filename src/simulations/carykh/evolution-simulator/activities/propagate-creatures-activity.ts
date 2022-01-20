@@ -2,7 +2,7 @@ import type {Graphics} from 'p5'
 
 import {ActivityId} from '../constants'
 import {creatureIdToIndex} from '../helpers'
-import {CreatureGridView, Widget, WidgetConfig} from '../views'
+import {ButtonWidget, ButtonWidgetConfig, CreatureGridView} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class PropagateCreaturesActivity extends Activity {
@@ -33,7 +33,11 @@ export class PropagateCreaturesActivity extends Activity {
       appController: this.appController,
       appState: this.appState,
       appView: this.appView,
-      graphics: this.graphics
+      graphics: this.graphics,
+
+      onClick: () => {
+        this.appController.setActivityId(ActivityId.GenerationView)
+      }
     })
   }
 
@@ -101,11 +105,11 @@ export class PropagateCreaturesActivity extends Activity {
   }
 }
 
-interface SkipButtonConfig extends WidgetConfig {
+interface SkipButtonConfig extends ButtonWidgetConfig {
   graphics: Graphics
 }
 
-class BackButton extends Widget {
+class BackButton extends ButtonWidget {
   private graphics: Graphics
 
   constructor(config: SkipButtonConfig) {
@@ -128,9 +132,5 @@ class BackButton extends Widget {
 
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(1050, 670, 160, 40)
-  }
-
-  onClick(): void {
-    this.appController.setActivityId(ActivityId.GenerationView)
   }
 }

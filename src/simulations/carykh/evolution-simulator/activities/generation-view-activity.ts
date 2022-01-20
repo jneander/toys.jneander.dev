@@ -16,7 +16,7 @@ import {
 import {CreatureDrawer} from '../creature-drawer'
 import {historyEntryKeyForStatusWindow} from '../helpers'
 import {toInt} from '../math'
-import {PopupSimulationView, Widget, WidgetConfig} from '../views'
+import {ButtonWidget, PopupSimulationView, Widget, WidgetConfig} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
@@ -55,11 +55,49 @@ export class GenerationViewActivity extends Activity {
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-    this.createButton = new CreateButton(widgetConfig)
-    this.stepByStepButton = new StepByStepButton(widgetConfig)
-    this.quickButton = new QuickButton(widgetConfig)
-    this.asapButton = new AsapButton(widgetConfig)
-    this.alapButton = new AlapButton(widgetConfig)
+
+    this.createButton = new CreateButton({
+      ...widgetConfig,
+
+      onClick: () => {
+        this.appController.setActivityId(ActivityId.GenerateCreatures)
+      }
+    })
+
+    this.stepByStepButton = new StepByStepButton({
+      ...widgetConfig,
+
+      onClick: () => {
+        this.appController.performStepByStepSimulation()
+      }
+    })
+
+    this.quickButton = new QuickButton({
+      ...widgetConfig,
+
+      onClick: () => {
+        this.appController.performQuickGenerationSimulation()
+      }
+    })
+
+    this.asapButton = new AsapButton({
+      ...widgetConfig,
+
+      onClick: () => {
+        this.appState.pendingGenerationCount = 1
+        this.appController.startASAP()
+      }
+    })
+
+    this.alapButton = new AlapButton({
+      ...widgetConfig,
+
+      onClick: () => {
+        this.appState.pendingGenerationCount = 1000000000
+        this.appController.startASAP()
+      }
+    })
+
     this.generationSlider = new GenerationSlider(widgetConfig)
 
     this.draggingSlider = false
@@ -680,7 +718,7 @@ export class GenerationViewActivity extends Activity {
   }
 }
 
-class CreateButton extends Widget {
+class CreateButton extends ButtonWidget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -694,13 +732,9 @@ class CreateButton extends Widget {
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(20, 250, 200, 100)
   }
-
-  onClick(): void {
-    this.appController.setActivityId(ActivityId.GenerateCreatures)
-  }
 }
 
-class StepByStepButton extends Widget {
+class StepByStepButton extends ButtonWidget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -714,13 +748,9 @@ class StepByStepButton extends Widget {
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(760, 20, 460, 40)
   }
-
-  onClick(): void {
-    this.appController.performStepByStepSimulation()
-  }
 }
 
-class QuickButton extends Widget {
+class QuickButton extends ButtonWidget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -734,13 +764,9 @@ class QuickButton extends Widget {
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(760, 70, 460, 40)
   }
-
-  onClick(): void {
-    this.appController.performQuickGenerationSimulation()
-  }
 }
 
-class AsapButton extends Widget {
+class AsapButton extends ButtonWidget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -754,14 +780,9 @@ class AsapButton extends Widget {
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(760, 120, 230, 40)
   }
-
-  onClick(): void {
-    this.appState.pendingGenerationCount = 1
-    this.appController.startASAP()
-  }
 }
 
-class AlapButton extends Widget {
+class AlapButton extends ButtonWidget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -780,11 +801,6 @@ class AlapButton extends Widget {
 
   isUnderCursor(): boolean {
     return this.appView.rectIsUnderCursor(990, 120, 230, 40)
-  }
-
-  onClick(): void {
-    this.appState.pendingGenerationCount = 1000000000
-    this.appController.startASAP()
   }
 }
 

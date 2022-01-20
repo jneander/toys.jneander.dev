@@ -225,7 +225,7 @@ export class SimulationView {
       -cameraState.y * SCALE_TO_FIX_BUG
     )
 
-    if (simulationState.timer < 900) {
+    if (simulationState.timer < 900 || simulationState.speed > 30) {
       simulationGraphics.background(120, 200, 255)
     } else {
       simulationGraphics.background(60, 100, 128)

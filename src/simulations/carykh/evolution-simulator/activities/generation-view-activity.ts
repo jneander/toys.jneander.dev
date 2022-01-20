@@ -200,9 +200,6 @@ export class GenerationViewActivity extends Activity {
     }
 
     if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
-      appController.setSimulationState(
-        appState.creaturesInLatestGeneration[appState.creaturesTested]
-      )
       appController.finishGenerationSimulationFromIndex(0)
       appController.sortCreatures()
       appController.updateHistory()

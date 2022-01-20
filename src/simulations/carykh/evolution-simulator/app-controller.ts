@@ -98,9 +98,9 @@ export class AppController {
   }
 
   finishGenerationSimulation(): void {
-    const {appState} = this.config
+    const {appState, simulationState} = this.config
 
-    for (let s = appState.viewTimer; s < 900; s++) {
+    for (let count = simulationState.timer; count < 900; count++) {
       this.advanceSimulation()
     }
 

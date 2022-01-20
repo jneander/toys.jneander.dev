@@ -40,7 +40,6 @@ export class SimulationRunningActivity extends Activity {
     this.simulationView.setCameraPosition(0, 0)
 
     const widgetConfig = {
-      appController: this.appController,
       appState: this.appState,
       appView: this.appView
     }

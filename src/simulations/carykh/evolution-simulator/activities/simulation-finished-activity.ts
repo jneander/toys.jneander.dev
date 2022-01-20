@@ -35,7 +35,6 @@ export class SimulationFinishedActivity extends Activity {
     })
 
     const widgetConfig = {
-      appController: this.appController,
       appState: this.appState,
       appView: this.appView
     }

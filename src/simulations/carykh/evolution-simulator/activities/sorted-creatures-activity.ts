@@ -34,7 +34,6 @@ export class SortedCreaturesActivity extends Activity {
     })
 
     const widgetConfig = {
-      appController: this.appController,
       appState: this.appState,
       appView: this.appView
     }

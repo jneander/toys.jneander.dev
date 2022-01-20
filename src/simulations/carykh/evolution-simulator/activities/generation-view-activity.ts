@@ -43,7 +43,6 @@ export class GenerationViewActivity extends Activity {
     this.creatureDrawer = new CreatureDrawer({appView: this.appView})
 
     const widgetConfig = {
-      appController: this.appController,
       appState: this.appState,
       appView: this.appView
     }

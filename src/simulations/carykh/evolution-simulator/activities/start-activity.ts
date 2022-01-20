@@ -3,12 +3,12 @@ import {Widget} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class StartActivity extends Activity {
-  private startButton: StartViewStartButton
+  private startButton: StartButton
 
   constructor(config: ActivityConfig) {
     super(config)
 
-    this.startButton = new StartViewStartButton({
+    this.startButton = new StartButton({
       appController: this.appController,
       appState: this.appState,
       appView: this.appView
@@ -33,7 +33,7 @@ export class StartActivity extends Activity {
   }
 }
 
-class StartViewStartButton extends Widget {
+class StartButton extends Widget {
   draw(): void {
     const {canvas, width} = this.appView
 

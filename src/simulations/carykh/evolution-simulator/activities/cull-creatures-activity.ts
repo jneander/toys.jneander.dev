@@ -71,7 +71,6 @@ export class CullCreaturesActivity extends Activity {
 
   initialize(): void {
     this.appController.cullCreatures()
-    this.appState.viewTimer = 0
 
     this.drawInterface()
     this.creatureGridView.draw()

@@ -104,7 +104,6 @@ export class AppController {
       this.advanceSimulation()
     }
 
-    appState.viewTimer = 0
     appState.creaturesTested++
 
     this.finishGenerationSimulationFromIndex(appState.creaturesTested)
@@ -254,7 +253,6 @@ export class AppController {
 
   advanceSimulation(): void {
     this.creatureSimulation.advance()
-    this.config.appState.viewTimer++
   }
 
   setActivityId(activityId: ActivityId): void {
@@ -309,7 +307,7 @@ export class AppController {
   }
 
   setSimulationState(simulationCreature: Creature): void {
-    const {appState, simulationState} = this.config
+    const {simulationState} = this.config
 
     simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
       muscle.clone()
@@ -329,7 +327,6 @@ export class AppController {
       }
     )
 
-    appState.viewTimer = 0
     simulationState.creature.id = simulationCreature.id
     simulationState.timer = 0
   }

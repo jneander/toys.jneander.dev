@@ -36,7 +36,6 @@ export class PropagateCreaturesActivity extends Activity {
 
   initialize(): void {
     this.appController.propagateCreatures()
-    this.appState.viewTimer = 0
 
     this.drawInterface()
     this.drawCreatureGrid()

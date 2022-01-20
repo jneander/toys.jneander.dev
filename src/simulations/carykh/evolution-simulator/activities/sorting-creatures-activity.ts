@@ -5,7 +5,7 @@ import {
   SCALE_TO_FIX_BUG
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
-import {Widget, WidgetConfig} from '../views'
+import {ButtonWidget} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class SortingCreaturesActivity extends Activity {
@@ -87,19 +87,7 @@ export class SortingCreaturesActivity extends Activity {
   }
 }
 
-interface SkipButtonConfig extends WidgetConfig {
-  onClick(): void
-}
-
-class SkipButton extends Widget {
-  onClick: () => void
-
-  constructor(config: SkipButtonConfig) {
-    super(config)
-
-    this.onClick = config.onClick
-  }
-
+class SkipButton extends ButtonWidget {
   draw(): void {
     const {canvas, font, height} = this.appView
 

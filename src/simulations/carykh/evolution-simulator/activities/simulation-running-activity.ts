@@ -7,7 +7,7 @@ import {
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import type {SimulationState} from '../types'
-import {SimulationView, Widget, WidgetConfig} from '../views'
+import {ButtonWidget, SimulationView, Widget, WidgetConfig} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class SimulationRunningActivity extends Activity {
@@ -177,19 +177,7 @@ export class SimulationRunningActivity extends Activity {
   }
 }
 
-interface SkipButtonConfig extends WidgetConfig {
-  onClick(): void
-}
-
-class SkipButton extends Widget {
-  onClick: () => void
-
-  constructor(config: SkipButtonConfig) {
-    super(config)
-
-    this.onClick = config.onClick
-  }
-
+class SkipButton extends ButtonWidget {
   draw(): void {
     const {canvas, font, height} = this.appView
 

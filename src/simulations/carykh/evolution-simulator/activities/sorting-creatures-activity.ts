@@ -11,7 +11,7 @@ import {Activity, ActivityConfig} from './shared'
 export class SortingCreaturesActivity extends Activity {
   private creatureDrawer: CreatureDrawer
 
-  private skipButton: SortingCreaturesSkipButton
+  private skipButton: SkipButton
 
   private activityTimer: number
 
@@ -20,7 +20,7 @@ export class SortingCreaturesActivity extends Activity {
 
     this.creatureDrawer = new CreatureDrawer({appView: this.appView})
 
-    this.skipButton = new SortingCreaturesSkipButton({
+    this.skipButton = new SkipButton({
       appController: this.appController,
       appState: this.appState,
       appView: this.appView,
@@ -91,7 +91,7 @@ interface SkipButtonConfig extends WidgetConfig {
   onClick(): void
 }
 
-class SortingCreaturesSkipButton extends Widget {
+class SkipButton extends Widget {
   onClick: () => void
 
   constructor(config: SkipButtonConfig) {

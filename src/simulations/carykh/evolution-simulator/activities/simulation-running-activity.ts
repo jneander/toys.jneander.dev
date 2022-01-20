@@ -12,9 +12,9 @@ import {Activity, ActivityConfig} from './shared'
 
 export class SimulationRunningActivity extends Activity {
   private simulationView: SimulationView
-  private skipButton: StepByStepSkipButton
-  private playbackSpeedButton: StepByStepPlaybackSpeedButton
-  private finishButton: StepByStepFinishButton
+  private skipButton: SkipButton
+  private playbackSpeedButton: PlaybackSpeedButton
+  private finishButton: FinishButton
 
   private activityTimer: number
 
@@ -55,11 +55,9 @@ export class SimulationRunningActivity extends Activity {
       onClick: this.handleSkip.bind(this)
     }
 
-    this.skipButton = new StepByStepSkipButton(skipButtonConfig)
-    this.playbackSpeedButton = new StepByStepPlaybackSpeedButton(
-      simulationWidgetConfig
-    )
-    this.finishButton = new StepByStepFinishButton(widgetConfig)
+    this.skipButton = new SkipButton(skipButtonConfig)
+    this.playbackSpeedButton = new PlaybackSpeedButton(simulationWidgetConfig)
+    this.finishButton = new FinishButton(widgetConfig)
 
     this.activityTimer = 0
   }
@@ -183,7 +181,7 @@ interface SkipButtonConfig extends WidgetConfig {
   onClick(): void
 }
 
-class StepByStepSkipButton extends Widget {
+class SkipButton extends Widget {
   onClick: () => void
 
   constructor(config: SkipButtonConfig) {
@@ -213,7 +211,7 @@ interface StepByStepPlaybackSpeedButtonConfig extends WidgetConfig {
   simulationState: SimulationState
 }
 
-class StepByStepPlaybackSpeedButton extends Widget {
+class PlaybackSpeedButton extends Widget {
   private simulationState: SimulationState
 
   constructor(config: StepByStepPlaybackSpeedButtonConfig) {
@@ -251,7 +249,7 @@ class StepByStepPlaybackSpeedButton extends Widget {
   }
 }
 
-class StepByStepFinishButton extends Widget {
+class FinishButton extends Widget {
   draw(): void {
     const {canvas, font, height, width} = this.appView
 

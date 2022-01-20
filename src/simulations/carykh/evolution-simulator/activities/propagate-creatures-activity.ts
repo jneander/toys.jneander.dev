@@ -5,7 +5,7 @@ import {Activity, ActivityConfig} from './shared'
 
 export class PropagateCreaturesActivity extends Activity {
   private creatureGridView: CreatureGridView
-  private backButton: PropagatedCreaturesBackButton
+  private backButton: BackButton
 
   constructor(config: ActivityConfig) {
     super(config)
@@ -23,7 +23,7 @@ export class PropagateCreaturesActivity extends Activity {
       getCreatureAndGridIndexFn
     })
 
-    this.backButton = new PropagatedCreaturesBackButton({
+    this.backButton = new BackButton({
       appController: this.appController,
       appState: this.appState,
       appView: this.appView
@@ -93,7 +93,7 @@ export class PropagateCreaturesActivity extends Activity {
   }
 }
 
-class PropagatedCreaturesBackButton extends Widget {
+class BackButton extends Widget {
   draw(): void {
     const {canvas, font, screenGraphics, width} = this.appView
 

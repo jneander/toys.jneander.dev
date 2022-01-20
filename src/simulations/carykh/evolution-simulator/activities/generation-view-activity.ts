@@ -23,11 +23,11 @@ const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
 
 export class GenerationViewActivity extends Activity {
   private popupSimulationView: PopupSimulationView
-  private createButton: GenerationViewCreateButton
-  private stepByStepButton: SimulateStepByStepButton
-  private quickButton: SimulateQuickButton
-  private asapButton: SimulateAsapButton
-  private alapButton: SimulateAlapButton
+  private createButton: CreateButton
+  private stepByStepButton: StepByStepButton
+  private quickButton: QuickButton
+  private asapButton: AsapButton
+  private alapButton: AlapButton
   private generationSlider: GenerationSlider
 
   private creatureDrawer: CreatureDrawer
@@ -55,11 +55,11 @@ export class GenerationViewActivity extends Activity {
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-    this.createButton = new GenerationViewCreateButton(widgetConfig)
-    this.stepByStepButton = new SimulateStepByStepButton(widgetConfig)
-    this.quickButton = new SimulateQuickButton(widgetConfig)
-    this.asapButton = new SimulateAsapButton(widgetConfig)
-    this.alapButton = new SimulateAlapButton(widgetConfig)
+    this.createButton = new CreateButton(widgetConfig)
+    this.stepByStepButton = new StepByStepButton(widgetConfig)
+    this.quickButton = new QuickButton(widgetConfig)
+    this.asapButton = new AsapButton(widgetConfig)
+    this.alapButton = new AlapButton(widgetConfig)
     this.generationSlider = new GenerationSlider(widgetConfig)
 
     this.draggingSlider = false
@@ -683,7 +683,7 @@ export class GenerationViewActivity extends Activity {
   }
 }
 
-class GenerationViewCreateButton extends Widget {
+class CreateButton extends Widget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -703,7 +703,7 @@ class GenerationViewCreateButton extends Widget {
   }
 }
 
-class SimulateStepByStepButton extends Widget {
+class StepByStepButton extends Widget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -723,7 +723,7 @@ class SimulateStepByStepButton extends Widget {
   }
 }
 
-class SimulateQuickButton extends Widget {
+class QuickButton extends Widget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -743,7 +743,7 @@ class SimulateQuickButton extends Widget {
   }
 }
 
-class SimulateAsapButton extends Widget {
+class AsapButton extends Widget {
   draw(): void {
     const {canvas} = this.appView
 
@@ -764,7 +764,7 @@ class SimulateAsapButton extends Widget {
   }
 }
 
-class SimulateAlapButton extends Widget {
+class AlapButton extends Widget {
   draw(): void {
     const {canvas} = this.appView
 

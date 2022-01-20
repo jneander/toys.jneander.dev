@@ -10,12 +10,11 @@ import {
 } from './constants'
 import {CreatureManipulator} from './creatures'
 import {
-  averagePositionOfNodes,
   creatureIdToIndex,
   historyEntryKeyForStatusWindow,
   speciesIdForCreature
 } from './helpers'
-import {CreatureSimulation, SimulationConfig} from './simulation'
+import {GenerationSimulation, SimulationConfig} from './simulation'
 import type {
   AppState,
   GenerationHistoryEntry,
@@ -38,19 +37,20 @@ export class AppController {
   private config: AppControllerConfig
 
   private creatureManipulator: CreatureManipulator
-  private creatureSimulation: CreatureSimulation
+  private generationSimulation: GenerationSimulation
 
   constructor(config: AppControllerConfig) {
     this.config = config
 
-    const {randomFractFn, simulationConfig, simulationState} = config
+    const {randomFractFn} = config
 
     this.creatureManipulator = new CreatureManipulator({randomFractFn})
 
-    this.creatureSimulation = new CreatureSimulation(
-      simulationState,
-      simulationConfig
-    )
+    this.generationSimulation = new GenerationSimulation({
+      appState: config.appState,
+      simulationConfig: config.simulationConfig,
+      simulationState: config.simulationState
+    })
   }
 
   generateCreatures(): void {
@@ -82,29 +82,11 @@ export class AppController {
   }
 
   finishGenerationSimulationFromIndex(creatureIndex: number): void {
-    for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
-      this.setSimulationState(
-        this.config.appState.creaturesInLatestGeneration[i]
-      )
-
-      for (let s = 0; s < 900; s++) {
-        this.advanceSimulation()
-      }
-
-      this.setFitnessOfSimulationCreature()
-    }
+    this.generationSimulation.finishGenerationSimulationFromIndex(creatureIndex)
   }
 
   finishGenerationSimulation(): void {
-    const {appState, simulationState} = this.config
-
-    for (let count = simulationState.timer; count < 900; count++) {
-      this.advanceSimulation()
-    }
-
-    appState.creaturesTested++
-
-    this.finishGenerationSimulationFromIndex(appState.creaturesTested)
+    this.generationSimulation.finishGenerationSimulation()
     this.setActivityId(ActivityId.SimulationFinished)
   }
 
@@ -250,7 +232,7 @@ export class AppController {
   }
 
   advanceSimulation(): void {
-    this.creatureSimulation.advance()
+    this.generationSimulation.advanceCreatureSimulation()
   }
 
   setActivityId(activityId: ActivityId): void {
@@ -305,37 +287,10 @@ export class AppController {
   }
 
   setSimulationState(simulationCreature: Creature): void {
-    const {simulationState} = this.config
-
-    simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
-      muscle.clone()
-    )
-
-    simulationState.creature.nodes = simulationCreature.nodes.map(node =>
-      node.clone()
-    )
-
-    simulationState.creature.nodeCaches = simulationState.creature.nodes.map(
-      node => {
-        return {
-          nextValue: node.value,
-          previousPositionX: node.positionX,
-          previousPositionY: node.positionY
-        }
-      }
-    )
-
-    simulationState.creature.id = simulationCreature.id
-    simulationState.timer = 0
+    this.generationSimulation.setSimulationState(simulationCreature)
   }
 
   setFitnessOfSimulationCreature(): void {
-    const {appState, simulationState} = this.config
-
-    const {id, nodes} = simulationState.creature
-    const {averageX} = averagePositionOfNodes(nodes)
-    const index = creatureIdToIndex(id)
-
-    appState.creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
+    this.generationSimulation.setFitnessOfSimulationCreature()
   }
 }

@@ -46,7 +46,6 @@ export default function sketch(p5: p5) {
     histogramBarCounts: [],
     nextActivityId: ActivityId.Start,
     pendingGenerationCount: 0,
-    popupSimulationCreatureId: null,
     selectedGeneration: 0,
     showPopupSimulation: false,
     sortedCreatures: [],

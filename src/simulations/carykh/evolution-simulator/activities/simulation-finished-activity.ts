@@ -31,7 +31,9 @@ export class SimulationFinishedActivity extends Activity {
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
-      getCreatureAndGridIndexFn
+      getCreatureAndGridIndexFn,
+      gridStartX: 40,
+      gridStartY: 17
     })
 
     const widgetConfig = {
@@ -79,7 +81,7 @@ export class SimulationFinishedActivity extends Activity {
      * will be displayed for the associated creature.
      */
 
-    const gridIndex = creatureGridView.getGridIndexUnderCursor(40, 17)
+    const gridIndex = creatureGridView.getGridIndexUnderCursor()
 
     if (gridIndex != null) {
       const creatureId = this.appState.creatureIdsByGridIndex[gridIndex]

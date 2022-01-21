@@ -26,7 +26,9 @@ export class PropagateCreaturesActivity extends Activity {
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
-      getCreatureAndGridIndexFn
+      getCreatureAndGridIndexFn,
+      gridStartX: 40,
+      gridStartY: 40
     })
 
     this.backButton = new BackButton({

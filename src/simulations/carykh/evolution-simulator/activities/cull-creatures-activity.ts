@@ -30,7 +30,9 @@ export class CullCreaturesActivity extends Activity {
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
-      getCreatureAndGridIndexFn
+      getCreatureAndGridIndexFn,
+      gridStartX: 40,
+      gridStartY: 42
     })
 
     const widgetConfig = {
@@ -78,7 +80,7 @@ export class CullCreaturesActivity extends Activity {
      * will be displayed for the associated creature.
      */
 
-    const gridIndex = creatureGridView.getGridIndexUnderCursor(40, 42)
+    const gridIndex = creatureGridView.getGridIndexUnderCursor()
 
     if (gridIndex != null) {
       this.setPopupSimulationCreatureId(gridIndex)

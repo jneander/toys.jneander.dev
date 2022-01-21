@@ -235,7 +235,7 @@ export class GenerationViewActivity extends Activity {
     }
 
     if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
-      appController.finishGenerationSimulationFromIndex(0)
+      appController.generationSimulation.finishGenerationSimulationFromIndex(0)
       appController.sortCreatures()
       appController.updateHistory()
       appController.cullCreatures()
@@ -698,7 +698,9 @@ export class GenerationViewActivity extends Activity {
     simulationState.speed = 1
     appState.creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    appController.setSimulationState(appState.creaturesInLatestGeneration[0])
+    appController.generationSimulation.setSimulationState(
+      appState.creaturesInLatestGeneration[0]
+    )
     appController.setActivityId(ActivityId.SimulationRunning)
   }
 
@@ -707,7 +709,7 @@ export class GenerationViewActivity extends Activity {
 
     appState.creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.Quick
-    appController.finishGenerationSimulationFromIndex(0)
+    appController.generationSimulation.finishGenerationSimulationFromIndex(0)
     appController.setActivityId(ActivityId.SimulationFinished)
   }
 

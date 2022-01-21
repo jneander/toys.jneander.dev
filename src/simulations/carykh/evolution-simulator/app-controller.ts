@@ -33,10 +33,11 @@ export interface AppControllerConfig {
 }
 
 export class AppController {
+  generationSimulation: GenerationSimulation
+
   private config: AppControllerConfig
 
   private creatureManipulator: CreatureManipulator
-  private generationSimulation: GenerationSimulation
 
   constructor(config: AppControllerConfig) {
     this.config = config
@@ -59,15 +60,6 @@ export class AppController {
       const creature = this.creatureManipulator.generateCreature(i + 1)
       appState.creaturesInLatestGeneration[i] = creature
     }
-  }
-
-  finishGenerationSimulationFromIndex(creatureIndex: number): void {
-    this.generationSimulation.finishGenerationSimulationFromIndex(creatureIndex)
-  }
-
-  finishGenerationSimulation(): void {
-    this.generationSimulation.finishGenerationSimulation()
-    this.setActivityId(ActivityId.SimulationFinished)
   }
 
   updateCreatureIdsByGridIndex(): void {
@@ -211,10 +203,6 @@ export class AppController {
     }
   }
 
-  advanceSimulation(): void {
-    this.generationSimulation.advanceCreatureSimulation()
-  }
-
   setActivityId(activityId: ActivityId): void {
     this.config.appState.nextActivityId = activityId
   }
@@ -249,7 +237,7 @@ export class AppController {
         // The full simulation is not running, so the popup simulation can be shown.
         appState.showPopupSimulation = true
 
-        this.setSimulationState(creature)
+        this.generationSimulation.setSimulationState(creature)
         appState.popupSimulationCreatureId = targetCreatureId
       }
     }
@@ -257,13 +245,5 @@ export class AppController {
 
   clearPopupSimulation(): void {
     this.config.appState.statusWindow = -4
-  }
-
-  setSimulationState(simulationCreature: Creature): void {
-    this.generationSimulation.setSimulationState(simulationCreature)
-  }
-
-  setFitnessOfSimulationCreature(): void {
-    this.generationSimulation.setFitnessOfSimulationCreature()
   }
 }

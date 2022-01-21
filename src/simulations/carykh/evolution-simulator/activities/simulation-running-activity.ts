@@ -71,7 +71,8 @@ export class SimulationRunningActivity extends Activity {
       ...widgetConfig,
 
       onClick: () => {
-        this.appController.finishGenerationSimulation()
+        this.appController.generationSimulation.finishGenerationSimulation()
+        this.appController.setActivityId(ActivityId.SimulationFinished)
       }
     })
 
@@ -85,6 +86,7 @@ export class SimulationRunningActivity extends Activity {
   draw(): void {
     const {appController, appState, appView} = this
     const {canvas, height, width} = appView
+    const {generationSimulation} = appController
 
     if (this.activityTimer <= 900) {
       for (let s = 0; s < this.simulationState.speed; s++) {
@@ -112,14 +114,14 @@ export class SimulationRunningActivity extends Activity {
         this.activityTimer = 1020
       }
 
-      appController.setFitnessOfSimulationCreature()
+      generationSimulation.setFitnessOfSimulationCreature()
     }
 
     if (this.activityTimer >= 1020) {
       appState.creaturesTested++
 
       if (appState.creaturesTested < CREATURE_COUNT) {
-        appController.setSimulationState(
+        generationSimulation.setSimulationState(
           appState.creaturesInLatestGeneration[appState.creaturesTested]
         )
 
@@ -157,7 +159,7 @@ export class SimulationRunningActivity extends Activity {
   }
 
   private advanceSimulation(): void {
-    this.appController.advanceSimulation()
+    this.appController.generationSimulation.advanceCreatureSimulation()
     this.activityTimer++
   }
 

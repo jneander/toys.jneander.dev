@@ -215,6 +215,7 @@ export class GenerationViewActivity extends Activity {
 
         if (worstMedianOrBest != null) {
           this.setPopupSimulationCreatureId(worstMedianOrBest)
+          this.drawWorstMedianAndBestHoverState()
           this.popupSimulationView.draw()
         } else {
           this.clearPopupSimulation()
@@ -675,6 +676,22 @@ export class GenerationViewActivity extends Activity {
     canvas.text('Worst Creature', 830, 310)
     canvas.text('Median Creature', 990, 310)
     canvas.text('Best Creature', 1150, 310)
+  }
+
+  private drawWorstMedianAndBestHoverState(): void {
+    const {canvas} = this.appView
+
+    canvas.push()
+
+    canvas.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
+    canvas.strokeWeight(3)
+    canvas.noFill()
+
+    const x = 760 + (this.appState.statusWindow + 3) * 160
+    const y = 180
+    canvas.rect(x, y, 140, 140)
+
+    canvas.pop()
   }
 
   private extreme(sign: number): number {

@@ -100,7 +100,7 @@ export class SimulationFinishedActivity extends Activity {
     appController.updateCreatureIdsByGridIndex()
 
     this.drawInterface()
-    this.creatureGridView.draw()
+    this.creatureGridView.initialize()
   }
 
   onMouseReleased(): void {

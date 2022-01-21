@@ -91,7 +91,7 @@ export class SortedCreaturesActivity extends Activity {
 
   initialize(): void {
     this.drawInterface()
-    this.creatureGridView.draw()
+    this.creatureGridView.initialize()
   }
 
   onMouseReleased(): void {

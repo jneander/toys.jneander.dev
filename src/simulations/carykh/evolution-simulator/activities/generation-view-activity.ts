@@ -768,31 +768,23 @@ export class GenerationViewActivity extends Activity {
   }
 
   private setPopupSimulationCreatureId(id: number): void {
-    const {appState, simulationState} = this
+    const {appState} = this
 
-    const popupCurrentlyClosed = appState.statusWindow === -4
     appState.statusWindow = id
 
     const historyEntry =
       appState.generationHistoryMap[appState.selectedGeneration]
     const creature =
       historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
-    const targetCreatureId = creature.id
 
-    if (
-      appState.popupSimulationCreatureId !== targetCreatureId ||
-      (popupCurrentlyClosed && appState.pendingGenerationCount === 0)
-    ) {
+    if (appState.pendingGenerationCount === 0) {
       // The full simulation is not running, so the popup simulation can be shown.
-      simulationState.timer = 0
-      appState.showPopupSimulation = true
-
-      this.appController.generationSimulation.setSimulationState(creature)
-      appState.popupSimulationCreatureId = targetCreatureId
+      this.popupSimulationView.setCreature(creature)
     }
   }
 
   private clearPopupSimulation(): void {
+    this.popupSimulationView.setCreature(null)
     this.appState.statusWindow = -4
   }
 }

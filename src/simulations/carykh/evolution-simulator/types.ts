@@ -59,7 +59,6 @@ export type AppState = {
   histogramBarCounts: Array<number[]>
   nextActivityId: ActivityId
   pendingGenerationCount: number
-  popupSimulationCreatureId: number | null
   selectedGeneration: number
   showPopupSimulation: boolean
   sortedCreatures: Creature[]

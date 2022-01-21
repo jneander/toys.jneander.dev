@@ -1,11 +1,7 @@
 import type Creature from '../Creature'
 import {CreatureDrawer} from '../creature-drawer'
 import {ActivityId, CREATURE_COUNT} from '../constants'
-import {
-  creatureIdToIndex,
-  historyEntryKeyForStatusWindow,
-  speciesIdForCreature
-} from '../helpers'
+import {creatureIdToIndex, speciesIdForCreature} from '../helpers'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
 import type {SimulationState} from '../types'
 import {Widget, WidgetConfig} from './shared'
@@ -37,6 +33,8 @@ export class PopupSimulationView extends Widget {
   private simulationState: SimulationState
   private creatureSimulation: CreatureSimulation
 
+  private creature: Creature | null
+
   constructor(config: PopupSimulationViewConfig) {
     super(config)
 
@@ -47,6 +45,8 @@ export class PopupSimulationView extends Widget {
       this.simulationState,
       this.simulationConfig
     )
+
+    this.creature = null
 
     const {canvas, font} = this.appView
 
@@ -71,9 +71,14 @@ export class PopupSimulationView extends Widget {
   }
 
   draw(): void {
+    const {creature} = this
+
+    if (creature == null) {
+      return
+    }
+
     const {showPopupSimulation, statusWindow} = this.appState
 
-    const creature = this.getCreatureForSimulation()
     const {infoBoxStartX, infoBoxStartY} =
       this.getInfoBoxStartPosition(creature)
 
@@ -90,6 +95,16 @@ export class PopupSimulationView extends Widget {
         this.getSimulationViewStartPosition(infoBoxStartX, infoBoxStartY)
 
       this.drawSimulationView(simulationViewStartX, simulationViewStartY)
+    }
+  }
+
+  setCreature(creature: Creature | null): void {
+    const reinitialize = creature?.id && this.creature?.id !== creature?.id
+    this.creature = creature
+
+    if (reinitialize) {
+      this.appState.showPopupSimulation = true
+      this.creatureSimulation.setState(creature)
     }
   }
 
@@ -144,22 +159,6 @@ export class PopupSimulationView extends Widget {
     )
 
     this.creatureSimulation.advance()
-  }
-
-  private getCreatureForSimulation(): Creature {
-    const {
-      generationHistoryMap,
-      selectedGeneration,
-      sortedCreatures,
-      statusWindow
-    } = this.appState
-
-    if (statusWindow >= 0) {
-      return sortedCreatures[statusWindow]
-    }
-
-    const historyEntry = generationHistoryMap[selectedGeneration]
-    return historyEntry[historyEntryKeyForStatusWindow(statusWindow)]
   }
 
   private getInfoBoxStartPosition(creature: Creature): {

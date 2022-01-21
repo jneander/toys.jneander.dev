@@ -54,28 +54,7 @@ export class GenerationSimulation {
   }
 
   setSimulationState(simulationCreature: Creature): void {
-    const {simulationState} = this.config
-
-    simulationState.creature.muscles = simulationCreature.muscles.map(muscle =>
-      muscle.clone()
-    )
-
-    simulationState.creature.nodes = simulationCreature.nodes.map(node =>
-      node.clone()
-    )
-
-    simulationState.creature.nodeCaches = simulationState.creature.nodes.map(
-      node => {
-        return {
-          nextValue: node.value,
-          previousPositionX: node.positionX,
-          previousPositionY: node.positionY
-        }
-      }
-    )
-
-    simulationState.creature.id = simulationCreature.id
-    simulationState.timer = 0
+    this.creatureSimulation.setState(simulationCreature)
   }
 
   setFitnessOfSimulationCreature(): void {

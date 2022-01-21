@@ -1,3 +1,4 @@
+import type Creature from '../Creature'
 import Node from '../Node'
 import {FRICTION, GRAVITY, PRESSURE_UNIT} from '../constants'
 import {applyForceToMuscle, applyForcesToNode} from '../creatures'
@@ -48,6 +49,25 @@ export class CreatureSimulation {
     }
 
     this.state.timer++
+  }
+
+  setState(creature: Creature): void {
+    const {state} = this
+
+    state.creature.muscles = creature.muscles.map(muscle => muscle.clone())
+
+    state.creature.nodes = creature.nodes.map(node => node.clone())
+
+    state.creature.nodeCaches = state.creature.nodes.map(node => {
+      return {
+        nextValue: node.value,
+        previousPositionX: node.positionX,
+        previousPositionY: node.positionY
+      }
+    })
+
+    state.creature.id = creature.id
+    state.timer = 0
   }
 
   private applyGravityToNode(node: Node): void {

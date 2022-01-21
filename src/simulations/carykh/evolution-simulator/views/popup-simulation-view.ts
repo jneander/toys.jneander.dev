@@ -58,10 +58,6 @@ export class PopupSimulationView extends Widget {
     let rank = appState.statusWindow + 1
     let creature
 
-    canvas.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
-    canvas.strokeWeight(3)
-    canvas.noFill()
-
     if (appState.statusWindow >= 0) {
       creature = appState.sortedCreatures[appState.statusWindow]
 
@@ -82,13 +78,15 @@ export class PopupSimulationView extends Widget {
       } else {
         px -= 80
       }
-
-      canvas.rect(x * 30 + 40, y * 25 + 17, 30, 25)
     } else {
       const historyEntry =
         appState.generationHistoryMap[appState.selectedGeneration]
       creature =
         historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
+
+      canvas.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
+      canvas.strokeWeight(3)
+      canvas.noFill()
 
       x = 760 + (appState.statusWindow + 3) * 160
       y = 180

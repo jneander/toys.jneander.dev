@@ -81,10 +81,10 @@ export class CullCreaturesActivity extends Activity {
     const gridIndex = creatureGridView.getGridIndexUnderCursor(40, 42)
 
     if (gridIndex != null) {
-      this.appController.setPopupSimulationCreatureId(gridIndex)
+      this.setPopupSimulationCreatureId(gridIndex)
       this.popupSimulationView.draw()
     } else {
-      this.appController.clearPopupSimulation()
+      this.clearPopupSimulation()
     }
   }
 
@@ -129,6 +129,27 @@ export class CullCreaturesActivity extends Activity {
     this.propagateCreaturesButton.draw()
 
     graphics.pop()
+  }
+
+  private setPopupSimulationCreatureId(id: number): void {
+    const {appController, appState, simulationState} = this
+
+    const popupCurrentlyClosed = appState.statusWindow === -4
+    appState.statusWindow = id
+
+    const creature = appState.sortedCreatures[id]
+
+    if (appState.popupSimulationCreatureId !== id || popupCurrentlyClosed) {
+      simulationState.timer = 0
+      appState.showPopupSimulation = true
+
+      appController.generationSimulation.setSimulationState(creature)
+      appState.popupSimulationCreatureId = id
+    }
+  }
+
+  private clearPopupSimulation(): void {
+    this.appState.statusWindow = -4
   }
 }
 

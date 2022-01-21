@@ -1,4 +1,3 @@
-import type Creature from './Creature'
 import {
   ActivityId,
   CREATURE_COUNT,
@@ -8,11 +7,7 @@ import {
   HISTOGRAM_BAR_SPAN
 } from './constants'
 import {CreatureManipulator} from './creatures'
-import {
-  creatureIdToIndex,
-  historyEntryKeyForStatusWindow,
-  speciesIdForCreature
-} from './helpers'
+import {creatureIdToIndex, speciesIdForCreature} from './helpers'
 import {GenerationSimulation, SimulationConfig} from './simulation'
 import type {
   AppState,
@@ -205,45 +200,5 @@ export class AppController {
 
   setActivityId(activityId: ActivityId): void {
     this.config.appState.nextActivityId = activityId
-  }
-
-  setPopupSimulationCreatureId(id: number): void {
-    const {appState, simulationState} = this.config
-
-    const popupCurrentlyClosed = this.config.appState.statusWindow == -4
-    appState.statusWindow = id
-
-    let creature: Creature
-    let targetCreatureId: number
-
-    if (appState.statusWindow <= -1) {
-      const historyEntry =
-        appState.generationHistoryMap[appState.selectedGeneration]
-      creature =
-        historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
-      targetCreatureId = creature.id
-    } else {
-      targetCreatureId = appState.statusWindow
-      creature = appState.sortedCreatures[id]
-    }
-
-    if (
-      appState.popupSimulationCreatureId !== targetCreatureId ||
-      popupCurrentlyClosed
-    ) {
-      simulationState.timer = 0
-
-      if (appState.pendingGenerationCount == 0) {
-        // The full simulation is not running, so the popup simulation can be shown.
-        appState.showPopupSimulation = true
-
-        this.generationSimulation.setSimulationState(creature)
-        appState.popupSimulationCreatureId = targetCreatureId
-      }
-    }
-  }
-
-  clearPopupSimulation(): void {
-    this.config.appState.statusWindow = -4
   }
 }

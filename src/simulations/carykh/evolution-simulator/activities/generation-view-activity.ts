@@ -214,13 +214,13 @@ export class GenerationViewActivity extends Activity {
         }
 
         if (worstMedianOrBest != null) {
-          appController.setPopupSimulationCreatureId(worstMedianOrBest)
+          this.setPopupSimulationCreatureId(worstMedianOrBest)
           this.popupSimulationView.draw()
         } else {
-          appController.clearPopupSimulation()
+          this.clearPopupSimulation()
         }
       } else {
-        appController.clearPopupSimulation()
+        this.clearPopupSimulation()
       }
     }
 
@@ -748,6 +748,35 @@ export class GenerationViewActivity extends Activity {
     }
 
     return toInt(i) + ''
+  }
+
+  private setPopupSimulationCreatureId(id: number): void {
+    const {appState, simulationState} = this
+
+    const popupCurrentlyClosed = appState.statusWindow === -4
+    appState.statusWindow = id
+
+    const historyEntry =
+      appState.generationHistoryMap[appState.selectedGeneration]
+    const creature =
+      historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
+    const targetCreatureId = creature.id
+
+    if (
+      appState.popupSimulationCreatureId !== targetCreatureId ||
+      (popupCurrentlyClosed && appState.pendingGenerationCount === 0)
+    ) {
+      // The full simulation is not running, so the popup simulation can be shown.
+      simulationState.timer = 0
+      appState.showPopupSimulation = true
+
+      this.appController.generationSimulation.setSimulationState(creature)
+      appState.popupSimulationCreatureId = targetCreatureId
+    }
+  }
+
+  private clearPopupSimulation(): void {
+    this.appState.statusWindow = -4
   }
 }
 

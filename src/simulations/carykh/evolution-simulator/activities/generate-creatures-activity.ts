@@ -42,7 +42,7 @@ export class GenerateCreaturesActivity extends Activity {
     this.appController.generateCreatures()
 
     this.drawInterface()
-    this.drawCreatureGrid()
+    this.initializeCreatureGrid()
   }
 
   onMouseReleased(): void {
@@ -51,8 +51,8 @@ export class GenerateCreaturesActivity extends Activity {
     }
   }
 
-  private drawCreatureGrid(): void {
-    this.creatureGridView.draw()
+  private initializeCreatureGrid(): void {
+    this.creatureGridView.initialize()
 
     const gridStartX = 25 // 40 minus horizontal grid margin
     const gridStartY = 5 // 17 minus vertical grid margin

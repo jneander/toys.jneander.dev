@@ -39,11 +39,46 @@ export class CreatureGridView {
     this.graphics = config.appView.canvas.createGraphics(width, height)
   }
 
+  initialize(): void {
+    this.drawCreatureGrid()
+  }
+
   deinitialize(): void {
     this.graphics.remove()
   }
 
-  draw(): void {
+  getGridIndexUnderCursor(): number | null {
+    const {appView, gridStartX, gridStartY} = this.config
+
+    const creaturesPerRow = 40
+
+    const gridWidth = 1200
+    const gridHeight = 625
+
+    const creatureTileWidth = 30
+    const creatureTileHeight = 25
+
+    if (
+      appView.rectIsUnderCursor(
+        gridStartX,
+        gridStartY,
+        gridWidth - 1,
+        gridHeight - 1
+      )
+    ) {
+      const {cursorX, cursorY} = appView.getCursorPosition()
+
+      return (
+        Math.floor((cursorX - gridStartX) / creatureTileWidth) +
+        Math.floor((cursorY - gridStartY) / creatureTileHeight) *
+          creaturesPerRow
+      )
+    }
+
+    return null
+  }
+
+  private drawCreatureGrid(): void {
     const {getCreatureAndGridIndexFn} = this.config
     const {graphics} = this
 
@@ -98,36 +133,5 @@ export class CreatureGridView {
     }
 
     graphics.pop()
-  }
-
-  getGridIndexUnderCursor(): number | null {
-    const {appView, gridStartX, gridStartY} = this.config
-
-    const creaturesPerRow = 40
-
-    const gridWidth = 1200
-    const gridHeight = 625
-
-    const creatureTileWidth = 30
-    const creatureTileHeight = 25
-
-    if (
-      appView.rectIsUnderCursor(
-        gridStartX,
-        gridStartY,
-        gridWidth - 1,
-        gridHeight - 1
-      )
-    ) {
-      const {cursorX, cursorY} = appView.getCursorPosition()
-
-      return (
-        Math.floor((cursorX - gridStartX) / creatureTileWidth) +
-        Math.floor((cursorY - gridStartY) / creatureTileHeight) *
-          creaturesPerRow
-      )
-    }
-
-    return null
   }
 }

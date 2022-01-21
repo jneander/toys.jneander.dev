@@ -94,7 +94,7 @@ export class CullCreaturesActivity extends Activity {
     this.appController.cullCreatures()
 
     this.drawInterface()
-    this.creatureGridView.draw()
+    this.creatureGridView.initialize()
   }
 
   onMouseReleased(): void {

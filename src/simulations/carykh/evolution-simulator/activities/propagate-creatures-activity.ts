@@ -51,7 +51,7 @@ export class PropagateCreaturesActivity extends Activity {
     this.appController.propagateCreatures()
 
     this.drawInterface()
-    this.drawCreatureGrid()
+    this.initializeCreatureGrid()
   }
 
   onMouseReleased(): void {
@@ -60,10 +60,10 @@ export class PropagateCreaturesActivity extends Activity {
     }
   }
 
-  private drawCreatureGrid(): void {
+  private initializeCreatureGrid(): void {
     const {canvas} = this.appView
 
-    this.creatureGridView.draw()
+    this.creatureGridView.initialize()
 
     const gridStartX = 25 // 40 minus horizontal grid margin
     const gridStartY = 28 // 40 minus vertical grid margin

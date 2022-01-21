@@ -22,6 +22,7 @@ export class CreatureGridView {
   private creatureDrawer: CreatureDrawer
 
   graphics: Graphics
+  private creatureGraphics: Graphics
 
   constructor(config: CreatureGridViewConfig) {
     this.config = config
@@ -36,14 +37,17 @@ export class CreatureGridView {
     const width = (creaturesPerRow + 1) * creatureTileWidth
     const height = (creaturesPerColumn + 1) * creatureTileHeight
 
+    this.creatureGraphics = config.appView.canvas.createGraphics(width, height)
     this.graphics = config.appView.canvas.createGraphics(width, height)
   }
 
   initialize(): void {
     this.drawCreatureGrid()
+    this.graphics.image(this.creatureGraphics, 0, 0)
   }
 
   deinitialize(): void {
+    this.creatureGraphics.remove()
     this.graphics.remove()
   }
 
@@ -80,16 +84,16 @@ export class CreatureGridView {
 
   private drawCreatureGrid(): void {
     const {getCreatureAndGridIndexFn} = this.config
-    const {graphics} = this
+    const {creatureGraphics} = this
 
     const scale = 10
     const creatureWidth = 30
     const creatureHeight = 25
     const creaturesPerRow = 40
 
-    graphics.clear()
-    graphics.push()
-    graphics.scale(scale / SCALE_TO_FIX_BUG)
+    creatureGraphics.clear()
+    creatureGraphics.push()
+    creatureGraphics.scale(scale / SCALE_TO_FIX_BUG)
 
     const creatureScale = 0.1
 
@@ -119,7 +123,7 @@ export class CreatureGridView {
           creature,
           creatureCenterX,
           creatureBottomY,
-          graphics
+          creatureGraphics
         )
       } else {
         const blankLeftX =
@@ -127,11 +131,11 @@ export class CreatureGridView {
         const blankTopY =
           (gridY * scaledCreatureHeight + blankMarginY) * SCALE_TO_FIX_BUG
 
-        graphics.fill(0)
-        graphics.rect(blankLeftX, blankTopY, blankWidth, blankHeight)
+        creatureGraphics.fill(0)
+        creatureGraphics.rect(blankLeftX, blankTopY, blankWidth, blankHeight)
       }
     }
 
-    graphics.pop()
+    creatureGraphics.pop()
   }
 }

@@ -73,6 +73,7 @@ export class CullCreaturesActivity extends Activity {
     const gridStartX = 25 // 40 minus horizontal grid margin
     const gridStartY = 28 // 40 minus vertical grid margin
 
+    creatureGridView.draw()
     canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
 
     /*

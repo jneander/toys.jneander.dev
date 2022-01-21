@@ -17,27 +17,29 @@ export interface CreatureGridViewConfig {
   gridStartY: number
 }
 
+const creatureTileWidth = 30
+const creatureTileHeight = 25
+const creaturesPerRow = 40
+const creaturesPerColumn = CREATURE_COUNT / creaturesPerRow
+
 export class CreatureGridView {
   private config: CreatureGridViewConfig
   private creatureDrawer: CreatureDrawer
 
   graphics: Graphics
   private creatureGraphics: Graphics
+  private hoverGraphics: Graphics
 
   constructor(config: CreatureGridViewConfig) {
     this.config = config
 
     this.creatureDrawer = new CreatureDrawer({appView: config.appView})
 
-    const creatureTileWidth = 30
-    const creatureTileHeight = 25
-    const creaturesPerRow = 40
-    const creaturesPerColumn = CREATURE_COUNT / creaturesPerRow
-
     const width = (creaturesPerRow + 1) * creatureTileWidth
     const height = (creaturesPerColumn + 1) * creatureTileHeight
 
     this.creatureGraphics = config.appView.canvas.createGraphics(width, height)
+    this.hoverGraphics = config.appView.canvas.createGraphics(width, height)
     this.graphics = config.appView.canvas.createGraphics(width, height)
   }
 
@@ -48,7 +50,19 @@ export class CreatureGridView {
 
   deinitialize(): void {
     this.creatureGraphics.remove()
+    this.hoverGraphics.remove()
     this.graphics.remove()
+  }
+
+  draw(): void {
+    this.drawCreatureHoverState()
+
+    const {creatureGraphics, hoverGraphics, graphics} = this
+
+    graphics.clear()
+
+    graphics.image(creatureGraphics, 0, 0)
+    graphics.image(hoverGraphics, 0, 0)
   }
 
   getGridIndexUnderCursor(): number | null {
@@ -137,5 +151,34 @@ export class CreatureGridView {
     }
 
     creatureGraphics.pop()
+  }
+
+  private drawCreatureHoverState(): void {
+    const {config, hoverGraphics} = this
+    const {canvas} = config.appView
+
+    hoverGraphics.clear()
+
+    const gridIndex = this.getGridIndexUnderCursor()
+
+    if (gridIndex != null) {
+      hoverGraphics.push()
+
+      hoverGraphics.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
+      hoverGraphics.strokeWeight(3)
+      hoverGraphics.noFill()
+
+      const x = gridIndex % 40
+      const y = Math.floor(gridIndex / 40)
+
+      hoverGraphics.rect(
+        x * creatureTileWidth + creatureTileWidth / 2,
+        y * creatureTileHeight + Math.floor(creatureTileHeight / 2),
+        creatureTileWidth,
+        creatureTileHeight
+      )
+
+      hoverGraphics.pop()
+    }
   }
 }

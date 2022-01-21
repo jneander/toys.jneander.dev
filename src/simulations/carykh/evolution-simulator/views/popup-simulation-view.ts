@@ -84,15 +84,8 @@ export class PopupSimulationView extends Widget {
       creature =
         historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
 
-      canvas.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
-      canvas.strokeWeight(3)
-      canvas.noFill()
-
-      x = 760 + (appState.statusWindow + 3) * 160
-      y = 180
-      px = x
-      py = y
-      canvas.rect(x, y, 140, 140)
+      px = 760 + (appState.statusWindow + 3) * 160
+      py = 180
 
       const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
       rank = ranks[appState.statusWindow + 3]

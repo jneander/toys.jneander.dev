@@ -12,6 +12,9 @@ export interface CreatureGridViewConfig {
     creature: Creature
     gridIndex: number
   }
+
+  gridStartX: number
+  gridStartY: number
 }
 
 export class CreatureGridView {
@@ -97,11 +100,8 @@ export class CreatureGridView {
     graphics.pop()
   }
 
-  getGridIndexUnderCursor(
-    gridStartX: number,
-    gridStartY: number
-  ): number | null {
-    const {appView} = this.config
+  getGridIndexUnderCursor(): number | null {
+    const {appView, gridStartX, gridStartY} = this.config
 
     const creaturesPerRow = 40
 

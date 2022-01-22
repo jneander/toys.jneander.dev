@@ -62,5 +62,4 @@ export type AppState = {
   selectedGeneration: number
   sortedCreatures: Creature[]
   speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
-  statusWindow: number
 }

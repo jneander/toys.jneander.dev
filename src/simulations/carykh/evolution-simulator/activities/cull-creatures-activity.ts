@@ -149,18 +149,12 @@ export class CullCreaturesActivity extends Activity {
   }
 
   private setPopupSimulationCreatureId(id: number): void {
-    const {appState} = this
-
-    appState.statusWindow = id
-
-    const creature = appState.sortedCreatures[id]
-
+    const creature = this.appState.sortedCreatures[id]
     this.popupSimulationView.setCreatureInfo({creature, rank: id + 1})
   }
 
   private clearPopupSimulation(): void {
     this.popupSimulationView.setCreatureInfo(null)
-    this.appState.statusWindow = -4
   }
 
   private calculateAnchorForPopupSimulation(

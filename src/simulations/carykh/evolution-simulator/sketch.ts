@@ -48,8 +48,7 @@ export default function sketch(p5: p5) {
     pendingGenerationCount: 0,
     selectedGeneration: 0,
     sortedCreatures: [],
-    speciesCountsHistoryMap: {},
-    statusWindow: -4
+    speciesCountsHistoryMap: {}
   }
 
   const simulationConfig: SimulationConfig = {

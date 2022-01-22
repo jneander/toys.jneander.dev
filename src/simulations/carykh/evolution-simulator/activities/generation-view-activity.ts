@@ -14,8 +14,8 @@ import {
   SCALE_TO_FIX_BUG
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
-import {historyEntryKeyForStatusWindow} from '../helpers'
 import {toInt} from '../math'
+import type {GenerationHistoryEntry} from '../types'
 import {
   ButtonWidget,
   PopupSimulationView,
@@ -39,6 +39,7 @@ export class GenerationViewActivity extends Activity {
   private creatureDrawer: CreatureDrawer
 
   private draggingSlider: boolean
+  private statusWindow: number
 
   private generationHistoryGraphics: Graphics
   private graphGraphics: Graphics
@@ -104,6 +105,7 @@ export class GenerationViewActivity extends Activity {
     this.generationSlider = new GenerationSlider(widgetConfig)
 
     this.draggingSlider = false
+    this.statusWindow = -4
 
     const {canvas} = this.appView
 
@@ -673,7 +675,7 @@ export class GenerationViewActivity extends Activity {
       canvas.translate(830 + 160 * k, 290)
       canvas.scale(60.0 / SCALE_TO_FIX_BUG)
 
-      const creature = historyEntry[historyEntryKeyForStatusWindow(k - 3)]
+      const creature = historyEntry[this.historyEntryKeyForStatusWindow(k - 3)]
 
       this.creatureDrawer.drawCreature(creature, 0, 0, canvas)
 
@@ -696,7 +698,7 @@ export class GenerationViewActivity extends Activity {
     canvas.strokeWeight(3)
     canvas.noFill()
 
-    const x = 760 + (this.appState.statusWindow + 3) * 160
+    const x = 760 + (this.statusWindow + 3) * 160
     const y = 180
     canvas.rect(x, y, 140, 140)
 
@@ -779,12 +781,12 @@ export class GenerationViewActivity extends Activity {
   private setPopupSimulationCreatureId(id: number): void {
     const {appState} = this
 
-    appState.statusWindow = id
+    this.statusWindow = id
 
     const historyEntry =
       appState.generationHistoryMap[appState.selectedGeneration]
     const creature =
-      historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
+      historyEntry[this.historyEntryKeyForStatusWindow(this.statusWindow)]
 
     const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
     const rank = ranks[id + 3]
@@ -800,7 +802,7 @@ export class GenerationViewActivity extends Activity {
 
   private clearPopupSimulation(): void {
     this.popupSimulationView.setCreatureInfo(null)
-    this.appState.statusWindow = -4
+    this.statusWindow = -4
   }
 
   private calculateAnchorForPopupSimulation(
@@ -816,6 +818,20 @@ export class GenerationViewActivity extends Activity {
       endPositionY: positionY,
       margin: 0
     }
+  }
+
+  private historyEntryKeyForStatusWindow(
+    statusWindow: number
+  ): keyof GenerationHistoryEntry {
+    if (statusWindow === -3) {
+      return 'slowest'
+    }
+
+    if (statusWindow === -2) {
+      return 'median'
+    }
+
+    return 'fastest'
   }
 }
 

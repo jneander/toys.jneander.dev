@@ -17,10 +17,11 @@ export interface CreatureGridViewConfig {
   gridStartY: number
 }
 
-const creatureTileWidth = 30
-const creatureTileHeight = 25
-const creaturesPerRow = 40
-const creaturesPerColumn = CREATURE_COUNT / creaturesPerRow
+export const CREATURE_GRID_TILE_WIDTH = 30
+export const CREATURE_GRID_TILE_HEIGHT = 25
+export const CREATURE_GRID_TILES_PER_ROW = 40
+export const CREATURE_GRID_TILES_PER_COLUMN =
+  CREATURE_COUNT / CREATURE_GRID_TILES_PER_ROW
 
 export class CreatureGridView {
   private config: CreatureGridViewConfig
@@ -35,8 +36,9 @@ export class CreatureGridView {
 
     this.creatureDrawer = new CreatureDrawer({appView: config.appView})
 
-    const width = (creaturesPerRow + 1) * creatureTileWidth
-    const height = (creaturesPerColumn + 1) * creatureTileHeight
+    const width = (CREATURE_GRID_TILES_PER_ROW + 1) * CREATURE_GRID_TILE_WIDTH
+    const height =
+      (CREATURE_GRID_TILES_PER_COLUMN + 1) * CREATURE_GRID_TILE_HEIGHT
 
     this.creatureGraphics = config.appView.canvas.createGraphics(width, height)
     this.hoverGraphics = config.appView.canvas.createGraphics(width, height)
@@ -68,13 +70,8 @@ export class CreatureGridView {
   getGridIndexUnderCursor(): number | null {
     const {appView, gridStartX, gridStartY} = this.config
 
-    const creaturesPerRow = 40
-
     const gridWidth = 1200
     const gridHeight = 625
-
-    const creatureTileWidth = 30
-    const creatureTileHeight = 25
 
     if (
       appView.rectIsUnderCursor(
@@ -87,9 +84,9 @@ export class CreatureGridView {
       const {cursorX, cursorY} = appView.getCursorPosition()
 
       return (
-        Math.floor((cursorX - gridStartX) / creatureTileWidth) +
-        Math.floor((cursorY - gridStartY) / creatureTileHeight) *
-          creaturesPerRow
+        Math.floor((cursorX - gridStartX) / CREATURE_GRID_TILE_WIDTH) +
+        Math.floor((cursorY - gridStartY) / CREATURE_GRID_TILE_HEIGHT) *
+          CREATURE_GRID_TILES_PER_ROW
       )
     }
 
@@ -101,9 +98,6 @@ export class CreatureGridView {
     const {creatureGraphics} = this
 
     const scale = 10
-    const creatureWidth = 30
-    const creatureHeight = 25
-    const creaturesPerRow = 40
 
     creatureGraphics.clear()
     creatureGraphics.push()
@@ -111,8 +105,8 @@ export class CreatureGridView {
 
     const creatureScale = 0.1
 
-    const scaledCreatureWidth = creatureWidth * creatureScale
-    const scaledCreatureHeight = creatureHeight * creatureScale
+    const scaledCreatureWidth = CREATURE_GRID_TILE_WIDTH * creatureScale
+    const scaledCreatureHeight = CREATURE_GRID_TILE_HEIGHT * creatureScale
 
     const marginX = scaledCreatureWidth
     const marginY = scaledCreatureHeight / 2 + scaledCreatureHeight
@@ -126,8 +120,8 @@ export class CreatureGridView {
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
 
-      const gridX = gridIndex % creaturesPerRow
-      const gridY = Math.floor(gridIndex / creaturesPerRow)
+      const gridX = gridIndex % CREATURE_GRID_TILES_PER_ROW
+      const gridY = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
 
       if (creature.alive) {
         const creatureCenterX = gridX * scaledCreatureWidth + marginX
@@ -172,10 +166,11 @@ export class CreatureGridView {
       const y = Math.floor(gridIndex / 40)
 
       hoverGraphics.rect(
-        x * creatureTileWidth + creatureTileWidth / 2,
-        y * creatureTileHeight + Math.floor(creatureTileHeight / 2),
-        creatureTileWidth,
-        creatureTileHeight
+        x * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_TILE_WIDTH / 2,
+        y * CREATURE_GRID_TILE_HEIGHT +
+          Math.floor(CREATURE_GRID_TILE_HEIGHT / 2),
+        CREATURE_GRID_TILE_WIDTH,
+        CREATURE_GRID_TILE_HEIGHT
       )
 
       hoverGraphics.pop()

@@ -4,6 +4,11 @@ import {ActivityId} from '../constants'
 import {creatureIdToIndex, speciesIdForCreature} from '../helpers'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
 import type {SimulationState} from '../types'
+import {
+  CREATURE_GRID_TILES_PER_ROW,
+  CREATURE_GRID_TILE_HEIGHT,
+  CREATURE_GRID_TILE_WIDTH
+} from './creature-grid-view'
 import {Widget, WidgetConfig} from './shared'
 import {SimulationView} from './simulation-view'
 
@@ -32,10 +37,6 @@ const INFO_BOX_MARGIN = 5
 const SIMULATION_VIEW_WIDTH = 300
 const SIMULATION_VIEW_HEIGHT = 300
 const SIMULATION_VIEW_MARGIN = 10
-
-const CREATURE_WIDTH = 30
-const CREATURE_HEIGHT = 25
-const CREATURES_PER_ROW = 40
 
 const CREATURE_GRID_MARGIN_X = 40
 const CREATURE_GRID_MARGIN_Y = 10
@@ -189,23 +190,26 @@ export class PopupSimulationView extends Widget {
 
       if (currentActivityId === ActivityId.SimulationFinished) {
         const gridIndex = creatureIdToIndex(creature.id)
-        creatureRowIndex = gridIndex % CREATURES_PER_ROW
-        creatureColumnIndex = Math.floor(gridIndex / CREATURES_PER_ROW)
+        creatureRowIndex = gridIndex % CREATURE_GRID_TILES_PER_ROW
+        creatureColumnIndex = Math.floor(
+          gridIndex / CREATURE_GRID_TILES_PER_ROW
+        )
       } else {
-        creatureRowIndex = statusWindow % CREATURES_PER_ROW
-        creatureColumnIndex = Math.floor(statusWindow / CREATURES_PER_ROW) + 1
+        creatureRowIndex = statusWindow % CREATURE_GRID_TILES_PER_ROW
+        creatureColumnIndex =
+          Math.floor(statusWindow / CREATURE_GRID_TILES_PER_ROW) + 1
       }
 
       const creatureStartX =
-        creatureRowIndex * CREATURE_WIDTH + CREATURE_GRID_MARGIN_X
+        creatureRowIndex * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_MARGIN_X
       const creatureStartY =
-        creatureColumnIndex * CREATURE_HEIGHT + CREATURE_GRID_MARGIN_Y
+        creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + CREATURE_GRID_MARGIN_Y
 
       return {
         startPositionX: creatureStartX,
         startPositionY: creatureStartY,
-        endPositionX: creatureStartX + CREATURE_WIDTH,
-        endPositionY: creatureStartY + CREATURE_HEIGHT,
+        endPositionX: creatureStartX + CREATURE_GRID_TILE_WIDTH,
+        endPositionY: creatureStartY + CREATURE_GRID_TILE_HEIGHT,
         margin: INFO_BOX_MARGIN
       }
     }
@@ -273,7 +277,8 @@ export class PopupSimulationView extends Widget {
     const simulationViewMaxStartX =
       appView.width - SIMULATION_VIEW_MARGIN - SIMULATION_VIEW_WIDTH
 
-    simulationViewStartX = infoBoxStartX - INFO_BOX_MARGIN - CREATURE_WIDTH
+    simulationViewStartX =
+      infoBoxStartX - INFO_BOX_MARGIN - CREATURE_GRID_TILE_WIDTH
     simulationViewStartX = Math.min(
       Math.max(simulationViewStartX, SIMULATION_VIEW_MARGIN),
       simulationViewMaxStartX

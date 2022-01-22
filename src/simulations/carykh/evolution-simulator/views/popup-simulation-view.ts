@@ -1,14 +1,9 @@
 import type Creature from '../Creature'
 import {CreatureDrawer} from '../creature-drawer'
-import {ActivityId} from '../constants'
-import {creatureIdToIndex, speciesIdForCreature} from '../helpers'
+import {speciesIdForCreature} from '../helpers'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
 import type {SimulationState} from '../types'
-import {
-  CREATURE_GRID_TILES_PER_ROW,
-  CREATURE_GRID_TILE_HEIGHT,
-  CREATURE_GRID_TILE_WIDTH
-} from './creature-grid-view'
+import {CREATURE_GRID_TILE_WIDTH} from './creature-grid-view'
 import {Widget, WidgetConfig} from './shared'
 import {SimulationView} from './simulation-view'
 
@@ -37,9 +32,6 @@ const INFO_BOX_MARGIN = 5
 const SIMULATION_VIEW_WIDTH = 300
 const SIMULATION_VIEW_HEIGHT = 300
 const SIMULATION_VIEW_MARGIN = 10
-
-const CREATURE_GRID_MARGIN_X = 40
-const CREATURE_GRID_MARGIN_Y = 10
 
 export class PopupSimulationView extends Widget {
   private simulationView: SimulationView
@@ -120,8 +112,11 @@ export class PopupSimulationView extends Widget {
     } else if (creatureInfo.creature.id !== currentCreatureId) {
       this.showSimulationView = true
       this.creatureSimulation.setState(creatureInfo.creature)
-      this.anchor = this.calculateAnchor()
     }
+  }
+
+  setAnchor(anchor: PopupSimulationViewAnchor): void {
+    this.anchor = anchor
   }
 
   dismissSimulationView(): void {
@@ -179,51 +174,6 @@ export class PopupSimulationView extends Widget {
     )
 
     this.creatureSimulation.advance()
-  }
-
-  private calculateAnchor(): PopupSimulationViewAnchor {
-    const {currentActivityId, statusWindow} = this.appState
-    const {creature} = this.creatureInfo!
-
-    if (statusWindow >= 0) {
-      let creatureRowIndex, creatureColumnIndex
-
-      if (currentActivityId === ActivityId.SimulationFinished) {
-        const gridIndex = creatureIdToIndex(creature.id)
-        creatureRowIndex = gridIndex % CREATURE_GRID_TILES_PER_ROW
-        creatureColumnIndex = Math.floor(
-          gridIndex / CREATURE_GRID_TILES_PER_ROW
-        )
-      } else {
-        creatureRowIndex = statusWindow % CREATURE_GRID_TILES_PER_ROW
-        creatureColumnIndex =
-          Math.floor(statusWindow / CREATURE_GRID_TILES_PER_ROW) + 1
-      }
-
-      const creatureStartX =
-        creatureRowIndex * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_MARGIN_X
-      const creatureStartY =
-        creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + CREATURE_GRID_MARGIN_Y
-
-      return {
-        startPositionX: creatureStartX,
-        startPositionY: creatureStartY,
-        endPositionX: creatureStartX + CREATURE_GRID_TILE_WIDTH,
-        endPositionY: creatureStartY + CREATURE_GRID_TILE_HEIGHT,
-        margin: INFO_BOX_MARGIN
-      }
-    }
-
-    const positionX = 760 + (statusWindow + 3) * 160 - INFO_BOX_WIDTH / 2
-    const positionY = 180
-
-    return {
-      startPositionX: positionX,
-      startPositionY: positionY,
-      endPositionX: positionX,
-      endPositionY: positionY,
-      margin: 0
-    }
   }
 
   private getInfoBoxStartPosition(): {

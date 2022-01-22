@@ -5,9 +5,16 @@ import {
   PopupSimulationView,
   ButtonWidget,
   ButtonWidgetConfig,
-  CreatureGridView
+  CREATURE_GRID_TILES_PER_ROW,
+  CREATURE_GRID_TILE_HEIGHT,
+  CREATURE_GRID_TILE_WIDTH,
+  CreatureGridView,
+  PopupSimulationViewAnchor
 } from '../views'
 import {Activity, ActivityConfig} from './shared'
+
+const CREATURE_GRID_START_X = 40
+const CREATURE_GRID_START_Y = 42
 
 export class SortedCreaturesActivity extends Activity {
   private creatureGridView: CreatureGridView
@@ -31,8 +38,8 @@ export class SortedCreaturesActivity extends Activity {
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
       getCreatureAndGridIndexFn,
-      gridStartX: 40,
-      gridStartY: 42
+      gridStartX: CREATURE_GRID_START_X,
+      gridStartY: CREATURE_GRID_START_Y
     })
 
     const widgetConfig = {
@@ -84,6 +91,10 @@ export class SortedCreaturesActivity extends Activity {
 
     if (gridIndex != null) {
       this.setPopupSimulationCreatureId(gridIndex)
+
+      const anchor = this.calculateAnchorForPopupSimulation(gridIndex)
+      this.popupSimulationView.setAnchor(anchor)
+
       this.popupSimulationView.draw()
     } else {
       this.clearPopupSimulation()
@@ -143,6 +154,28 @@ export class SortedCreaturesActivity extends Activity {
   private clearPopupSimulation(): void {
     this.popupSimulationView.setCreatureInfo(null)
     this.appState.statusWindow = -4
+  }
+
+  private calculateAnchorForPopupSimulation(
+    gridIndex: number
+  ): PopupSimulationViewAnchor {
+    let creatureRowIndex, creatureColumnIndex
+
+    creatureRowIndex = gridIndex % CREATURE_GRID_TILES_PER_ROW
+    creatureColumnIndex = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
+
+    const creatureStartX =
+      creatureRowIndex * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_START_X
+    const creatureStartY =
+      creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + CREATURE_GRID_START_Y
+
+    return {
+      startPositionX: creatureStartX,
+      startPositionY: creatureStartY,
+      endPositionX: creatureStartX + CREATURE_GRID_TILE_WIDTH,
+      endPositionY: creatureStartY + CREATURE_GRID_TILE_HEIGHT,
+      margin: 5
+    }
   }
 }
 

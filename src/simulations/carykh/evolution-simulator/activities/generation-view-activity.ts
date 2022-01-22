@@ -16,7 +16,13 @@ import {
 import {CreatureDrawer} from '../creature-drawer'
 import {historyEntryKeyForStatusWindow} from '../helpers'
 import {toInt} from '../math'
-import {ButtonWidget, PopupSimulationView, Widget, WidgetConfig} from '../views'
+import {
+  ButtonWidget,
+  PopupSimulationView,
+  PopupSimulationViewAnchor,
+  Widget,
+  WidgetConfig
+} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
@@ -786,12 +792,30 @@ export class GenerationViewActivity extends Activity {
     if (appState.pendingGenerationCount === 0) {
       // The full simulation is not running, so the popup simulation can be shown.
       this.popupSimulationView.setCreatureInfo({creature, rank})
+
+      const anchor = this.calculateAnchorForPopupSimulation(id)
+      this.popupSimulationView.setAnchor(anchor)
     }
   }
 
   private clearPopupSimulation(): void {
     this.popupSimulationView.setCreatureInfo(null)
     this.appState.statusWindow = -4
+  }
+
+  private calculateAnchorForPopupSimulation(
+    id: number
+  ): PopupSimulationViewAnchor {
+    const positionX = 760 + (id + 3) * 160 - 60 // 60 == half the info box width
+    const positionY = 180
+
+    return {
+      startPositionX: positionX,
+      startPositionY: positionY,
+      endPositionX: positionX,
+      endPositionY: positionY,
+      margin: 0
+    }
   }
 }
 

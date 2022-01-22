@@ -40,6 +40,10 @@ export class GenerationSimulation {
 
   advanceCreatureSimulation(): void {
     this.creatureSimulation.advance()
+
+    if (this.config.simulationState.timer === 900) {
+      this.setFitnessOfSimulationCreature()
+    }
   }
 
   advanceGenerationSimulation(): void {
@@ -73,7 +77,7 @@ export class GenerationSimulation {
     this.creatureSimulation.setState(simulationCreature)
   }
 
-  setFitnessOfSimulationCreature(): void {
+  private setFitnessOfSimulationCreature(): void {
     const {appState, simulationState} = this.config
 
     const {id, nodes} = simulationState.creature
@@ -92,8 +96,6 @@ export class GenerationSimulation {
       for (let s = 0; s < 900; s++) {
         this.advanceCreatureSimulation()
       }
-
-      this.setFitnessOfSimulationCreature()
     }
   }
 }

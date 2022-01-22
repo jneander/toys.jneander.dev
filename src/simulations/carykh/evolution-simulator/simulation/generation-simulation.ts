@@ -23,8 +23,24 @@ export class GenerationSimulation {
     )
   }
 
+  isFinished(): boolean {
+    return this.config.appState.creaturesTested >= CREATURE_COUNT
+  }
+
   advanceCreatureSimulation(): void {
     this.creatureSimulation.advance()
+  }
+
+  advanceGenerationSimulation(): void {
+    const {appState} = this.config
+
+    appState.creaturesTested++
+
+    if (!this.isFinished()) {
+      this.setSimulationState(
+        appState.creaturesInLatestGeneration[appState.creaturesTested]
+      )
+    }
   }
 
   finishGenerationSimulation(): void {

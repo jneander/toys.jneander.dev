@@ -11,7 +11,7 @@ export class GenerateCreaturesActivity extends Activity {
 
     const getCreatureAndGridIndexFn = (index: number) => {
       return {
-        creature: this.appState.creaturesInLatestGeneration[index],
+        creature: this.appState.sortedCreatures[index],
         gridIndex: index
       }
     }

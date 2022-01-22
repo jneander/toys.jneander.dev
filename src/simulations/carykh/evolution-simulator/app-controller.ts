@@ -54,6 +54,7 @@ export class AppController {
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = this.creatureManipulator.generateCreature(i + 1)
       appState.creaturesInLatestGeneration[i] = creature
+      appState.sortedCreatures[i] = creature
     }
   }
 

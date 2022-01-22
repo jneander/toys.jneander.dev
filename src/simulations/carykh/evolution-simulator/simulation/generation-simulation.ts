@@ -14,6 +14,8 @@ export class GenerationSimulation {
   private config: GenerationSimulationConfig
   private creatureSimulation: CreatureSimulation
 
+  private creaturesTested: number
+
   constructor(config: GenerationSimulationConfig) {
     this.config = config
 
@@ -21,10 +23,19 @@ export class GenerationSimulation {
       config.simulationState,
       config.simulationConfig
     )
+
+    this.creaturesTested = 0
   }
 
   isFinished(): boolean {
-    return this.config.appState.creaturesTested >= CREATURE_COUNT
+    return this.creaturesTested >= CREATURE_COUNT
+  }
+
+  initialize(): void {
+    const {creaturesInLatestGeneration} = this.config.appState
+
+    this.creaturesTested = 0
+    this.setSimulationState(creaturesInLatestGeneration[0])
   }
 
   advanceCreatureSimulation(): void {
@@ -32,27 +43,25 @@ export class GenerationSimulation {
   }
 
   advanceGenerationSimulation(): void {
-    const {appState} = this.config
+    const {creaturesInLatestGeneration} = this.config.appState
 
-    appState.creaturesTested++
+    this.creaturesTested++
 
     if (!this.isFinished()) {
-      this.setSimulationState(
-        appState.creaturesInLatestGeneration[appState.creaturesTested]
-      )
+      this.setSimulationState(creaturesInLatestGeneration[this.creaturesTested])
     }
   }
 
   finishGenerationSimulation(): void {
-    const {appState, simulationState} = this.config
+    const {simulationState} = this.config
 
     for (let frame = simulationState.timer; frame < 900; frame++) {
       this.advanceCreatureSimulation()
     }
 
-    appState.creaturesTested++
+    this.creaturesTested++
 
-    this.finishGenerationSimulationFromIndex(appState.creaturesTested)
+    this.finishGenerationSimulationFromIndex(this.creaturesTested)
   }
 
   finishGenerationSimulationFromIndex(creatureIndex: number): void {

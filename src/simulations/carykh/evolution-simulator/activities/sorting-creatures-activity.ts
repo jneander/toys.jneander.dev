@@ -5,7 +5,8 @@ import {
   SCALE_TO_FIX_BUG
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
-import {ButtonWidget} from '../views'
+import {creatureIdToIndex} from '../helpers'
+import {ButtonWidget, CREATURE_GRID_TILES_PER_ROW} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export class SortingCreaturesActivity extends Activity {
@@ -43,13 +44,17 @@ export class SortingCreaturesActivity extends Activity {
     const transition =
       0.5 - 0.5 * Math.cos(Math.min(this.activityTimer / 60, Math.PI))
 
-    for (let i1 = 0; i1 < CREATURE_COUNT; i1++) {
-      const creature = appState.sortedCreatures[i1]
-      const j2 = creature.id - appState.generationCount * CREATURE_COUNT - 1
-      const x1 = j2 % 40
-      const y1 = Math.floor(j2 / 40)
-      const x2 = i1 % 40
-      const y2 = Math.floor(i1 / 40) + 1
+    for (let i2 = 0; i2 < CREATURE_COUNT; i2++) {
+      // i2 is the index of where the creature is now
+      const creature = appState.sortedCreatures[i2]
+
+      // i1 is the index of where the creature was
+      const i1 = creatureIdToIndex(creature.id)
+
+      const x1 = i1 % CREATURE_GRID_TILES_PER_ROW
+      const y1 = Math.floor(i1 / CREATURE_GRID_TILES_PER_ROW)
+      const x2 = i2 % CREATURE_GRID_TILES_PER_ROW
+      const y2 = Math.floor(i2 / CREATURE_GRID_TILES_PER_ROW) + 1 // next grid is lower on canvas
       const x3 = this.interpolate(x1, x2, transition)
       const y3 = this.interpolate(y1, y2, transition)
 

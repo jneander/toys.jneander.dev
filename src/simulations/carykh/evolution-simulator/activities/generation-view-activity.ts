@@ -18,6 +18,7 @@ import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
 import {
   ButtonWidget,
+  ButtonWidgetConfig,
   PopupSimulationView,
   PopupSimulationViewAnchor,
   Widget,
@@ -34,6 +35,8 @@ const CREATURE_TILES_START_Y = 180
 const CREATURE_TILES_GAP = 20
 
 export class GenerationViewActivity extends Activity {
+  pendingGenerationCount: number
+
   private popupSimulationView: PopupSimulationView
   private createButton: CreateButton
   private stepByStepButton: StepByStepButton
@@ -102,6 +105,7 @@ export class GenerationViewActivity extends Activity {
 
     this.alapButton = new AlapButton({
       ...widgetConfig,
+      activity: this,
 
       onClick: () => {
         this.startAlapGenerationSimulation()
@@ -112,6 +116,7 @@ export class GenerationViewActivity extends Activity {
 
     this.draggingSlider = false
     this.generationCountDepictedInGraph = -1
+    this.pendingGenerationCount = 0
 
     const {canvas} = this.appView
 
@@ -203,7 +208,7 @@ export class GenerationViewActivity extends Activity {
 
       if (
         appState.selectedGeneration > 0 &&
-        appState.pendingGenerationCount === 0 &&
+        this.pendingGenerationCount === 0 &&
         !this.draggingSlider
       ) {
         const worstMedianOrBestIndex =
@@ -226,10 +231,10 @@ export class GenerationViewActivity extends Activity {
       }
     }
 
-    if (appState.pendingGenerationCount > 0) {
-      appState.pendingGenerationCount--
+    if (this.pendingGenerationCount > 0) {
+      this.pendingGenerationCount--
 
-      if (appState.pendingGenerationCount > 0) {
+      if (this.pendingGenerationCount > 0) {
         this.startGenerationSimulation()
       }
     } else {
@@ -248,6 +253,8 @@ export class GenerationViewActivity extends Activity {
   }
 
   onMousePressed(): void {
+    this.pendingGenerationCount = 0
+
     if (
       this.appState.generationCount >= 1 &&
       this.generationSlider.isUnderCursor()
@@ -775,12 +782,12 @@ export class GenerationViewActivity extends Activity {
   }
 
   private performAsapGenerationSimulation(): void {
-    this.appState.pendingGenerationCount = 1
+    this.pendingGenerationCount = 1
     this.startGenerationSimulation()
   }
 
   private startAlapGenerationSimulation(): void {
-    this.appState.pendingGenerationCount = 1000000000
+    this.pendingGenerationCount = 1000000000
     this.startGenerationSimulation()
   }
 
@@ -819,7 +826,7 @@ export class GenerationViewActivity extends Activity {
     const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
     const rank = ranks[worstMedianOrBestIndex]
 
-    if (this.appState.pendingGenerationCount === 0) {
+    if (this.pendingGenerationCount === 0) {
       // The full simulation is not running, so the popup simulation can be shown.
       this.popupSimulationView.setCreatureInfo({creature, rank})
 
@@ -935,13 +942,25 @@ class AsapButton extends ButtonWidget {
   }
 }
 
+interface AlapButtonConfig extends ButtonWidgetConfig {
+  activity: GenerationViewActivity
+}
+
 class AlapButton extends ButtonWidget {
+  private activity: GenerationViewActivity
+
+  constructor(config: AlapButtonConfig) {
+    super(config)
+
+    this.activity = config.activity
+  }
+
   draw(): void {
     const {canvas} = this.appView
 
     canvas.noStroke()
 
-    if (this.appState.pendingGenerationCount >= 2) {
+    if (this.activity.pendingGenerationCount > 1) {
       canvas.fill(128, 255, 128)
     } else {
       canvas.fill(70, 140, 70)

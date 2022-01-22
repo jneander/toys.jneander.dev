@@ -27,6 +27,12 @@ import {Activity, ActivityConfig} from './shared'
 
 const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
 
+const CREATURE_TILE_HEIGHT = 140
+const CREATURE_TILE_WIDTH = 140
+const CREATURE_TILES_START_X = 760
+const CREATURE_TILES_START_Y = 180
+const CREATURE_TILES_GAP = 20
+
 export class GenerationViewActivity extends Activity {
   private popupSimulationView: PopupSimulationView
   private createButton: CreateButton
@@ -652,12 +658,23 @@ export class GenerationViewActivity extends Activity {
 
     // i = worstMedianOrBestIndex
     for (let i = 0; i < 3; i++) {
+      const xOffset = i * (CREATURE_TILE_WIDTH + CREATURE_TILES_GAP)
+
       canvas.fill(220)
-      canvas.rect(760 + i * 160, 180, 140, 140)
+      canvas.rect(
+        CREATURE_TILES_START_X + xOffset,
+        CREATURE_TILES_START_Y,
+        CREATURE_TILE_WIDTH,
+        CREATURE_TILE_HEIGHT
+      )
 
       canvas.push()
 
-      canvas.translate(830 + 160 * i, 290)
+      // Translate to center bottom of where creature will be drawn.
+      canvas.translate(
+        CREATURE_TILES_START_X + xOffset + CREATURE_TILE_WIDTH / 2,
+        290
+      )
       canvas.scale(60.0 / SCALE_TO_FIX_BUG)
 
       const creature = this.getWorstMedianOrBestCreatureFromHistory(i)
@@ -685,9 +702,15 @@ export class GenerationViewActivity extends Activity {
     canvas.strokeWeight(3)
     canvas.noFill()
 
-    const x = 760 + worstMedianOrBestIndex * 160
-    const y = 180
-    canvas.rect(x, y, 140, 140)
+    const xOffset =
+      worstMedianOrBestIndex * (CREATURE_TILE_WIDTH + CREATURE_TILES_GAP)
+
+    canvas.rect(
+      CREATURE_TILES_START_X + xOffset,
+      CREATURE_TILES_START_Y,
+      CREATURE_TILE_WIDTH,
+      CREATURE_TILE_HEIGHT
+    )
 
     canvas.pop()
   }
@@ -710,13 +733,20 @@ export class GenerationViewActivity extends Activity {
   private getWorstMedianOrBestIndexUnderCursor(): number | null {
     const {cursorX, cursorY} = this.appView.getCursorPosition()
 
-    if (Math.abs(cursorY - 250) <= 70) {
-      if (Math.abs(cursorX - 990) <= 230) {
-        const modX = (cursorX - 760) % 160
+    if (
+      cursorY < CREATURE_TILES_START_Y ||
+      cursorY >= CREATURE_TILES_START_Y + CREATURE_TILE_HEIGHT
+    ) {
+      return null
+    }
 
-        if (modX < 140) {
-          return Math.floor((cursorX - 760) / 160)
-        }
+    // i = worstMedianOrBestIndex
+    for (let i = 0; i < 3; i++) {
+      const xOffset = i * (CREATURE_TILE_WIDTH + CREATURE_TILES_GAP)
+      let tileStartX = CREATURE_TILES_START_X + xOffset
+
+      if (cursorX >= tileStartX && cursorX < tileStartX + CREATURE_TILE_WIDTH) {
+        return i
       }
     }
 
@@ -807,8 +837,11 @@ export class GenerationViewActivity extends Activity {
   private calculateAnchorForPopupSimulation(
     worstMedianOrBestIndex: number
   ): PopupSimulationViewAnchor {
-    const positionX = 760 + worstMedianOrBestIndex * 160 - 60 // 60 == half the info box width
-    const positionY = 180
+    const xOffset =
+      worstMedianOrBestIndex * (CREATURE_TILE_WIDTH + CREATURE_TILES_GAP)
+
+    const positionX = CREATURE_TILES_START_X + xOffset - 60 // 60 == half the info box width
+    const positionY = CREATURE_TILES_START_Y
 
     return {
       startPositionX: positionX,

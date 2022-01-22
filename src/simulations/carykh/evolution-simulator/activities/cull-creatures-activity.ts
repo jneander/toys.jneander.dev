@@ -144,7 +144,7 @@ export class CullCreaturesActivity extends Activity {
 
     const creature = appState.sortedCreatures[id]
 
-    this.popupSimulationView.setCreatureInfo({creature})
+    this.popupSimulationView.setCreatureInfo({creature, rank: id + 1})
   }
 
   private clearPopupSimulation(): void {

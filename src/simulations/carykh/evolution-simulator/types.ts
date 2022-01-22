@@ -53,7 +53,6 @@ export type AppState = {
   currentActivityId: ActivityId | null
   fitnessPercentileHistory: Array<number[]>
   generationCount: number
-  generationCountDepictedInGraph: number
   generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
   generationSimulationMode: GenerationSimulationMode
   histogramBarCounts: Array<number[]>

@@ -45,6 +45,7 @@ export class GenerationViewActivity extends Activity {
   private creatureDrawer: CreatureDrawer
 
   private draggingSlider: boolean
+  private generationCountDepictedInGraph: number
 
   private generationHistoryGraphics: Graphics
   private graphGraphics: Graphics
@@ -110,6 +111,7 @@ export class GenerationViewActivity extends Activity {
     this.generationSlider = new GenerationSlider(widgetConfig)
 
     this.draggingSlider = false
+    this.generationCountDepictedInGraph = -1
 
     const {canvas} = this.appView
 
@@ -183,11 +185,9 @@ export class GenerationViewActivity extends Activity {
         160
       )
 
-      if (
-        appState.generationCountDepictedInGraph !== appState.generationCount
-      ) {
+      if (this.generationCountDepictedInGraph !== appState.generationCount) {
         this.drawGraph(975, 570)
-        appState.generationCountDepictedInGraph = appState.generationCount
+        this.generationCountDepictedInGraph = appState.generationCount
       }
 
       this.drawHistogram(760, 410, 460, 280)

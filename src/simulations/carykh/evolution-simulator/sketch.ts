@@ -40,7 +40,6 @@ export default function sketch(p5: p5) {
     currentActivityId: null,
     fitnessPercentileHistory: [],
     generationCount: -1,
-    generationCountDepictedInGraph: -1,
     generationHistoryMap: {},
     generationSimulationMode: GenerationSimulationMode.Off,
     histogramBarCounts: [],

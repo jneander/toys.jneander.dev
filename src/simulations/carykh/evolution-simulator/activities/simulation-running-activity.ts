@@ -1,9 +1,4 @@
-import {
-  ActivityId,
-  CREATURE_COUNT,
-  FITNESS_LABEL,
-  FITNESS_UNIT_LABEL
-} from '../constants'
+import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import type {SimulationState} from '../types'
@@ -84,7 +79,7 @@ export class SimulationRunningActivity extends Activity {
   }
 
   draw(): void {
-    const {appController, appState, appView} = this
+    const {appController, appView} = this
     const {canvas, height, width} = appView
     const {generationSimulation} = appController
 
@@ -118,13 +113,9 @@ export class SimulationRunningActivity extends Activity {
     }
 
     if (this.activityTimer >= 1020) {
-      appState.creaturesTested++
+      generationSimulation.advanceGenerationSimulation()
 
-      if (appState.creaturesTested < CREATURE_COUNT) {
-        generationSimulation.setSimulationState(
-          appState.creaturesInLatestGeneration[appState.creaturesTested]
-        )
-
+      if (!generationSimulation.isFinished()) {
         this.activityTimer = 0
         this.simulationView.setCameraZoom(0.01)
         this.simulationView.setCameraPosition(0, 0)

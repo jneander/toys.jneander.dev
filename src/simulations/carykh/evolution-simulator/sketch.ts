@@ -1,7 +1,6 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import Creature from './Creature'
 import {
   CullCreaturesActivity,
   GenerateCreaturesActivity,
@@ -34,7 +33,6 @@ export default function sketch(p5: p5) {
 
   const appState: AppState = {
     creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
-    creaturesInLatestGeneration: new Array<Creature>(CREATURE_COUNT),
     currentActivity: new NullActivity(),
     currentActivityId: null,
     fitnessPercentileHistory: [],

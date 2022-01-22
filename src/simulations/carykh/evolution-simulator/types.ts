@@ -60,7 +60,6 @@ export type AppState = {
   nextActivityId: ActivityId
   pendingGenerationCount: number
   selectedGeneration: number
-  showPopupSimulation: boolean
   sortedCreatures: Creature[]
   speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
   statusWindow: number

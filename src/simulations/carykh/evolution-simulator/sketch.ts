@@ -47,7 +47,6 @@ export default function sketch(p5: p5) {
     nextActivityId: ActivityId.Start,
     pendingGenerationCount: 0,
     selectedGeneration: 0,
-    showPopupSimulation: false,
     sortedCreatures: [],
     speciesCountsHistoryMap: {},
     statusWindow: -4
@@ -106,9 +105,6 @@ export default function sketch(p5: p5) {
   }
 
   p5.mouseReleased = () => {
-    // When the popup simulation is running, mouse clicks will stop it.
-    appState.showPopupSimulation = false
-
     appState.currentActivity.onMouseReleased()
   }
 

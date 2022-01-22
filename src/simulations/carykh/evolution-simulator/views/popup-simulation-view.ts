@@ -35,6 +35,8 @@ export class PopupSimulationView extends Widget {
 
   private creature: Creature | null
 
+  private showSimulationView: boolean
+
   constructor(config: PopupSimulationViewConfig) {
     super(config)
 
@@ -47,6 +49,8 @@ export class PopupSimulationView extends Widget {
     )
 
     this.creature = null
+
+    this.showSimulationView = false
 
     const {canvas, font} = this.appView
 
@@ -71,13 +75,13 @@ export class PopupSimulationView extends Widget {
   }
 
   draw(): void {
-    const {creature} = this
+    const {creature, showSimulationView} = this
 
     if (creature == null) {
       return
     }
 
-    const {showPopupSimulation, statusWindow} = this.appState
+    const {statusWindow} = this.appState
 
     const {infoBoxStartX, infoBoxStartY} =
       this.getInfoBoxStartPosition(creature)
@@ -90,7 +94,7 @@ export class PopupSimulationView extends Widget {
 
     this.drawInfoBox(infoBoxStartX, infoBoxStartY, creature, rank)
 
-    if (showPopupSimulation) {
+    if (showSimulationView) {
       const {simulationViewStartX, simulationViewStartY} =
         this.getSimulationViewStartPosition(infoBoxStartX, infoBoxStartY)
 
@@ -103,9 +107,13 @@ export class PopupSimulationView extends Widget {
     this.creature = creature
 
     if (reinitialize) {
-      this.appState.showPopupSimulation = true
+      this.showSimulationView = true
       this.creatureSimulation.setState(creature)
     }
+  }
+
+  dismissSimulationView(): void {
+    this.showSimulationView = false
   }
 
   private drawInfoBox(

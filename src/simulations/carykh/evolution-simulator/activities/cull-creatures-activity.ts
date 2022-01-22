@@ -99,6 +99,9 @@ export class CullCreaturesActivity extends Activity {
   }
 
   onMouseReleased(): void {
+    // When the popup simulation is running, mouse clicks will stop it.
+    this.popupSimulationView.dismissSimulationView()
+
     if (this.propagateCreaturesButton.isUnderCursor()) {
       this.propagateCreaturesButton.onClick()
     }

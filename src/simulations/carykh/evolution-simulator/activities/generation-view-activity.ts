@@ -256,6 +256,9 @@ export class GenerationViewActivity extends Activity {
   }
 
   onMouseReleased(): void {
+    // When the popup simulation is running, mouse clicks will stop it.
+    this.popupSimulationView.dismissSimulationView()
+
     this.draggingSlider = false
 
     if (

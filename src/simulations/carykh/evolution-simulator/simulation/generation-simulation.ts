@@ -52,6 +52,11 @@ export class GenerationSimulation {
     }
   }
 
+  simulateWholeGeneration(): void {
+    this.creaturesTested = 0
+    this.finishGenerationSimulationFromIndex(0)
+  }
+
   finishGenerationSimulation(): void {
     const {simulationState} = this.config
 
@@ -62,20 +67,6 @@ export class GenerationSimulation {
     this.creaturesTested++
 
     this.finishGenerationSimulationFromIndex(this.creaturesTested)
-  }
-
-  finishGenerationSimulationFromIndex(creatureIndex: number): void {
-    for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
-      this.setSimulationState(
-        this.config.appState.creaturesInLatestGeneration[i]
-      )
-
-      for (let s = 0; s < 900; s++) {
-        this.advanceCreatureSimulation()
-      }
-
-      this.setFitnessOfSimulationCreature()
-    }
   }
 
   setSimulationState(simulationCreature: Creature): void {
@@ -90,5 +81,19 @@ export class GenerationSimulation {
     const index = creatureIdToIndex(id)
 
     appState.creaturesInLatestGeneration[index].fitness = averageX * 0.2 // Multiply by 0.2 because a meter is 5 units for some weird reason.
+  }
+
+  private finishGenerationSimulationFromIndex(creatureIndex: number): void {
+    for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
+      this.setSimulationState(
+        this.config.appState.creaturesInLatestGeneration[i]
+      )
+
+      for (let s = 0; s < 900; s++) {
+        this.advanceCreatureSimulation()
+      }
+
+      this.setFitnessOfSimulationCreature()
+    }
   }
 }

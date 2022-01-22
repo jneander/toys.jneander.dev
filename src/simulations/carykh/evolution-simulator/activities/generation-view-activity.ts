@@ -780,9 +780,12 @@ export class GenerationViewActivity extends Activity {
     const creature =
       historyEntry[historyEntryKeyForStatusWindow(appState.statusWindow)]
 
+    const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
+    const rank = ranks[id + 3]
+
     if (appState.pendingGenerationCount === 0) {
       // The full simulation is not running, so the popup simulation can be shown.
-      this.popupSimulationView.setCreatureInfo({creature})
+      this.popupSimulationView.setCreatureInfo({creature, rank})
     }
   }
 

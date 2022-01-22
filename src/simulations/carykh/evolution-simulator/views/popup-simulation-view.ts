@@ -1,6 +1,6 @@
 import type Creature from '../Creature'
 import {CreatureDrawer} from '../creature-drawer'
-import {ActivityId, CREATURE_COUNT} from '../constants'
+import {ActivityId} from '../constants'
 import {creatureIdToIndex, speciesIdForCreature} from '../helpers'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
 import type {SimulationState} from '../types'
@@ -14,6 +14,7 @@ export interface PopupSimulationViewConfig extends WidgetConfig {
 
 export type PopupSimulationViewCreatureInfo = {
   creature: Creature
+  rank: number
 }
 
 const INFO_BOX_HEIGHT = 52
@@ -85,17 +86,10 @@ export class PopupSimulationView extends Widget {
       return
     }
 
-    const {statusWindow} = this.appState
-    const {creature} = creatureInfo
+    const {creature, rank} = creatureInfo
 
     const {infoBoxStartX, infoBoxStartY} =
       this.getInfoBoxStartPosition(creature)
-
-    let rank = statusWindow + 1
-    if (statusWindow < 0) {
-      const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
-      rank = ranks[statusWindow + 3]
-    }
 
     this.drawInfoBox(infoBoxStartX, infoBoxStartY, creature, rank)
 

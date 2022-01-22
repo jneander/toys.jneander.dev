@@ -57,7 +57,6 @@ export type AppState = {
   generationSimulationMode: GenerationSimulationMode
   histogramBarCounts: Array<number[]>
   nextActivityId: ActivityId
-  pendingGenerationCount: number
   selectedGeneration: number
   sortedCreatures: Creature[]
   speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}

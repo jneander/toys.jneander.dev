@@ -44,7 +44,6 @@ export default function sketch(p5: p5) {
     generationSimulationMode: GenerationSimulationMode.Off,
     histogramBarCounts: [],
     nextActivityId: ActivityId.Start,
-    pendingGenerationCount: 0,
     selectedGeneration: 0,
     sortedCreatures: [],
     speciesCountsHistoryMap: {}
@@ -96,10 +95,6 @@ export default function sketch(p5: p5) {
 
   p5.mousePressed = () => {
     appState.currentActivity.onMousePressed()
-
-    if (appState.pendingGenerationCount >= 1) {
-      appState.pendingGenerationCount = 0
-    }
   }
 
   p5.mouseReleased = () => {

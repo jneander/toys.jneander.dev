@@ -48,7 +48,6 @@ export type GenerationHistoryEntry = {
 export type AppState = {
   creatureIdsByGridIndex: number[]
   creaturesInLatestGeneration: Creature[]
-  creaturesTested: number
   currentActivity: ActivityInterface
   currentActivityId: ActivityId | null
   fitnessPercentileHistory: Array<number[]>

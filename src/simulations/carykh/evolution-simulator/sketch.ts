@@ -35,7 +35,6 @@ export default function sketch(p5: p5) {
   const appState: AppState = {
     creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
     creaturesInLatestGeneration: new Array<Creature>(CREATURE_COUNT),
-    creaturesTested: 0,
     currentActivity: new NullActivity(),
     currentActivityId: null,
     fitnessPercentileHistory: [],

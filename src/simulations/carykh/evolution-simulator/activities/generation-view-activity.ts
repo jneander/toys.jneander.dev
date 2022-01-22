@@ -764,19 +764,16 @@ export class GenerationViewActivity extends Activity {
     const {appController, appState, simulationState} = this
 
     simulationState.speed = 1
-    appState.creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    appController.generationSimulation.setSimulationState(
-      appState.creaturesInLatestGeneration[0]
-    )
+    appController.generationSimulation.initialize()
     appController.setActivityId(ActivityId.SimulationRunning)
   }
 
   private performQuickGenerationSimulation(): void {
     const {appController, appState} = this
 
-    appState.creaturesTested = 0
     appState.generationSimulationMode = GenerationSimulationMode.Quick
+    appController.generationSimulation.initialize()
     appController.generationSimulation.finishGenerationSimulationFromIndex(0)
     appController.setActivityId(ActivityId.SimulationFinished)
   }
@@ -793,7 +790,6 @@ export class GenerationViewActivity extends Activity {
 
   private startGenerationSimulation(): void {
     this.appState.generationSimulationMode = GenerationSimulationMode.ASAP
-    this.appState.creaturesTested = 0
   }
 
   private setUnit(best: number, worst: number): number {

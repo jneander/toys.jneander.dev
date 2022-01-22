@@ -782,12 +782,12 @@ export class GenerationViewActivity extends Activity {
 
     if (appState.pendingGenerationCount === 0) {
       // The full simulation is not running, so the popup simulation can be shown.
-      this.popupSimulationView.setCreature(creature)
+      this.popupSimulationView.setCreatureInfo({creature})
     }
   }
 
   private clearPopupSimulation(): void {
-    this.popupSimulationView.setCreature(null)
+    this.popupSimulationView.setCreatureInfo(null)
     this.appState.statusWindow = -4
   }
 }

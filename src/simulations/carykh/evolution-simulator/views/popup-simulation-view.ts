@@ -12,6 +12,10 @@ export interface PopupSimulationViewConfig extends WidgetConfig {
   simulationState: SimulationState
 }
 
+export type PopupSimulationViewCreatureInfo = {
+  creature: Creature
+}
+
 const INFO_BOX_HEIGHT = 52
 const INFO_BOX_WIDTH = 120
 const INFO_BOX_MARGIN = 5
@@ -33,7 +37,7 @@ export class PopupSimulationView extends Widget {
   private simulationState: SimulationState
   private creatureSimulation: CreatureSimulation
 
-  private creature: Creature | null
+  private creatureInfo: PopupSimulationViewCreatureInfo | null
 
   private showSimulationView: boolean
 
@@ -48,7 +52,7 @@ export class PopupSimulationView extends Widget {
       this.simulationConfig
     )
 
-    this.creature = null
+    this.creatureInfo = null
 
     this.showSimulationView = false
 
@@ -75,13 +79,14 @@ export class PopupSimulationView extends Widget {
   }
 
   draw(): void {
-    const {creature, showSimulationView} = this
+    const {creatureInfo, showSimulationView} = this
 
-    if (creature == null) {
+    if (creatureInfo == null) {
       return
     }
 
     const {statusWindow} = this.appState
+    const {creature} = creatureInfo
 
     const {infoBoxStartX, infoBoxStartY} =
       this.getInfoBoxStartPosition(creature)
@@ -102,13 +107,13 @@ export class PopupSimulationView extends Widget {
     }
   }
 
-  setCreature(creature: Creature | null): void {
-    const reinitialize = creature?.id && this.creature?.id !== creature?.id
-    this.creature = creature
+  setCreatureInfo(creatureInfo: PopupSimulationViewCreatureInfo | null): void {
+    const currentCreatureId = this.creatureInfo?.creature?.id
+    this.creatureInfo = creatureInfo
 
-    if (reinitialize) {
+    if (creatureInfo && creatureInfo.creature.id !== currentCreatureId) {
       this.showSimulationView = true
-      this.creatureSimulation.setState(creature)
+      this.creatureSimulation.setState(creatureInfo.creature)
     }
   }
 

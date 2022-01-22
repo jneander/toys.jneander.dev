@@ -145,11 +145,11 @@ export class SimulationFinishedActivity extends Activity {
 
     const creature = appState.sortedCreatures[id]
 
-    this.popupSimulationView.setCreature(creature)
+    this.popupSimulationView.setCreatureInfo({creature})
   }
 
   private clearPopupSimulation(): void {
-    this.popupSimulationView.setCreature(null)
+    this.popupSimulationView.setCreatureInfo(null)
     this.appState.statusWindow = -4
   }
 }

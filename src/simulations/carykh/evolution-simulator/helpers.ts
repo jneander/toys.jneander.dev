@@ -1,7 +1,7 @@
 import type Creature from './Creature'
 import type Node from './Node'
 import {CREATURE_COUNT} from './constants'
-import {GenerationHistoryEntry, RandomNumberFn} from './types'
+import type {RandomNumberFn} from './types'
 
 export function averagePositionOfNodes(nodes: Node[]): {
   averageX: number
@@ -20,20 +20,6 @@ export function averagePositionOfNodes(nodes: Node[]): {
   averageY = averageY / nodes.length
 
   return {averageX, averageY}
-}
-
-export function historyEntryKeyForStatusWindow(
-  statusWindow: number
-): keyof GenerationHistoryEntry {
-  if (statusWindow === -3) {
-    return 'slowest'
-  }
-
-  if (statusWindow === -2) {
-    return 'median'
-  }
-
-  return 'fastest'
 }
 
 export function creatureIdToIndex(creatureId: number): number {

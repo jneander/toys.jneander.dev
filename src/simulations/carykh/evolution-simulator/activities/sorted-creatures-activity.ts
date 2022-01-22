@@ -96,6 +96,9 @@ export class SortedCreaturesActivity extends Activity {
   }
 
   onMouseReleased(): void {
+    // When the popup simulation is running, mouse clicks will stop it.
+    this.popupSimulationView.dismissSimulationView()
+
     if (this.cullCreaturesButton.isUnderCursor()) {
       this.cullCreaturesButton.onClick()
     }

@@ -53,7 +53,6 @@ export class AppController {
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = this.creatureManipulator.generateCreature(i + 1)
-      appState.creaturesInLatestGeneration[i] = creature
       appState.sortedCreatures[i] = creature
     }
   }
@@ -69,9 +68,7 @@ export class AppController {
   }
 
   sortCreatures(): void {
-    const {appState} = this.config
-
-    appState.sortedCreatures = [...appState.creaturesInLatestGeneration].sort(
+    this.config.appState.sortedCreatures.sort(
       (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
     )
   }
@@ -183,12 +180,6 @@ export class AppController {
           survivingCreature,
           culledCreature.id + CREATURE_COUNT
         )
-    }
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.sortedCreatures[i]
-      const index = creatureIdToIndex(creature.id)
-      appState.creaturesInLatestGeneration[index] = creature.clone()
     }
 
     appState.generationCount++

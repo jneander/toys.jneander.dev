@@ -242,7 +242,7 @@ export class GenerationViewActivity extends Activity {
     }
 
     if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
-      appController.generationSimulation.finishGenerationSimulationFromIndex(0)
+      appController.generationSimulation.simulateWholeGeneration()
       appController.sortCreatures()
       appController.updateHistory()
       appController.cullCreatures()
@@ -773,8 +773,7 @@ export class GenerationViewActivity extends Activity {
     const {appController, appState} = this
 
     appState.generationSimulationMode = GenerationSimulationMode.Quick
-    appController.generationSimulation.initialize()
-    appController.generationSimulation.finishGenerationSimulationFromIndex(0)
+    appController.generationSimulation.simulateWholeGeneration()
     appController.setActivityId(ActivityId.SimulationFinished)
   }
 

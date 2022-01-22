@@ -74,6 +74,10 @@ export class SimulationRunningActivity extends Activity {
     this.activityTimer = 0
   }
 
+  initialize(): void {
+    this.appController.generationSimulation.initialize()
+  }
+
   deinitialize(): void {
     this.simulationView.deinitialize()
   }

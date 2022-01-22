@@ -765,7 +765,6 @@ export class GenerationViewActivity extends Activity {
 
     simulationState.speed = 1
     appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    appController.generationSimulation.initialize()
     appController.setActivityId(ActivityId.SimulationRunning)
   }
 

@@ -73,7 +73,7 @@ export class GenerationSimulation {
     this.finishGenerationSimulationFromIndex(this.creaturesTested)
   }
 
-  setSimulationState(simulationCreature: Creature): void {
+  private setSimulationState(simulationCreature: Creature): void {
     this.creatureSimulation.setState(simulationCreature)
   }
 

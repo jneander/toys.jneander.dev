@@ -1,5 +1,6 @@
 import type {Graphics} from 'p5'
 
+import type Creature from '../Creature'
 import {
   ActivityId,
   CREATURE_COUNT,
@@ -15,7 +16,6 @@ import {
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
-import type {GenerationHistoryEntry} from '../types'
 import {
   ButtonWidget,
   PopupSimulationView,
@@ -39,7 +39,6 @@ export class GenerationViewActivity extends Activity {
   private creatureDrawer: CreatureDrawer
 
   private draggingSlider: boolean
-  private statusWindow: number
 
   private generationHistoryGraphics: Graphics
   private graphGraphics: Graphics
@@ -105,7 +104,6 @@ export class GenerationViewActivity extends Activity {
     this.generationSlider = new GenerationSlider(widgetConfig)
 
     this.draggingSlider = false
-    this.statusWindow = -4
 
     const {canvas} = this.appView
 
@@ -202,28 +200,17 @@ export class GenerationViewActivity extends Activity {
         appState.pendingGenerationCount === 0 &&
         !this.draggingSlider
       ) {
-        const {cursorX, cursorY} = appView.getCursorPosition()
+        const worstMedianOrBestIndex =
+          this.getWorstMedianOrBestIndexUnderCursor()
 
         /*
          * When the cursor is over the worst, median, or best creature, the popup
          * simulation will be displayed for that creature.
          */
 
-        let worstMedianOrBest: number | null = null
-
-        if (Math.abs(cursorY - 250) <= 70) {
-          if (Math.abs(cursorX - 990) <= 230) {
-            const modX = (cursorX - 760) % 160
-
-            if (modX < 140) {
-              worstMedianOrBest = Math.floor((cursorX - 760) / 160) - 3
-            }
-          }
-        }
-
-        if (worstMedianOrBest != null) {
-          this.setPopupSimulationCreatureId(worstMedianOrBest)
-          this.drawWorstMedianAndBestHoverState()
+        if (worstMedianOrBestIndex != null) {
+          this.configurePopupSimulation(worstMedianOrBestIndex)
+          this.drawWorstMedianAndBestHoverState(worstMedianOrBestIndex)
           this.popupSimulationView.draw()
         } else {
           this.clearPopupSimulation()
@@ -663,19 +650,17 @@ export class GenerationViewActivity extends Activity {
     canvas.noStroke()
     canvas.textAlign(canvas.CENTER)
 
-    const historyEntry =
-      this.appState.generationHistoryMap[this.appState.selectedGeneration]
-
-    for (let k = 0; k < 3; k++) {
+    // i = worstMedianOrBestIndex
+    for (let i = 0; i < 3; i++) {
       canvas.fill(220)
-      canvas.rect(760 + k * 160, 180, 140, 140)
+      canvas.rect(760 + i * 160, 180, 140, 140)
 
       canvas.push()
 
-      canvas.translate(830 + 160 * k, 290)
+      canvas.translate(830 + 160 * i, 290)
       canvas.scale(60.0 / SCALE_TO_FIX_BUG)
 
-      const creature = historyEntry[this.historyEntryKeyForStatusWindow(k - 3)]
+      const creature = this.getWorstMedianOrBestCreatureFromHistory(i)
 
       this.creatureDrawer.drawCreature(creature, 0, 0, canvas)
 
@@ -689,7 +674,9 @@ export class GenerationViewActivity extends Activity {
     canvas.text('Best Creature', 1150, 310)
   }
 
-  private drawWorstMedianAndBestHoverState(): void {
+  private drawWorstMedianAndBestHoverState(
+    worstMedianOrBestIndex: number
+  ): void {
     const {canvas} = this.appView
 
     canvas.push()
@@ -698,7 +685,7 @@ export class GenerationViewActivity extends Activity {
     canvas.strokeWeight(3)
     canvas.noFill()
 
-    const x = 760 + (this.statusWindow + 3) * 160
+    const x = 760 + worstMedianOrBestIndex * 160
     const y = 180
     canvas.rect(x, y, 140, 140)
 
@@ -718,6 +705,22 @@ export class GenerationViewActivity extends Activity {
     }
 
     return record
+  }
+
+  private getWorstMedianOrBestIndexUnderCursor(): number | null {
+    const {cursorX, cursorY} = this.appView.getCursorPosition()
+
+    if (Math.abs(cursorY - 250) <= 70) {
+      if (Math.abs(cursorX - 990) <= 230) {
+        const modX = (cursorX - 760) % 160
+
+        if (modX < 140) {
+          return Math.floor((cursorX - 760) / 160)
+        }
+      }
+    }
+
+    return null
   }
 
   private performStepByStepSimulation(): void {
@@ -778,37 +781,33 @@ export class GenerationViewActivity extends Activity {
     return toInt(i) + ''
   }
 
-  private setPopupSimulationCreatureId(id: number): void {
-    const {appState} = this
-
-    this.statusWindow = id
-
-    const historyEntry =
-      appState.generationHistoryMap[appState.selectedGeneration]
-    const creature =
-      historyEntry[this.historyEntryKeyForStatusWindow(this.statusWindow)]
+  private configurePopupSimulation(worstMedianOrBestIndex: number): void {
+    const creature = this.getWorstMedianOrBestCreatureFromHistory(
+      worstMedianOrBestIndex
+    )
 
     const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
-    const rank = ranks[id + 3]
+    const rank = ranks[worstMedianOrBestIndex]
 
-    if (appState.pendingGenerationCount === 0) {
+    if (this.appState.pendingGenerationCount === 0) {
       // The full simulation is not running, so the popup simulation can be shown.
       this.popupSimulationView.setCreatureInfo({creature, rank})
 
-      const anchor = this.calculateAnchorForPopupSimulation(id)
+      const anchor = this.calculateAnchorForPopupSimulation(
+        worstMedianOrBestIndex
+      )
       this.popupSimulationView.setAnchor(anchor)
     }
   }
 
   private clearPopupSimulation(): void {
     this.popupSimulationView.setCreatureInfo(null)
-    this.statusWindow = -4
   }
 
   private calculateAnchorForPopupSimulation(
-    id: number
+    worstMedianOrBestIndex: number
   ): PopupSimulationViewAnchor {
-    const positionX = 760 + (id + 3) * 160 - 60 // 60 == half the info box width
+    const positionX = 760 + worstMedianOrBestIndex * 160 - 60 // 60 == half the info box width
     const positionY = 180
 
     return {
@@ -820,18 +819,22 @@ export class GenerationViewActivity extends Activity {
     }
   }
 
-  private historyEntryKeyForStatusWindow(
-    statusWindow: number
-  ): keyof GenerationHistoryEntry {
-    if (statusWindow === -3) {
-      return 'slowest'
+  private getWorstMedianOrBestCreatureFromHistory(
+    worstMedianOrBestIndex: number
+  ): Creature {
+    const {generationHistoryMap, selectedGeneration} = this.appState
+
+    const historyEntry = generationHistoryMap[selectedGeneration]
+
+    if (worstMedianOrBestIndex === 0) {
+      return historyEntry.slowest
     }
 
-    if (statusWindow === -2) {
-      return 'median'
+    if (worstMedianOrBestIndex === 1) {
+      return historyEntry.median
     }
 
-    return 'fastest'
+    return historyEntry.fastest
   }
 }
 

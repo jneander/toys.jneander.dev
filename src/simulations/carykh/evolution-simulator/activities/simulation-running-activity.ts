@@ -112,8 +112,6 @@ export class SimulationRunningActivity extends Activity {
         // When the simulation speed is too fast, skip ahead to next simulation using the timer.
         this.activityTimer = 1020
       }
-
-      generationSimulation.setFitnessOfSimulationCreature()
     }
 
     if (this.activityTimer >= 1020) {

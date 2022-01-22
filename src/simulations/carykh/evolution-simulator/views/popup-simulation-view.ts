@@ -17,6 +17,14 @@ export type PopupSimulationViewCreatureInfo = {
   rank: number
 }
 
+export type PopupSimulationViewAnchor = {
+  startPositionX: number
+  startPositionY: number
+  endPositionX: number
+  endPositionY: number
+  margin: number
+}
+
 const INFO_BOX_HEIGHT = 52
 const INFO_BOX_WIDTH = 120
 const INFO_BOX_MARGIN = 5
@@ -39,6 +47,7 @@ export class PopupSimulationView extends Widget {
   private creatureSimulation: CreatureSimulation
 
   private creatureInfo: PopupSimulationViewCreatureInfo | null
+  private anchor: PopupSimulationViewAnchor | null
 
   private showSimulationView: boolean
 
@@ -54,6 +63,7 @@ export class PopupSimulationView extends Widget {
     )
 
     this.creatureInfo = null
+    this.anchor = null
 
     this.showSimulationView = false
 
@@ -88,8 +98,7 @@ export class PopupSimulationView extends Widget {
 
     const {creature, rank} = creatureInfo
 
-    const {infoBoxStartX, infoBoxStartY} =
-      this.getInfoBoxStartPosition(creature)
+    const {infoBoxStartX, infoBoxStartY} = this.getInfoBoxStartPosition()
 
     this.drawInfoBox(infoBoxStartX, infoBoxStartY, creature, rank)
 
@@ -105,9 +114,12 @@ export class PopupSimulationView extends Widget {
     const currentCreatureId = this.creatureInfo?.creature?.id
     this.creatureInfo = creatureInfo
 
-    if (creatureInfo && creatureInfo.creature.id !== currentCreatureId) {
+    if (creatureInfo == null) {
+      this.anchor = null
+    } else if (creatureInfo.creature.id !== currentCreatureId) {
       this.showSimulationView = true
       this.creatureSimulation.setState(creatureInfo.creature)
+      this.anchor = this.calculateAnchor()
     }
   }
 
@@ -168,25 +180,20 @@ export class PopupSimulationView extends Widget {
     this.creatureSimulation.advance()
   }
 
-  private getInfoBoxStartPosition(creature: Creature): {
-    infoBoxStartX: number
-    infoBoxStartY: number
-  } {
-    const {appState, appView} = this
+  private calculateAnchor(): PopupSimulationViewAnchor {
+    const {currentActivityId, statusWindow} = this.appState
+    const {creature} = this.creatureInfo!
 
-    let infoBoxStartX, infoBoxStartY
-
-    if (appState.statusWindow >= 0) {
+    if (statusWindow >= 0) {
       let creatureRowIndex, creatureColumnIndex
 
-      if (appState.currentActivityId === ActivityId.SimulationFinished) {
+      if (currentActivityId === ActivityId.SimulationFinished) {
         const gridIndex = creatureIdToIndex(creature.id)
         creatureRowIndex = gridIndex % CREATURES_PER_ROW
         creatureColumnIndex = Math.floor(gridIndex / CREATURES_PER_ROW)
       } else {
-        creatureRowIndex = appState.statusWindow % CREATURES_PER_ROW
-        creatureColumnIndex =
-          Math.floor(appState.statusWindow / CREATURES_PER_ROW) + 1
+        creatureRowIndex = statusWindow % CREATURES_PER_ROW
+        creatureColumnIndex = Math.floor(statusWindow / CREATURES_PER_ROW) + 1
       }
 
       const creatureStartX =
@@ -194,29 +201,53 @@ export class PopupSimulationView extends Widget {
       const creatureStartY =
         creatureColumnIndex * CREATURE_HEIGHT + CREATURE_GRID_MARGIN_Y
 
-      // Align the top edge of the info box to the top edge of the creature.
-      infoBoxStartY = creatureStartY
-
-      /*
-       * Position the info box to the right of the creature. If there is not
-       * enought horizontal space between the creature and the right edge of the
-       * canvas (with margins), position the info box to the left of the
-       * creature instead.
-       */
-
-      const spaceToRightOfCreature =
-        appView.width - (creatureStartX + CREATURE_WIDTH)
-      const spaceNeededForInfoBox = INFO_BOX_WIDTH + INFO_BOX_MARGIN * 2
-
-      if (spaceToRightOfCreature >= spaceNeededForInfoBox) {
-        infoBoxStartX = creatureStartX + CREATURE_WIDTH + INFO_BOX_MARGIN
-      } else {
-        infoBoxStartX = creatureStartX - INFO_BOX_MARGIN - INFO_BOX_WIDTH
+      return {
+        startPositionX: creatureStartX,
+        startPositionY: creatureStartY,
+        endPositionX: creatureStartX + CREATURE_WIDTH,
+        endPositionY: creatureStartY + CREATURE_HEIGHT,
+        margin: INFO_BOX_MARGIN
       }
+    }
+
+    const positionX = 760 + (statusWindow + 3) * 160 - INFO_BOX_WIDTH / 2
+    const positionY = 180
+
+    return {
+      startPositionX: positionX,
+      startPositionY: positionY,
+      endPositionX: positionX,
+      endPositionY: positionY,
+      margin: 0
+    }
+  }
+
+  private getInfoBoxStartPosition(): {
+    infoBoxStartX: number
+    infoBoxStartY: number
+  } {
+    const anchor = this.anchor!
+
+    let infoBoxStartX, infoBoxStartY
+
+    // Align the top edge of the info box to the top edge of the anchor.
+    infoBoxStartY = anchor.startPositionY
+
+    /*
+     * Position the info box to the right of the anchor. If there is not
+     * enought horizontal space between the anchor and the right edge of the
+     * canvas (with margins), position the info box to the left of the anchor
+     * instead.
+     */
+
+    const spaceToRightOfAnchor =
+      this.appView.width - (anchor.endPositionX + anchor.margin)
+    const spaceNeededForInfoBox = INFO_BOX_WIDTH + INFO_BOX_MARGIN
+
+    if (spaceToRightOfAnchor >= spaceNeededForInfoBox) {
+      infoBoxStartX = anchor.endPositionX + anchor.margin
     } else {
-      infoBoxStartX =
-        760 + (appState.statusWindow + 3) * 160 - INFO_BOX_WIDTH / 2
-      infoBoxStartY = 180
+      infoBoxStartX = anchor.startPositionX - anchor.margin - INFO_BOX_WIDTH
     }
 
     return {infoBoxStartX, infoBoxStartY}
@@ -235,9 +266,8 @@ export class PopupSimulationView extends Widget {
 
     /*
      * Align the left edge of the simulation view with the left edge of the
-     * creature. Adjust to the left as needed to ensure that the right edge of
-     * the simulation view is within its margin for the right edge of the
-     * canvas.
+     * anchor. Adjust to the left as needed to ensure that the right edge of the
+     * simulation view is within its margin for the right edge of the canvas.
      */
 
     const simulationViewMaxStartX =

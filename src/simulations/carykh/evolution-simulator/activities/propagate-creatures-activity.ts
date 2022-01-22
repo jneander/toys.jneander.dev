@@ -1,7 +1,6 @@
 import type {Graphics} from 'p5'
 
 import {ActivityId} from '../constants'
-import {creatureIdToIndex} from '../helpers'
 import {ButtonWidget, ButtonWidgetConfig, CreatureGridView} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
@@ -15,11 +14,10 @@ export class PropagateCreaturesActivity extends Activity {
     super(config)
 
     const getCreatureAndGridIndexFn = (index: number) => {
-      let creature = this.appState.sortedCreatures[index]
-      const latestIndex = creatureIdToIndex(creature.id)
-      creature = this.appState.creaturesInLatestGeneration[latestIndex]
-
-      return {creature, gridIndex: index}
+      return {
+        creature: this.appState.sortedCreatures[index],
+        gridIndex: index
+      }
     }
 
     this.graphics = this.appView.canvas.createGraphics(1920, 1080)

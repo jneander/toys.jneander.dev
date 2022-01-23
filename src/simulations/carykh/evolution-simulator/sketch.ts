@@ -14,7 +14,7 @@ import {
   StartActivity
 } from './activities'
 import {AppController} from './app-controller'
-import {ActivityId, GenerationSimulationMode} from './constants'
+import {ActivityId} from './constants'
 import type {SimulationConfig} from './simulation'
 import type {AppState} from './types'
 import {AppView} from './views'
@@ -31,7 +31,6 @@ export default function sketch(p5: p5) {
     currentActivityId: null,
     generationCount: -1,
     generationHistoryMap: {},
-    generationSimulationMode: GenerationSimulationMode.Off,
     nextActivityId: ActivityId.Start,
     selectedGeneration: 0
   }

@@ -1,6 +1,7 @@
 import {AleaNumberGenerator} from '@jneander/utils-random'
-import {ReactNode, useEffect, useState} from 'react'
+import {useMemo} from 'react'
 
+import {P5ClientView} from '../../../shared/p5'
 import {NullActivity} from './activities'
 import {AppController} from './app-controller'
 import {ActivityId} from './constants'
@@ -9,50 +10,35 @@ import {createSketchFn} from './sketch'
 import type {AppState} from './types'
 
 export function CarykhEvolutionSimulator() {
-  const [content, setContent] = useState<ReactNode>(null)
+  const sketchFn = useMemo(() => {
+    const SEED = 0
+    const randomNumberGenerator = new AleaNumberGenerator({seed: SEED})
 
-  useEffect(() => {
-    let mounted = true
+    const appState: AppState = {
+      creaturesInLatestGeneration: [],
+      currentActivity: new NullActivity(),
+      currentActivityId: null,
+      generationCount: -1,
+      generationHistoryMap: {},
+      nextActivityId: ActivityId.Start,
+      selectedGeneration: 0
+    }
 
-    import('../../../shared/p5').then(module => {
-      if (mounted) {
-        const SEED = 0
-        const randomNumberGenerator = new AleaNumberGenerator({seed: SEED})
+    const simulationConfig: SimulationConfig = {
+      hazelStairs: -1
+    }
 
-        const appState: AppState = {
-          creaturesInLatestGeneration: [],
-          currentActivity: new NullActivity(),
-          currentActivityId: null,
-          generationCount: -1,
-          generationHistoryMap: {},
-          nextActivityId: ActivityId.Start,
-          selectedGeneration: 0
-        }
-
-        const simulationConfig: SimulationConfig = {
-          hazelStairs: -1
-        }
-
-        const appController = new AppController({
-          appState,
-          randomNumberGenerator,
-          simulationConfig
-        })
-
-        const sketchFn = createSketchFn({
-          appController,
-          appState
-        })
-
-        const {P5View} = module
-        setContent(<P5View sketch={sketchFn}></P5View>)
-      }
+    const appController = new AppController({
+      appState,
+      randomNumberGenerator,
+      simulationConfig
     })
 
-    return () => {
-      mounted = false
-    }
+    return createSketchFn({
+      appController,
+      appState
+    })
   }, [])
 
-  return <div>{content}</div>
+  return <P5ClientView sketch={sketchFn} />
 }

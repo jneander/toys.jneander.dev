@@ -43,6 +43,7 @@ export type GenerationHistoryEntry = {
   fastest: Creature
   median: Creature
   slowest: Creature
+  fitnessPercentiles: number[]
   speciesCounts: SpeciesCount[]
 }
 
@@ -50,7 +51,6 @@ export type AppState = {
   creaturesInLatestGeneration: Creature[]
   currentActivity: ActivityInterface
   currentActivityId: ActivityId | null
-  fitnessPercentileHistory: Array<number[]>
   generationCount: number
   generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
   generationSimulationMode: GenerationSimulationMode

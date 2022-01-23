@@ -16,7 +16,6 @@ import {
 import {AppController} from './app-controller'
 import {
   ActivityId,
-  FITNESS_PERCENTILE_CREATURE_INDICES,
   GenerationSimulationMode,
   HISTOGRAM_BAR_SPAN
 } from './constants'
@@ -34,7 +33,6 @@ export default function sketch(p5: p5) {
     creaturesInLatestGeneration: [],
     currentActivity: new NullActivity(),
     currentActivityId: null,
-    fitnessPercentileHistory: [],
     generationCount: -1,
     generationHistoryMap: {},
     generationSimulationMode: GenerationSimulationMode.Off,
@@ -98,9 +96,6 @@ export default function sketch(p5: p5) {
       width: 1280
     })
 
-    appState.fitnessPercentileHistory.push(
-      new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0.0)
-    )
     appState.histogramBarCounts.push(new Array(HISTOGRAM_BAR_SPAN).fill(0))
   }
 

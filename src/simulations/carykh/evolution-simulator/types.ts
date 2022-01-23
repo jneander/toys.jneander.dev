@@ -44,6 +44,7 @@ export type GenerationHistoryEntry = {
   median: Creature
   slowest: Creature
   fitnessPercentiles: number[]
+  histogramBarCounts: number[]
   speciesCounts: SpeciesCount[]
 }
 
@@ -54,7 +55,6 @@ export type AppState = {
   generationCount: number
   generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
   generationSimulationMode: GenerationSimulationMode
-  histogramBarCounts: Array<number[]>
   nextActivityId: ActivityId
   selectedGeneration: number
 }

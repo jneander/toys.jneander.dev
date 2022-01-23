@@ -377,8 +377,12 @@ export class GenerationViewActivity extends Activity {
     let maxH = 1
 
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
-      if (appState.histogramBarCounts[appState.selectedGeneration][i] > maxH) {
-        maxH = appState.histogramBarCounts[appState.selectedGeneration][i]
+      const histogramBarCounts = this.getHistogramBarCountsFromHistory(
+        appState.selectedGeneration
+      )
+
+      if (histogramBarCounts[i] > maxH) {
+        maxH = histogramBarCounts[i]
       }
     }
 
@@ -449,11 +453,10 @@ export class GenerationViewActivity extends Activity {
       fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX]
 
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
-      const h = Math.min(
-        appState.histogramBarCounts[appState.selectedGeneration][i] *
-          multiplier,
-        hh
+      const histogramBarCounts = this.getHistogramBarCountsFromHistory(
+        appState.selectedGeneration
       )
+      const h = Math.min(histogramBarCounts[i] * multiplier, hh)
 
       if (
         i + HISTOGRAM_BAR_MIN ==
@@ -903,6 +906,16 @@ export class GenerationViewActivity extends Activity {
     }
 
     return new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0)
+  }
+
+  private getHistogramBarCountsFromHistory(generation: number): number[] {
+    const historyEntry = this.appState.generationHistoryMap[generation]
+
+    if (historyEntry) {
+      return historyEntry.histogramBarCounts
+    }
+
+    return new Array(HISTOGRAM_BAR_SPAN).fill(0)
   }
 }
 

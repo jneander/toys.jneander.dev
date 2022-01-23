@@ -68,10 +68,7 @@ export class AppController {
         ].fitness
     }
 
-    const beginBar = new Array<number>(HISTOGRAM_BAR_SPAN).fill(0)
-
-    appState.histogramBarCounts.push(beginBar)
-
+    const histogramBarCounts = new Array<number>(HISTOGRAM_BAR_SPAN).fill(0)
     const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
@@ -82,7 +79,7 @@ export class AppController {
       )
 
       if (bar >= 0 && bar < HISTOGRAM_BAR_SPAN) {
-        appState.histogramBarCounts[nextGeneration][bar]++
+        histogramBarCounts[bar]++
       }
 
       const speciesId = speciesIdForCreature(
@@ -109,6 +106,7 @@ export class AppController {
       median: appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
       slowest: appState.creaturesInLatestGeneration[lastCreatureIndex].clone(),
       fitnessPercentiles,
+      histogramBarCounts,
       speciesCounts
     }
 

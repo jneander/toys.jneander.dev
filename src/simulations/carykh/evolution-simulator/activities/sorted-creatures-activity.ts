@@ -49,8 +49,7 @@ export class SortedCreaturesActivity extends Activity {
 
     const simulationWidgetConfig = {
       ...widgetConfig,
-      simulationConfig: this.simulationConfig,
-      simulationState: this.simulationState
+      simulationConfig: this.simulationConfig
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)

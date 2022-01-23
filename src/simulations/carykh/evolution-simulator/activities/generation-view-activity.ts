@@ -66,8 +66,7 @@ export class GenerationViewActivity extends Activity {
 
     const simulationWidgetConfig = {
       ...widgetConfig,
-      simulationConfig: this.simulationConfig,
-      simulationState: this.simulationState
+      simulationConfig: this.simulationConfig
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
@@ -762,9 +761,8 @@ export class GenerationViewActivity extends Activity {
   }
 
   private performStepByStepSimulation(): void {
-    const {appController, appState, simulationState} = this
+    const {appController, appState} = this
 
-    simulationState.speed = 1
     appState.generationSimulationMode = GenerationSimulationMode.StepByStep
     appController.setActivityId(ActivityId.SimulationRunning)
   }
@@ -794,8 +792,7 @@ export class GenerationViewActivity extends Activity {
   private simulateWholeGeneration(): void {
     const generationSimulation = new GenerationSimulation({
       appState: this.appState,
-      simulationConfig: this.simulationConfig,
-      simulationState: this.simulationState
+      simulationConfig: this.simulationConfig
     })
 
     generationSimulation.simulateWholeGeneration()

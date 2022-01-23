@@ -13,7 +13,6 @@ import type {
   AppState,
   GenerationHistoryEntry,
   RandomNumberFn,
-  SimulationState,
   SpeciesCount
 } from './types'
 
@@ -24,7 +23,6 @@ export interface AppControllerConfig {
   appState: AppState
   randomFractFn: RandomNumberFn
   simulationConfig: SimulationConfig
-  simulationState: SimulationState
 }
 
 export class AppController {

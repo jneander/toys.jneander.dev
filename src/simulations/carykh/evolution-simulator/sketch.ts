@@ -22,7 +22,7 @@ import {
   HISTOGRAM_BAR_SPAN
 } from './constants'
 import type {SimulationConfig} from './simulation'
-import type {AppState, SimulationState} from './types'
+import type {AppState} from './types'
 import {AppView} from './views'
 
 export default function sketch(p5: p5) {
@@ -52,24 +52,11 @@ export default function sketch(p5: p5) {
       p5.random(minInclusive, maxExclusive)
   }
 
-  const simulationState: SimulationState = {
-    creature: {
-      id: 0,
-      muscles: [],
-      nodeCaches: [],
-      nodes: []
-    },
-
-    speed: 1,
-    timer: 0
-  }
-
   const appController = new AppController({
     appState,
     randomFractFn: (minInclusive: number, maxExclusive: number) =>
       p5.random(minInclusive, maxExclusive),
-    simulationConfig,
-    simulationState
+    simulationConfig
   })
 
   let appView: AppView
@@ -133,8 +120,7 @@ export default function sketch(p5: p5) {
         appController,
         appState,
         appView,
-        simulationConfig,
-        simulationState
+        simulationConfig
       })
       appState.currentActivityId = nextActivityId
 

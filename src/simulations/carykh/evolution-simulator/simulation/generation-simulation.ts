@@ -7,7 +7,6 @@ import {CreatureSimulation, SimulationConfig} from './creature-simulation'
 export interface GenerationSimulationConfig {
   appState: AppState
   simulationConfig: SimulationConfig
-  simulationState: SimulationState
 }
 
 export class GenerationSimulation {
@@ -21,10 +20,7 @@ export class GenerationSimulation {
   constructor(config: GenerationSimulationConfig) {
     this.config = config
 
-    this.creatureSimulation = new CreatureSimulation(
-      config.simulationState,
-      config.simulationConfig
-    )
+    this.creatureSimulation = new CreatureSimulation(config.simulationConfig)
 
     this.creatureQueue = []
 
@@ -33,6 +29,10 @@ export class GenerationSimulation {
 
   getCreatureSimulation(): CreatureSimulation {
     return this.creatureSimulation
+  }
+
+  getCreatureSimulationState(): SimulationState {
+    return this.creatureSimulation.getState()
   }
 
   isFinished(): boolean {
@@ -48,7 +48,7 @@ export class GenerationSimulation {
   advanceCreatureSimulation(): void {
     this.creatureSimulation.advance()
 
-    if (this.config.simulationState.timer === 900) {
+    if (this.getCreatureSimulationState().timer === 900) {
       this.setFitnessOfSimulationCreature()
     }
   }
@@ -68,9 +68,9 @@ export class GenerationSimulation {
   }
 
   finishGenerationSimulation(): void {
-    const {simulationState} = this.config
+    const {timer} = this.getCreatureSimulationState()
 
-    for (let frame = simulationState.timer; frame < 900; frame++) {
+    for (let frame = timer; frame < 900; frame++) {
       this.advanceCreatureSimulation()
     }
 
@@ -93,7 +93,7 @@ export class GenerationSimulation {
   }
 
   private setFitnessOfSimulationCreature(): void {
-    const {id, nodes} = this.config.simulationState.creature
+    const {id, nodes} = this.getCreatureSimulationState().creature
     const {averageX} = averagePositionOfNodes(nodes)
     const index = creatureIdToIndex(id)
 

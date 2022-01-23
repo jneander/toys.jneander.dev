@@ -6,6 +6,8 @@ import {
   CREATURE_COUNT,
   FITNESS_LABEL,
   FITNESS_PERCENTILE_CREATURE_INDICES,
+  FITNESS_PERCENTILE_LOWEST_INDEX,
+  FITNESS_PERCENTILE_MEDIAN_INDEX,
   FITNESS_UNIT_LABEL,
   GenerationSimulationMode,
   HISTOGRAM_BARS_PER_METER,
@@ -174,7 +176,9 @@ export class GenerationViewActivity extends Activity {
       const fitnessPercentiles = this.getFitnessPercentilesFromHistory(
         appState.selectedGeneration
       )
-      const fitnessPercentile = Math.round(fitnessPercentiles[14] * 1000) / 1000
+      const fitnessPercentile =
+        Math.round(fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX] * 1000) /
+        1000
 
       canvas.fill(0)
       canvas.text('Median ' + FITNESS_LABEL, 50, 160)
@@ -441,7 +445,8 @@ export class GenerationViewActivity extends Activity {
     const fitnessPercentiles = this.getFitnessPercentilesFromHistory(
       appState.selectedGeneration
     )
-    const fitnessPercentile = fitnessPercentiles[14]
+    const fitnessPercentile =
+      fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX]
 
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
       const h = Math.min(
@@ -505,21 +510,25 @@ export class GenerationViewActivity extends Activity {
     for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
       let k
 
-      if (i == 28) {
-        k = 14
-      } else if (i < 14) {
+      if (i == FITNESS_PERCENTILE_LOWEST_INDEX) {
+        k = FITNESS_PERCENTILE_MEDIAN_INDEX
+      } else if (i < FITNESS_PERCENTILE_MEDIAN_INDEX) {
         k = i
       } else {
         k = i + 1
       }
 
-      if (k == 14) {
+      if (k == FITNESS_PERCENTILE_MEDIAN_INDEX) {
         this.graphGraphics.stroke(255, 0, 0, 255)
         this.graphGraphics.strokeWeight(5)
       } else {
         canvas.stroke(0)
 
-        if (k == 0 || k == 28 || (k >= 10 && k <= 18)) {
+        if (
+          k == 0 ||
+          k == FITNESS_PERCENTILE_LOWEST_INDEX ||
+          (k >= 10 && k <= 18)
+        ) {
           this.graphGraphics.strokeWeight(3)
         } else {
           this.graphGraphics.strokeWeight(1)
@@ -724,7 +733,13 @@ export class GenerationViewActivity extends Activity {
 
     for (let i = 0; i < this.appState.generationCount; i++) {
       const fitnessPercentiles = this.getFitnessPercentilesFromHistory(i + 1)
-      const toTest = fitnessPercentiles[toInt(14 - sign * 14)]
+      const toTest =
+        fitnessPercentiles[
+          toInt(
+            FITNESS_PERCENTILE_MEDIAN_INDEX -
+              sign * FITNESS_PERCENTILE_MEDIAN_INDEX
+          )
+        ]
 
       if (toTest * sign > record * sign) {
         record = toTest

@@ -47,6 +47,7 @@ export type GenerationHistoryEntry = {
 
 export type AppState = {
   creatureIdsByGridIndex: number[]
+  creaturesInLatestGeneration: Creature[]
   currentActivity: ActivityInterface
   currentActivityId: ActivityId | null
   fitnessPercentileHistory: Array<number[]>
@@ -56,6 +57,5 @@ export type AppState = {
   histogramBarCounts: Array<number[]>
   nextActivityId: ActivityId
   selectedGeneration: number
-  sortedCreatures: Creature[]
   speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
 }

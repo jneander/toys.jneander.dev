@@ -33,6 +33,7 @@ export default function sketch(p5: p5) {
 
   const appState: AppState = {
     creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
+    creaturesInLatestGeneration: [],
     currentActivity: new NullActivity(),
     currentActivityId: null,
     fitnessPercentileHistory: [],
@@ -42,7 +43,6 @@ export default function sketch(p5: p5) {
     histogramBarCounts: [],
     nextActivityId: ActivityId.Start,
     selectedGeneration: 0,
-    sortedCreatures: [],
     speciesCountsHistoryMap: {}
   }
 

@@ -70,7 +70,7 @@ export class GenerationViewActivity extends Activity {
 
     const simulationWidgetConfig = {
       ...widgetConfig,
-      simulationConfig: this.simulationConfig
+      simulationConfig: this.appController.getSimulationConfig()
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
@@ -809,7 +809,7 @@ export class GenerationViewActivity extends Activity {
   private simulateWholeGeneration(): void {
     const generationSimulation = new GenerationSimulation({
       appState: this.appState,
-      simulationConfig: this.simulationConfig
+      simulationConfig: this.appController.getSimulationConfig()
     })
 
     generationSimulation.simulateWholeGeneration()

@@ -102,8 +102,7 @@ export default function sketch(p5: p5) {
       appState.currentActivity = new ActivityClass({
         appController,
         appState,
-        appView,
-        simulationConfig
+        appView
       })
       appState.currentActivityId = nextActivityId
 

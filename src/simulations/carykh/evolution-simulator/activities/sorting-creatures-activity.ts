@@ -1,9 +1,4 @@
-import {
-  ActivityId,
-  CREATURE_COUNT,
-  GenerationSimulationMode,
-  SCALE_TO_FIX_BUG
-} from '../constants'
+import {ActivityId, CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {creatureIdToIndex} from '../helpers'
 import {ButtonWidget, CREATURE_GRID_TILES_PER_ROW} from '../views'
@@ -69,11 +64,7 @@ export class SortingCreaturesActivity extends Activity {
     canvas.pop()
 
     this.skipButton.draw()
-    if (appState.generationSimulationMode === GenerationSimulationMode.Quick) {
-      this.activityTimer += 10
-    } else {
-      this.activityTimer += 2
-    }
+    this.activityTimer += 10
 
     if (this.activityTimer > 60 * Math.PI) {
       this.appController.setActivityId(ActivityId.SortedCreatures)

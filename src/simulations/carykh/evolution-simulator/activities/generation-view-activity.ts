@@ -53,6 +53,7 @@ export class GenerationViewActivity extends Activity {
 
   private draggingSlider: boolean
   private generationCountDepictedInGraph: number
+  private generationSimulationMode: GenerationSimulationMode
 
   private generationHistoryGraphics: Graphics
   private graphGraphics: Graphics
@@ -120,6 +121,7 @@ export class GenerationViewActivity extends Activity {
     this.draggingSlider = false
     this.generationCountDepictedInGraph = -1
     this.pendingGenerationCount = 0
+    this.generationSimulationMode = GenerationSimulationMode.Off
 
     const {canvas} = this.appView
 
@@ -234,10 +236,10 @@ export class GenerationViewActivity extends Activity {
         this.startGenerationSimulation()
       }
     } else {
-      appState.generationSimulationMode = GenerationSimulationMode.Off
+      this.generationSimulationMode = GenerationSimulationMode.Off
     }
 
-    if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
+    if (this.generationSimulationMode === GenerationSimulationMode.ASAP) {
       this.simulateWholeGeneration()
       appController.sortCreatures()
       appController.updateHistory()
@@ -780,18 +782,14 @@ export class GenerationViewActivity extends Activity {
   }
 
   private performStepByStepSimulation(): void {
-    const {appController, appState} = this
-
-    appState.generationSimulationMode = GenerationSimulationMode.StepByStep
-    appController.setActivityId(ActivityId.SimulationRunning)
+    this.generationSimulationMode = GenerationSimulationMode.StepByStep
+    this.appController.setActivityId(ActivityId.SimulationRunning)
   }
 
   private performQuickGenerationSimulation(): void {
-    const {appController, appState} = this
-
-    appState.generationSimulationMode = GenerationSimulationMode.Quick
+    this.generationSimulationMode = GenerationSimulationMode.Quick
     this.simulateWholeGeneration()
-    appController.setActivityId(ActivityId.SimulationFinished)
+    this.appController.setActivityId(ActivityId.SimulationFinished)
   }
 
   private performAsapGenerationSimulation(): void {
@@ -805,7 +803,7 @@ export class GenerationViewActivity extends Activity {
   }
 
   private startGenerationSimulation(): void {
-    this.appState.generationSimulationMode = GenerationSimulationMode.ASAP
+    this.generationSimulationMode = GenerationSimulationMode.ASAP
   }
 
   private simulateWholeGeneration(): void {

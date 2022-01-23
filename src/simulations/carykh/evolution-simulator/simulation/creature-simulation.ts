@@ -51,6 +51,10 @@ export class CreatureSimulation {
     this.state.timer++
   }
 
+  getState(): SimulationState {
+    return this.state
+  }
+
   setState(creature: Creature): void {
     const {state} = this
 

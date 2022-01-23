@@ -30,12 +30,12 @@ export class SimulationRunningActivity extends Activity {
     this.simulationView = new SimulationView({
       cameraSpeed: 0.06,
       creatureDrawer: new CreatureDrawer({appView: this.appView}),
+      creatureSimulation: this.generationSimulation.getCreatureSimulation(),
       height: 900,
       p5: canvas,
       postFont: font,
       showArrow: true,
       simulationConfig: this.simulationConfig,
-      simulationState: this.simulationState,
       statsFont: font,
       width: 1600
     })

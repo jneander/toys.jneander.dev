@@ -5,18 +5,18 @@ import {POST_FONT_SIZE, SCALE_TO_FIX_BUG} from '../constants'
 import type {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import {toInt} from '../math'
-import type {SimulationConfig} from '../simulation'
-import type {SimulationCameraState, SimulationState} from '../types'
+import type {CreatureSimulation, SimulationConfig} from '../simulation'
+import type {SimulationCameraState} from '../types'
 
 export interface SimulationViewConfig {
   cameraSpeed: number
   creatureDrawer: CreatureDrawer
+  creatureSimulation: CreatureSimulation
   height: number
   p5: p5
   postFont: Font
   showArrow: boolean
   simulationConfig: SimulationConfig
-  simulationState: SimulationState
   statsFont: Font
   width: number
 }
@@ -85,10 +85,11 @@ export class SimulationView {
   }
 
   private drawArrow(): void {
-    const {postFont, simulationState} = this.config
+    const {creatureSimulation, postFont} = this.config
     const {simulationGraphics} = this
 
-    const {averageX} = averagePositionOfNodes(simulationState.creature.nodes)
+    const {nodes} = creatureSimulation.getState().creature
+    const {averageX} = averagePositionOfNodes(nodes)
 
     simulationGraphics.textAlign(simulationGraphics.CENTER)
     simulationGraphics.textFont(postFont, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
@@ -123,12 +124,11 @@ export class SimulationView {
   }
 
   private drawGround(): void {
-    const {height, simulationConfig, simulationState, width} = this.config
+    const {creatureSimulation, height, simulationConfig, width} = this.config
     const {cameraState, simulationGraphics} = this
 
-    const {averageX, averageY} = averagePositionOfNodes(
-      simulationState.creature.nodes
-    )
+    const {nodes} = creatureSimulation.getState().creature
+    const {averageX, averageY} = averagePositionOfNodes(nodes)
 
     const stairDrawStart = Math.max(
       1,
@@ -167,12 +167,11 @@ export class SimulationView {
   }
 
   private drawPosts(): void {
-    const {postFont, simulationState} = this.config
+    const {creatureSimulation, postFont} = this.config
     const {simulationGraphics} = this
 
-    const {averageX, averageY} = averagePositionOfNodes(
-      simulationState.creature.nodes
-    )
+    const {nodes} = creatureSimulation.getState().creature
+    const {averageX, averageY} = averagePositionOfNodes(nodes)
     const startPostY = Math.min(-8, toInt(averageY / 4) * 4 - 4)
 
     if (simulationGraphics == null) {
@@ -209,8 +208,10 @@ export class SimulationView {
   }
 
   private drawSimulation(): void {
-    const {creatureDrawer, showArrow, simulationState} = this.config
+    const {creatureDrawer, creatureSimulation, showArrow} = this.config
     const {cameraState, simulationGraphics} = this
+
+    const simulationState = creatureSimulation.getState()
 
     simulationGraphics.push()
 
@@ -249,8 +250,10 @@ export class SimulationView {
   }
 
   private drawStats(): void {
-    const {simulationState, statsFont, width} = this.config
+    const {creatureSimulation, statsFont, width} = this.config
     const {statsGraphics} = this
+
+    const simulationState = creatureSimulation.getState()
 
     const x = width - 5
     const y = 0
@@ -298,8 +301,10 @@ export class SimulationView {
   }
 
   private updateCameraPosition(): void {
-    const {cameraSpeed, simulationState} = this.config
+    const {cameraSpeed, creatureSimulation} = this.config
     const {cameraState} = this
+
+    const simulationState = creatureSimulation.getState()
 
     const {averageX, averageY} = averagePositionOfNodes(
       simulationState.creature.nodes

@@ -31,6 +31,10 @@ export class GenerationSimulation {
     this.creaturesTested = 0
   }
 
+  getCreatureSimulation(): CreatureSimulation {
+    return this.creatureSimulation
+  }
+
   isFinished(): boolean {
     return this.creaturesTested >= CREATURE_COUNT
   }

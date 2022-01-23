@@ -1,3 +1,4 @@
+import {AleaNumberGenerator} from '@jneander/utils-random'
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
@@ -23,6 +24,8 @@ export default function sketch(p5: p5) {
   const FRAME_RATE = 60 // target frames per second
   const SEED = 0
 
+  const randomNumberGenerator = new AleaNumberGenerator({seed: SEED})
+
   let font: Font
 
   const appState: AppState = {
@@ -41,8 +44,7 @@ export default function sketch(p5: p5) {
 
   const appController = new AppController({
     appState,
-    randomFractFn: (minInclusive: number, maxExclusive: number) =>
-      p5.random(minInclusive, maxExclusive),
+    randomNumberGenerator,
     simulationConfig
   })
 
@@ -78,7 +80,6 @@ export default function sketch(p5: p5) {
 
   p5.setup = () => {
     p5.frameRate(FRAME_RATE)
-    p5.randomSeed(SEED)
 
     appView = new AppView({
       font,

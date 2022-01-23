@@ -8,7 +8,7 @@ import {
 } from './constants'
 import {CreatureManipulator} from './creatures'
 import {creatureIdToIndex, speciesIdForCreature} from './helpers'
-import {GenerationSimulation, SimulationConfig} from './simulation'
+import {SimulationConfig} from './simulation'
 import type {
   AppState,
   GenerationHistoryEntry,
@@ -28,8 +28,6 @@ export interface AppControllerConfig {
 }
 
 export class AppController {
-  generationSimulation: GenerationSimulation
-
   private config: AppControllerConfig
 
   private creatureManipulator: CreatureManipulator
@@ -40,12 +38,6 @@ export class AppController {
     const {randomFractFn} = config
 
     this.creatureManipulator = new CreatureManipulator({randomFractFn})
-
-    this.generationSimulation = new GenerationSimulation({
-      appState: config.appState,
-      simulationConfig: config.simulationConfig,
-      simulationState: config.simulationState
-    })
   }
 
   generateCreatures(): void {

@@ -16,6 +16,7 @@ import {
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
+import {GenerationSimulation} from '../simulation'
 import {
   ButtonWidget,
   ButtonWidgetConfig,
@@ -242,7 +243,7 @@ export class GenerationViewActivity extends Activity {
     }
 
     if (appState.generationSimulationMode === GenerationSimulationMode.ASAP) {
-      appController.generationSimulation.simulateWholeGeneration()
+      this.simulateWholeGeneration()
       appController.sortCreatures()
       appController.updateHistory()
       appController.cullCreatures()
@@ -772,7 +773,7 @@ export class GenerationViewActivity extends Activity {
     const {appController, appState} = this
 
     appState.generationSimulationMode = GenerationSimulationMode.Quick
-    appController.generationSimulation.simulateWholeGeneration()
+    this.simulateWholeGeneration()
     appController.setActivityId(ActivityId.SimulationFinished)
   }
 
@@ -788,6 +789,16 @@ export class GenerationViewActivity extends Activity {
 
   private startGenerationSimulation(): void {
     this.appState.generationSimulationMode = GenerationSimulationMode.ASAP
+  }
+
+  private simulateWholeGeneration(): void {
+    const generationSimulation = new GenerationSimulation({
+      appState: this.appState,
+      simulationConfig: this.simulationConfig,
+      simulationState: this.simulationState
+    })
+
+    generationSimulation.simulateWholeGeneration()
   }
 
   private setUnit(best: number, worst: number): number {

@@ -7,7 +7,6 @@ import {
   MIN_MUSCLE_LENGTH_INCLUSIVE,
   NODE_MASS_DEFAULT
 } from '../constants'
-import {randomArrayValue} from '../helpers'
 import {dist2d, toInt} from '../math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -52,7 +51,7 @@ export class CreatureManipulator {
           NODE_MASS_DEFAULT,
           this.randomFract(0, 1),
           this.randomFract(0, 1),
-          randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
+          this.randomArrayValue(NODE_OPERATION_IDS),
           this.randomInt(0, nodeNum),
           this.randomInt(0, nodeNum)
         )
@@ -222,7 +221,7 @@ export class CreatureManipulator {
     let newAxon2 = node.axon2
 
     if (this.randomFract(0, 1) < BIG_MUTATION_CHANCE * mutability) {
-      newOperation = randomArrayValue(NODE_OPERATION_IDS, this.randomInt)
+      newOperation = this.randomArrayValue(NODE_OPERATION_IDS)
     }
     if (this.randomFract(0, 1) < BIG_MUTATION_CHANCE * mutability) {
       newAxon1 = this.randomInt(0, nodeNum)
@@ -282,7 +281,7 @@ export class CreatureManipulator {
         NODE_MASS_DEFAULT,
         this.randomFract(0, 1),
         this.randomFract(0, 1),
-        randomArrayValue(NODE_OPERATION_IDS, this.randomInt),
+        this.randomArrayValue(NODE_OPERATION_IDS),
         this.randomInt(0, newNodeCount),
         this.randomInt(0, newNodeCount)
       )
@@ -544,5 +543,9 @@ export class CreatureManipulator {
 
   private randomInt(minInclusive: number, maxExclusive: number): number {
     return toInt(this.randomFract(minInclusive, maxExclusive))
+  }
+
+  private randomArrayValue<T>(array: T[]): T {
+    return array[this.randomInt(0, array.length)]
   }
 }

@@ -1,8 +1,6 @@
 import type Creature from './Creature'
 import type Node from './Node'
 import {CREATURE_COUNT} from './constants'
-import type {RandomNumberFn} from './types'
-
 export function averagePositionOfNodes(nodes: Node[]): {
   averageX: number
   averageY: number
@@ -24,13 +22,6 @@ export function averagePositionOfNodes(nodes: Node[]): {
 
 export function creatureIdToIndex(creatureId: number): number {
   return (creatureId - 1) % CREATURE_COUNT
-}
-
-export function randomArrayValue<T>(
-  array: T[],
-  randomUint32Fn: RandomNumberFn
-): T {
-  return array[randomUint32Fn(0, array.length)]
 }
 
 export function speciesIdForCreature(creature: Creature): number {

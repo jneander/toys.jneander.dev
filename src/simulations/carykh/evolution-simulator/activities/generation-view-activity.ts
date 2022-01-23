@@ -171,25 +171,16 @@ export class GenerationViewActivity extends Activity {
       this.asapButton.draw()
       this.alapButton.draw()
 
+      const fitnessPercentiles = this.getFitnessPercentilesFromHistory(
+        appState.selectedGeneration
+      )
+      const fitnessPercentile = Math.round(fitnessPercentiles[14] * 1000) / 1000
+
       canvas.fill(0)
       canvas.text('Median ' + FITNESS_LABEL, 50, 160)
       canvas.textAlign(canvas.CENTER)
       canvas.textAlign(canvas.RIGHT)
-      canvas.text(
-        Math.round(
-          appState.fitnessPercentileHistory[
-            Math.min(
-              appState.selectedGeneration,
-              appState.fitnessPercentileHistory.length - 1
-            )
-          ][14] * 1000
-        ) /
-          1000 +
-          ' ' +
-          FITNESS_UNIT_LABEL,
-        700,
-        160
-      )
+      canvas.text(fitnessPercentile + ' ' + FITNESS_UNIT_LABEL, 700, 160)
 
       if (this.generationCountDepictedInGraph !== appState.generationCount) {
         this.drawGraph(975, 570)
@@ -447,6 +438,11 @@ export class GenerationViewActivity extends Activity {
 
     canvas.noStroke()
 
+    const fitnessPercentiles = this.getFitnessPercentilesFromHistory(
+      appState.selectedGeneration
+    )
+    const fitnessPercentile = fitnessPercentiles[14]
+
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
       const h = Math.min(
         appState.histogramBarCounts[appState.selectedGeneration][i] *
@@ -456,14 +452,7 @@ export class GenerationViewActivity extends Activity {
 
       if (
         i + HISTOGRAM_BAR_MIN ==
-        Math.floor(
-          appState.fitnessPercentileHistory[
-            Math.min(
-              appState.selectedGeneration,
-              appState.fitnessPercentileHistory.length - 1
-            )
-          ][14] * HISTOGRAM_BARS_PER_METER
-        )
+        Math.floor(fitnessPercentile * HISTOGRAM_BARS_PER_METER)
       ) {
         canvas.fill(255, 0, 0)
       } else {
@@ -538,11 +527,17 @@ export class GenerationViewActivity extends Activity {
       }
 
       for (let i = 0; i < appState.generationCount; i++) {
+        const fitnessPercentiles = this.getFitnessPercentilesFromHistory(i)
+        const currentPercentile = fitnessPercentiles[k]
+
+        const nextPercentiles = this.getFitnessPercentilesFromHistory(i + 1)
+        const nextPercentile = nextPercentiles[k]
+
         this.graphGraphics.line(
           x + i * genWidth,
-          -appState.fitnessPercentileHistory[i][k] * meterHeight + zero + y,
+          -currentPercentile * meterHeight + zero + y,
           x + (i + 1) * genWidth,
-          -appState.fitnessPercentileHistory[i + 1][k] * meterHeight + zero + y
+          -nextPercentile * meterHeight + zero + y
         )
       }
     }
@@ -728,8 +723,8 @@ export class GenerationViewActivity extends Activity {
     let record = -sign
 
     for (let i = 0; i < this.appState.generationCount; i++) {
-      const toTest =
-        this.appState.fitnessPercentileHistory[i + 1][toInt(14 - sign * 14)]
+      const fitnessPercentiles = this.getFitnessPercentilesFromHistory(i + 1)
+      const toTest = fitnessPercentiles[toInt(14 - sign * 14)]
 
       if (toTest * sign > record * sign) {
         record = toTest
@@ -883,6 +878,16 @@ export class GenerationViewActivity extends Activity {
     }
 
     return historyEntry.fastest
+  }
+
+  private getFitnessPercentilesFromHistory(generation: number): number[] {
+    const historyEntry = this.appState.generationHistoryMap[generation]
+
+    if (historyEntry) {
+      return historyEntry.fitnessPercentiles
+    }
+
+    return new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0)
   }
 }
 

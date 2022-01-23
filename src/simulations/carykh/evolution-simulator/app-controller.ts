@@ -58,11 +58,11 @@ export class AppController {
 
     const nextGeneration = appState.generationCount + 1
 
-    appState.fitnessPercentileHistory.push(
-      new Array<number>(FITNESS_PERCENTILE_CREATURE_INDICES.length)
+    const fitnessPercentiles = new Array<number>(
+      FITNESS_PERCENTILE_CREATURE_INDICES.length
     )
     for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
-      appState.fitnessPercentileHistory[appState.generationCount + 1][i] =
+      fitnessPercentiles[i] =
         appState.creaturesInLatestGeneration[
           FITNESS_PERCENTILE_CREATURE_INDICES[i]
         ].fitness
@@ -108,6 +108,7 @@ export class AppController {
       fastest: appState.creaturesInLatestGeneration[0].clone(),
       median: appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
       slowest: appState.creaturesInLatestGeneration[lastCreatureIndex].clone(),
+      fitnessPercentiles,
       speciesCounts
     }
 

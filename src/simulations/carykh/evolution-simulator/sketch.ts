@@ -14,11 +14,7 @@ import {
   StartActivity
 } from './activities'
 import {AppController} from './app-controller'
-import {
-  ActivityId,
-  GenerationSimulationMode,
-  HISTOGRAM_BAR_SPAN
-} from './constants'
+import {ActivityId, GenerationSimulationMode} from './constants'
 import type {SimulationConfig} from './simulation'
 import type {AppState} from './types'
 import {AppView} from './views'
@@ -36,7 +32,6 @@ export default function sketch(p5: p5) {
     generationCount: -1,
     generationHistoryMap: {},
     generationSimulationMode: GenerationSimulationMode.Off,
-    histogramBarCounts: [],
     nextActivityId: ActivityId.Start,
     selectedGeneration: 0
   }
@@ -95,8 +90,6 @@ export default function sketch(p5: p5) {
       scale: 0.8,
       width: 1280
     })
-
-    appState.histogramBarCounts.push(new Array(HISTOGRAM_BAR_SPAN).fill(0))
   }
 
   p5.draw = () => {

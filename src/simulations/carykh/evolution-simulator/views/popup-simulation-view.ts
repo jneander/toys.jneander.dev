@@ -65,12 +65,12 @@ export class PopupSimulationView extends Widget {
     this.simulationView = new SimulationView({
       cameraSpeed: 0.1,
       creatureDrawer: new CreatureDrawer({appView: this.appView}),
+      creatureSimulation: this.creatureSimulation,
       height: 600,
       p5: canvas,
       postFont: font,
       showArrow: false,
       simulationConfig: this.simulationConfig,
-      simulationState: this.simulationState,
       statsFont: font,
       width: 600
     })

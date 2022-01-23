@@ -22,7 +22,7 @@ export class SimulationRunningActivity extends Activity {
 
     this.generationSimulation = new GenerationSimulation({
       appState: this.appState,
-      simulationConfig: this.simulationConfig
+      simulationConfig: this.appController.getSimulationConfig()
     })
 
     this.simulationView = new SimulationView({
@@ -33,7 +33,7 @@ export class SimulationRunningActivity extends Activity {
       p5: canvas,
       postFont: font,
       showArrow: true,
-      simulationConfig: this.simulationConfig,
+      simulationConfig: this.appController.getSimulationConfig(),
       statsFont: font,
       width: 1600
     })

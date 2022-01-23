@@ -37,6 +37,10 @@ export class AppController {
     })
   }
 
+  getSimulationConfig(): SimulationConfig {
+    return this.config.simulationConfig
+  }
+
   generateCreatures(): void {
     const {appState} = this.config
 

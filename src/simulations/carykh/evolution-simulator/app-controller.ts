@@ -7,7 +7,7 @@ import {
   HISTOGRAM_BAR_SPAN
 } from './constants'
 import {CreatureManipulator} from './creatures'
-import {creatureIdToIndex, speciesIdForCreature} from './helpers'
+import {speciesIdForCreature} from './helpers'
 import {SimulationConfig} from './simulation'
 import type {
   AppState,
@@ -44,16 +44,6 @@ export class AppController {
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = this.creatureManipulator.generateCreature(i + 1)
       appState.creaturesInLatestGeneration[i] = creature
-    }
-  }
-
-  updateCreatureIdsByGridIndex(): void {
-    const {appState} = this.config
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.creaturesInLatestGeneration[i]
-      const gridIndex = creatureIdToIndex(creature.id)
-      appState.creatureIdsByGridIndex[gridIndex] = i
     }
   }
 

@@ -17,6 +17,7 @@ import {
 import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
 import {GenerationSimulation} from '../simulation'
+import type {SpeciesCount} from '../types'
 import {
   ButtonWidget,
   ButtonWidgetConfig,
@@ -322,8 +323,9 @@ export class GenerationViewActivity extends Activity {
       canvas.textFont(font, 12)
       canvas.noStroke()
 
-      const speciesCounts =
-        appState.speciesCountsHistoryMap[appState.selectedGeneration] || []
+      const historyEntry =
+        appState.generationHistoryMap[appState.selectedGeneration]
+      const speciesCounts = historyEntry?.speciesCounts || []
 
       // Identify the largest species count.
       const highCount = speciesCounts.reduce(
@@ -572,8 +574,8 @@ export class GenerationViewActivity extends Activity {
        * The initial index `i1` of `0` does not correspond to a generation, so
        * fall back to an empty species counts history entry.
        */
-      const speciesCounts1 = appState.speciesCountsHistoryMap[i1] || []
-      const speciesCounts2 = appState.speciesCountsHistoryMap[i2]
+      const speciesCounts1 = this.getSpeciesCountsForGeneration(i1)
+      const speciesCounts2 = this.getSpeciesCountsForGeneration(i2)
 
       /*
        * Joined entries will include a count for all species represented between
@@ -735,6 +737,10 @@ export class GenerationViewActivity extends Activity {
     }
 
     return record
+  }
+
+  private getSpeciesCountsForGeneration(generation: number): SpeciesCount[] {
+    return this.appState.generationHistoryMap[generation]?.speciesCounts || []
   }
 
   private getWorstMedianOrBestIndexUnderCursor(): number | null {

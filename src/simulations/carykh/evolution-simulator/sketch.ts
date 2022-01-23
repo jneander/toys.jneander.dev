@@ -40,8 +40,7 @@ export default function sketch(p5: p5) {
     generationSimulationMode: GenerationSimulationMode.Off,
     histogramBarCounts: [],
     nextActivityId: ActivityId.Start,
-    selectedGeneration: 0,
-    speciesCountsHistoryMap: {}
+    selectedGeneration: 0
   }
 
   const simulationConfig: SimulationConfig = {

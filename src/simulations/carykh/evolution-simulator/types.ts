@@ -29,11 +29,6 @@ export type SimulationState = {
   timer: number
 }
 
-export type RandomNumberFn = (
-  minInclusive: number,
-  maxExclusive: number
-) => number
-
 export type SpeciesCount = {
   count: number
   speciesId: number

@@ -1,3 +1,5 @@
+import type {RandomNumberGenerator} from '@jneander/utils-random'
+
 import {
   ActivityId,
   CREATURE_COUNT,
@@ -9,19 +11,14 @@ import {
 import {CreatureManipulator} from './creatures'
 import {speciesIdForCreature} from './helpers'
 import {SimulationConfig} from './simulation'
-import type {
-  AppState,
-  GenerationHistoryEntry,
-  RandomNumberFn,
-  SpeciesCount
-} from './types'
+import type {AppState, GenerationHistoryEntry, SpeciesCount} from './types'
 
 const lastCreatureIndex = CREATURE_COUNT - 1
 const midCreatureIndex = Math.floor(CREATURE_COUNT / 2) - 1
 
 export interface AppControllerConfig {
   appState: AppState
-  randomFractFn: RandomNumberFn
+  randomNumberGenerator: RandomNumberGenerator
   simulationConfig: SimulationConfig
 }
 
@@ -33,9 +30,11 @@ export class AppController {
   constructor(config: AppControllerConfig) {
     this.config = config
 
-    const {randomFractFn} = config
+    const {randomNumberGenerator} = config
 
-    this.creatureManipulator = new CreatureManipulator({randomFractFn})
+    this.creatureManipulator = new CreatureManipulator({
+      randomNumberGenerator
+    })
   }
 
   generateCreatures(): void {
@@ -114,11 +113,13 @@ export class AppController {
   }
 
   cullCreatures(): void {
-    const {appState, randomFractFn} = this.config
+    const {appState, randomNumberGenerator} = this.config
 
     for (let i = 0; i < 500; i++) {
       const fitnessRankSurvivalChance = i / CREATURE_COUNT
-      const cullingThreshold = (Math.pow(randomFractFn(-1, 1), 3) + 1) / 2 // cube function
+
+      const randomFract = randomNumberGenerator.nextFract32(0, 1) * 2 - 1
+      const cullingThreshold = (Math.pow(randomFract, 3) + 1) / 2 // cube function
 
       let survivingCreatureIndex
       let culledCreatureIndex

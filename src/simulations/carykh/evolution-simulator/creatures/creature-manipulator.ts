@@ -1,3 +1,5 @@
+import type {RandomNumberGenerator} from '@jneander/utils-random'
+
 import Creature from '../Creature'
 import Muscle from '../Muscle'
 import Node from '../Node'
@@ -7,13 +9,12 @@ import {
   MIN_MUSCLE_LENGTH_INCLUSIVE,
   NODE_MASS_DEFAULT
 } from '../constants'
-import {dist2d, toInt} from '../math'
+import {dist2d} from '../math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   NODE_OPERATION_IDS,
   NodeOperationId
 } from '../node-operations'
-import type {RandomNumberFn} from '../types'
 import {
   adjustNodesToCenter,
   applyForceToMuscle,
@@ -21,7 +22,7 @@ import {
 } from './helpers'
 
 export type CreatureManipulatorConfig = {
-  randomFractFn: RandomNumberFn
+  randomNumberGenerator: RandomNumberGenerator
 }
 
 export class CreatureManipulator {
@@ -538,11 +539,39 @@ export class CreatureManipulator {
   }
 
   private randomFract(minInclusive: number, maxExclusive: number): number {
-    return this.config.randomFractFn(minInclusive, maxExclusive)
+    const range = maxExclusive - minInclusive
+
+    let randomFract
+
+    if (range < 1) {
+      randomFract = this.config.randomNumberGenerator.nextFract32(0, range)
+    } else {
+      /*
+       * The original `nextFract32` method preserves bit fidelity by limiting
+       * the value to 32-bit fractions. To generate random fractions outside
+       * this range, the result must be scaled. To minimize the loss of fidelity
+       * while scaling, scale the range down to the highest value less than 1
+       * using a power of 2. Then scale the generated fraction back up using the
+       * same power of 2.
+       */
+
+      const scale = 2 ** Math.ceil(Math.log2(range))
+
+      randomFract = this.config.randomNumberGenerator.nextFract32(
+        0,
+        range / scale
+      )
+      randomFract *= scale
+    }
+
+    return randomFract + minInclusive
   }
 
   private randomUint32(minInclusive: number, maxExclusive: number): number {
-    return toInt(this.randomFract(minInclusive, maxExclusive))
+    return this.config.randomNumberGenerator.nextUint32(
+      minInclusive,
+      maxExclusive
+    )
   }
 
   private randomArrayValue<T>(array: T[]): T {

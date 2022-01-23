@@ -2,17 +2,11 @@ import type Creature from '../Creature'
 import Node from '../Node'
 import {FRICTION, GRAVITY, PRESSURE_UNIT} from '../constants'
 import {applyForceToMuscle, applyForcesToNode} from '../creatures'
-import {toInt} from '../math'
 import {NodeOperationId} from '../node-operations'
-import type {
-  RandomNumberFn,
-  SimulationNodeCache,
-  SimulationState
-} from '../types'
+import type {SimulationNodeCache, SimulationState} from '../types'
 
 export type SimulationConfig = {
   hazelStairs: number
-  randomFractFn: RandomNumberFn
 }
 
 export class CreatureSimulation {
@@ -33,9 +27,6 @@ export class CreatureSimulation {
       speed: 1,
       timer: 0
     }
-
-    this.randomFloat = this.randomFloat.bind(this)
-    this.randomInt = this.randomInt.bind(this)
   }
 
   advance(): void {
@@ -189,13 +180,5 @@ export class CreatureSimulation {
         node.velocityX = 0
       }
     }
-  }
-
-  private randomFloat(minInclusive: number, maxExclusive: number): number {
-    return this.config.randomFractFn(minInclusive, maxExclusive)
-  }
-
-  private randomInt(minInclusive: number, maxExclusive: number): number {
-    return toInt(this.randomFloat(minInclusive, maxExclusive))
   }
 }

@@ -43,6 +43,7 @@ export type GenerationHistoryEntry = {
   fastest: Creature
   median: Creature
   slowest: Creature
+  speciesCounts: SpeciesCount[]
 }
 
 export type AppState = {
@@ -56,5 +57,4 @@ export type AppState = {
   histogramBarCounts: Array<number[]>
   nextActivityId: ActivityId
   selectedGeneration: number
-  speciesCountsHistoryMap: {[generation: number]: SpeciesCount[]}
 }

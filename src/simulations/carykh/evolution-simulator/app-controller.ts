@@ -56,6 +56,8 @@ export class AppController {
   updateHistory(): void {
     const {appState} = this.config
 
+    const nextGeneration = appState.generationCount + 1
+
     appState.fitnessPercentileHistory.push(
       new Array<number>(FITNESS_PERCENTILE_CREATURE_INDICES.length)
     )
@@ -65,14 +67,6 @@ export class AppController {
           FITNESS_PERCENTILE_CREATURE_INDICES[i]
         ].fitness
     }
-
-    const historyEntry: GenerationHistoryEntry = {
-      fastest: appState.creaturesInLatestGeneration[0].clone(),
-      median: appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
-      slowest: appState.creaturesInLatestGeneration[lastCreatureIndex].clone()
-    }
-
-    appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
 
     const beginBar = new Array<number>(HISTOGRAM_BAR_SPAN).fill(0)
 
@@ -88,7 +82,7 @@ export class AppController {
       )
 
       if (bar >= 0 && bar < HISTOGRAM_BAR_SPAN) {
-        appState.histogramBarCounts[appState.generationCount + 1][bar]++
+        appState.histogramBarCounts[nextGeneration][bar]++
       }
 
       const speciesId = speciesIdForCreature(
@@ -100,7 +94,9 @@ export class AppController {
     }
 
     // Ensure species counts are sorted consistently by species ID.
-    const mapEntries: SpeciesCount[] = Object.entries(speciesCountBySpeciesId)
+    const speciesCounts: SpeciesCount[] = Object.entries(
+      speciesCountBySpeciesId
+    )
       .map(([speciesId, count]) => {
         return {speciesId: Number(speciesId), count}
       })
@@ -108,7 +104,14 @@ export class AppController {
         return speciesCountA.speciesId - speciesCountB.speciesId
       })
 
-    appState.speciesCountsHistoryMap[appState.generationCount + 1] = mapEntries
+    const historyEntry: GenerationHistoryEntry = {
+      fastest: appState.creaturesInLatestGeneration[0].clone(),
+      median: appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
+      slowest: appState.creaturesInLatestGeneration[lastCreatureIndex].clone(),
+      speciesCounts
+    }
+
+    appState.generationHistoryMap[nextGeneration] = historyEntry
   }
 
   cullCreatures(): void {

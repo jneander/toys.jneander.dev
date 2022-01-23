@@ -1,8 +1,7 @@
 import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
-import {GenerationSimulation} from '../simulation'
-import type {SimulationState} from '../types'
+import {CreatureSimulation, GenerationSimulation} from '../simulation'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
@@ -23,8 +22,7 @@ export class SimulationRunningActivity extends Activity {
 
     this.generationSimulation = new GenerationSimulation({
       appState: this.appState,
-      simulationConfig: this.simulationConfig,
-      simulationState: this.simulationState
+      simulationConfig: this.simulationConfig
     })
 
     this.simulationView = new SimulationView({
@@ -56,18 +54,25 @@ export class SimulationRunningActivity extends Activity {
 
     this.playbackSpeedButton = new PlaybackSpeedButton({
       ...widgetConfig,
-      simulationState: this.simulationState,
+      creatureSimulation: this.generationSimulation.getCreatureSimulation(),
 
       onClick: () => {
-        this.simulationState.speed *= 2
+        const creatureSimulation =
+          this.generationSimulation.getCreatureSimulation()
 
-        if (this.simulationState.speed === 1024) {
-          this.simulationState.speed = 900
+        let {speed} = creatureSimulation.getState()
+
+        speed *= 2
+
+        if (speed === 1024) {
+          speed = 900
         }
 
-        if (this.simulationState.speed >= 1800) {
-          this.simulationState.speed = 1
+        if (speed >= 1800) {
+          speed = 1
         }
+
+        creatureSimulation.setSpeed(speed)
       }
     })
 
@@ -95,8 +100,10 @@ export class SimulationRunningActivity extends Activity {
     const {appController, appView, generationSimulation} = this
     const {canvas, height, width} = appView
 
+    const {speed} = generationSimulation.getCreatureSimulationState()
+
     if (this.activityTimer <= 900) {
-      for (let s = 0; s < this.simulationState.speed; s++) {
+      for (let s = 0; s < speed; s++) {
         if (this.activityTimer < 900) {
           // For each point of speed, advance through one cycle of simulation.
           this.advanceSimulation()
@@ -113,7 +120,7 @@ export class SimulationRunningActivity extends Activity {
     }
 
     if (this.activityTimer == 900) {
-      if (this.simulationState.speed < 30) {
+      if (speed < 30) {
         // When the simulation speed is slow enough, display the creature's fitness.
         this.drawFinalFitness()
       } else {
@@ -135,7 +142,7 @@ export class SimulationRunningActivity extends Activity {
     }
 
     if (this.activityTimer >= 900) {
-      this.activityTimer += this.simulationState.speed
+      this.activityTimer += speed
     }
   }
 
@@ -165,11 +172,12 @@ export class SimulationRunningActivity extends Activity {
   }
 
   private drawFinalFitness(): void {
+    const {generationSimulation} = this
     const {canvas, font, height, width} = this.appView
 
-    const {averageX} = averagePositionOfNodes(
-      this.simulationState.creature.nodes
-    )
+    const {nodes} = generationSimulation.getCreatureSimulationState().creature
+
+    const {averageX} = averagePositionOfNodes(nodes)
 
     canvas.noStroke()
     canvas.fill(0, 0, 0, 130)
@@ -215,27 +223,29 @@ class SkipButton extends ButtonWidget {
 }
 
 interface StepByStepPlaybackSpeedButtonConfig extends ButtonWidgetConfig {
-  simulationState: SimulationState
+  creatureSimulation: CreatureSimulation
 }
 
 class PlaybackSpeedButton extends ButtonWidget {
-  private simulationState: SimulationState
+  private creatureSimulation: CreatureSimulation
 
   constructor(config: StepByStepPlaybackSpeedButtonConfig) {
     super(config)
 
-    this.simulationState = config.simulationState
+    this.creatureSimulation = config.creatureSimulation
   }
 
   draw(): void {
     const {canvas, font, height} = this.appView
+
+    const {speed} = this.creatureSimulation.getState()
 
     canvas.fill(0)
     canvas.rect(120, height - 40, 240, 40)
     canvas.fill(255)
     canvas.textAlign(canvas.CENTER)
     canvas.textFont(font, 32)
-    canvas.text('PB speed: x' + this.simulationState.speed, 240, height - 8)
+    canvas.text('PB speed: x' + speed, 240, height - 8)
   }
 
   isUnderCursor(): boolean {

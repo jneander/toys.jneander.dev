@@ -1,6 +1,6 @@
 import type {AppController} from '../app-controller'
 import type {SimulationConfig} from '../simulation'
-import type {AppState, SimulationState} from '../types'
+import type {AppState} from '../types'
 import type {AppView} from '../views'
 
 export interface ActivityConfig {
@@ -8,7 +8,6 @@ export interface ActivityConfig {
   appState: AppState
   appView: AppView
   simulationConfig: SimulationConfig
-  simulationState: SimulationState
 }
 
 export interface ActivityInterface {
@@ -25,14 +24,12 @@ export abstract class Activity implements ActivityInterface {
   protected appState: AppState
   protected appView: AppView
   protected simulationConfig: SimulationConfig
-  protected simulationState: SimulationState
 
   constructor(config: ActivityConfig) {
     this.appController = config.appController
     this.appState = config.appState
     this.appView = config.appView
     this.simulationConfig = config.simulationConfig
-    this.simulationState = config.simulationState
   }
 
   initialize(): void {}

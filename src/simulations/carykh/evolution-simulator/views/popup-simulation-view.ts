@@ -2,14 +2,12 @@ import type Creature from '../Creature'
 import {CreatureDrawer} from '../creature-drawer'
 import {speciesIdForCreature} from '../helpers'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
-import type {SimulationState} from '../types'
 import {CREATURE_GRID_TILE_WIDTH} from './creature-grid-view'
 import {Widget, WidgetConfig} from './shared'
 import {SimulationView} from './simulation-view'
 
 export interface PopupSimulationViewConfig extends WidgetConfig {
   simulationConfig: SimulationConfig
-  simulationState: SimulationState
 }
 
 export type PopupSimulationViewCreatureInfo = {
@@ -36,7 +34,6 @@ const SIMULATION_VIEW_MARGIN = 10
 export class PopupSimulationView extends Widget {
   private simulationView: SimulationView
   private simulationConfig: SimulationConfig
-  private simulationState: SimulationState
   private creatureSimulation: CreatureSimulation
 
   private creatureInfo: PopupSimulationViewCreatureInfo | null
@@ -48,12 +45,8 @@ export class PopupSimulationView extends Widget {
     super(config)
 
     this.simulationConfig = config.simulationConfig
-    this.simulationState = config.simulationState
 
-    this.creatureSimulation = new CreatureSimulation(
-      this.simulationState,
-      this.simulationConfig
-    )
+    this.creatureSimulation = new CreatureSimulation(this.simulationConfig)
 
     this.creatureInfo = null
     this.anchor = null

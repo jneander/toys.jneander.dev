@@ -19,9 +19,20 @@ export class CreatureSimulation {
   private config: SimulationConfig
   private state: SimulationState
 
-  constructor(state: SimulationState, config: SimulationConfig) {
+  constructor(config: SimulationConfig) {
     this.config = config
-    this.state = state
+
+    this.state = {
+      creature: {
+        id: 0,
+        muscles: [],
+        nodeCaches: [],
+        nodes: []
+      },
+
+      speed: 1,
+      timer: 0
+    }
 
     this.randomFloat = this.randomFloat.bind(this)
     this.randomInt = this.randomInt.bind(this)
@@ -72,6 +83,10 @@ export class CreatureSimulation {
 
     state.creature.id = creature.id
     state.timer = 0
+  }
+
+  setSpeed(speed: number): void {
+    this.state.speed = speed
   }
 
   private applyGravityToNode(node: Node): void {

@@ -10,8 +10,8 @@ import {
 import {dist2d, toInt} from '../math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
-  NodeOperationId,
-  NODE_OPERATION_IDS
+  NODE_OPERATION_IDS,
+  NodeOperationId
 } from '../node-operations'
 import type {RandomNumberFn} from '../types'
 import {

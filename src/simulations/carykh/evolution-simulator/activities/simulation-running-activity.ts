@@ -1,6 +1,7 @@
 import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
+import {GenerationSimulation} from '../simulation'
 import type {SimulationState} from '../types'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
 import {Activity, ActivityConfig} from './shared'
@@ -11,12 +12,20 @@ export class SimulationRunningActivity extends Activity {
   private playbackSpeedButton: PlaybackSpeedButton
   private finishButton: FinishButton
 
+  private generationSimulation: GenerationSimulation
+
   private activityTimer: number
 
   constructor(config: ActivityConfig) {
     super(config)
 
     const {canvas, font} = this.appView
+
+    this.generationSimulation = new GenerationSimulation({
+      appState: this.appState,
+      simulationConfig: this.simulationConfig,
+      simulationState: this.simulationState
+    })
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.06,
@@ -66,7 +75,7 @@ export class SimulationRunningActivity extends Activity {
       ...widgetConfig,
 
       onClick: () => {
-        this.appController.generationSimulation.finishGenerationSimulation()
+        this.generationSimulation.finishGenerationSimulation()
         this.appController.setActivityId(ActivityId.SimulationFinished)
       }
     })
@@ -75,7 +84,7 @@ export class SimulationRunningActivity extends Activity {
   }
 
   initialize(): void {
-    this.appController.generationSimulation.initialize()
+    this.generationSimulation.initialize()
   }
 
   deinitialize(): void {
@@ -83,9 +92,8 @@ export class SimulationRunningActivity extends Activity {
   }
 
   draw(): void {
-    const {appController, appView} = this
+    const {appController, appView, generationSimulation} = this
     const {canvas, height, width} = appView
-    const {generationSimulation} = appController
 
     if (this.activityTimer <= 900) {
       for (let s = 0; s < this.simulationState.speed; s++) {
@@ -152,7 +160,7 @@ export class SimulationRunningActivity extends Activity {
   }
 
   private advanceSimulation(): void {
-    this.appController.generationSimulation.advanceCreatureSimulation()
+    this.generationSimulation.advanceCreatureSimulation()
     this.activityTimer++
   }
 

@@ -36,9 +36,7 @@ export default function sketch(p5: p5) {
   }
 
   const simulationConfig: SimulationConfig = {
-    hazelStairs: -1,
-    randomFractFn: (minInclusive: number, maxExclusive: number) =>
-      p5.random(minInclusive, maxExclusive)
+    hazelStairs: -1
   }
 
   const appController = new AppController({

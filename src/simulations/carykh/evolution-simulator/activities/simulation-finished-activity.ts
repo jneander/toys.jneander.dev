@@ -1,6 +1,6 @@
 import type {Graphics} from 'p5'
 
-import {ActivityId} from '../constants'
+import {ActivityId, CREATURE_COUNT} from '../constants'
 import {creatureIdToIndex} from '../helpers'
 import {
   ButtonWidget,
@@ -23,6 +23,8 @@ export class SimulationFinishedActivity extends Activity {
   private sortCreaturesButton: SortCreaturesButton
 
   private graphics: Graphics
+
+  private creatureIdsByGridIndex: number[]
 
   constructor(config: ActivityConfig) {
     super(config)
@@ -63,6 +65,8 @@ export class SimulationFinishedActivity extends Activity {
         this.appController.setActivityId(ActivityId.SortingCreatures)
       }
     })
+
+    this.creatureIdsByGridIndex = new Array<number>(CREATURE_COUNT)
   }
 
   deinitialize(): void {
@@ -91,7 +95,7 @@ export class SimulationFinishedActivity extends Activity {
     const gridIndex = creatureGridView.getGridIndexUnderCursor()
 
     if (gridIndex != null) {
-      const creatureId = this.appState.creatureIdsByGridIndex[gridIndex]
+      const creatureId = this.creatureIdsByGridIndex[gridIndex]
       this.setPopupSimulationCreatureId(creatureId)
 
       const anchor = this.calculateAnchorForPopupSimulation(gridIndex)
@@ -108,7 +112,7 @@ export class SimulationFinishedActivity extends Activity {
 
     appController.sortCreatures()
     appController.updateHistory()
-    appController.updateCreatureIdsByGridIndex()
+    this.updateCreatureIdsByGridIndex()
 
     this.drawInterface()
     this.creatureGridView.initialize()
@@ -176,6 +180,16 @@ export class SimulationFinishedActivity extends Activity {
       endPositionX: creatureStartX + CREATURE_GRID_TILE_WIDTH,
       endPositionY: creatureStartY + CREATURE_GRID_TILE_HEIGHT,
       margin: 5
+    }
+  }
+
+  private updateCreatureIdsByGridIndex(): void {
+    const {appState} = this
+
+    for (let i = 0; i < CREATURE_COUNT; i++) {
+      const creature = appState.creaturesInLatestGeneration[i]
+      const gridIndex = creatureIdToIndex(creature.id)
+      this.creatureIdsByGridIndex[gridIndex] = i
     }
   }
 }

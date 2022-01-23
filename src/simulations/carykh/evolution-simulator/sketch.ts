@@ -16,7 +16,6 @@ import {
 import {AppController} from './app-controller'
 import {
   ActivityId,
-  CREATURE_COUNT,
   FITNESS_PERCENTILE_CREATURE_INDICES,
   GenerationSimulationMode,
   HISTOGRAM_BAR_SPAN
@@ -32,7 +31,6 @@ export default function sketch(p5: p5) {
   let font: Font
 
   const appState: AppState = {
-    creatureIdsByGridIndex: new Array<number>(CREATURE_COUNT),
     creaturesInLatestGeneration: [],
     currentActivity: new NullActivity(),
     currentActivityId: null,

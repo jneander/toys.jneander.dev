@@ -76,7 +76,7 @@ export class GenerationSimulation {
   }
 
   private setCreatureQueue(): void {
-    this.creatureQueue = [...this.config.appState.sortedCreatures]
+    this.creatureQueue = [...this.config.appState.creaturesInLatestGeneration]
 
     // Creatures are simulated in id order, ascending.
     this.creatureQueue.sort(

@@ -53,7 +53,7 @@ export class AppController {
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = this.creatureManipulator.generateCreature(i + 1)
-      appState.sortedCreatures[i] = creature
+      appState.creaturesInLatestGeneration[i] = creature
     }
   }
 
@@ -61,14 +61,14 @@ export class AppController {
     const {appState} = this.config
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.sortedCreatures[i]
+      const creature = appState.creaturesInLatestGeneration[i]
       const gridIndex = creatureIdToIndex(creature.id)
       appState.creatureIdsByGridIndex[gridIndex] = i
     }
   }
 
   sortCreatures(): void {
-    this.config.appState.sortedCreatures.sort(
+    this.config.appState.creaturesInLatestGeneration.sort(
       (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
     )
   }
@@ -81,13 +81,15 @@ export class AppController {
     )
     for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
       appState.fitnessPercentileHistory[appState.generationCount + 1][i] =
-        appState.sortedCreatures[FITNESS_PERCENTILE_CREATURE_INDICES[i]].fitness
+        appState.creaturesInLatestGeneration[
+          FITNESS_PERCENTILE_CREATURE_INDICES[i]
+        ].fitness
     }
 
     const historyEntry: GenerationHistoryEntry = {
-      fastest: appState.sortedCreatures[0].clone(),
-      median: appState.sortedCreatures[midCreatureIndex].clone(),
-      slowest: appState.sortedCreatures[lastCreatureIndex].clone()
+      fastest: appState.creaturesInLatestGeneration[0].clone(),
+      median: appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
+      slowest: appState.creaturesInLatestGeneration[lastCreatureIndex].clone()
     }
 
     appState.generationHistoryMap[appState.generationCount + 1] = historyEntry
@@ -100,7 +102,8 @@ export class AppController {
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const bar = Math.floor(
-        appState.sortedCreatures[i].fitness * HISTOGRAM_BARS_PER_METER -
+        appState.creaturesInLatestGeneration[i].fitness *
+          HISTOGRAM_BARS_PER_METER -
           HISTOGRAM_BAR_MIN
       )
 
@@ -108,7 +111,9 @@ export class AppController {
         appState.histogramBarCounts[appState.generationCount + 1][bar]++
       }
 
-      const speciesId = speciesIdForCreature(appState.sortedCreatures[i])
+      const speciesId = speciesIdForCreature(
+        appState.creaturesInLatestGeneration[i]
+      )
       speciesCountBySpeciesId[speciesId] =
         speciesCountBySpeciesId[speciesId] || 0
       speciesCountBySpeciesId[speciesId]++
@@ -144,10 +149,12 @@ export class AppController {
         culledCreatureIndex = i
       }
 
-      const survivingCreature = appState.sortedCreatures[survivingCreatureIndex]
+      const survivingCreature =
+        appState.creaturesInLatestGeneration[survivingCreatureIndex]
       survivingCreature.alive = true
 
-      const culledCreature = appState.sortedCreatures[culledCreatureIndex]
+      const culledCreature =
+        appState.creaturesInLatestGeneration[culledCreatureIndex]
       culledCreature.alive = false
     }
   }
@@ -161,7 +168,7 @@ export class AppController {
       let survivingCreatureIndex
       let culledCreatureIndex
 
-      if (appState.sortedCreatures[i].alive) {
+      if (appState.creaturesInLatestGeneration[i].alive) {
         survivingCreatureIndex = i
         culledCreatureIndex = lastCreatureIndex - i
       } else {
@@ -169,13 +176,15 @@ export class AppController {
         culledCreatureIndex = i
       }
 
-      const survivingCreature = appState.sortedCreatures[survivingCreatureIndex]
-      const culledCreature = appState.sortedCreatures[culledCreatureIndex]
+      const survivingCreature =
+        appState.creaturesInLatestGeneration[survivingCreatureIndex]
+      const culledCreature =
+        appState.creaturesInLatestGeneration[culledCreatureIndex]
 
       // Next generation includes a clone and mutated offspring
-      appState.sortedCreatures[survivingCreatureIndex] =
+      appState.creaturesInLatestGeneration[survivingCreatureIndex] =
         survivingCreature.clone(survivingCreature.id + CREATURE_COUNT)
-      appState.sortedCreatures[culledCreatureIndex] =
+      appState.creaturesInLatestGeneration[culledCreatureIndex] =
         this.creatureManipulator.modifyCreature(
           survivingCreature,
           culledCreature.id + CREATURE_COUNT

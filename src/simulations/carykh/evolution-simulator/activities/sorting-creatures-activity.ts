@@ -46,7 +46,7 @@ export class SortingCreaturesActivity extends Activity {
 
     for (let i2 = 0; i2 < CREATURE_COUNT; i2++) {
       // i2 is the index of where the creature is now
-      const creature = appState.sortedCreatures[i2]
+      const creature = appState.creaturesInLatestGeneration[i2]
 
       // i1 is the index of where the creature was
       const i1 = creatureIdToIndex(creature.id)

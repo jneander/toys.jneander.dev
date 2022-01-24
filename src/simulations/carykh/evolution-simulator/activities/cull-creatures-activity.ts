@@ -42,20 +42,13 @@ export class CullCreaturesActivity extends Activity {
       gridStartY: CREATURE_GRID_START_Y
     })
 
-    const widgetConfig = {
-      appState: this.appState,
-      appView: this.appView
-    }
-
-    const simulationWidgetConfig = {
-      ...widgetConfig,
+    this.popupSimulationView = new PopupSimulationView({
+      appView: this.appView,
       simulationConfig: this.appController.getSimulationConfig()
-    }
-
-    this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
+    })
 
     this.propagateCreaturesButton = new PropagateCreaturesButton({
-      ...widgetConfig,
+      appView: this.appView,
       graphics: this.graphics,
 
       onClick: () => {

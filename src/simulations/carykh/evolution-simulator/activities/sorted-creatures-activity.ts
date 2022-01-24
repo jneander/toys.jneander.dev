@@ -2,13 +2,13 @@ import type {Graphics} from 'p5'
 
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {
-  PopupSimulationView,
   ButtonWidget,
   ButtonWidgetConfig,
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   CreatureGridView,
+  PopupSimulationView,
   PopupSimulationViewAnchor
 } from '../views'
 import {Activity, ActivityConfig} from './shared'
@@ -42,19 +42,13 @@ export class SortedCreaturesActivity extends Activity {
       gridStartY: CREATURE_GRID_START_Y
     })
 
-    const widgetConfig = {
-      appState: this.appState,
-      appView: this.appView
-    }
-
-    const simulationWidgetConfig = {
-      ...widgetConfig,
+    this.popupSimulationView = new PopupSimulationView({
+      appView: this.appView,
       simulationConfig: this.appController.getSimulationConfig()
-    }
+    })
 
-    this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
     this.cullCreaturesButton = new CullCreaturesButton({
-      ...widgetConfig,
+      appView: this.appView,
       graphics: this.graphics,
 
       onClick: () => {

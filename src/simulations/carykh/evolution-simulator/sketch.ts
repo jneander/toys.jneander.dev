@@ -5,6 +5,7 @@ import {
   CullCreaturesActivity,
   GenerateCreaturesActivity,
   GenerationViewActivity,
+  NullActivity,
   PropagateCreaturesActivity,
   SimulationFinishedActivity,
   SimulationRunningActivity,
@@ -29,6 +30,8 @@ export function createSketchFn({
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
+    let currentActivity = new NullActivity()
+
     let appView: AppView
     let font: Font
 
@@ -45,15 +48,15 @@ export function createSketchFn({
     }
 
     p5.mouseWheel = (event: WheelEvent) => {
-      appState.currentActivity.onMouseWheel(event)
+      currentActivity.onMouseWheel(event)
     }
 
     p5.mousePressed = () => {
-      appState.currentActivity.onMousePressed()
+      currentActivity.onMousePressed()
     }
 
     p5.mouseReleased = () => {
-      appState.currentActivity.onMouseReleased()
+      currentActivity.onMouseReleased()
     }
 
     p5.preload = () => {
@@ -78,20 +81,20 @@ export function createSketchFn({
       const {currentActivityId, nextActivityId} = appState
 
       if (nextActivityId !== currentActivityId) {
-        appState.currentActivity.deinitialize()
+        currentActivity.deinitialize()
 
         const ActivityClass = activityClassByActivityId[nextActivityId]
-        appState.currentActivity = new ActivityClass({
+        currentActivity = new ActivityClass({
           appController,
           appState,
           appView
         })
         appState.currentActivityId = nextActivityId
 
-        appState.currentActivity.initialize()
+        currentActivity.initialize()
       }
 
-      appState.currentActivity.draw()
+      currentActivity.draw()
     }
   }
 }

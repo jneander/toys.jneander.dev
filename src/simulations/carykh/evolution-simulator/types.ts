@@ -1,7 +1,6 @@
 import type Creature from './Creature'
 import type Muscle from './Muscle'
 import type Node from './Node'
-import {ActivityInterface} from './activities'
 import {ActivityId} from './constants'
 
 export type SimulationCameraState = {
@@ -45,7 +44,6 @@ export type GenerationHistoryEntry = {
 
 export type AppState = {
   creaturesInLatestGeneration: Creature[]
-  currentActivity: ActivityInterface
   currentActivityId: ActivityId | null
   generationCount: number
   generationHistoryMap: {[generation: number]: GenerationHistoryEntry}

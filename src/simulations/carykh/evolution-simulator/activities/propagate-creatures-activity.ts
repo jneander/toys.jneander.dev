@@ -15,7 +15,7 @@ export class PropagateCreaturesActivity extends Activity {
 
     const getCreatureAndGridIndexFn = (index: number) => {
       return {
-        creature: this.appState.creaturesInLatestGeneration[index],
+        creature: this.appStore.getState().creaturesInLatestGeneration[index],
         gridIndex: index
       }
     }
@@ -69,7 +69,7 @@ export class PropagateCreaturesActivity extends Activity {
   }
 
   private drawInterface(): void {
-    const {appState, appView, graphics} = this
+    const {appStore, appView, graphics} = this
     const {canvas, font, height, width} = appView
 
     graphics.background(220, 253, 102)
@@ -85,7 +85,7 @@ export class PropagateCreaturesActivity extends Activity {
     graphics.fill(0)
     graphics.text(
       'These are the 1000 creatures of generation #' +
-        (appState.generationCount + 1) +
+        (appStore.getState().generationCount + 1) +
         '.',
       width / 2,
       30

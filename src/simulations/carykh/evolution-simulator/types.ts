@@ -1,3 +1,5 @@
+import type {Store} from '@jneander/utils-state'
+
 import type Creature from './Creature'
 import type Muscle from './Muscle'
 import type Node from './Node'
@@ -50,3 +52,5 @@ export type AppState = {
   nextActivityId: ActivityId
   selectedGeneration: number
 }
+
+export type AppStore = Store<AppState>

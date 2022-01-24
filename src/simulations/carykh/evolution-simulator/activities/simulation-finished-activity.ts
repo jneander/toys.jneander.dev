@@ -30,7 +30,8 @@ export class SimulationFinishedActivity extends Activity {
     super(config)
 
     const getCreatureAndGridIndexFn = (index: number) => {
-      const creature = this.appState.creaturesInLatestGeneration[index]
+      const creature =
+        this.appStore.getState().creaturesInLatestGeneration[index]
       const gridIndex = creatureIdToIndex(creature.id)
 
       return {creature, gridIndex}
@@ -146,7 +147,7 @@ export class SimulationFinishedActivity extends Activity {
   }
 
   private setPopupSimulationCreatureId(id: number): void {
-    const creature = this.appState.creaturesInLatestGeneration[id]
+    const creature = this.appStore.getState().creaturesInLatestGeneration[id]
     this.popupSimulationView.setCreatureInfo({creature, rank: id + 1})
   }
 
@@ -177,10 +178,10 @@ export class SimulationFinishedActivity extends Activity {
   }
 
   private updateCreatureIdsByGridIndex(): void {
-    const {appState} = this
+    const {appStore} = this
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appState.creaturesInLatestGeneration[i]
+      const creature = appStore.getState().creaturesInLatestGeneration[i]
       const gridIndex = creatureIdToIndex(creature.id)
       this.creatureIdsByGridIndex[gridIndex] = i
     }

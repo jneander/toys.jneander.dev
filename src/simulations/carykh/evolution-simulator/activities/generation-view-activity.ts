@@ -19,7 +19,7 @@ import {
 import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
 import {GenerationSimulation} from '../simulation'
-import type {AppState, SpeciesCount} from '../types'
+import type {AppStore, SpeciesCount} from '../types'
 import {
   ButtonWidget,
   ButtonWidgetConfig,
@@ -112,7 +112,7 @@ export class GenerationViewActivity extends Activity {
     })
 
     this.generationSlider = new GenerationSlider({
-      appState: this.appState,
+      appStore: this.appStore,
       appView: this.appView
     })
 
@@ -134,12 +134,16 @@ export class GenerationViewActivity extends Activity {
   }
 
   draw(): void {
-    const {appController, appState, appView} = this
+    const {appController, appStore, appView} = this
     const {canvas, font} = appView
 
-    if (this.draggingSlider && appState.generationCount >= 1) {
+    const {generationCount} = appStore.getState()
+
+    if (this.draggingSlider && generationCount >= 1) {
       this.generationSlider.onDrag()
     }
+
+    const {selectedGeneration} = appStore.getState()
 
     canvas.noStroke()
     canvas.fill(0)
@@ -147,14 +151,10 @@ export class GenerationViewActivity extends Activity {
     canvas.textFont(font, 32)
     canvas.textAlign(canvas.LEFT)
     canvas.textFont(font, 96)
-    canvas.text(
-      'Generation ' + Math.max(appState.selectedGeneration, 0),
-      20,
-      100
-    )
+    canvas.text('Generation ' + Math.max(selectedGeneration, 0), 20, 100)
     canvas.textFont(font, 28)
 
-    if (appState.generationCount == -1) {
+    if (generationCount == -1) {
       canvas.fill(0)
       canvas.text(
         `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
@@ -173,9 +173,8 @@ export class GenerationViewActivity extends Activity {
       this.asapButton.draw()
       this.alapButton.draw()
 
-      const fitnessPercentiles = this.getFitnessPercentilesFromHistory(
-        appState.selectedGeneration
-      )
+      const fitnessPercentiles =
+        this.getFitnessPercentilesFromHistory(selectedGeneration)
       const fitnessPercentile =
         Math.round(fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX] * 1000) /
         1000
@@ -186,24 +185,24 @@ export class GenerationViewActivity extends Activity {
       canvas.textAlign(canvas.RIGHT)
       canvas.text(fitnessPercentile + ' ' + FITNESS_UNIT_LABEL, 700, 160)
 
-      if (this.generationCountDepictedInGraph !== appState.generationCount) {
+      if (this.generationCountDepictedInGraph !== generationCount) {
         this.drawGraph(975, 570)
-        this.generationCountDepictedInGraph = appState.generationCount
+        this.generationCountDepictedInGraph = generationCount
       }
 
       this.drawHistogram(760, 410, 460, 280)
       this.drawGraphImage()
 
-      if (appState.generationCount >= 1) {
+      if (generationCount >= 1) {
         this.generationSlider.draw()
       }
 
-      if (appState.selectedGeneration >= 1) {
+      if (selectedGeneration >= 1) {
         this.drawWorstMedianAndBestCreatures()
       }
 
       if (
-        appState.selectedGeneration > 0 &&
+        selectedGeneration > 0 &&
         this.pendingGenerationCount === 0 &&
         !this.draggingSlider
       ) {
@@ -252,7 +251,7 @@ export class GenerationViewActivity extends Activity {
     this.pendingGenerationCount = 0
 
     if (
-      this.appState.generationCount >= 1 &&
+      this.appStore.getState().generationCount >= 1 &&
       this.generationSlider.isUnderCursor()
     ) {
       this.draggingSlider = true
@@ -260,17 +259,16 @@ export class GenerationViewActivity extends Activity {
   }
 
   onMouseReleased(): void {
+    const {generationCount} = this.appStore.getState()
+
     // When the popup simulation is running, mouse clicks will stop it.
     this.popupSimulationView.dismissSimulationView()
 
     this.draggingSlider = false
 
-    if (
-      this.appState.generationCount === -1 &&
-      this.createButton.isUnderCursor()
-    ) {
+    if (generationCount === -1 && this.createButton.isUnderCursor()) {
       this.createButton.onClick()
-    } else if (this.appState.generationCount >= 0) {
+    } else if (generationCount >= 0) {
       if (this.stepByStepButton.isUnderCursor()) {
         this.stepByStepButton.onClick()
       } else if (this.quickButton.isUnderCursor()) {
@@ -287,7 +285,7 @@ export class GenerationViewActivity extends Activity {
     this.generationHistoryGraphics.background(220)
     this.graphGraphics.background(220)
 
-    if (this.appState.generationCount >= 1) {
+    if (this.appStore.getState().generationCount >= 1) {
       this.drawLines(
         90,
         toInt(graphHeight * 0.05),
@@ -299,18 +297,21 @@ export class GenerationViewActivity extends Activity {
   }
 
   private drawGraphImage(): void {
-    const {appState, appView} = this
+    const {appStore, appView} = this
     const {canvas, font} = appView
+
+    const {generationCount, generationHistoryMap, selectedGeneration} =
+      appStore.getState()
 
     canvas.image(this.graphGraphics, 50, 180, 650, 380)
     canvas.image(this.generationHistoryGraphics, 50, 580, 650, 100)
 
-    if (appState.generationCount >= 1) {
+    if (generationCount >= 1) {
       canvas.stroke(0, 160, 0, 255)
       canvas.strokeWeight(3)
 
-      const genWidth = 590.0 / appState.generationCount
-      const lineX = 110 + appState.selectedGeneration * genWidth
+      const genWidth = 590.0 / generationCount
+      const lineX = 110 + selectedGeneration * genWidth
 
       canvas.line(lineX, 180, lineX, 500 + 180)
 
@@ -318,8 +319,7 @@ export class GenerationViewActivity extends Activity {
       canvas.textFont(font, 12)
       canvas.noStroke()
 
-      const historyEntry =
-        appState.generationHistoryMap[appState.selectedGeneration]
+      const historyEntry = generationHistoryMap[selectedGeneration]
       const speciesCounts = historyEntry?.speciesCounts || []
 
       // Identify the largest species count.
@@ -371,15 +371,16 @@ export class GenerationViewActivity extends Activity {
   }
 
   private drawHistogram(x: number, y: number, hw: number, hh: number): void {
-    const {appState, appView} = this
+    const {appStore, appView} = this
     const {canvas, font} = appView
+
+    const {selectedGeneration} = appStore.getState()
 
     let maxH = 1
 
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
-      const histogramBarCounts = this.getHistogramBarCountsFromHistory(
-        appState.selectedGeneration
-      )
+      const histogramBarCounts =
+        this.getHistogramBarCountsFromHistory(selectedGeneration)
 
       if (histogramBarCounts[i] > maxH) {
         maxH = histogramBarCounts[i]
@@ -446,16 +447,14 @@ export class GenerationViewActivity extends Activity {
 
     canvas.noStroke()
 
-    const fitnessPercentiles = this.getFitnessPercentilesFromHistory(
-      appState.selectedGeneration
-    )
+    const fitnessPercentiles =
+      this.getFitnessPercentilesFromHistory(selectedGeneration)
     const fitnessPercentile =
       fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX]
 
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
-      const histogramBarCounts = this.getHistogramBarCountsFromHistory(
-        appState.selectedGeneration
-      )
+      const histogramBarCounts =
+        this.getHistogramBarCountsFromHistory(selectedGeneration)
       const h = Math.min(histogramBarCounts[i] * multiplier, hh)
 
       if (
@@ -477,11 +476,13 @@ export class GenerationViewActivity extends Activity {
     graphWidth: number,
     graphHeight: number
   ): void {
-    const {appState, appView} = this
+    const {appStore, appView} = this
     const {canvas, font} = appView
 
+    const {generationCount} = appStore.getState()
+
     const gh = graphHeight
-    const genWidth = graphWidth / appState.generationCount
+    const genWidth = graphWidth / generationCount
     const best = this.extreme(1)
     const worst = this.extreme(-1)
     const meterHeight = graphHeight / (best - worst)
@@ -538,7 +539,7 @@ export class GenerationViewActivity extends Activity {
         }
       }
 
-      for (let i = 0; i < appState.generationCount; i++) {
+      for (let i = 0; i < generationCount; i++) {
         const fitnessPercentiles = this.getFitnessPercentilesFromHistory(i)
         const currentPercentile = fitnessPercentiles[k]
 
@@ -561,18 +562,20 @@ export class GenerationViewActivity extends Activity {
     graphWidth: number,
     graphHeight: number
   ): void {
-    const {appState, appView} = this
+    const {appStore, appView} = this
     const {canvas} = appView
+
+    const {generationCount} = appStore.getState()
 
     this.generationHistoryGraphics.noStroke()
     this.generationHistoryGraphics.colorMode(canvas.HSB, 1)
     this.generationHistoryGraphics.background(0, 0, 0.5)
 
-    const generationWidth = graphWidth / appState.generationCount
-    const generationsPerBar = Math.floor(appState.generationCount / 500) + 1
+    const generationWidth = graphWidth / generationCount
+    const generationsPerBar = Math.floor(generationCount / 500) + 1
 
-    for (let i1 = 0; i1 < appState.generationCount; i1 += generationsPerBar) {
-      const i2 = Math.min(i1 + generationsPerBar, appState.generationCount)
+    for (let i1 = 0; i1 < generationCount; i1 += generationsPerBar) {
+      const i2 = Math.min(i1 + generationsPerBar, generationCount)
 
       const barX1 = x + i1 * generationWidth
       const barX2 = x + i2 * generationWidth
@@ -734,7 +737,7 @@ export class GenerationViewActivity extends Activity {
   private extreme(sign: number): number {
     let record = -sign
 
-    for (let i = 0; i < this.appState.generationCount; i++) {
+    for (let i = 0; i < this.appStore.getState().generationCount; i++) {
       const fitnessPercentiles = this.getFitnessPercentilesFromHistory(i + 1)
       const toTest =
         fitnessPercentiles[
@@ -753,7 +756,10 @@ export class GenerationViewActivity extends Activity {
   }
 
   private getSpeciesCountsForGeneration(generation: number): SpeciesCount[] {
-    return this.appState.generationHistoryMap[generation]?.speciesCounts || []
+    return (
+      this.appStore.getState().generationHistoryMap[generation]
+        ?.speciesCounts || []
+    )
   }
 
   private getWorstMedianOrBestIndexUnderCursor(): number | null {
@@ -806,7 +812,7 @@ export class GenerationViewActivity extends Activity {
 
   private simulateWholeGeneration(): void {
     const generationSimulation = new GenerationSimulation({
-      appState: this.appState,
+      appStore: this.appStore,
       simulationConfig: this.appController.getSimulationConfig()
     })
 
@@ -879,7 +885,7 @@ export class GenerationViewActivity extends Activity {
   private getWorstMedianOrBestCreatureFromHistory(
     worstMedianOrBestIndex: number
   ): Creature {
-    const {generationHistoryMap, selectedGeneration} = this.appState
+    const {generationHistoryMap, selectedGeneration} = this.appStore.getState()
 
     const historyEntry = generationHistoryMap[selectedGeneration]
 
@@ -895,7 +901,8 @@ export class GenerationViewActivity extends Activity {
   }
 
   private getFitnessPercentilesFromHistory(generation: number): number[] {
-    const historyEntry = this.appState.generationHistoryMap[generation]
+    const historyEntry =
+      this.appStore.getState().generationHistoryMap[generation]
 
     if (historyEntry) {
       return historyEntry.fitnessPercentiles
@@ -905,7 +912,8 @@ export class GenerationViewActivity extends Activity {
   }
 
   private getHistogramBarCountsFromHistory(generation: number): number[] {
-    const historyEntry = this.appState.generationHistoryMap[generation]
+    const historyEntry =
+      this.appStore.getState().generationHistoryMap[generation]
 
     if (historyEntry) {
       return historyEntry.histogramBarCounts
@@ -1014,11 +1022,11 @@ class AlapButton extends ButtonWidget {
 }
 
 interface GenerationSliderConfig extends WidgetConfig {
-  appState: AppState
+  appStore: AppStore
 }
 
 class GenerationSlider extends Widget {
-  private appState: AppState
+  private appStore: AppStore
 
   private xPosition: number
   private xPositionMax: number
@@ -1028,7 +1036,7 @@ class GenerationSlider extends Widget {
   constructor(config: GenerationSliderConfig) {
     super(config)
 
-    this.appState = config.appState
+    this.appStore = config.appStore
 
     this.xPositionMax = 1170
     this.xPositionMin = 760
@@ -1040,6 +1048,8 @@ class GenerationSlider extends Widget {
   draw(): void {
     const {canvas, font} = this.appView
 
+    const {selectedGeneration} = this.appStore.getState()
+
     canvas.noStroke()
     canvas.textAlign(canvas.CENTER)
     canvas.fill(100)
@@ -1048,8 +1058,8 @@ class GenerationSlider extends Widget {
     canvas.rect(this.xPosition, 340, 50, 50)
 
     let fs = 0
-    if (this.appState.selectedGeneration >= 1) {
-      fs = Math.floor(Math.log(this.appState.selectedGeneration) / Math.log(10))
+    if (selectedGeneration >= 1) {
+      fs = Math.floor(Math.log(selectedGeneration) / Math.log(10))
     }
 
     const fontSize = FONT_SIZES[fs]
@@ -1057,7 +1067,7 @@ class GenerationSlider extends Widget {
     canvas.textFont(font, fontSize)
     canvas.fill(0)
     canvas.text(
-      this.appState.selectedGeneration,
+      selectedGeneration,
       this.xPosition + 25,
       366 + fontSize * 0.3333
     )
@@ -1083,27 +1093,31 @@ class GenerationSlider extends Widget {
       this.xPositionMax
     )
 
-    const {generationCount} = this.appState
+    const {generationCount} = this.appStore.getState()
+
+    let selectedGeneration
 
     if (generationCount > 1) {
       // After 2 generations, the slider starts at generation 1.
-      this.appState.selectedGeneration =
+      selectedGeneration =
         Math.round(
           ((this.xPosition - this.xPositionMin) * (generationCount - 1)) /
             this.xPositionRange
         ) + 1
     } else {
-      this.appState.selectedGeneration = Math.round(
+      selectedGeneration = Math.round(
         ((this.xPosition - this.xPositionMin) * generationCount) /
           this.xPositionRange
       )
     }
+
+    this.appStore.setState({selectedGeneration})
   }
 
   updatePosition(): void {
     // Update slider position to reflect change in generation range.
 
-    const {generationCount, selectedGeneration} = this.appState
+    const {generationCount, selectedGeneration} = this.appStore.getState()
 
     if (selectedGeneration === generationCount) {
       // When selecting the latest generation, push the slider to max.
@@ -1135,7 +1149,7 @@ class GenerationSlider extends Widget {
   private getInitialPosition(): number {
     // Get initial slider position based on app state.
 
-    const {generationCount, selectedGeneration} = this.appState
+    const {generationCount, selectedGeneration} = this.appStore.getState()
 
     if (selectedGeneration === generationCount) {
       // When selecting the latest generation, push the slider to max.

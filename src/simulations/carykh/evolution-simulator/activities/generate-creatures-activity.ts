@@ -11,7 +11,7 @@ export class GenerateCreaturesActivity extends Activity {
 
     const getCreatureAndGridIndexFn = (index: number) => {
       return {
-        creature: this.appState.creaturesInLatestGeneration[index],
+        creature: this.appStore.getState().creaturesInLatestGeneration[index],
         gridIndex: index
       }
     }
@@ -27,7 +27,7 @@ export class GenerateCreaturesActivity extends Activity {
       appView: this.appView,
 
       onClick: () => {
-        this.appState.generationCount = 0
+        this.appStore.setState({generationCount: 0})
         this.appController.setActivityId(ActivityId.GenerationView)
       }
     })

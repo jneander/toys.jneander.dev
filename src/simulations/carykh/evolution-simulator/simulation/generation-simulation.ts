@@ -1,11 +1,11 @@
 import type Creature from '../Creature'
 import {CREATURE_COUNT} from '../constants'
 import {averagePositionOfNodes, creatureIdToIndex} from '../helpers'
-import type {AppState, SimulationState} from '../types'
+import type {AppStore, SimulationState} from '../types'
 import {CreatureSimulation, SimulationConfig} from './creature-simulation'
 
 export interface GenerationSimulationConfig {
-  appState: AppState
+  appStore: AppStore
   simulationConfig: SimulationConfig
 }
 
@@ -80,7 +80,9 @@ export class GenerationSimulation {
   }
 
   private setCreatureQueue(): void {
-    this.creatureQueue = [...this.config.appState.creaturesInLatestGeneration]
+    this.creatureQueue = [
+      ...this.config.appStore.getState().creaturesInLatestGeneration
+    ]
 
     // Creatures are simulated in id order, ascending.
     this.creatureQueue.sort(

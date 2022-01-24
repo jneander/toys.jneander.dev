@@ -28,7 +28,7 @@ export class SortedCreaturesActivity extends Activity {
 
     const getCreatureAndGridIndexFn = (index: number) => {
       return {
-        creature: this.appState.creaturesInLatestGeneration[index],
+        creature: this.appStore.getState().creaturesInLatestGeneration[index],
         gridIndex: index
       }
     }
@@ -135,7 +135,7 @@ export class SortedCreaturesActivity extends Activity {
   }
 
   private setPopupSimulationCreatureId(id: number): void {
-    const creature = this.appState.creaturesInLatestGeneration[id]
+    const creature = this.appStore.getState().creaturesInLatestGeneration[id]
     this.popupSimulationView.setCreatureInfo({creature, rank: id + 1})
   }
 

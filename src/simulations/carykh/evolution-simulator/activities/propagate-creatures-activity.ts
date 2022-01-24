@@ -30,7 +30,6 @@ export class PropagateCreaturesActivity extends Activity {
     })
 
     this.backButton = new BackButton({
-      appState: this.appState,
       appView: this.appView,
       graphics: this.graphics,
 

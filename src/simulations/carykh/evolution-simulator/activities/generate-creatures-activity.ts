@@ -24,7 +24,6 @@ export class GenerateCreaturesActivity extends Activity {
     })
 
     this.backButton = new BackButton({
-      appState: this.appState,
       appView: this.appView,
 
       onClick: () => {

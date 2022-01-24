@@ -9,7 +9,6 @@ export class StartActivity extends Activity {
     super(config)
 
     this.startButton = new StartButton({
-      appState: this.appState,
       appView: this.appView,
 
       onClick: () => {

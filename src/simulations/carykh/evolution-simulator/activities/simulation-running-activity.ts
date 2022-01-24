@@ -41,19 +41,14 @@ export class SimulationRunningActivity extends Activity {
     this.simulationView.setCameraZoom(0.01)
     this.simulationView.setCameraPosition(0, 0)
 
-    const widgetConfig = {
-      appState: this.appState,
-      appView: this.appView
-    }
-
     this.skipButton = new SkipButton({
-      ...widgetConfig,
+      appView: this.appView,
 
       onClick: this.handleSkip.bind(this)
     })
 
     this.playbackSpeedButton = new PlaybackSpeedButton({
-      ...widgetConfig,
+      appView: this.appView,
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
 
       onClick: () => {
@@ -77,7 +72,7 @@ export class SimulationRunningActivity extends Activity {
     })
 
     this.finishButton = new FinishButton({
-      ...widgetConfig,
+      appView: this.appView,
 
       onClick: () => {
         this.generationSimulation.finishGenerationSimulation()

@@ -17,7 +17,6 @@ export class SortingCreaturesActivity extends Activity {
     this.creatureDrawer = new CreatureDrawer({appView: this.appView})
 
     this.skipButton = new SkipButton({
-      appState: this.appState,
       appView: this.appView,
 
       onClick: () => {

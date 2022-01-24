@@ -19,7 +19,7 @@ import {
 import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
 import {GenerationSimulation} from '../simulation'
-import type {SpeciesCount} from '../types'
+import type {AppState, SpeciesCount} from '../types'
 import {
   ButtonWidget,
   ButtonWidgetConfig,
@@ -63,20 +63,15 @@ export class GenerationViewActivity extends Activity {
 
     this.creatureDrawer = new CreatureDrawer({appView: this.appView})
 
-    const widgetConfig = {
-      appState: this.appState,
-      appView: this.appView
-    }
-
     const simulationWidgetConfig = {
-      ...widgetConfig,
+      appView: this.appView,
       simulationConfig: this.appController.getSimulationConfig()
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
 
     this.createButton = new CreateButton({
-      ...widgetConfig,
+      appView: this.appView,
 
       onClick: () => {
         this.appController.setActivityId(ActivityId.GenerateCreatures)
@@ -84,7 +79,7 @@ export class GenerationViewActivity extends Activity {
     })
 
     this.stepByStepButton = new StepByStepButton({
-      ...widgetConfig,
+      appView: this.appView,
 
       onClick: () => {
         this.performStepByStepSimulation()
@@ -92,7 +87,7 @@ export class GenerationViewActivity extends Activity {
     })
 
     this.quickButton = new QuickButton({
-      ...widgetConfig,
+      appView: this.appView,
 
       onClick: () => {
         this.performQuickGenerationSimulation()
@@ -100,7 +95,7 @@ export class GenerationViewActivity extends Activity {
     })
 
     this.asapButton = new AsapButton({
-      ...widgetConfig,
+      appView: this.appView,
 
       onClick: () => {
         this.performAsapGenerationSimulation()
@@ -108,15 +103,18 @@ export class GenerationViewActivity extends Activity {
     })
 
     this.alapButton = new AlapButton({
-      ...widgetConfig,
       activity: this,
+      appView: this.appView,
 
       onClick: () => {
         this.startAlapGenerationSimulation()
       }
     })
 
-    this.generationSlider = new GenerationSlider(widgetConfig)
+    this.generationSlider = new GenerationSlider({
+      appState: this.appState,
+      appView: this.appView
+    })
 
     this.draggingSlider = false
     this.generationCountDepictedInGraph = -1
@@ -1015,14 +1013,22 @@ class AlapButton extends ButtonWidget {
   }
 }
 
+interface GenerationSliderConfig extends WidgetConfig {
+  appState: AppState
+}
+
 class GenerationSlider extends Widget {
+  private appState: AppState
+
   private xPosition: number
   private xPositionMax: number
   private xPositionMin: number
   private xPositionRange: number
 
-  constructor(config: WidgetConfig) {
+  constructor(config: GenerationSliderConfig) {
     super(config)
+
+    this.appState = config.appState
 
     this.xPositionMax = 1170
     this.xPositionMin = 760

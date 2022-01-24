@@ -2,7 +2,6 @@ import {AleaNumberGenerator} from '@jneander/utils-random'
 import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../shared/p5'
-import {NullActivity} from './activities'
 import {AppController} from './app-controller'
 import {ActivityId} from './constants'
 import {SimulationConfig} from './simulation'
@@ -16,7 +15,6 @@ export function CarykhEvolutionSimulator() {
 
     const appState: AppState = {
       creaturesInLatestGeneration: [],
-      currentActivity: new NullActivity(),
       currentActivityId: null,
       generationCount: -1,
       generationHistoryMap: {},

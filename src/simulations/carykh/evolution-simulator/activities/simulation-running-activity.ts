@@ -21,7 +21,7 @@ export class SimulationRunningActivity extends Activity {
     const {canvas, font} = this.appView
 
     this.generationSimulation = new GenerationSimulation({
-      appState: this.appState,
+      appStore: this.appStore,
       simulationConfig: this.appController.getSimulationConfig()
     })
 

@@ -15,17 +15,17 @@ import {
 } from './activities'
 import type {AppController} from './app-controller'
 import {ActivityId} from './constants'
-import type {AppState} from './types'
+import type {AppStore} from './types'
 import {AppView} from './views'
 
 export interface CreateSketchFnConfig {
   appController: AppController
-  appState: AppState
+  appStore: AppStore
 }
 
 export function createSketchFn({
   appController,
-  appState
+  appStore
 }: CreateSketchFnConfig) {
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
@@ -78,7 +78,7 @@ export function createSketchFn({
     p5.draw = () => {
       p5.scale(appView.scale)
 
-      const {currentActivityId, nextActivityId} = appState
+      const {currentActivityId, nextActivityId} = appStore.getState()
 
       if (nextActivityId !== currentActivityId) {
         currentActivity.deinitialize()
@@ -86,10 +86,11 @@ export function createSketchFn({
         const ActivityClass = activityClassByActivityId[nextActivityId]
         currentActivity = new ActivityClass({
           appController,
-          appState,
+          appStore,
           appView
         })
-        appState.currentActivityId = nextActivityId
+
+        appStore.setState({currentActivityId: nextActivityId})
 
         currentActivity.initialize()
       }

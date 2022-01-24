@@ -28,7 +28,7 @@ export class SortingCreaturesActivity extends Activity {
   }
 
   draw(): void {
-    const {appState, appView} = this
+    const {appStore, appView} = this
     const {canvas} = appView
 
     canvas.background(220, 253, 102)
@@ -40,7 +40,7 @@ export class SortingCreaturesActivity extends Activity {
 
     for (let i2 = 0; i2 < CREATURE_COUNT; i2++) {
       // i2 is the index of where the creature is now
-      const creature = appState.creaturesInLatestGeneration[i2]
+      const creature = appStore.getState().creaturesInLatestGeneration[i2]
 
       // i1 is the index of where the creature was
       const i1 = creatureIdToIndex(creature.id)

@@ -7,8 +7,6 @@ import {ActivityId, CREATURE_COUNT} from '../constants'
 import {createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {
-  ButtonWidget,
-  ButtonWidgetConfig,
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
@@ -33,13 +31,31 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
     return createSketchFn({appController, appStore})
   }, [appController, appStore])
 
-  return <P5ClientView sketch={sketchFn} />
+  function handleCullClick() {
+    appController.setActivityId(ActivityId.CullCreatures)
+  }
+
+  return (
+    <div>
+      <div style={{height: '576px'}}>
+        <P5ClientView sketch={sketchFn} />
+      </div>
+
+      <p>
+        Fastest creatures at the top! Slowest creatures at the bottom. (Going
+        backward = slow)
+      </p>
+
+      <button onClick={handleCullClick} type="button">
+        Kill {Math.floor(CREATURE_COUNT / 2)}
+      </button>
+    </div>
+  )
 }
 
 export class SortedCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
-  private cullCreaturesButton: CullCreaturesButton
 
   private graphics: Graphics
 
@@ -65,15 +81,6 @@ export class SortedCreaturesP5Activity extends Activity {
     this.popupSimulationView = new PopupSimulationView({
       appView: this.appView,
       simulationConfig: this.appController.getSimulationConfig()
-    })
-
-    this.cullCreaturesButton = new CullCreaturesButton({
-      appView: this.appView,
-      graphics: this.graphics,
-
-      onClick: () => {
-        this.appController.setActivityId(ActivityId.CullCreatures)
-      }
     })
   }
 
@@ -109,43 +116,13 @@ export class SortedCreaturesP5Activity extends Activity {
   }
 
   initialize(): void {
-    this.drawInterface()
+    this.graphics.background(220, 253, 102)
     this.creatureGridView.initialize()
   }
 
   onMouseReleased(): void {
     // When the popup simulation is running, mouse clicks will stop it.
     this.popupSimulationView.dismissSimulationView()
-
-    if (this.cullCreaturesButton.isUnderCursor()) {
-      this.cullCreaturesButton.onClick()
-    }
-  }
-
-  private drawInterface(): void {
-    const {canvas, font, width} = this.appView
-    const {graphics} = this
-
-    graphics.background(220, 253, 102)
-
-    graphics.push()
-    graphics.scale(1.5)
-
-    graphics.textAlign(canvas.CENTER)
-    graphics.textFont(font, 24)
-    graphics.fill(100, 100, 200)
-    graphics.noStroke()
-
-    graphics.fill(0)
-    graphics.text('Fastest creatures at the top!', width / 2, 30)
-    graphics.text(
-      'Slowest creatures at the bottom. (Going backward = slow)',
-      width / 2 - 200,
-      700
-    )
-    this.cullCreaturesButton.draw()
-
-    graphics.pop()
   }
 
   private setPopupSimulationCreatureId(id: number): void {
@@ -177,36 +154,5 @@ export class SortedCreaturesP5Activity extends Activity {
       endPositionY: creatureStartY + CREATURE_GRID_TILE_HEIGHT,
       margin: 5
     }
-  }
-}
-
-interface CullCreaturesButtonConfig extends ButtonWidgetConfig {
-  graphics: Graphics
-}
-
-class CullCreaturesButton extends ButtonWidget {
-  private graphics: Graphics
-
-  constructor(config: CullCreaturesButtonConfig) {
-    super(config)
-
-    this.graphics = config.graphics
-  }
-
-  draw(): void {
-    const {canvas, font, width} = this.appView
-    const {graphics} = this
-
-    graphics.noStroke()
-    graphics.fill(100, 100, 200)
-    graphics.rect(900, 670, 260, 40)
-    graphics.fill(0)
-    graphics.textAlign(canvas.CENTER)
-    graphics.textFont(font, 24)
-    graphics.text(`Kill ${Math.floor(CREATURE_COUNT / 2)}`, width - 250, 700)
-  }
-
-  isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(900, 670, 260, 40)
   }
 }

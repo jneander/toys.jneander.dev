@@ -4,7 +4,7 @@ import {ActivityId} from '../constants'
 import {ButtonWidget, ButtonWidgetConfig, CreatureGridView} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
-export class PropagateCreaturesActivity extends Activity {
+export class PropagateCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private backButton: BackButton
 

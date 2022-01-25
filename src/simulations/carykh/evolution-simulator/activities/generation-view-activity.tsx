@@ -38,7 +38,7 @@ const CREATURE_TILES_START_X = 760
 const CREATURE_TILES_START_Y = 180
 const CREATURE_TILES_GAP = 20
 
-export class GenerationViewActivity extends Activity {
+export class GenerationViewP5Activity extends Activity {
   pendingGenerationCount: number
 
   private popupSimulationView: PopupSimulationView
@@ -988,11 +988,11 @@ class AsapButton extends ButtonWidget {
 }
 
 interface AlapButtonConfig extends ButtonWidgetConfig {
-  activity: GenerationViewActivity
+  activity: GenerationViewP5Activity
 }
 
 class AlapButton extends ButtonWidget {
-  private activity: GenerationViewActivity
+  private activity: GenerationViewP5Activity
 
   constructor(config: AlapButtonConfig) {
     super(config)

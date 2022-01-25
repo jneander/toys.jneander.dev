@@ -16,7 +16,7 @@ import {Activity, ActivityConfig} from './shared'
 const CREATURE_GRID_START_X = 40
 const CREATURE_GRID_START_Y = 42
 
-export class CullCreaturesActivity extends Activity {
+export class CullCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
   private propagateCreaturesButton: PropagateCreaturesButton

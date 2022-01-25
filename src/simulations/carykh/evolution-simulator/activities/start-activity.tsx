@@ -2,7 +2,7 @@ import {ActivityId} from '../constants'
 import {ButtonWidget} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
-export class StartActivity extends Activity {
+export class StartP5Activity extends Activity {
   private startButton: StartButton
 
   constructor(config: ActivityConfig) {

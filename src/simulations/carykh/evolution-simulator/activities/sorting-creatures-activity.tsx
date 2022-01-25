@@ -4,7 +4,7 @@ import {creatureIdToIndex} from '../helpers'
 import {ButtonWidget, CREATURE_GRID_TILES_PER_ROW} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
-export class SortingCreaturesActivity extends Activity {
+export class SortingCreaturesP5Activity extends Activity {
   private creatureDrawer: CreatureDrawer
 
   private skipButton: SkipButton

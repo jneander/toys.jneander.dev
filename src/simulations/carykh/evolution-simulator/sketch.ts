@@ -2,16 +2,16 @@ import type p5 from 'p5'
 import type {Font} from 'p5'
 
 import {
-  CullCreaturesActivity,
-  GenerateCreaturesActivity,
-  GenerationViewActivity,
-  NullActivity,
-  PropagateCreaturesActivity,
-  SimulationFinishedActivity,
-  SimulationRunningActivity,
-  SortedCreaturesActivity,
-  SortingCreaturesActivity,
-  StartActivity
+  CullCreaturesP5Activity,
+  GenerateCreaturesP5Activity,
+  GenerationViewP5Activity,
+  NullP5Activity,
+  PropagateCreaturesP5Activity,
+  SimulationFinishedP5Activity,
+  SimulationRunningP5Activity,
+  SortedCreaturesP5Activity,
+  SortingCreaturesP5Activity,
+  StartP5Activity
 } from './activities'
 import type {AppController} from './app-controller'
 import {ActivityId} from './constants'
@@ -30,21 +30,21 @@ export function createSketchFn({
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentActivity = new NullActivity()
+    let currentActivity = new NullP5Activity()
 
     let appView: AppView
     let font: Font
 
     const activityClassByActivityId = {
-      [ActivityId.Start]: StartActivity,
-      [ActivityId.GenerationView]: GenerationViewActivity,
-      [ActivityId.GenerateCreatures]: GenerateCreaturesActivity,
-      [ActivityId.SimulationRunning]: SimulationRunningActivity,
-      [ActivityId.SimulationFinished]: SimulationFinishedActivity,
-      [ActivityId.SortingCreatures]: SortingCreaturesActivity,
-      [ActivityId.SortedCreatures]: SortedCreaturesActivity,
-      [ActivityId.CullCreatures]: CullCreaturesActivity,
-      [ActivityId.PropagateCreatures]: PropagateCreaturesActivity
+      [ActivityId.Start]: StartP5Activity,
+      [ActivityId.GenerationView]: GenerationViewP5Activity,
+      [ActivityId.GenerateCreatures]: GenerateCreaturesP5Activity,
+      [ActivityId.SimulationRunning]: SimulationRunningP5Activity,
+      [ActivityId.SimulationFinished]: SimulationFinishedP5Activity,
+      [ActivityId.SortingCreatures]: SortingCreaturesP5Activity,
+      [ActivityId.SortedCreatures]: SortedCreaturesP5Activity,
+      [ActivityId.CullCreatures]: CullCreaturesP5Activity,
+      [ActivityId.PropagateCreatures]: PropagateCreaturesP5Activity
     }
 
     p5.mouseWheel = (event: WheelEvent) => {

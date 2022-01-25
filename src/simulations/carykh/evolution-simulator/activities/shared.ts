@@ -36,7 +36,7 @@ export abstract class Activity implements ActivityInterface {
   onMouseWheel(event: WheelEvent): void {}
 }
 
-export class NullActivity implements ActivityInterface {
+export class NullP5Activity implements ActivityInterface {
   initialize(): void {}
   deinitialize(): void {}
   draw(): void {}

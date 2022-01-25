@@ -5,7 +5,7 @@ import {CreatureSimulation, GenerationSimulation} from '../simulation'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
-export class SimulationRunningActivity extends Activity {
+export class SimulationRunningP5Activity extends Activity {
   private simulationView: SimulationView
   private skipButton: SkipButton
   private playbackSpeedButton: PlaybackSpeedButton

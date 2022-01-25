@@ -6,7 +6,7 @@ import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import {CreatureSimulation, GenerationSimulation} from '../simulation'
-import {createSketchFn} from '../sketch'
+import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
 import {Activity, ActivityConfig} from './shared'
@@ -22,13 +22,17 @@ export function SimulationRunningActivity(
   const {appController, appStore} = props
 
   const sketchFn = useMemo(() => {
-    return createSketchFn({appController, appStore})
+    function createActivityFn({appView}: CreateActivityFnParameters) {
+      return new SimulationRunningP5Activity({appController, appStore, appView})
+    }
+
+    return createSketchFn({createActivityFn})
   }, [appController, appStore])
 
   return <P5ClientView sketch={sketchFn} />
 }
 
-export class SimulationRunningP5Activity extends Activity {
+class SimulationRunningP5Activity extends Activity {
   private simulationView: SimulationView
   private skipButton: SkipButton
   private playbackSpeedButton: PlaybackSpeedButton

@@ -4,7 +4,7 @@ import {useMemo} from 'react'
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
-import {createSketchFn} from '../sketch'
+import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILES_PER_ROW,
@@ -28,7 +28,11 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
   const {appController, appStore} = props
 
   const sketchFn = useMemo(() => {
-    return createSketchFn({appController, appStore})
+    function createActivityFn({appView}: CreateActivityFnParameters) {
+      return new SortedCreaturesP5Activity({appController, appStore, appView})
+    }
+
+    return createSketchFn({createActivityFn})
   }, [appController, appStore])
 
   function handleCullClick() {
@@ -53,7 +57,7 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
   )
 }
 
-export class SortedCreaturesP5Activity extends Activity {
+class SortedCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
 

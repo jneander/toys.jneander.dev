@@ -3,7 +3,7 @@ import {useMemo} from 'react'
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
-import {createSketchFn} from '../sketch'
+import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {CreatureGridView} from '../views'
 import {Activity, ActivityConfig} from './shared'
@@ -19,7 +19,15 @@ export function PropagateCreaturesActivity(
   const {appController, appStore} = props
 
   const sketchFn = useMemo(() => {
-    return createSketchFn({appController, appStore})
+    function createActivityFn({appView}: CreateActivityFnParameters) {
+      return new PropagateCreaturesP5Activity({
+        appController,
+        appStore,
+        appView
+      })
+    }
+
+    return createSketchFn({createActivityFn})
   }, [appController, appStore])
 
   function handleBackClick() {
@@ -46,7 +54,7 @@ export function PropagateCreaturesActivity(
   )
 }
 
-export class PropagateCreaturesP5Activity extends Activity {
+class PropagateCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
 
   constructor(config: ActivityConfig) {

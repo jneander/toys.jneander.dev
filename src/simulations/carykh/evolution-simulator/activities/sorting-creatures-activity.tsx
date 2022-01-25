@@ -7,7 +7,7 @@ import {CreatureDrawer} from '../creature-drawer'
 import {creatureIdToIndex} from '../helpers'
 import {createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {ButtonWidget, CREATURE_GRID_TILES_PER_ROW} from '../views'
+import {CREATURE_GRID_TILES_PER_ROW} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export interface SortingCreaturesActivityProps {
@@ -22,13 +22,25 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
     return createSketchFn({appController, appStore})
   }, [appController, appStore])
 
-  return <P5ClientView sketch={sketchFn} />
+  function handleSkipClick() {
+    appController.setActivityId(ActivityId.SortedCreatures)
+  }
+
+  return (
+    <div>
+      <div style={{height: '576px'}}>
+        <P5ClientView sketch={sketchFn} />
+      </div>
+
+      <button onClick={handleSkipClick} type="button">
+        Skip
+      </button>
+    </div>
+  )
 }
 
 export class SortingCreaturesP5Activity extends Activity {
   private creatureDrawer: CreatureDrawer
-
-  private skipButton: SkipButton
 
   private activityTimer: number
 
@@ -36,14 +48,6 @@ export class SortingCreaturesP5Activity extends Activity {
     super(config)
 
     this.creatureDrawer = new CreatureDrawer({appView: this.appView})
-
-    this.skipButton = new SkipButton({
-      appView: this.appView,
-
-      onClick: () => {
-        this.activityTimer = 100000
-      }
-    })
 
     this.activityTimer = 0
   }
@@ -83,7 +87,6 @@ export class SortingCreaturesP5Activity extends Activity {
 
     canvas.pop()
 
-    this.skipButton.draw()
     this.activityTimer += 10
 
     if (this.activityTimer > 60 * Math.PI) {
@@ -91,31 +94,7 @@ export class SortingCreaturesP5Activity extends Activity {
     }
   }
 
-  onMouseReleased(): void {
-    if (this.skipButton.isUnderCursor()) {
-      this.skipButton.onClick()
-    }
-  }
-
   private interpolate(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
-  }
-}
-
-class SkipButton extends ButtonWidget {
-  draw(): void {
-    const {canvas, font, height} = this.appView
-
-    canvas.fill(0)
-    canvas.rect(0, height - 40, 90, 40)
-    canvas.fill(255)
-    canvas.textAlign(canvas.CENTER)
-    canvas.textFont(font, 32)
-    canvas.text('SKIP', 45, height - 8)
-  }
-
-  isUnderCursor(): boolean {
-    const {appView} = this
-    return appView.rectIsUnderCursor(0, appView.height - 40, 90, 40)
   }
 }

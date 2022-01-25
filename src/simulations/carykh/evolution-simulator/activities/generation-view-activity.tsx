@@ -1,6 +1,9 @@
 import type {Graphics} from 'p5'
+import {useMemo} from 'react'
 
+import {P5ClientView} from '../../../../shared/p5'
 import type Creature from '../Creature'
+import type {AppController} from '../app-controller'
 import {
   ActivityId,
   CREATURE_COUNT,
@@ -19,6 +22,7 @@ import {
 import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
 import {GenerationSimulation} from '../simulation'
+import {createSketchFn} from '../sketch'
 import type {AppStore, SpeciesCount} from '../types'
 import {
   ButtonWidget,
@@ -37,6 +41,21 @@ const CREATURE_TILE_WIDTH = 140
 const CREATURE_TILES_START_X = 760
 const CREATURE_TILES_START_Y = 180
 const CREATURE_TILES_GAP = 20
+
+export interface GenerationViewActivityProps {
+  appController: AppController
+  appStore: AppStore
+}
+
+export function GenerationViewActivity(props: GenerationViewActivityProps) {
+  const {appController, appStore} = props
+
+  const sketchFn = useMemo(() => {
+    return createSketchFn({appController, appStore})
+  }, [appController, appStore])
+
+  return <P5ClientView sketch={sketchFn} />
+}
 
 export class GenerationViewP5Activity extends Activity {
   pendingGenerationCount: number

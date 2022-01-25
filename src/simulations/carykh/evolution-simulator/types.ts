@@ -46,10 +46,9 @@ export type GenerationHistoryEntry = {
 
 export type AppState = {
   creaturesInLatestGeneration: Creature[]
-  currentActivityId: ActivityId | null
+  currentActivityId: ActivityId
   generationCount: number
   generationHistoryMap: {[generation: number]: GenerationHistoryEntry}
-  nextActivityId: ActivityId
   selectedGeneration: number
 }
 

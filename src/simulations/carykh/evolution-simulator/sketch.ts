@@ -78,19 +78,15 @@ export function createSketchFn({
     p5.draw = () => {
       p5.scale(appView.scale)
 
-      const {currentActivityId, nextActivityId} = appStore.getState()
+      const {currentActivityId} = appStore.getState()
 
-      if (nextActivityId !== currentActivityId) {
-        currentActivity.deinitialize()
-
-        const ActivityClass = activityClassByActivityId[nextActivityId]
+      if (currentActivity instanceof NullP5Activity) {
+        const ActivityClass = activityClassByActivityId[currentActivityId]
         currentActivity = new ActivityClass({
           appController,
           appStore,
           appView
         })
-
-        appStore.setState({currentActivityId: nextActivityId})
 
         currentActivity.initialize()
       }

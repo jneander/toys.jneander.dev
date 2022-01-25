@@ -1,6 +1,29 @@
+import {useMemo} from 'react'
+
+import {P5ClientView} from '../../../../shared/p5'
+import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
+import {createSketchFn} from '../sketch'
+import type {AppStore} from '../types'
 import {ButtonWidget, CreatureGridView} from '../views'
 import {Activity, ActivityConfig} from './shared'
+
+export interface GenerateCreaturesActivityProps {
+  appController: AppController
+  appStore: AppStore
+}
+
+export function GenerateCreaturesActivity(
+  props: GenerateCreaturesActivityProps
+) {
+  const {appController, appStore} = props
+
+  const sketchFn = useMemo(() => {
+    return createSketchFn({appController, appStore})
+  }, [appController, appStore])
+
+  return <P5ClientView sketch={sketchFn} />
+}
 
 export class GenerateCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView

@@ -1,7 +1,12 @@
 import type {Graphics} from 'p5'
+import {useMemo} from 'react'
 
+import {P5ClientView} from '../../../../shared/p5'
+import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {creatureIdToIndex} from '../helpers'
+import {createSketchFn} from '../sketch'
+import type {AppStore} from '../types'
 import {
   ButtonWidget,
   ButtonWidgetConfig,
@@ -16,6 +21,23 @@ import {Activity, ActivityConfig} from './shared'
 
 const CREATURE_GRID_START_X = 40
 const CREATURE_GRID_START_Y = 17
+
+export interface SimulationFinishedActivityProps {
+  appController: AppController
+  appStore: AppStore
+}
+
+export function SimulationFinishedActivity(
+  props: SimulationFinishedActivityProps
+) {
+  const {appController, appStore} = props
+
+  const sketchFn = useMemo(() => {
+    return createSketchFn({appController, appStore})
+  }, [appController, appStore])
+
+  return <P5ClientView sketch={sketchFn} />
+}
 
 export class SimulationFinishedP5Activity extends Activity {
   private creatureGridView: CreatureGridView

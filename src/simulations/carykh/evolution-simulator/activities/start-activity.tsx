@@ -1,6 +1,27 @@
+import {useMemo} from 'react'
+
+import {P5ClientView} from '../../../../shared/p5'
+import type {AppController} from '../app-controller'
 import {ActivityId} from '../constants'
+import {createSketchFn} from '../sketch'
+import type {AppStore} from '../types'
 import {ButtonWidget} from '../views'
 import {Activity, ActivityConfig} from './shared'
+
+export interface StartActivityProps {
+  appController: AppController
+  appStore: AppStore
+}
+
+export function StartActivity(props: StartActivityProps) {
+  const {appController, appStore} = props
+
+  const sketchFn = useMemo(() => {
+    return createSketchFn({appController, appStore})
+  }, [appController, appStore])
+
+  return <P5ClientView sketch={sketchFn} />
+}
 
 export class StartP5Activity extends Activity {
   private startButton: StartButton

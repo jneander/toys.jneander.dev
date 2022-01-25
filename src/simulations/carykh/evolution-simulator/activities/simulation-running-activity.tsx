@@ -1,9 +1,32 @@
+import {useMemo} from 'react'
+
+import {P5ClientView} from '../../../../shared/p5'
+import type {AppController} from '../app-controller'
 import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import {CreatureSimulation, GenerationSimulation} from '../simulation'
+import {createSketchFn} from '../sketch'
+import type {AppStore} from '../types'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
 import {Activity, ActivityConfig} from './shared'
+
+export interface SimulationRunningActivityProps {
+  appController: AppController
+  appStore: AppStore
+}
+
+export function SimulationRunningActivity(
+  props: SimulationRunningActivityProps
+) {
+  const {appController, appStore} = props
+
+  const sketchFn = useMemo(() => {
+    return createSketchFn({appController, appStore})
+  }, [appController, appStore])
+
+  return <P5ClientView sketch={sketchFn} />
+}
 
 export class SimulationRunningP5Activity extends Activity {
   private simulationView: SimulationView

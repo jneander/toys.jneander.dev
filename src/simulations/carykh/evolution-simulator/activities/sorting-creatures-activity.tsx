@@ -1,8 +1,29 @@
+import {useMemo} from 'react'
+
+import {P5ClientView} from '../../../../shared/p5'
+import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {creatureIdToIndex} from '../helpers'
+import {createSketchFn} from '../sketch'
+import type {AppStore} from '../types'
 import {ButtonWidget, CREATURE_GRID_TILES_PER_ROW} from '../views'
 import {Activity, ActivityConfig} from './shared'
+
+export interface SortingCreaturesActivityProps {
+  appController: AppController
+  appStore: AppStore
+}
+
+export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
+  const {appController, appStore} = props
+
+  const sketchFn = useMemo(() => {
+    return createSketchFn({appController, appStore})
+  }, [appController, appStore])
+
+  return <P5ClientView sketch={sketchFn} />
+}
 
 export class SortingCreaturesP5Activity extends Activity {
   private creatureDrawer: CreatureDrawer

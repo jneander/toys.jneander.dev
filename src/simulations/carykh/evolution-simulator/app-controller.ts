@@ -222,6 +222,6 @@ export class AppController {
   }
 
   setActivityId(activityId: ActivityId): void {
-    this.config.appStore.setState({nextActivityId: activityId})
+    this.config.appStore.setState({currentActivityId: activityId})
   }
 }

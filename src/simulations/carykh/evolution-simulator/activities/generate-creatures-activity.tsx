@@ -5,7 +5,7 @@ import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {ButtonWidget, CreatureGridView} from '../views'
+import {CreatureGridView} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export interface GenerateCreaturesActivityProps {
@@ -22,12 +22,28 @@ export function GenerateCreaturesActivity(
     return createSketchFn({appController, appStore})
   }, [appController, appStore])
 
-  return <P5ClientView sketch={sketchFn} />
+  function handleBackClick() {
+    appStore.setState({generationCount: 0})
+    appController.setActivityId(ActivityId.GenerationView)
+  }
+
+  return (
+    <div>
+      <div style={{height: '576px'}}>
+        <P5ClientView sketch={sketchFn} />
+      </div>
+
+      <p>Here are your {CREATURE_COUNT} randomly generated creatures!!!</p>
+
+      <button onClick={handleBackClick} type="button">
+        Back
+      </button>
+    </div>
+  )
 }
 
 export class GenerateCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
-  private backButton: BackButton
 
   constructor(config: ActivityConfig) {
     super(config)
@@ -45,28 +61,13 @@ export class GenerateCreaturesP5Activity extends Activity {
       gridStartX: 40,
       gridStartY: 17
     })
-
-    this.backButton = new BackButton({
-      appView: this.appView,
-
-      onClick: () => {
-        this.appStore.setState({generationCount: 0})
-        this.appController.setActivityId(ActivityId.GenerationView)
-      }
-    })
   }
 
   initialize(): void {
     this.appController.generateCreatures()
 
-    this.drawInterface()
+    this.appView.canvas.background(220, 253, 102)
     this.initializeCreatureGrid()
-  }
-
-  onMouseReleased(): void {
-    if (this.backButton.isUnderCursor()) {
-      this.backButton.onClick()
-    }
   }
 
   private initializeCreatureGrid(): void {
@@ -80,40 +81,5 @@ export class GenerateCreaturesP5Activity extends Activity {
       gridStartX,
       gridStartY
     )
-  }
-
-  private drawInterface(): void {
-    const {canvas, font, width} = this.appView
-
-    canvas.background(220, 253, 102)
-
-    canvas.noStroke()
-    canvas.fill(0)
-    canvas.textAlign(canvas.CENTER)
-    canvas.textFont(font, 24)
-    canvas.text(
-      `Here are your ${CREATURE_COUNT} randomly generated creatures!!!`,
-      width / 2 - 200,
-      690
-    )
-    this.backButton.draw()
-  }
-}
-
-class BackButton extends ButtonWidget {
-  draw(): void {
-    const {canvas, font, width} = this.appView
-
-    canvas.noStroke()
-    canvas.fill(100, 100, 200)
-    canvas.rect(900, 664, 260, 40)
-    canvas.fill(0)
-    canvas.textAlign(canvas.CENTER)
-    canvas.textFont(font, 24)
-    canvas.text('Back', width - 250, 690)
-  }
-
-  isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(900, 664, 260, 40)
   }
 }

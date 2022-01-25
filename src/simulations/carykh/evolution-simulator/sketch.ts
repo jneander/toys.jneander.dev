@@ -22,6 +22,8 @@ export interface CreateSketchFnConfig {
   appStore: AppStore
 }
 
+let font: Font
+
 export function createSketchFn({
   appController,
   appStore
@@ -32,7 +34,6 @@ export function createSketchFn({
     let currentActivity = new NullP5Activity()
 
     let appView: AppView
-    let font: Font
 
     const activityClassByActivityId = {
       [ActivityId.Start]: NullP5Activity,
@@ -58,8 +59,10 @@ export function createSketchFn({
       currentActivity.onMouseReleased()
     }
 
-    p5.preload = () => {
-      font = p5.loadFont('/fonts/Helvetica-Bold.otf')
+    if (font == null) {
+      p5.preload = () => {
+        font = p5.loadFont('/fonts/Helvetica-Bold.otf')
+      }
     }
 
     p5.setup = () => {

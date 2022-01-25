@@ -7,8 +7,6 @@ import {ActivityId} from '../constants'
 import {createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {
-  ButtonWidget,
-  ButtonWidgetConfig,
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
@@ -33,13 +31,36 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
     return createSketchFn({appController, appStore})
   }, [appController, appStore])
 
-  return <P5ClientView sketch={sketchFn} />
+  function handlePropagateClick() {
+    appController.setActivityId(ActivityId.PropagateCreatures)
+  }
+
+  return (
+    <div>
+      <div style={{height: '576px'}}>
+        <P5ClientView sketch={sketchFn} />
+      </div>
+
+      <p>
+        Faster creatures are more likely to survive because they can outrun
+        their predators. Slow creatures get eaten.
+      </p>
+
+      <p>
+        Because of random chance, a few fast ones get eaten, while a few slow
+        ones survive.
+      </p>
+
+      <button onClick={handlePropagateClick} type="button">
+        Reproduce
+      </button>
+    </div>
+  )
 }
 
 export class CullCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
-  private propagateCreaturesButton: PropagateCreaturesButton
 
   private graphics: Graphics
 
@@ -65,15 +86,6 @@ export class CullCreaturesP5Activity extends Activity {
     this.popupSimulationView = new PopupSimulationView({
       appView: this.appView,
       simulationConfig: this.appController.getSimulationConfig()
-    })
-
-    this.propagateCreaturesButton = new PropagateCreaturesButton({
-      appView: this.appView,
-      graphics: this.graphics,
-
-      onClick: () => {
-        this.appController.setActivityId(ActivityId.PropagateCreatures)
-      }
     })
   }
 
@@ -111,47 +123,13 @@ export class CullCreaturesP5Activity extends Activity {
   initialize(): void {
     this.appController.cullCreatures()
 
-    this.drawInterface()
+    this.graphics.background(220, 253, 102)
     this.creatureGridView.initialize()
   }
 
   onMouseReleased(): void {
     // When the popup simulation is running, mouse clicks will stop it.
     this.popupSimulationView.dismissSimulationView()
-
-    if (this.propagateCreaturesButton.isUnderCursor()) {
-      this.propagateCreaturesButton.onClick()
-    }
-  }
-
-  private drawInterface(): void {
-    const {canvas, font, width} = this.appView
-    const {graphics} = this
-
-    graphics.background(220, 253, 102)
-
-    graphics.push()
-    graphics.scale(1.5)
-
-    graphics.textAlign(canvas.CENTER)
-    graphics.textFont(font, 24)
-    graphics.fill(100, 100, 200)
-    graphics.noStroke()
-
-    graphics.fill(0)
-    graphics.text(
-      'Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.',
-      width / 2,
-      30
-    )
-    graphics.text(
-      'Because of random chance, a few fast ones get eaten, while a few slow ones survive.',
-      width / 2 - 130,
-      700
-    )
-    this.propagateCreaturesButton.draw()
-
-    graphics.pop()
   }
 
   private setPopupSimulationCreatureId(id: number): void {
@@ -183,36 +161,5 @@ export class CullCreaturesP5Activity extends Activity {
       endPositionY: creatureStartY + CREATURE_GRID_TILE_HEIGHT,
       margin: 5
     }
-  }
-}
-
-interface SkipButtonConfig extends ButtonWidgetConfig {
-  graphics: Graphics
-}
-
-class PropagateCreaturesButton extends ButtonWidget {
-  private graphics: Graphics
-
-  constructor(config: SkipButtonConfig) {
-    super(config)
-
-    this.graphics = config.graphics
-  }
-
-  draw(): void {
-    const {canvas, font, width} = this.appView
-    const {graphics} = this
-
-    graphics.noStroke()
-    graphics.fill(100, 100, 200)
-    graphics.rect(1050, 670, 160, 40)
-    graphics.fill(0)
-    graphics.textAlign(canvas.CENTER)
-    graphics.textFont(font, 24)
-    graphics.text('Reproduce', width - 150, 700)
-  }
-
-  isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(1050, 670, 160, 40)
   }
 }

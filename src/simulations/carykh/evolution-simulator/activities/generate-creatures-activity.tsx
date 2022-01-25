@@ -56,10 +56,6 @@ export class GenerateCreaturesP5Activity extends Activity {
     })
   }
 
-  deinitialize(): void {
-    this.creatureGridView.deinitialize()
-  }
-
   initialize(): void {
     this.appController.generateCreatures()
 

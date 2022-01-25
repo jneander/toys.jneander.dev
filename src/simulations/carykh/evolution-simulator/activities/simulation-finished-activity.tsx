@@ -85,12 +85,6 @@ export class SimulationFinishedP5Activity extends Activity {
     this.creatureIdsByGridIndex = new Array<number>(CREATURE_COUNT)
   }
 
-  deinitialize(): void {
-    this.graphics.remove()
-    this.creatureGridView.deinitialize()
-    this.popupSimulationView.deinitialize()
-  }
-
   draw(): void {
     const {canvas, height, width} = this.appView
     const {creatureGridView, graphics} = this

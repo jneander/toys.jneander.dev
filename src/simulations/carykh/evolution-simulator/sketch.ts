@@ -10,8 +10,7 @@ import {
   SimulationFinishedP5Activity,
   SimulationRunningP5Activity,
   SortedCreaturesP5Activity,
-  SortingCreaturesP5Activity,
-  StartP5Activity
+  SortingCreaturesP5Activity
 } from './activities'
 import type {AppController} from './app-controller'
 import {ActivityId} from './constants'
@@ -36,7 +35,7 @@ export function createSketchFn({
     let font: Font
 
     const activityClassByActivityId = {
-      [ActivityId.Start]: StartP5Activity,
+      [ActivityId.Start]: NullP5Activity,
       [ActivityId.GenerationView]: GenerationViewP5Activity,
       [ActivityId.GenerateCreatures]: GenerateCreaturesP5Activity,
       [ActivityId.SimulationRunning]: SimulationRunningP5Activity,

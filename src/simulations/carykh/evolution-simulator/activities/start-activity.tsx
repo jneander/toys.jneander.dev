@@ -1,74 +1,22 @@
-import {useMemo} from 'react'
-
-import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
 import {ActivityId} from '../constants'
-import {createSketchFn} from '../sketch'
-import type {AppStore} from '../types'
-import {ButtonWidget} from '../views'
-import {Activity, ActivityConfig} from './shared'
 
 export interface StartActivityProps {
   appController: AppController
-  appStore: AppStore
 }
 
 export function StartActivity(props: StartActivityProps) {
-  const {appController, appStore} = props
-
-  const sketchFn = useMemo(() => {
-    return createSketchFn({appController, appStore})
-  }, [appController, appStore])
-
-  return <P5ClientView sketch={sketchFn} />
-}
-
-export class StartP5Activity extends Activity {
-  private startButton: StartButton
-
-  constructor(config: ActivityConfig) {
-    super(config)
-
-    this.startButton = new StartButton({
-      appView: this.appView,
-
-      onClick: () => {
-        this.appController.setActivityId(ActivityId.GenerationView)
-      }
-    })
+  function handleStartClick() {
+    props.appController.setActivityId(ActivityId.GenerationView)
   }
 
-  initialize(): void {
-    const {canvas, width} = this.appView
+  return (
+    <div>
+      <h2>Evolution!</h2>
 
-    canvas.background(255)
-    canvas.noStroke()
-    canvas.fill(0)
-    canvas.text('EVOLUTION!', width / 2, 200)
-
-    this.startButton.draw()
-  }
-
-  onMouseReleased(): void {
-    if (this.startButton.isUnderCursor()) {
-      this.startButton.onClick()
-    }
-  }
-}
-
-class StartButton extends ButtonWidget {
-  draw(): void {
-    const {canvas, width} = this.appView
-
-    canvas.noStroke()
-    canvas.fill(100, 200, 100)
-    canvas.rect(width / 2 - 200, 300, 400, 200)
-    canvas.fill(0)
-    canvas.text('START', width / 2, 430)
-  }
-
-  isUnderCursor(): boolean {
-    const {appView} = this
-    return appView.rectIsUnderCursor(appView.width / 2 - 200, 300, 400, 200)
-  }
+      <button onClick={handleStartClick} type="button">
+        Start
+      </button>
+    </div>
+  )
 }

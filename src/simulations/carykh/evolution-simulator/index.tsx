@@ -123,5 +123,5 @@ export function CarykhEvolutionSimulator() {
     )
   }
 
-  return <StartActivity appController={appController} appStore={appStore} />
+  return <StartActivity appController={appController} />
 }

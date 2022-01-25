@@ -71,10 +71,6 @@ export class PopupSimulationView extends Widget {
     this.simulationView.setCameraZoom(0.009)
   }
 
-  deinitialize(): void {
-    this.simulationView.deinitialize()
-  }
-
   draw(): void {
     const {creatureInfo, showSimulationView} = this
 

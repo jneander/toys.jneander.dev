@@ -61,11 +61,6 @@ export class PropagateCreaturesP5Activity extends Activity {
     })
   }
 
-  deinitialize(): void {
-    this.graphics.remove()
-    this.creatureGridView.deinitialize()
-  }
-
   initialize(): void {
     this.appController.propagateCreatures()
 

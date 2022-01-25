@@ -46,12 +46,6 @@ export class SimulationView {
     this.statsGraphics = p5.createGraphics(width, height)
   }
 
-  deinitialize(): void {
-    this.graphics.remove()
-    this.simulationGraphics.remove()
-    this.statsGraphics.remove()
-  }
-
   draw(): void {
     const {graphics, simulationGraphics, statsGraphics} = this
 

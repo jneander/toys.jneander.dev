@@ -77,12 +77,6 @@ export class CullCreaturesP5Activity extends Activity {
     })
   }
 
-  deinitialize(): void {
-    this.graphics.remove()
-    this.creatureGridView.deinitialize()
-    this.popupSimulationView.deinitialize()
-  }
-
   draw(): void {
     const {canvas, height, width} = this.appView
     const {creatureGridView, graphics} = this

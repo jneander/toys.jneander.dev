@@ -110,10 +110,6 @@ export class SimulationRunningP5Activity extends Activity {
     this.generationSimulation.initialize()
   }
 
-  deinitialize(): void {
-    this.simulationView.deinitialize()
-  }
-
   draw(): void {
     const {appController, appView, generationSimulation} = this
     const {canvas, height, width} = appView

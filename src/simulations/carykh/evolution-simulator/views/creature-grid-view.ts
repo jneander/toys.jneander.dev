@@ -50,12 +50,6 @@ export class CreatureGridView {
     this.graphics.image(this.creatureGraphics, 0, 0)
   }
 
-  deinitialize(): void {
-    this.creatureGraphics.remove()
-    this.hoverGraphics.remove()
-    this.graphics.remove()
-  }
-
   draw(): void {
     this.drawCreatureHoverState()
 

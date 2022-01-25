@@ -10,7 +10,6 @@ export interface ActivityConfig {
 
 export interface ActivityInterface {
   initialize(): void
-  deinitialize(): void
   draw(): void
   onMousePressed(): void
   onMouseReleased(): void
@@ -29,7 +28,6 @@ export abstract class Activity implements ActivityInterface {
   }
 
   initialize(): void {}
-  deinitialize(): void {}
   draw(): void {}
   onMousePressed(): void {}
   onMouseReleased(): void {}
@@ -38,7 +36,6 @@ export abstract class Activity implements ActivityInterface {
 
 export class NullP5Activity implements ActivityInterface {
   initialize(): void {}
-  deinitialize(): void {}
   draw(): void {}
   onMousePressed(): void {}
   onMouseReleased(): void {}

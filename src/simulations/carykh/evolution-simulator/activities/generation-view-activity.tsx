@@ -146,12 +146,6 @@ export class GenerationViewP5Activity extends Activity {
     this.graphGraphics = canvas.createGraphics(975, 570)
   }
 
-  deinitialize(): void {
-    this.popupSimulationView.deinitialize()
-    this.generationHistoryGraphics.remove()
-    this.graphGraphics.remove()
-  }
-
   draw(): void {
     const {appController, appStore, appView} = this
     const {canvas, font} = appView

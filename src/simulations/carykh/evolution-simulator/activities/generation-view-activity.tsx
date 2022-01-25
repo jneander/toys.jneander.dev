@@ -61,7 +61,6 @@ export class GenerationViewP5Activity extends Activity {
   pendingGenerationCount: number
 
   private popupSimulationView: PopupSimulationView
-  private createButton: CreateButton
   private stepByStepButton: StepByStepButton
   private quickButton: QuickButton
   private asapButton: AsapButton
@@ -88,14 +87,6 @@ export class GenerationViewP5Activity extends Activity {
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-
-    this.createButton = new CreateButton({
-      appView: this.appView,
-
-      onClick: () => {
-        this.appController.setActivityId(ActivityId.GenerateCreatures)
-      }
-    })
 
     this.stepByStepButton = new StepByStepButton({
       appView: this.appView,
@@ -167,76 +158,60 @@ export class GenerationViewP5Activity extends Activity {
     canvas.text('Generation ' + Math.max(selectedGeneration, 0), 20, 100)
     canvas.textFont(font, 28)
 
-    if (generationCount == -1) {
-      canvas.fill(0)
-      canvas.text(
-        `Since there are no creatures yet, create ${CREATURE_COUNT} creatures!`,
-        20,
-        160
-      )
-      canvas.text(
-        'They will be randomly created, and also very simple.',
-        20,
-        200
-      )
-      this.createButton.draw()
-    } else {
-      this.stepByStepButton.draw()
-      this.quickButton.draw()
-      this.asapButton.draw()
-      this.alapButton.draw()
+    this.stepByStepButton.draw()
+    this.quickButton.draw()
+    this.asapButton.draw()
+    this.alapButton.draw()
 
-      const fitnessPercentiles =
-        this.getFitnessPercentilesFromHistory(selectedGeneration)
-      const fitnessPercentile =
-        Math.round(fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX] * 1000) /
-        1000
+    const fitnessPercentiles =
+      this.getFitnessPercentilesFromHistory(selectedGeneration)
+    const fitnessPercentile =
+      Math.round(fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX] * 1000) /
+      1000
 
-      canvas.fill(0)
-      canvas.text('Median ' + FITNESS_LABEL, 50, 160)
-      canvas.textAlign(canvas.CENTER)
-      canvas.textAlign(canvas.RIGHT)
-      canvas.text(fitnessPercentile + ' ' + FITNESS_UNIT_LABEL, 700, 160)
+    canvas.fill(0)
+    canvas.text('Median ' + FITNESS_LABEL, 50, 160)
+    canvas.textAlign(canvas.CENTER)
+    canvas.textAlign(canvas.RIGHT)
+    canvas.text(fitnessPercentile + ' ' + FITNESS_UNIT_LABEL, 700, 160)
 
-      if (this.generationCountDepictedInGraph !== generationCount) {
-        this.drawGraph(975, 570)
-        this.generationCountDepictedInGraph = generationCount
-      }
+    if (this.generationCountDepictedInGraph !== generationCount) {
+      this.drawGraph(975, 570)
+      this.generationCountDepictedInGraph = generationCount
+    }
 
-      this.drawHistogram(760, 410, 460, 280)
-      this.drawGraphImage()
+    this.drawHistogram(760, 410, 460, 280)
+    this.drawGraphImage()
 
-      if (generationCount >= 1) {
-        this.generationSlider.draw()
-      }
+    if (generationCount >= 1) {
+      this.generationSlider.draw()
+    }
 
-      if (selectedGeneration >= 1) {
-        this.drawWorstMedianAndBestCreatures()
-      }
+    if (selectedGeneration >= 1) {
+      this.drawWorstMedianAndBestCreatures()
+    }
 
-      if (
-        selectedGeneration > 0 &&
-        this.pendingGenerationCount === 0 &&
-        !this.draggingSlider
-      ) {
-        const worstMedianOrBestIndex =
-          this.getWorstMedianOrBestIndexUnderCursor()
+    if (
+      selectedGeneration > 0 &&
+      this.pendingGenerationCount === 0 &&
+      !this.draggingSlider
+    ) {
+      const worstMedianOrBestIndex = this.getWorstMedianOrBestIndexUnderCursor()
 
-        /*
-         * When the cursor is over the worst, median, or best creature, the popup
-         * simulation will be displayed for that creature.
-         */
+      /*
+       * When the cursor is over the worst, median, or best creature, the popup
+       * simulation will be displayed for that creature.
+       */
 
-        if (worstMedianOrBestIndex != null) {
-          this.configurePopupSimulation(worstMedianOrBestIndex)
-          this.drawWorstMedianAndBestHoverState(worstMedianOrBestIndex)
-          this.popupSimulationView.draw()
-        } else {
-          this.clearPopupSimulation()
-        }
+      if (worstMedianOrBestIndex != null) {
+        this.configurePopupSimulation(worstMedianOrBestIndex)
+        this.drawWorstMedianAndBestHoverState(worstMedianOrBestIndex)
+        this.popupSimulationView.draw()
       } else {
         this.clearPopupSimulation()
       }
+    } else {
+      this.clearPopupSimulation()
     }
 
     if (this.pendingGenerationCount > 0) {
@@ -272,25 +247,19 @@ export class GenerationViewP5Activity extends Activity {
   }
 
   onMouseReleased(): void {
-    const {generationCount} = this.appStore.getState()
-
     // When the popup simulation is running, mouse clicks will stop it.
     this.popupSimulationView.dismissSimulationView()
 
     this.draggingSlider = false
 
-    if (generationCount === -1 && this.createButton.isUnderCursor()) {
-      this.createButton.onClick()
-    } else if (generationCount >= 0) {
-      if (this.stepByStepButton.isUnderCursor()) {
-        this.stepByStepButton.onClick()
-      } else if (this.quickButton.isUnderCursor()) {
-        this.quickButton.onClick()
-      } else if (this.asapButton.isUnderCursor()) {
-        this.asapButton.onClick()
-      } else if (this.alapButton.isUnderCursor()) {
-        this.alapButton.onClick()
-      }
+    if (this.stepByStepButton.isUnderCursor()) {
+      this.stepByStepButton.onClick()
+    } else if (this.quickButton.isUnderCursor()) {
+      this.quickButton.onClick()
+    } else if (this.asapButton.isUnderCursor()) {
+      this.asapButton.onClick()
+    } else if (this.alapButton.isUnderCursor()) {
+      this.alapButton.onClick()
     }
   }
 
@@ -933,22 +902,6 @@ export class GenerationViewP5Activity extends Activity {
     }
 
     return new Array(HISTOGRAM_BAR_SPAN).fill(0)
-  }
-}
-
-class CreateButton extends ButtonWidget {
-  draw(): void {
-    const {canvas} = this.appView
-
-    canvas.noStroke()
-    canvas.fill(100, 200, 100)
-    canvas.rect(20, 250, 200, 100)
-    canvas.fill(0)
-    canvas.text('CREATE', 56, 312)
-  }
-
-  isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(20, 250, 200, 100)
   }
 }
 

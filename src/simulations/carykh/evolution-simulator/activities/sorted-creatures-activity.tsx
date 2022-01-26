@@ -150,9 +150,18 @@ class SortedCreaturesP5Activity extends Activity {
     this.popupSimulationView.dismissSimulationView()
   }
 
-  private setPopupSimulationCreatureInfo(id: number): void {
-    const creature = this.appStore.getState().creaturesInLatestGeneration[id]
-    this.popupSimulationView.setCreatureInfo({creature, rank: id + 1})
+  private setPopupSimulationCreatureInfo(
+    generationCreatureIndex: number
+  ): void {
+    const creature =
+      this.appStore.getState().creaturesInLatestGeneration[
+        generationCreatureIndex
+      ]
+
+    this.popupSimulationView.setCreatureInfo({
+      creature,
+      rank: generationCreatureIndex + 1
+    })
   }
 
   private clearPopupSimulation(): void {

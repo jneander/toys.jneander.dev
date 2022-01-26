@@ -7,6 +7,8 @@ import {ActivityId} from '../constants'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {
+  CREATURE_GRID_MARGIN_X,
+  CREATURE_GRID_MARGIN_Y,
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
@@ -115,8 +117,8 @@ class CullCreaturesP5Activity extends Activity {
 
     canvas.image(graphics, 0, 0, width, height)
 
-    const gridStartX = 25 // 40 minus horizontal grid margin
-    const gridStartY = 28 // 40 minus vertical grid margin
+    const gridStartX = 40 - CREATURE_GRID_MARGIN_X
+    const gridStartY = 40 - CREATURE_GRID_MARGIN_Y
 
     creatureGridView.draw()
     canvas.image(creatureGridView.graphics, gridStartX, gridStartY)

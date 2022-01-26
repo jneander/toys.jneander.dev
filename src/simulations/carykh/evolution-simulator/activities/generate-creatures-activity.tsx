@@ -5,7 +5,12 @@ import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {CreatureGridView, CreatureGridViewConfig} from '../views'
+import {
+  CREATURE_GRID_MARGIN_X,
+  CREATURE_GRID_MARGIN_Y,
+  CreatureGridView,
+  CreatureGridViewConfig
+} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export interface GenerateCreaturesActivityProps {
@@ -90,8 +95,8 @@ class GenerateCreaturesP5Activity extends Activity {
   private initializeCreatureGrid(): void {
     this.creatureGridView.initialize()
 
-    const gridStartX = 25 // 40 minus horizontal grid margin
-    const gridStartY = 5 // 17 minus vertical grid margin
+    const gridStartX = 40 - CREATURE_GRID_MARGIN_X
+    const gridStartY = 17 - CREATURE_GRID_MARGIN_Y
 
     this.appView.canvas.image(
       this.creatureGridView.graphics,

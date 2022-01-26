@@ -88,7 +88,7 @@ class SimulationFinishedP5Activity extends Activity {
 
   private graphics: Graphics
 
-  private creatureIdsByGridIndex: number[]
+  private generationCreatureIndicesByGridIndex: number[]
   private gridStartX: number
   private gridStartY: number
 
@@ -114,7 +114,9 @@ class SimulationFinishedP5Activity extends Activity {
       simulationConfig: this.appController.getSimulationConfig()
     })
 
-    this.creatureIdsByGridIndex = new Array<number>(CREATURE_COUNT)
+    this.generationCreatureIndicesByGridIndex = new Array<number>(
+      CREATURE_COUNT
+    )
 
     this.updateCreatureIdsByGridIndex()
   }
@@ -139,7 +141,7 @@ class SimulationFinishedP5Activity extends Activity {
     const gridIndex = creatureGridView.getGridIndexUnderCursor()
 
     if (gridIndex != null) {
-      const creatureId = this.creatureIdsByGridIndex[gridIndex]
+      const creatureId = this.generationCreatureIndicesByGridIndex[gridIndex]
       this.setPopupSimulationCreatureInfo(creatureId)
 
       const anchor = this.calculateAnchorForPopupSimulation(gridIndex)
@@ -207,7 +209,7 @@ class SimulationFinishedP5Activity extends Activity {
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const creature = appStore.getState().creaturesInLatestGeneration[i]
       const gridIndex = creatureIdToIndex(creature.id)
-      this.creatureIdsByGridIndex[gridIndex] = i
+      this.generationCreatureIndicesByGridIndex[gridIndex] = i
     }
   }
 }

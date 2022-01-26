@@ -1,5 +1,5 @@
 import type p5 from 'p5'
-import type {Color, Font} from 'p5'
+import type {Font} from 'p5'
 
 export interface AppViewConfig {
   font: Font
@@ -35,24 +35,6 @@ export class AppView {
 
     canvas.textFont(config.font, 96)
     canvas.textAlign(canvas.CENTER)
-  }
-
-  getColor(i: number, adjust: boolean): Color {
-    const {canvas} = this
-
-    canvas.colorMode(canvas.HSB, 1.0)
-
-    let col = (i * 1.618034) % 1
-    if (i == 46) {
-      col = 0.083333
-    }
-
-    let light = 1.0
-    if (Math.abs(col - 0.333) <= 0.18 && adjust) {
-      light = 0.7
-    }
-
-    return canvas.color(col, 1.0, light)
   }
 
   getCursorPosition(): {cursorX: number; cursorY: number} {

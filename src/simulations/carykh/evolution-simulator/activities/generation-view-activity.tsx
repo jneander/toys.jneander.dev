@@ -21,6 +21,7 @@ import {
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
+import {getSpeciesColor} from '../p5-utils'
 import {GenerationSimulation} from '../simulation'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore, SpeciesCount} from '../types'
@@ -343,7 +344,7 @@ class GenerationViewP5Activity extends Activity {
           canvas.fill(255, 255, 255)
           canvas.rect(lineX + 3, y, 56, 14)
           canvas.colorMode(canvas.HSB, 1.0)
-          canvas.fill(appView.getColor(speciesId, true))
+          canvas.fill(getSpeciesColor(canvas, speciesId, true))
           // Example label: "S45: 207"
           canvas.text(`S${speciesId}: ${count}`, lineX + 5, y + 11)
           canvas.colorMode(canvas.RGB, 255)
@@ -627,7 +628,9 @@ class GenerationViewP5Activity extends Activity {
       }
 
       joinedEntries.forEach(({speciesId, countStart, countEnd}) => {
-        this.generationHistoryGraphics.fill(appView.getColor(speciesId, false))
+        this.generationHistoryGraphics.fill(
+          getSpeciesColor(canvas, speciesId, false)
+        )
         this.generationHistoryGraphics.beginShape()
 
         // top-left and top-right

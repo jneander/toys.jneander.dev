@@ -15,6 +15,7 @@ export interface CreatureGridViewConfig {
 
   gridStartX: number
   gridStartY: number
+  showsHoverState: boolean
 }
 
 export const CREATURE_GRID_TILE_WIDTH = 30
@@ -53,7 +54,9 @@ export class CreatureGridView {
   }
 
   draw(): void {
-    this.drawCreatureHoverState()
+    if (this.config.showsHoverState) {
+      this.drawCreatureHoverState()
+    }
 
     const {creatureGraphics, hoverGraphics, graphics} = this
 

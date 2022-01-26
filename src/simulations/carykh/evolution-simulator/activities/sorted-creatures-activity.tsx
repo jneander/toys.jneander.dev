@@ -30,7 +30,8 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
         appView,
         getCreatureAndGridIndexFn,
         gridStartX: 40,
-        gridStartY: 42
+        gridStartY: 42,
+        showsPopupSimulation: true
       })
     }
 

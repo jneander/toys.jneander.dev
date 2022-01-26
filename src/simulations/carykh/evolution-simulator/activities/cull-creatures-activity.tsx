@@ -34,7 +34,8 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
         appView,
         getCreatureAndGridIndexFn,
         gridStartX: 40,
-        gridStartY: 42
+        gridStartY: 42,
+        showsPopupSimulation: true
       })
     }
 

@@ -33,7 +33,7 @@ import {
   Widget,
   WidgetConfig
 } from '../views'
-import {Activity, ActivityConfig} from './shared'
+import {P5Activity, P5ActivityConfig} from './shared'
 
 const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
 
@@ -62,7 +62,7 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
   return <P5ClientView sketch={sketchFn} />
 }
 
-class GenerationViewP5Activity extends Activity {
+class GenerationViewP5Activity extends P5Activity {
   pendingGenerationCount: number
 
   private popupSimulationView: PopupSimulationView
@@ -81,7 +81,7 @@ class GenerationViewP5Activity extends Activity {
   private generationHistoryGraphics: Graphics
   private graphGraphics: Graphics
 
-  constructor(config: ActivityConfig) {
+  constructor(config: P5ActivityConfig) {
     super(config)
 
     this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})

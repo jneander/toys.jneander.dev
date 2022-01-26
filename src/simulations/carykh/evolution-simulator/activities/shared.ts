@@ -2,13 +2,13 @@ import type {AppController} from '../app-controller'
 import type {P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 
-export interface ActivityConfig {
+export interface P5ActivityConfig {
   appController: AppController
   appStore: AppStore
   p5Wrapper: P5Wrapper
 }
 
-export interface ActivityInterface {
+export interface P5ActivityInterface {
   initialize(): void
   draw(): void
   onMousePressed(): void
@@ -16,12 +16,12 @@ export interface ActivityInterface {
   onMouseWheel(event: WheelEvent): void
 }
 
-export abstract class Activity implements ActivityInterface {
+export abstract class P5Activity implements P5ActivityInterface {
   protected appController: AppController
   protected appStore: AppStore
   protected p5Wrapper: P5Wrapper
 
-  constructor(config: ActivityConfig) {
+  constructor(config: P5ActivityConfig) {
     this.appController = config.appController
     this.appStore = config.appStore
     this.p5Wrapper = config.p5Wrapper

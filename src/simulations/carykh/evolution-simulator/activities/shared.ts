@@ -8,7 +8,7 @@ export interface P5ActivityConfig {
   p5Wrapper: P5Wrapper
 }
 
-export interface P5ActivityInterface {
+export interface P5UI {
   initialize(): void
   draw(): void
   onMousePressed(): void
@@ -16,7 +16,7 @@ export interface P5ActivityInterface {
   onMouseWheel(event: WheelEvent): void
 }
 
-export abstract class P5Activity implements P5ActivityInterface {
+export abstract class P5Activity implements P5UI {
   protected appController: AppController
   protected appStore: AppStore
   protected p5Wrapper: P5Wrapper

@@ -10,12 +10,7 @@ import {
   createSketchFn
 } from '../p5-utils'
 import type {AppStore} from '../types'
-import {
-  CreatureGridView,
-  CreatureGridViewConfig,
-  PopupSimulationView,
-  PopupSimulationViewAnchor
-} from '../views'
+import {PopupSimulationView, PopupSimulationViewAnchor} from '../views'
 import {
   CREATURE_GRID_MARGIN_X,
   CREATURE_GRID_MARGIN_Y,
@@ -23,6 +18,7 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH
 } from './constants'
+import {CreatureGridView, CreatureGridViewConfig} from './p5-view'
 
 export interface CreatureGridProps {
   appController: AppController

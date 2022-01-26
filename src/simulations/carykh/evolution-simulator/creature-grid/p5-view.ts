@@ -3,13 +3,13 @@ import type {Graphics} from 'p5'
 import type Creature from '../Creature'
 import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
+import type {P5Wrapper} from '../p5-utils'
 import {
   CREATURE_GRID_TILES_PER_COLUMN,
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH
-} from '../creature-grid'
-import type {P5Wrapper} from '../p5-utils'
+} from './constants'
 
 export interface CreatureGridViewConfig {
   getCreatureAndGridIndexFn: (index: number) => {

@@ -1,7 +1,7 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import {P5ActivityInterface} from './activities'
+import {P5UI} from './activities'
 import {P5Wrapper} from './p5-utils'
 
 export interface CreateActivityFnParameters {
@@ -9,7 +9,7 @@ export interface CreateActivityFnParameters {
 }
 
 export interface CreateSketchFnConfig {
-  createActivityFn(parameters: CreateActivityFnParameters): P5ActivityInterface
+  createActivityFn(parameters: CreateActivityFnParameters): P5UI
 }
 
 let font: Font
@@ -18,20 +18,20 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentActivity: P5ActivityInterface
+    let currentUI: P5UI
 
     let p5Wrapper: P5Wrapper
 
     p5.mouseWheel = (event: WheelEvent) => {
-      currentActivity.onMouseWheel(event)
+      currentUI.onMouseWheel(event)
     }
 
     p5.mousePressed = () => {
-      currentActivity.onMousePressed()
+      currentUI.onMousePressed()
     }
 
     p5.mouseReleased = () => {
-      currentActivity.onMouseReleased()
+      currentUI.onMouseReleased()
     }
 
     if (font == null) {
@@ -55,12 +55,12 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
     p5.draw = () => {
       p5.scale(p5Wrapper.scale)
 
-      if (currentActivity == null) {
-        currentActivity = createActivityFn({p5Wrapper})
-        currentActivity.initialize()
+      if (currentUI == null) {
+        currentUI = createActivityFn({p5Wrapper})
+        currentUI.initialize()
       }
 
-      currentActivity.draw()
+      currentUI.draw()
     }
   }
 }

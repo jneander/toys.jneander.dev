@@ -11,15 +11,15 @@ import {
 import {Creature} from '../creatures'
 import {dist2d} from '../math'
 import {
-  AXON_COUNT_BY_NODE_OPERATION_ID,
-  NODE_OPERATION_IDS,
-  NodeOperationId
-} from '../node-operations'
-import {
   adjustNodesToCenter,
   applyForceToMuscle,
   applyForcesToNode
 } from './helpers'
+import {
+  AXON_COUNT_BY_NODE_OPERATION_ID,
+  NODE_OPERATION_IDS,
+  NodeOperationId
+} from './node-operations'
 
 export type CreatureManipulatorConfig = {
   randomNumberGenerator: RandomNumberGenerator

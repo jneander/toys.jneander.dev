@@ -4,12 +4,12 @@ import type {Color, Font} from 'p5'
 import type Muscle from './Muscle'
 import type Node from './Node'
 import {SCALE_TO_FIX_BUG} from './constants'
-import type {Creature} from './creatures'
-import {toInt} from './math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
+  Creature,
   NODE_OPERATION_LABELS_BY_ID
-} from './node-operations'
+} from './creatures'
+import {toInt} from './math'
 import type {P5Wrapper} from './p5-utils'
 
 const NODE_TEXT_LINE_MULTIPLIER_Y1 = -0.08 // These are for the lines of text on each node.

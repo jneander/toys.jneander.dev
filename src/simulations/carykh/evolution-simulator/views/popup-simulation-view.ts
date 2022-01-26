@@ -1,6 +1,7 @@
 import type Creature from '../Creature'
 import {CreatureDrawer} from '../creature-drawer'
 import {speciesIdForCreature} from '../helpers'
+import {getSpeciesColor} from '../p5-utils'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
 import {CREATURE_GRID_TILE_WIDTH} from './creature-grid-view'
 import {Widget, WidgetConfig} from './shared'
@@ -139,7 +140,7 @@ export class PopupSimulationView extends Widget {
 
     const speciesId = speciesIdForCreature(creature)
 
-    canvas.fill(this.appView.getColor(speciesId, true))
+    canvas.fill(getSpeciesColor(canvas, speciesId, true))
     canvas.text(
       'Species: S' +
         (creature.nodes.length % 10) +

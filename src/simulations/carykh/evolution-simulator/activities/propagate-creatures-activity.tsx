@@ -5,13 +5,7 @@ import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {
-  CREATURE_GRID_MARGIN_X,
-  CREATURE_GRID_MARGIN_Y,
-  CreatureGridView,
-  CreatureGridViewConfig
-} from '../views'
-import {Activity, ActivityConfig} from './shared'
+import {CreatureGridP5Activity} from './creature-grid-activity'
 
 export interface PropagateCreaturesActivityProps {
   appController: AppController
@@ -36,13 +30,14 @@ export function PropagateCreaturesActivity(
     }
 
     function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new PropagateCreaturesP5Activity({
+      return new CreatureGridP5Activity({
         appController,
         appStore,
         appView,
         getCreatureAndGridIndexFn,
         gridStartX: 40,
-        gridStartY: 40
+        gridStartY: 40,
+        showsPopupSimulation: false
       })
     }
 
@@ -71,50 +66,4 @@ export function PropagateCreaturesActivity(
       </button>
     </div>
   )
-}
-
-interface PropagateCreaturesActivityConfig extends ActivityConfig {
-  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
-  gridStartX: number
-  gridStartY: number
-}
-
-class PropagateCreaturesP5Activity extends Activity {
-  private creatureGridView: CreatureGridView
-
-  private gridStartX: number
-  private gridStartY: number
-
-  constructor(config: PropagateCreaturesActivityConfig) {
-    super(config)
-
-    this.gridStartX = config.gridStartX
-    this.gridStartY = config.gridStartY
-
-    const {getCreatureAndGridIndexFn} = config
-
-    this.creatureGridView = new CreatureGridView({
-      appView: this.appView,
-      getCreatureAndGridIndexFn,
-      gridStartX: this.gridStartX,
-      gridStartY: this.gridStartY,
-      showsHoverState: false
-    })
-  }
-
-  initialize(): void {
-    this.appView.canvas.background(220, 253, 102)
-    this.initializeCreatureGrid()
-  }
-
-  private initializeCreatureGrid(): void {
-    const {canvas} = this.appView
-
-    this.creatureGridView.initialize()
-
-    const gridStartX = this.gridStartX - CREATURE_GRID_MARGIN_X
-    const gridStartY = this.gridStartY - CREATURE_GRID_MARGIN_Y
-
-    canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
-  }
 }

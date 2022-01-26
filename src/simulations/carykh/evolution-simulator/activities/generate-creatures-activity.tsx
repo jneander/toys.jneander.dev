@@ -5,13 +5,7 @@ import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {
-  CREATURE_GRID_MARGIN_X,
-  CREATURE_GRID_MARGIN_Y,
-  CreatureGridView,
-  CreatureGridViewConfig
-} from '../views'
-import {Activity, ActivityConfig} from './shared'
+import {CreatureGridP5Activity} from './creature-grid-activity'
 
 export interface GenerateCreaturesActivityProps {
   appController: AppController
@@ -36,13 +30,14 @@ export function GenerateCreaturesActivity(
     }
 
     function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new GenerateCreaturesP5Activity({
+      return new CreatureGridP5Activity({
         appController,
         appStore,
         appView,
         getCreatureAndGridIndexFn,
         gridStartX: 40,
-        gridStartY: 17
+        gridStartY: 17,
+        showsPopupSimulation: false
       })
     }
 
@@ -67,52 +62,4 @@ export function GenerateCreaturesActivity(
       </button>
     </div>
   )
-}
-
-interface GenerateCreaturesActivityConfig extends ActivityConfig {
-  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
-  gridStartX: number
-  gridStartY: number
-}
-
-class GenerateCreaturesP5Activity extends Activity {
-  private creatureGridView: CreatureGridView
-
-  private gridStartX: number
-  private gridStartY: number
-
-  constructor(config: GenerateCreaturesActivityConfig) {
-    super(config)
-
-    this.gridStartX = config.gridStartX
-    this.gridStartY = config.gridStartY
-
-    const {getCreatureAndGridIndexFn} = config
-
-    this.creatureGridView = new CreatureGridView({
-      appView: this.appView,
-      getCreatureAndGridIndexFn,
-      gridStartX: this.gridStartX,
-      gridStartY: this.gridStartY,
-      showsHoverState: false
-    })
-  }
-
-  initialize(): void {
-    this.appView.canvas.background(220, 253, 102)
-    this.initializeCreatureGrid()
-  }
-
-  private initializeCreatureGrid(): void {
-    this.creatureGridView.initialize()
-
-    const gridStartX = this.gridStartX - CREATURE_GRID_MARGIN_X
-    const gridStartY = this.gridStartY - CREATURE_GRID_MARGIN_Y
-
-    this.appView.canvas.image(
-      this.creatureGridView.graphics,
-      gridStartX,
-      gridStartY
-    )
-  }
 }

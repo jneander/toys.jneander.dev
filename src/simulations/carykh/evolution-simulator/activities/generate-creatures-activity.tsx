@@ -23,8 +23,20 @@ export function GenerateCreaturesActivity(
   }, [appController])
 
   const sketchFn = useMemo(() => {
+    function getCreatureAndGridIndexFn(index: number) {
+      return {
+        creature: appStore.getState().creaturesInLatestGeneration[index],
+        gridIndex: index
+      }
+    }
+
     function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new GenerateCreaturesP5Activity({appController, appStore, appView})
+      return new GenerateCreaturesP5Activity({
+        appController,
+        appStore,
+        appView,
+        getCreatureAndGridIndexFn
+      })
     }
 
     return createSketchFn({createActivityFn})
@@ -50,18 +62,17 @@ export function GenerateCreaturesActivity(
   )
 }
 
+interface GenerateCreaturesActivityConfig extends ActivityConfig {
+  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+}
+
 class GenerateCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
 
-  constructor(config: ActivityConfig) {
+  constructor(config: GenerateCreaturesActivityConfig) {
     super(config)
 
-    const getCreatureAndGridIndexFn = (index: number) => {
-      return {
-        creature: this.appStore.getState().creaturesInLatestGeneration[index],
-        gridIndex: index
-      }
-    }
+    const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,

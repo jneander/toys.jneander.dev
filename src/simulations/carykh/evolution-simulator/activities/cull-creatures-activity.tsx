@@ -11,6 +11,7 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   CreatureGridView,
+  CreatureGridViewConfig,
   PopupSimulationView,
   PopupSimulationViewAnchor
 } from '../views'
@@ -32,8 +33,20 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
   }, [appController])
 
   const sketchFn = useMemo(() => {
+    function getCreatureAndGridIndexFn(index: number) {
+      return {
+        creature: appStore.getState().creaturesInLatestGeneration[index],
+        gridIndex: index
+      }
+    }
+
     function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new CullCreaturesP5Activity({appController, appStore, appView})
+      return new CullCreaturesP5Activity({
+        appController,
+        appStore,
+        appView,
+        getCreatureAndGridIndexFn
+      })
     }
 
     return createSketchFn({createActivityFn})
@@ -66,23 +79,22 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
   )
 }
 
+interface CullCreaturesActivityConfig extends ActivityConfig {
+  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+}
+
 class CullCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
 
   private graphics: Graphics
 
-  constructor(config: ActivityConfig) {
+  constructor(config: CullCreaturesActivityConfig) {
     super(config)
 
-    const getCreatureAndGridIndexFn = (index: number) => {
-      return {
-        creature: this.appStore.getState().creaturesInLatestGeneration[index],
-        gridIndex: index
-      }
-    }
-
     this.graphics = this.appView.canvas.createGraphics(1920, 1080)
+
+    const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,

@@ -11,6 +11,7 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   CreatureGridView,
+  CreatureGridViewConfig,
   PopupSimulationView,
   PopupSimulationViewAnchor
 } from '../views'
@@ -28,8 +29,20 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
   const {appController, appStore} = props
 
   const sketchFn = useMemo(() => {
+    function getCreatureAndGridIndexFn(index: number) {
+      return {
+        creature: appStore.getState().creaturesInLatestGeneration[index],
+        gridIndex: index
+      }
+    }
+
     function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new SortedCreaturesP5Activity({appController, appStore, appView})
+      return new SortedCreaturesP5Activity({
+        appController,
+        appStore,
+        appView,
+        getCreatureAndGridIndexFn
+      })
     }
 
     return createSketchFn({createActivityFn})
@@ -57,23 +70,22 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
   )
 }
 
+interface SortedCreaturesActivityConfig extends ActivityConfig {
+  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+}
+
 class SortedCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
 
   private graphics: Graphics
 
-  constructor(config: ActivityConfig) {
+  constructor(config: SortedCreaturesActivityConfig) {
     super(config)
 
-    const getCreatureAndGridIndexFn = (index: number) => {
-      return {
-        creature: this.appStore.getState().creaturesInLatestGeneration[index],
-        gridIndex: index
-      }
-    }
-
     this.graphics = this.appView.canvas.createGraphics(1920, 1080)
+
+    const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,

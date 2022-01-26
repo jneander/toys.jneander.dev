@@ -12,6 +12,7 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   CreatureGridView,
+  CreatureGridViewConfig,
   PopupSimulationView,
   PopupSimulationViewAnchor
 } from '../views'
@@ -36,11 +37,19 @@ export function SimulationFinishedActivity(
   }, [appController])
 
   const sketchFn = useMemo(() => {
+    function getCreatureAndGridIndexFn(index: number) {
+      const creature = appStore.getState().creaturesInLatestGeneration[index]
+      const gridIndex = creatureIdToIndex(creature.id)
+
+      return {creature, gridIndex}
+    }
+
     function createActivityFn({appView}: CreateActivityFnParameters) {
       return new SimulationFinishedP5Activity({
         appController,
         appStore,
-        appView
+        appView,
+        getCreatureAndGridIndexFn
       })
     }
 
@@ -66,6 +75,10 @@ export function SimulationFinishedActivity(
   )
 }
 
+interface SimulationFinishedActivityConfig extends ActivityConfig {
+  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+}
+
 class SimulationFinishedP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
@@ -74,18 +87,12 @@ class SimulationFinishedP5Activity extends Activity {
 
   private creatureIdsByGridIndex: number[]
 
-  constructor(config: ActivityConfig) {
+  constructor(config: SimulationFinishedActivityConfig) {
     super(config)
 
-    const getCreatureAndGridIndexFn = (index: number) => {
-      const creature =
-        this.appStore.getState().creaturesInLatestGeneration[index]
-      const gridIndex = creatureIdToIndex(creature.id)
-
-      return {creature, gridIndex}
-    }
-
     this.graphics = this.appView.canvas.createGraphics(1920, 1080)
+
+    const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,

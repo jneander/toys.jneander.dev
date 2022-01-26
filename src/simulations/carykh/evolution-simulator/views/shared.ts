@@ -1,4 +1,4 @@
-import type {P5Wrapper} from './p5-wrapper'
+import type {P5Wrapper} from '../p5-utils'
 
 export interface WidgetConfig {
   p5Wrapper: P5Wrapper

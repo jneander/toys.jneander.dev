@@ -26,13 +26,9 @@ export class AppView {
     this.canvas = config.p5
     const {canvas} = this
 
-    // Create a 1024x576 Canvas
     canvas.createCanvas(this.width * this.scale, this.height * this.scale)
 
     canvas.ellipseMode(canvas.CENTER)
-    canvas.textFont(config.font, 96)
-    canvas.textAlign(canvas.CENTER)
-
     canvas.textFont(config.font, 96)
     canvas.textAlign(canvas.CENTER)
   }

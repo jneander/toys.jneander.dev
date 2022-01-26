@@ -3,6 +3,12 @@ import type {Graphics} from 'p5'
 import type Creature from '../Creature'
 import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
+import {
+  CREATURE_GRID_TILES_PER_COLUMN,
+  CREATURE_GRID_TILES_PER_ROW,
+  CREATURE_GRID_TILE_HEIGHT,
+  CREATURE_GRID_TILE_WIDTH
+} from '../creature-grid'
 import type {P5Wrapper} from '../p5-utils'
 
 export interface CreatureGridViewConfig {
@@ -16,14 +22,6 @@ export interface CreatureGridViewConfig {
   p5Wrapper: P5Wrapper
   showsHoverState: boolean
 }
-
-export const CREATURE_GRID_TILE_WIDTH = 30
-export const CREATURE_GRID_TILE_HEIGHT = 25
-export const CREATURE_GRID_TILES_PER_ROW = 40
-export const CREATURE_GRID_TILES_PER_COLUMN =
-  CREATURE_COUNT / CREATURE_GRID_TILES_PER_ROW
-export const CREATURE_GRID_MARGIN_X = CREATURE_GRID_TILE_WIDTH / 2
-export const CREATURE_GRID_MARGIN_Y = Math.floor(CREATURE_GRID_TILE_HEIGHT / 2)
 
 export class CreatureGridView {
   private config: CreatureGridViewConfig

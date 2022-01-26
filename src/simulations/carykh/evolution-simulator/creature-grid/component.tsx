@@ -11,16 +11,18 @@ import {
 } from '../p5-utils'
 import type {AppStore} from '../types'
 import {
-  CREATURE_GRID_MARGIN_X,
-  CREATURE_GRID_MARGIN_Y,
-  CREATURE_GRID_TILES_PER_ROW,
-  CREATURE_GRID_TILE_HEIGHT,
-  CREATURE_GRID_TILE_WIDTH,
   CreatureGridView,
   CreatureGridViewConfig,
   PopupSimulationView,
   PopupSimulationViewAnchor
 } from '../views'
+import {
+  CREATURE_GRID_MARGIN_X,
+  CREATURE_GRID_MARGIN_Y,
+  CREATURE_GRID_TILES_PER_ROW,
+  CREATURE_GRID_TILE_HEIGHT,
+  CREATURE_GRID_TILE_WIDTH
+} from './constants'
 
 export interface CreatureGridProps {
   appController: AppController

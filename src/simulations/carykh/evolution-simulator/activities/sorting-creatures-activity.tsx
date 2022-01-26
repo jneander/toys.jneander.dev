@@ -12,7 +12,7 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH
 } from '../views'
-import {Activity, ActivityConfig} from './shared'
+import {P5Activity, P5ActivityConfig} from './shared'
 
 export interface SortingCreaturesActivityProps {
   appController: AppController
@@ -56,12 +56,12 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
   )
 }
 
-class SortingCreaturesP5Activity extends Activity {
+class SortingCreaturesP5Activity extends P5Activity {
   private creatureDrawer: CreatureDrawer
 
   private activityTimer: number
 
-  constructor(config: ActivityConfig) {
+  constructor(config: P5ActivityConfig) {
     super(config)
 
     this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})

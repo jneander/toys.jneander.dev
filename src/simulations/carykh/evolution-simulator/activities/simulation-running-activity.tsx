@@ -9,7 +9,7 @@ import {CreatureSimulation, GenerationSimulation} from '../simulation'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
-import {Activity, ActivityConfig} from './shared'
+import {P5Activity, P5ActivityConfig} from './shared'
 
 export interface SimulationRunningActivityProps {
   appController: AppController
@@ -48,11 +48,11 @@ export function SimulationRunningActivity(
   return <P5ClientView sketch={sketchFn} />
 }
 
-interface SimulationRunningActivityConfig extends ActivityConfig {
+interface SimulationRunningActivityConfig extends P5ActivityConfig {
   generationSimulation: GenerationSimulation
 }
 
-class SimulationRunningP5Activity extends Activity {
+class SimulationRunningP5Activity extends P5Activity {
   private simulationView: SimulationView
   private skipButton: SkipButton
   private playbackSpeedButton: PlaybackSpeedButton

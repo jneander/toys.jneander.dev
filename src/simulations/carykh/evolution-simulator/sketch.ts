@@ -1,7 +1,7 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import {ActivityInterface} from './activities'
+import {P5ActivityInterface} from './activities'
 import {P5Wrapper} from './p5-utils'
 
 export interface CreateActivityFnParameters {
@@ -9,7 +9,7 @@ export interface CreateActivityFnParameters {
 }
 
 export interface CreateSketchFnConfig {
-  createActivityFn(parameters: CreateActivityFnParameters): ActivityInterface
+  createActivityFn(parameters: CreateActivityFnParameters): P5ActivityInterface
 }
 
 let font: Font
@@ -18,7 +18,7 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentActivity: ActivityInterface
+    let currentActivity: P5ActivityInterface
 
     let p5Wrapper: P5Wrapper
 

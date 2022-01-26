@@ -16,7 +16,7 @@ import {
   PopupSimulationView,
   PopupSimulationViewAnchor
 } from '../views'
-import {Activity, ActivityConfig} from './shared'
+import {P5Activity, P5ActivityConfig} from './shared'
 
 export interface CreatureGridProps {
   appController: AppController
@@ -56,14 +56,14 @@ export function CreatureGrid(props: CreatureGridProps) {
   )
 }
 
-interface CreatureGridP5ActivityConfig extends ActivityConfig {
+interface CreatureGridP5ActivityConfig extends P5ActivityConfig {
   getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
   gridStartX: number
   gridStartY: number
   showsPopupSimulation: boolean
 }
 
-class CreatureGridP5Activity extends Activity {
+class CreatureGridP5Activity extends P5Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
 

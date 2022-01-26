@@ -1,5 +1,5 @@
 import type {Graphics} from 'p5'
-import {useMemo} from 'react'
+import {useEffect, useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
@@ -29,6 +29,11 @@ export function SimulationFinishedActivity(
   props: SimulationFinishedActivityProps
 ) {
   const {appController, appStore} = props
+
+  useEffect(() => {
+    appController.sortCreatures()
+    appController.updateHistory()
+  }, [appController])
 
   const sketchFn = useMemo(() => {
     function createActivityFn({appView}: CreateActivityFnParameters) {
@@ -130,10 +135,6 @@ class SimulationFinishedP5Activity extends Activity {
   }
 
   initialize(): void {
-    const {appController} = this
-
-    appController.sortCreatures()
-    appController.updateHistory()
     this.updateCreatureIdsByGridIndex()
 
     this.graphics.background(220, 253, 102)

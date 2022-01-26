@@ -1,11 +1,11 @@
-import {useMemo} from 'react'
+import {useEffect, useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {CreatureGridView} from '../views'
+import {CreatureGridView, CreatureGridViewConfig} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export interface GenerateCreaturesActivityProps {
@@ -17,6 +17,10 @@ export function GenerateCreaturesActivity(
   props: GenerateCreaturesActivityProps
 ) {
   const {appController, appStore} = props
+
+  useEffect(() => {
+    appController.generateCreatures()
+  }, [appController])
 
   const sketchFn = useMemo(() => {
     function createActivityFn({appView}: CreateActivityFnParameters) {
@@ -68,8 +72,6 @@ class GenerateCreaturesP5Activity extends Activity {
   }
 
   initialize(): void {
-    this.appController.generateCreatures()
-
     this.appView.canvas.background(220, 253, 102)
     this.initializeCreatureGrid()
   }

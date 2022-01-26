@@ -81,13 +81,7 @@ class SortingCreaturesP5Activity extends Activity {
       0.5 - 0.5 * Math.cos(Math.min(this.activityTimer / 60, Math.PI))
 
     const gridStartX = 40 * creatureScale
-    /*
-     * The next grid is lower on canvas, so interpolate between the vertical
-     * positions of the previous grid and the next.
-     */
-    const gridStartY =
-      this.interpolate(15, 15 + CREATURE_GRID_TILE_HEIGHT, transition) *
-      creatureScale
+    const gridStartY = 42 * creatureScale
 
     const scaledCreatureWidth = CREATURE_GRID_TILE_WIDTH * creatureScale
     const scaledCreatureHeight = CREATURE_GRID_TILE_HEIGHT * creatureScale

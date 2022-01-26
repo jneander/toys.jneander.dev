@@ -36,7 +36,7 @@ export function PropagateCreaturesActivity(
         appView,
         getCreatureAndGridIndexFn,
         gridStartX: 40,
-        gridStartY: 40,
+        gridStartY: 42,
         showsPopupSimulation: false
       })
     }

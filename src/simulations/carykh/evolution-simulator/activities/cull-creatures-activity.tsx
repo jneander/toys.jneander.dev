@@ -1,5 +1,5 @@
 import type {Graphics} from 'p5'
-import {useMemo} from 'react'
+import {useEffect, useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
@@ -26,6 +26,10 @@ export interface CullCreaturesActivityProps {
 
 export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
   const {appController, appStore} = props
+
+  useEffect(() => {
+    appController.cullCreatures()
+  }, [appController])
 
   const sketchFn = useMemo(() => {
     function createActivityFn({appView}: CreateActivityFnParameters) {
@@ -125,8 +129,6 @@ class CullCreaturesP5Activity extends Activity {
   }
 
   initialize(): void {
-    this.appController.cullCreatures()
-
     this.graphics.background(220, 253, 102)
     this.creatureGridView.initialize()
   }

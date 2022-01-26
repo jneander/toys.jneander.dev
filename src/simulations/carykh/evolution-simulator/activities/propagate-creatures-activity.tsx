@@ -1,4 +1,4 @@
-import {useMemo} from 'react'
+import {useEffect, useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
@@ -17,6 +17,10 @@ export function PropagateCreaturesActivity(
   props: PropagateCreaturesActivityProps
 ) {
   const {appController, appStore} = props
+
+  useEffect(() => {
+    appController.propagateCreatures()
+  }, [appController])
 
   const sketchFn = useMemo(() => {
     function createActivityFn({appView}: CreateActivityFnParameters) {
@@ -76,8 +80,6 @@ class PropagateCreaturesP5Activity extends Activity {
   }
 
   initialize(): void {
-    this.appController.propagateCreatures()
-
     this.appView.canvas.background(220, 253, 102)
     this.initializeCreatureGrid()
   }

@@ -5,7 +5,7 @@ import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {creatureIdToIndex} from '../helpers'
-import {CreateActivityFnParameters, createSketchFn} from '../sketch'
+import {CreateUiFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILES_PER_ROW,
@@ -28,7 +28,7 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
   }, [appController])
 
   const sketchFn = useMemo(() => {
-    function createActivityFn({p5Wrapper}: CreateActivityFnParameters) {
+    function createUiFn({p5Wrapper}: CreateUiFnParameters) {
       return new SortingCreaturesP5Activity({
         appController,
         appStore,
@@ -36,7 +36,7 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
       })
     }
 
-    return createSketchFn({createActivityFn})
+    return createSketchFn({createUiFn})
   }, [appController, appStore])
 
   function handleSkipClick() {

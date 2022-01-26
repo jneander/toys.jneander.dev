@@ -4,17 +4,17 @@ import type {Font} from 'p5'
 import {P5UI} from './activities'
 import {P5Wrapper} from './p5-utils'
 
-export interface CreateActivityFnParameters {
+export interface CreateUiFnParameters {
   p5Wrapper: P5Wrapper
 }
 
 export interface CreateSketchFnConfig {
-  createActivityFn(parameters: CreateActivityFnParameters): P5UI
+  createUiFn(parameters: CreateUiFnParameters): P5UI
 }
 
 let font: Font
 
-export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
+export function createSketchFn({createUiFn}: CreateSketchFnConfig) {
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
@@ -56,7 +56,7 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
       p5.scale(p5Wrapper.scale)
 
       if (currentUI == null) {
-        currentUI = createActivityFn({p5Wrapper})
+        currentUI = createUiFn({p5Wrapper})
         currentUI.initialize()
       }
 

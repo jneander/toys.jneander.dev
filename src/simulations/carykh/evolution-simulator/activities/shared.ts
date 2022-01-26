@@ -1,6 +1,6 @@
 import type {AppController} from '../app-controller'
+import type {P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
-import type {P5Wrapper} from '../views'
 
 export interface ActivityConfig {
   appController: AppController

@@ -1,3 +1,5 @@
+export * from './p5-wrapper'
+
 import type p5 from 'p5'
 import type {Color} from 'p5'
 

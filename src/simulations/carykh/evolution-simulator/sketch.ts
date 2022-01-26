@@ -2,7 +2,7 @@ import type p5 from 'p5'
 import type {Font} from 'p5'
 
 import {ActivityInterface} from './activities'
-import {P5Wrapper} from './views'
+import {P5Wrapper} from './p5-utils'
 
 export interface CreateActivityFnParameters {
   p5Wrapper: P5Wrapper

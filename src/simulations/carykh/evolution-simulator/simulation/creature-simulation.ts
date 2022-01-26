@@ -1,7 +1,11 @@
 import Node from '../Node'
 import {FRICTION, GRAVITY, PRESSURE_UNIT} from '../constants'
-import {Creature, applyForceToMuscle, applyForcesToNode} from '../creatures'
-import {NodeOperationId} from '../node-operations'
+import {
+  Creature,
+  NodeOperationId,
+  applyForceToMuscle,
+  applyForcesToNode
+} from '../creatures'
 import type {SimulationNodeCache, SimulationState} from '../types'
 
 export type SimulationConfig = {

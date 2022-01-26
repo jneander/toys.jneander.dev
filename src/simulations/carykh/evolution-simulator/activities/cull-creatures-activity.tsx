@@ -138,7 +138,7 @@ class CullCreaturesP5Activity extends Activity {
     const gridIndex = creatureGridView.getGridIndexUnderCursor()
 
     if (gridIndex != null) {
-      this.setPopupSimulationCreatureId(gridIndex)
+      this.setPopupSimulationCreatureInfo(gridIndex)
 
       const anchor = this.calculateAnchorForPopupSimulation(gridIndex)
       this.popupSimulationView.setAnchor(anchor)
@@ -159,7 +159,7 @@ class CullCreaturesP5Activity extends Activity {
     this.popupSimulationView.dismissSimulationView()
   }
 
-  private setPopupSimulationCreatureId(id: number): void {
+  private setPopupSimulationCreatureInfo(id: number): void {
     const creature = this.appStore.getState().creaturesInLatestGeneration[id]
     this.popupSimulationView.setCreatureInfo({creature, rank: id + 1})
   }

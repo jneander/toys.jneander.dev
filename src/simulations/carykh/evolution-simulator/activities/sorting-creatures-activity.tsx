@@ -4,14 +4,14 @@ import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
-import {creatureIdToIndex} from '../helpers'
-import {CreateUiFnParameters, createSketchFn} from '../p5-utils'
-import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH
-} from '../views'
+} from '../creature-grid'
+import {creatureIdToIndex} from '../helpers'
+import {CreateUiFnParameters, createSketchFn} from '../p5-utils'
+import type {AppStore} from '../types'
 import {P5Activity, P5ActivityConfig} from './shared'
 
 export interface SortingCreaturesActivityProps {

@@ -3,7 +3,12 @@ import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
-import {CreateUiFnParameters, createSketchFn} from '../p5-utils'
+import {
+  CreateUiFnParameters,
+  P5UI,
+  P5Wrapper,
+  createSketchFn
+} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_MARGIN_X,
@@ -16,7 +21,6 @@ import {
   PopupSimulationView,
   PopupSimulationViewAnchor
 } from '../views'
-import {P5Activity, P5ActivityConfig} from './shared'
 
 export interface CreatureGridProps {
   appController: AppController
@@ -35,7 +39,7 @@ export function CreatureGrid(props: CreatureGridProps) {
 
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
-      return new CreatureGridP5Activity({
+      return new CreatureGridP5UI({
         appController,
         appStore,
         getCreatureAndGridIndexFn,
@@ -56,14 +60,20 @@ export function CreatureGrid(props: CreatureGridProps) {
   )
 }
 
-interface CreatureGridP5ActivityConfig extends P5ActivityConfig {
+interface CreatureGridP5UIConfig {
+  appController: AppController
+  appStore: AppStore
+  p5Wrapper: P5Wrapper
   getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
   gridStartX: number
   gridStartY: number
   showsPopupSimulation: boolean
 }
 
-class CreatureGridP5Activity extends P5Activity {
+class CreatureGridP5UI implements P5UI {
+  private appController: AppController
+  private appStore: AppStore
+  private p5Wrapper: P5Wrapper
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
 
@@ -73,8 +83,10 @@ class CreatureGridP5Activity extends P5Activity {
   private gridStartY: number
   private showsPopupSimulation: boolean
 
-  constructor(config: CreatureGridP5ActivityConfig) {
-    super(config)
+  constructor(config: CreatureGridP5UIConfig) {
+    this.appController = config.appController
+    this.appStore = config.appStore
+    this.p5Wrapper = config.p5Wrapper
 
     this.graphics = this.p5Wrapper.canvas.createGraphics(1920, 1080)
 
@@ -133,6 +145,8 @@ class CreatureGridP5Activity extends P5Activity {
     }
   }
 
+  onMousePressed(): void {}
+
   initialize(): void {
     this.graphics.background(220, 253, 102)
     this.creatureGridView.initialize()
@@ -142,6 +156,8 @@ class CreatureGridP5Activity extends P5Activity {
     // When the popup simulation is running, mouse clicks will stop it.
     this.popupSimulationView.dismissSimulationView()
   }
+
+  onMouseWheel(event: WheelEvent): void {}
 
   private setPopupSimulationCreatureInfo(
     generationCreatureIndex: number

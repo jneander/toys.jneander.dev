@@ -5,7 +5,7 @@ import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {creatureIdToIndex} from '../helpers'
-import {CreateUiFnParameters, createSketchFn} from '../sketch'
+import {CreateUiFnParameters, createSketchFn} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILES_PER_ROW,

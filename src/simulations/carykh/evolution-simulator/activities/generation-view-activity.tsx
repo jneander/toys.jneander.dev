@@ -21,9 +21,12 @@ import {
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
-import {getSpeciesColor} from '../p5-utils'
+import {
+  CreateUiFnParameters,
+  createSketchFn,
+  getSpeciesColor
+} from '../p5-utils'
 import {GenerationSimulation} from '../simulation'
-import {CreateUiFnParameters, createSketchFn} from '../sketch'
 import type {AppStore, SpeciesCount} from '../types'
 import {
   ButtonWidget,

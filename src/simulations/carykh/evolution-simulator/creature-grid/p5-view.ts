@@ -1,8 +1,8 @@
 import type {Graphics} from 'p5'
 
-import type Creature from '../Creature'
 import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
+import type {Creature} from '../creatures'
 import type {P5Wrapper} from '../p5-utils'
 import {
   CREATURE_GRID_TILES_PER_COLUMN,

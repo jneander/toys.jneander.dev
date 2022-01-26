@@ -1,5 +1,5 @@
-import type Muscle from './Muscle'
-import type Node from './Node'
+import type Muscle from '../Muscle'
+import type Node from '../Node'
 
 export default class Creature {
   nodes: Node[]

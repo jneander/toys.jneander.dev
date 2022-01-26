@@ -40,7 +40,9 @@ export function PropagateCreaturesActivity(
         appController,
         appStore,
         appView,
-        getCreatureAndGridIndexFn
+        getCreatureAndGridIndexFn,
+        gridStartX: 40,
+        gridStartY: 40
       })
     }
 
@@ -73,21 +75,29 @@ export function PropagateCreaturesActivity(
 
 interface PropagateCreaturesActivityConfig extends ActivityConfig {
   getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+  gridStartX: number
+  gridStartY: number
 }
 
 class PropagateCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
 
+  private gridStartX: number
+  private gridStartY: number
+
   constructor(config: PropagateCreaturesActivityConfig) {
     super(config)
+
+    this.gridStartX = config.gridStartX
+    this.gridStartY = config.gridStartY
 
     const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
       getCreatureAndGridIndexFn,
-      gridStartX: 40,
-      gridStartY: 40
+      gridStartX: this.gridStartX,
+      gridStartY: this.gridStartY
     })
   }
 
@@ -101,8 +111,8 @@ class PropagateCreaturesP5Activity extends Activity {
 
     this.creatureGridView.initialize()
 
-    const gridStartX = 40 - CREATURE_GRID_MARGIN_X
-    const gridStartY = 40 - CREATURE_GRID_MARGIN_Y
+    const gridStartX = this.gridStartX - CREATURE_GRID_MARGIN_X
+    const gridStartY = this.gridStartY - CREATURE_GRID_MARGIN_Y
 
     canvas.image(this.creatureGridView.graphics, gridStartX, gridStartY)
   }

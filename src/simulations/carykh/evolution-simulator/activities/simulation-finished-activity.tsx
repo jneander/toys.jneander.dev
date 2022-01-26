@@ -20,9 +20,6 @@ import {
 } from '../views'
 import {Activity, ActivityConfig} from './shared'
 
-const CREATURE_GRID_START_X = 40
-const CREATURE_GRID_START_Y = 17
-
 export interface SimulationFinishedActivityProps {
   appController: AppController
   appStore: AppStore
@@ -51,7 +48,9 @@ export function SimulationFinishedActivity(
         appController,
         appStore,
         appView,
-        getCreatureAndGridIndexFn
+        getCreatureAndGridIndexFn,
+        gridStartX: 40,
+        gridStartY: 17
       })
     }
 
@@ -79,6 +78,8 @@ export function SimulationFinishedActivity(
 
 interface SimulationFinishedActivityConfig extends ActivityConfig {
   getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+  gridStartX: number
+  gridStartY: number
 }
 
 class SimulationFinishedP5Activity extends Activity {
@@ -88,19 +89,24 @@ class SimulationFinishedP5Activity extends Activity {
   private graphics: Graphics
 
   private creatureIdsByGridIndex: number[]
+  private gridStartX: number
+  private gridStartY: number
 
   constructor(config: SimulationFinishedActivityConfig) {
     super(config)
 
     this.graphics = this.appView.canvas.createGraphics(1920, 1080)
 
+    this.gridStartX = config.gridStartX
+    this.gridStartY = config.gridStartY
+
     const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,
       getCreatureAndGridIndexFn,
-      gridStartX: CREATURE_GRID_START_X,
-      gridStartY: CREATURE_GRID_START_Y
+      gridStartX: this.gridStartX,
+      gridStartY: this.gridStartY
     })
 
     this.popupSimulationView = new PopupSimulationView({
@@ -119,8 +125,8 @@ class SimulationFinishedP5Activity extends Activity {
 
     canvas.image(graphics, 0, 0, width, height)
 
-    const gridStartX = 40 - CREATURE_GRID_MARGIN_X
-    const gridStartY = 17 - CREATURE_GRID_MARGIN_Y
+    const gridStartX = this.gridStartX - CREATURE_GRID_MARGIN_X
+    const gridStartY = this.gridStartY - CREATURE_GRID_MARGIN_Y
 
     creatureGridView.draw()
     canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
@@ -173,9 +179,9 @@ class SimulationFinishedP5Activity extends Activity {
     creatureColumnIndex = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
 
     const creatureStartX =
-      creatureRowIndex * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_START_X
+      creatureRowIndex * CREATURE_GRID_TILE_WIDTH + this.gridStartX
     const creatureStartY =
-      creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + CREATURE_GRID_START_Y
+      creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + this.gridStartY
 
     return {
       startPositionX: creatureStartX,

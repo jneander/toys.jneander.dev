@@ -1,7 +1,7 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import {ActivityInterface, NullP5Activity} from './activities'
+import {ActivityInterface} from './activities'
 import {AppView} from './views'
 
 export interface CreateActivityFnParameters {
@@ -18,7 +18,7 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentActivity = new NullP5Activity()
+    let currentActivity: ActivityInterface
 
     let appView: AppView
 
@@ -55,7 +55,7 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
     p5.draw = () => {
       p5.scale(appView.scale)
 
-      if (currentActivity instanceof NullP5Activity) {
+      if (currentActivity == null) {
         currentActivity = createActivityFn({appView})
         currentActivity.initialize()
       }

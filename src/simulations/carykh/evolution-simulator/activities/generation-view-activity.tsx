@@ -2,7 +2,6 @@ import type {Graphics} from 'p5'
 import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
-import type Creature from '../Creature'
 import type {AppController} from '../app-controller'
 import {
   ActivityId,
@@ -20,6 +19,7 @@ import {
   SCALE_TO_FIX_BUG
 } from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
+import type {Creature} from '../creatures'
 import {toInt} from '../math'
 import {
   CreateUiFnParameters,

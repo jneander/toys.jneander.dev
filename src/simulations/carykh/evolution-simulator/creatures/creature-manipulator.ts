@@ -1,6 +1,5 @@
 import type {RandomNumberGenerator} from '@jneander/utils-random'
 
-import Creature from '../Creature'
 import Muscle from '../Muscle'
 import Node from '../Node'
 import {
@@ -9,6 +8,7 @@ import {
   MIN_MUSCLE_LENGTH_INCLUSIVE,
   NODE_MASS_DEFAULT
 } from '../constants'
+import {Creature} from '../creatures'
 import {dist2d} from '../math'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,

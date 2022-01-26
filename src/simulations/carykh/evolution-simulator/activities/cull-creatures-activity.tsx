@@ -2,8 +2,8 @@ import {useCallback, useEffect} from 'react'
 
 import type {AppController} from '../app-controller'
 import {ActivityId} from '../constants'
+import {CreatureGrid} from '../creature-grid'
 import type {AppStore} from '../types'
-import {CreatureGrid} from './creature-grid-activity'
 
 export interface CullCreaturesActivityProps {
   appController: AppController

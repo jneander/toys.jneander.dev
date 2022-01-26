@@ -1,9 +1,9 @@
 import type {Graphics} from 'p5'
-import {useEffect, useMemo} from 'react'
+import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
-import {ActivityId, CREATURE_COUNT} from '../constants'
+import {ActivityId} from '../constants'
 import {creatureIdToIndex} from '../helpers'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
@@ -29,11 +29,6 @@ export function SimulationFinishedActivity(
   props: SimulationFinishedActivityProps
 ) {
   const {appController, appStore} = props
-
-  useEffect(() => {
-    appController.sortCreatures()
-    appController.updateHistory()
-  }, [appController])
 
   const sketchFn = useMemo(() => {
     function getCreatureAndGridIndexFn(index: number) {
@@ -88,7 +83,6 @@ class SimulationFinishedP5Activity extends Activity {
 
   private graphics: Graphics
 
-  private generationCreatureIndicesByGridIndex: number[]
   private gridStartX: number
   private gridStartY: number
 
@@ -113,12 +107,6 @@ class SimulationFinishedP5Activity extends Activity {
       appView: this.appView,
       simulationConfig: this.appController.getSimulationConfig()
     })
-
-    this.generationCreatureIndicesByGridIndex = new Array<number>(
-      CREATURE_COUNT
-    )
-
-    this.updateCreatureIdsByGridIndex()
   }
 
   draw(): void {
@@ -141,8 +129,7 @@ class SimulationFinishedP5Activity extends Activity {
     const gridIndex = creatureGridView.getGridIndexUnderCursor()
 
     if (gridIndex != null) {
-      const creatureId = this.generationCreatureIndicesByGridIndex[gridIndex]
-      this.setPopupSimulationCreatureInfo(creatureId)
+      this.setPopupSimulationCreatureInfo(gridIndex)
 
       const anchor = this.calculateAnchorForPopupSimulation(gridIndex)
       this.popupSimulationView.setAnchor(anchor)
@@ -200,16 +187,6 @@ class SimulationFinishedP5Activity extends Activity {
       endPositionX: creatureStartX + CREATURE_GRID_TILE_WIDTH,
       endPositionY: creatureStartY + CREATURE_GRID_TILE_HEIGHT,
       margin: 5
-    }
-  }
-
-  private updateCreatureIdsByGridIndex(): void {
-    const {appStore} = this
-
-    for (let i = 0; i < CREATURE_COUNT; i++) {
-      const creature = appStore.getState().creaturesInLatestGeneration[i]
-      const gridIndex = creatureIdToIndex(creature.id)
-      this.generationCreatureIndicesByGridIndex[gridIndex] = i
     }
   }
 }

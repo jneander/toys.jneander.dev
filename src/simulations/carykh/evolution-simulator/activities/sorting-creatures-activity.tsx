@@ -1,4 +1,4 @@
-import {useMemo} from 'react'
+import {useEffect, useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
@@ -17,6 +17,11 @@ export interface SortingCreaturesActivityProps {
 
 export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
   const {appController, appStore} = props
+
+  useEffect(() => {
+    appController.sortCreatures()
+    appController.updateHistory()
+  }, [appController])
 
   const sketchFn = useMemo(() => {
     function createActivityFn({appView}: CreateActivityFnParameters) {

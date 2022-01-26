@@ -93,7 +93,8 @@ class GenerateCreaturesP5Activity extends Activity {
       appView: this.appView,
       getCreatureAndGridIndexFn,
       gridStartX: this.gridStartX,
-      gridStartY: this.gridStartY
+      gridStartY: this.gridStartY,
+      showsHoverState: false
     })
   }
 

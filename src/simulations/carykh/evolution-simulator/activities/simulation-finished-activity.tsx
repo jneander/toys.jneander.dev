@@ -33,7 +33,8 @@ export function SimulationFinishedActivity(
         appView,
         getCreatureAndGridIndexFn,
         gridStartX: 40,
-        gridStartY: 17
+        gridStartY: 17,
+        showsPopupSimulation: true
       })
     }
 

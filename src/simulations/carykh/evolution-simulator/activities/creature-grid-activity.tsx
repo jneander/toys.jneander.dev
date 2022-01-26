@@ -17,6 +17,7 @@ export interface CreatureGridP5ActivityConfig extends ActivityConfig {
   getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
   gridStartX: number
   gridStartY: number
+  showsPopupSimulation: boolean
 }
 
 export class CreatureGridP5Activity extends Activity {
@@ -27,6 +28,7 @@ export class CreatureGridP5Activity extends Activity {
 
   private gridStartX: number
   private gridStartY: number
+  private showsPopupSimulation: boolean
 
   constructor(config: CreatureGridP5ActivityConfig) {
     super(config)
@@ -35,6 +37,7 @@ export class CreatureGridP5Activity extends Activity {
 
     this.gridStartX = config.gridStartX
     this.gridStartY = config.gridStartY
+    this.showsPopupSimulation = config.showsPopupSimulation
 
     const {getCreatureAndGridIndexFn} = config
 
@@ -42,7 +45,8 @@ export class CreatureGridP5Activity extends Activity {
       appView: this.appView,
       getCreatureAndGridIndexFn,
       gridStartX: this.gridStartX,
-      gridStartY: this.gridStartY
+      gridStartY: this.gridStartY,
+      showsHoverState: this.showsPopupSimulation
     })
 
     this.popupSimulationView = new PopupSimulationView({
@@ -62,6 +66,10 @@ export class CreatureGridP5Activity extends Activity {
 
     creatureGridView.draw()
     canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
+
+    if (!this.showsPopupSimulation) {
+      return
+    }
 
     /*
      * When the cursor is over any of the creature tiles, the popup simulation

@@ -6,7 +6,7 @@ import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../helpers'
 import {CreatureSimulation, GenerationSimulation} from '../simulation'
-import {CreateActivityFnParameters, createSketchFn} from '../sketch'
+import {CreateUiFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
 import {P5Activity, P5ActivityConfig} from './shared'
@@ -33,7 +33,7 @@ export function SimulationRunningActivity(
   }, [appController, appStore])
 
   const sketchFn = useMemo(() => {
-    function createActivityFn({p5Wrapper}: CreateActivityFnParameters) {
+    function createUiFn({p5Wrapper}: CreateUiFnParameters) {
       return new SimulationRunningP5Activity({
         appController,
         appStore,
@@ -42,7 +42,7 @@ export function SimulationRunningActivity(
       })
     }
 
-    return createSketchFn({createActivityFn})
+    return createSketchFn({createUiFn})
   }, [appController, appStore, generationSimulation])
 
   return <P5ClientView sketch={sketchFn} />

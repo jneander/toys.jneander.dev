@@ -3,7 +3,7 @@ import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
-import {CreateActivityFnParameters, createSketchFn} from '../sketch'
+import {CreateUiFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_MARGIN_X,
@@ -34,7 +34,7 @@ export function CreatureGrid(props: CreatureGridProps) {
   } = props
 
   const sketchFn = useMemo(() => {
-    function createActivityFn({p5Wrapper}: CreateActivityFnParameters) {
+    function createUiFn({p5Wrapper}: CreateUiFnParameters) {
       return new CreatureGridP5Activity({
         appController,
         appStore,
@@ -46,7 +46,7 @@ export function CreatureGrid(props: CreatureGridProps) {
       })
     }
 
-    return createSketchFn({createActivityFn})
+    return createSketchFn({createUiFn})
   }, [appController, appStore, getCreatureAndGridIndexFn, showsPopupSimulation])
 
   return (

@@ -23,7 +23,7 @@ import {CreatureDrawer} from '../creature-drawer'
 import {toInt} from '../math'
 import {getSpeciesColor} from '../p5-utils'
 import {GenerationSimulation} from '../simulation'
-import {CreateActivityFnParameters, createSketchFn} from '../sketch'
+import {CreateUiFnParameters, createSketchFn} from '../sketch'
 import type {AppStore, SpeciesCount} from '../types'
 import {
   ButtonWidget,
@@ -52,11 +52,11 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
   const {appController, appStore} = props
 
   const sketchFn = useMemo(() => {
-    function createActivityFn({p5Wrapper}: CreateActivityFnParameters) {
+    function createUiFn({p5Wrapper}: CreateUiFnParameters) {
       return new GenerationViewP5Activity({appController, appStore, p5Wrapper})
     }
 
-    return createSketchFn({createActivityFn})
+    return createSketchFn({createUiFn})
   }, [appController, appStore])
 
   return <P5ClientView sketch={sketchFn} />

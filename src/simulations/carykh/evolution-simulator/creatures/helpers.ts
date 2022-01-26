@@ -1,7 +1,7 @@
-import type Muscle from '../Muscle'
 import type Node from '../Node'
 import {AIR_FRICTION} from '../constants'
 import {dist2d} from '../math'
+import type Muscle from './Muscle'
 
 export function adjustNodesToCenter(nodes: Node[]): void {
   let averageX = 0

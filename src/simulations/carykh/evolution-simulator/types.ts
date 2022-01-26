@@ -1,9 +1,8 @@
 import type {Store} from '@jneander/utils-state'
 
-import type Muscle from './Muscle'
 import type Node from './Node'
 import {ActivityId} from './constants'
-import type {Creature} from './creatures'
+import type {Creature, Muscle} from './creatures'
 
 export type SimulationCameraState = {
   x: number

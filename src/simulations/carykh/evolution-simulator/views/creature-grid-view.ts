@@ -22,6 +22,8 @@ export const CREATURE_GRID_TILE_HEIGHT = 25
 export const CREATURE_GRID_TILES_PER_ROW = 40
 export const CREATURE_GRID_TILES_PER_COLUMN =
   CREATURE_COUNT / CREATURE_GRID_TILES_PER_ROW
+export const CREATURE_GRID_MARGIN_X = CREATURE_GRID_TILE_WIDTH / 2
+export const CREATURE_GRID_MARGIN_Y = Math.floor(CREATURE_GRID_TILE_HEIGHT / 2)
 
 export class CreatureGridView {
   private config: CreatureGridViewConfig

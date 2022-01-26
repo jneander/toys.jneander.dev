@@ -2,10 +2,10 @@ import type p5 from 'p5'
 import type {Font} from 'p5'
 
 import {ActivityInterface} from './activities'
-import {AppView} from './views'
+import {P5Wrapper} from './views'
 
 export interface CreateActivityFnParameters {
-  appView: AppView
+  p5Wrapper: P5Wrapper
 }
 
 export interface CreateSketchFnConfig {
@@ -20,7 +20,7 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
 
     let currentActivity: ActivityInterface
 
-    let appView: AppView
+    let p5Wrapper: P5Wrapper
 
     p5.mouseWheel = (event: WheelEvent) => {
       currentActivity.onMouseWheel(event)
@@ -43,7 +43,7 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
     p5.setup = () => {
       p5.frameRate(FRAME_RATE)
 
-      appView = new AppView({
+      p5Wrapper = new P5Wrapper({
         font,
         height: 720,
         p5,
@@ -53,10 +53,10 @@ export function createSketchFn({createActivityFn}: CreateSketchFnConfig) {
     }
 
     p5.draw = () => {
-      p5.scale(appView.scale)
+      p5.scale(p5Wrapper.scale)
 
       if (currentActivity == null) {
-        currentActivity = createActivityFn({appView})
+        currentActivity = createActivityFn({p5Wrapper})
         currentActivity.initialize()
       }
 

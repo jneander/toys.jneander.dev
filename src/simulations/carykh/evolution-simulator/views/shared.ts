@@ -1,14 +1,14 @@
-import type {AppView} from './app-view'
+import type {P5Wrapper} from './p5-wrapper'
 
 export interface WidgetConfig {
-  appView: AppView
+  p5Wrapper: P5Wrapper
 }
 
 export abstract class Widget {
-  protected appView: AppView
+  protected p5Wrapper: P5Wrapper
 
   constructor(config: WidgetConfig) {
-    this.appView = config.appView
+    this.p5Wrapper = config.p5Wrapper
   }
 
   abstract draw(): void

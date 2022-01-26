@@ -10,13 +10,13 @@ import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   NODE_OPERATION_LABELS_BY_ID
 } from './node-operations'
-import type {AppView} from './views'
+import type {P5Wrapper} from './views'
 
 const NODE_TEXT_LINE_MULTIPLIER_Y1 = -0.08 // These are for the lines of text on each node.
 const NODE_TEXT_LINE_MULTIPLIER_Y2 = 0.35
 
 export interface CreatureDrawerConfig {
-  appView: AppView
+  p5Wrapper: P5Wrapper
 }
 
 export class CreatureDrawer {
@@ -24,10 +24,10 @@ export class CreatureDrawer {
   private axonFont: Font
 
   constructor(config: CreatureDrawerConfig) {
-    const {appView} = config
+    const {p5Wrapper} = config
 
-    this.axonColor = appView.canvas.color(255, 255, 0)
-    this.axonFont = appView.font
+    this.axonColor = p5Wrapper.canvas.color(255, 255, 0)
+    this.axonFont = p5Wrapper.font
   }
 
   drawCreature(creature: Creature, x: number, y: number, graphics: p5): void {

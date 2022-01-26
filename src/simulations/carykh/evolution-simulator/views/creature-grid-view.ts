@@ -3,11 +3,9 @@ import type {Graphics} from 'p5'
 import type Creature from '../Creature'
 import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
-import type {AppView} from './app-view'
+import type {P5Wrapper} from './p5-wrapper'
 
 export interface CreatureGridViewConfig {
-  appView: AppView
-
   getCreatureAndGridIndexFn: (index: number) => {
     creature: Creature
     gridIndex: number
@@ -15,6 +13,7 @@ export interface CreatureGridViewConfig {
 
   gridStartX: number
   gridStartY: number
+  p5Wrapper: P5Wrapper
   showsHoverState: boolean
 }
 
@@ -37,15 +36,18 @@ export class CreatureGridView {
   constructor(config: CreatureGridViewConfig) {
     this.config = config
 
-    this.creatureDrawer = new CreatureDrawer({appView: config.appView})
+    this.creatureDrawer = new CreatureDrawer({p5Wrapper: config.p5Wrapper})
 
     const width = (CREATURE_GRID_TILES_PER_ROW + 1) * CREATURE_GRID_TILE_WIDTH
     const height =
       (CREATURE_GRID_TILES_PER_COLUMN + 1) * CREATURE_GRID_TILE_HEIGHT
 
-    this.creatureGraphics = config.appView.canvas.createGraphics(width, height)
-    this.hoverGraphics = config.appView.canvas.createGraphics(width, height)
-    this.graphics = config.appView.canvas.createGraphics(width, height)
+    this.creatureGraphics = config.p5Wrapper.canvas.createGraphics(
+      width,
+      height
+    )
+    this.hoverGraphics = config.p5Wrapper.canvas.createGraphics(width, height)
+    this.graphics = config.p5Wrapper.canvas.createGraphics(width, height)
   }
 
   initialize(): void {
@@ -67,20 +69,20 @@ export class CreatureGridView {
   }
 
   getGridIndexUnderCursor(): number | null {
-    const {appView, gridStartX, gridStartY} = this.config
+    const {gridStartX, gridStartY, p5Wrapper} = this.config
 
     const gridWidth = 1200
     const gridHeight = 625
 
     if (
-      appView.rectIsUnderCursor(
+      p5Wrapper.rectIsUnderCursor(
         gridStartX,
         gridStartY,
         gridWidth - 1,
         gridHeight - 1
       )
     ) {
-      const {cursorX, cursorY} = appView.getCursorPosition()
+      const {cursorX, cursorY} = p5Wrapper.getCursorPosition()
 
       return (
         Math.floor((cursorX - gridStartX) / CREATURE_GRID_TILE_WIDTH) +
@@ -148,7 +150,7 @@ export class CreatureGridView {
 
   private drawCreatureHoverState(): void {
     const {config, hoverGraphics} = this
-    const {canvas} = config.appView
+    const {canvas} = config.p5Wrapper
 
     hoverGraphics.clear()
 

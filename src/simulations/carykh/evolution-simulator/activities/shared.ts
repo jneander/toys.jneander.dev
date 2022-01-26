@@ -1,11 +1,11 @@
 import type {AppController} from '../app-controller'
 import type {AppStore} from '../types'
-import type {AppView} from '../views'
+import type {P5Wrapper} from '../views'
 
 export interface ActivityConfig {
   appController: AppController
   appStore: AppStore
-  appView: AppView
+  p5Wrapper: P5Wrapper
 }
 
 export interface ActivityInterface {
@@ -19,12 +19,12 @@ export interface ActivityInterface {
 export abstract class Activity implements ActivityInterface {
   protected appController: AppController
   protected appStore: AppStore
-  protected appView: AppView
+  protected p5Wrapper: P5Wrapper
 
   constructor(config: ActivityConfig) {
     this.appController = config.appController
     this.appStore = config.appStore
-    this.appView = config.appView
+    this.p5Wrapper = config.p5Wrapper
   }
 
   initialize(): void {}

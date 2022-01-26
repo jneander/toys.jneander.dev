@@ -36,7 +36,7 @@ export function GenerateCreaturesActivity(
         appView,
         getCreatureAndGridIndexFn,
         gridStartX: 40,
-        gridStartY: 17,
+        gridStartY: 42,
         showsPopupSimulation: false
       })
     }

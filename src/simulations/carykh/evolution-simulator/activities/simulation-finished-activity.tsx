@@ -1,12 +1,10 @@
-import {useMemo} from 'react'
+import {useCallback} from 'react'
 
-import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
 import {ActivityId} from '../constants'
 import {creatureIdToIndex} from '../helpers'
-import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {CreatureGridP5Activity} from './creature-grid-activity'
+import {CreatureGrid} from './creature-grid-activity'
 
 export interface SimulationFinishedActivityProps {
   appController: AppController
@@ -18,28 +16,15 @@ export function SimulationFinishedActivity(
 ) {
   const {appController, appStore} = props
 
-  const sketchFn = useMemo(() => {
-    function getCreatureAndGridIndexFn(index: number) {
+  const getCreatureAndGridIndexFn = useCallback(
+    (index: number) => {
       const creature = appStore.getState().creaturesInLatestGeneration[index]
       const gridIndex = creatureIdToIndex(creature.id)
 
       return {creature, gridIndex}
-    }
-
-    function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new CreatureGridP5Activity({
-        appController,
-        appStore,
-        appView,
-        getCreatureAndGridIndexFn,
-        gridStartX: 40,
-        gridStartY: 42,
-        showsPopupSimulation: true
-      })
-    }
-
-    return createSketchFn({createActivityFn})
-  }, [appController, appStore])
+    },
+    [appStore]
+  )
 
   function handleSortClick() {
     appController.setActivityId(ActivityId.SortingCreatures)
@@ -47,9 +32,12 @@ export function SimulationFinishedActivity(
 
   return (
     <div>
-      <div style={{height: '576px'}}>
-        <P5ClientView sketch={sketchFn} />
-      </div>
+      <CreatureGrid
+        appController={appController}
+        appStore={appStore}
+        getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
+        showsPopupSimulation
+      />
 
       <p>{"All 1,000 creatures have been tested. Now let's sort them!"}</p>
 

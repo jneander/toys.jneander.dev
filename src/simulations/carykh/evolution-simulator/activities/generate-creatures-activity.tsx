@@ -1,11 +1,9 @@
-import {useEffect, useMemo} from 'react'
+import {useCallback, useEffect} from 'react'
 
-import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
-import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {CreatureGridP5Activity} from './creature-grid-activity'
+import {CreatureGrid} from './creature-grid-activity'
 
 export interface GenerateCreaturesActivityProps {
   appController: AppController
@@ -21,28 +19,15 @@ export function GenerateCreaturesActivity(
     appController.generateCreatures()
   }, [appController])
 
-  const sketchFn = useMemo(() => {
-    function getCreatureAndGridIndexFn(index: number) {
+  const getCreatureAndGridIndexFn = useCallback(
+    (index: number) => {
       return {
         creature: appStore.getState().creaturesInLatestGeneration[index],
         gridIndex: index
       }
-    }
-
-    function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new CreatureGridP5Activity({
-        appController,
-        appStore,
-        appView,
-        getCreatureAndGridIndexFn,
-        gridStartX: 40,
-        gridStartY: 42,
-        showsPopupSimulation: false
-      })
-    }
-
-    return createSketchFn({createActivityFn})
-  }, [appController, appStore])
+    },
+    [appStore]
+  )
 
   function handleBackClick() {
     appStore.setState({generationCount: 0})
@@ -51,9 +36,11 @@ export function GenerateCreaturesActivity(
 
   return (
     <div>
-      <div style={{height: '576px'}}>
-        <P5ClientView sketch={sketchFn} />
-      </div>
+      <CreatureGrid
+        appController={appController}
+        appStore={appStore}
+        getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
+      />
 
       <p>Here are your {CREATURE_COUNT} randomly generated creatures!!!</p>
 

@@ -52,8 +52,8 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
   const {appController, appStore} = props
 
   const sketchFn = useMemo(() => {
-    function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new GenerationViewP5Activity({appController, appStore, appView})
+    function createActivityFn({p5Wrapper}: CreateActivityFnParameters) {
+      return new GenerationViewP5Activity({appController, appStore, p5Wrapper})
     }
 
     return createSketchFn({createActivityFn})
@@ -84,51 +84,52 @@ class GenerationViewP5Activity extends Activity {
   constructor(config: ActivityConfig) {
     super(config)
 
-    this.creatureDrawer = new CreatureDrawer({appView: this.appView})
+    this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
 
     const simulationWidgetConfig = {
-      appView: this.appView,
+      p5Wrapper: this.p5Wrapper,
       simulationConfig: this.appController.getSimulationConfig()
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
 
     this.stepByStepButton = new StepByStepButton({
-      appView: this.appView,
-
       onClick: () => {
         this.performStepByStepSimulation()
-      }
+      },
+
+      p5Wrapper: this.p5Wrapper
     })
 
     this.quickButton = new QuickButton({
-      appView: this.appView,
-
       onClick: () => {
         this.performQuickGenerationSimulation()
-      }
+      },
+
+      p5Wrapper: this.p5Wrapper
     })
 
     this.asapButton = new AsapButton({
-      appView: this.appView,
-
       onClick: () => {
         this.performAsapGenerationSimulation()
-      }
+      },
+
+      p5Wrapper: this.p5Wrapper
     })
 
     this.alapButton = new AlapButton({
       activity: this,
-      appView: this.appView,
 
       onClick: () => {
         this.startAlapGenerationSimulation()
-      }
+      },
+
+      p5Wrapper: this.p5Wrapper
     })
 
     this.generationSlider = new GenerationSlider({
       appStore: this.appStore,
-      appView: this.appView
+      p5Wrapper: this.p5Wrapper
     })
 
     this.draggingSlider = false
@@ -136,15 +137,15 @@ class GenerationViewP5Activity extends Activity {
     this.pendingGenerationCount = 0
     this.generationSimulationMode = GenerationSimulationMode.Off
 
-    const {canvas} = this.appView
+    const {canvas} = this.p5Wrapper
 
     this.generationHistoryGraphics = canvas.createGraphics(975, 150)
     this.graphGraphics = canvas.createGraphics(975, 570)
   }
 
   draw(): void {
-    const {appController, appStore, appView} = this
-    const {canvas, font} = appView
+    const {appController, appStore, p5Wrapper} = this
+    const {canvas, font} = p5Wrapper
 
     const {generationCount} = appStore.getState()
 
@@ -284,8 +285,8 @@ class GenerationViewP5Activity extends Activity {
   }
 
   private drawGraphImage(): void {
-    const {appStore, appView} = this
-    const {canvas, font} = appView
+    const {appStore, p5Wrapper} = this
+    const {canvas, font} = p5Wrapper
 
     const {generationCount, generationHistoryMap, selectedGeneration} =
       appStore.getState()
@@ -358,8 +359,8 @@ class GenerationViewP5Activity extends Activity {
   }
 
   private drawHistogram(x: number, y: number, hw: number, hh: number): void {
-    const {appStore, appView} = this
-    const {canvas, font} = appView
+    const {appStore, p5Wrapper} = this
+    const {canvas, font} = p5Wrapper
 
     const {selectedGeneration} = appStore.getState()
 
@@ -463,8 +464,8 @@ class GenerationViewP5Activity extends Activity {
     graphWidth: number,
     graphHeight: number
   ): void {
-    const {appStore, appView} = this
-    const {canvas, font} = appView
+    const {appStore, p5Wrapper} = this
+    const {canvas, font} = p5Wrapper
 
     const {generationCount} = appStore.getState()
 
@@ -549,8 +550,8 @@ class GenerationViewP5Activity extends Activity {
     graphWidth: number,
     graphHeight: number
   ): void {
-    const {appStore, appView} = this
-    const {canvas} = appView
+    const {appStore, p5Wrapper} = this
+    const {canvas} = p5Wrapper
 
     const {generationCount} = appStore.getState()
 
@@ -659,7 +660,7 @@ class GenerationViewP5Activity extends Activity {
   }
 
   private drawWorstMedianAndBestCreatures(): void {
-    const {canvas, font} = this.appView
+    const {canvas, font} = this.p5Wrapper
 
     canvas.noStroke()
     canvas.textAlign(canvas.CENTER)
@@ -702,7 +703,7 @@ class GenerationViewP5Activity extends Activity {
   private drawWorstMedianAndBestHoverState(
     worstMedianOrBestIndex: number
   ): void {
-    const {canvas} = this.appView
+    const {canvas} = this.p5Wrapper
 
     canvas.push()
 
@@ -752,7 +753,7 @@ class GenerationViewP5Activity extends Activity {
   }
 
   private getWorstMedianOrBestIndexUnderCursor(): number | null {
-    const {cursorX, cursorY} = this.appView.getCursorPosition()
+    const {cursorX, cursorY} = this.p5Wrapper.getCursorPosition()
 
     if (
       cursorY < CREATURE_TILES_START_Y ||
@@ -824,7 +825,7 @@ class GenerationViewP5Activity extends Activity {
 
   private showUnit(i: number, unit: number): String {
     if (unit < 1) {
-      return this.appView.canvas.nf(i, 0, 2) + ''
+      return this.p5Wrapper.canvas.nf(i, 0, 2) + ''
     }
 
     return toInt(i) + ''
@@ -914,7 +915,7 @@ class GenerationViewP5Activity extends Activity {
 
 class StepByStepButton extends ButtonWidget {
   draw(): void {
-    const {canvas} = this.appView
+    const {canvas} = this.p5Wrapper
 
     canvas.noStroke()
     canvas.fill(100, 200, 100)
@@ -924,13 +925,13 @@ class StepByStepButton extends ButtonWidget {
   }
 
   isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(760, 20, 460, 40)
+    return this.p5Wrapper.rectIsUnderCursor(760, 20, 460, 40)
   }
 }
 
 class QuickButton extends ButtonWidget {
   draw(): void {
-    const {canvas} = this.appView
+    const {canvas} = this.p5Wrapper
 
     canvas.noStroke()
     canvas.fill(100, 200, 100)
@@ -940,13 +941,13 @@ class QuickButton extends ButtonWidget {
   }
 
   isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(760, 70, 460, 40)
+    return this.p5Wrapper.rectIsUnderCursor(760, 70, 460, 40)
   }
 }
 
 class AsapButton extends ButtonWidget {
   draw(): void {
-    const {canvas} = this.appView
+    const {canvas} = this.p5Wrapper
 
     canvas.noStroke()
     canvas.fill(100, 200, 100)
@@ -956,7 +957,7 @@ class AsapButton extends ButtonWidget {
   }
 
   isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(760, 120, 230, 40)
+    return this.p5Wrapper.rectIsUnderCursor(760, 120, 230, 40)
   }
 }
 
@@ -974,7 +975,7 @@ class AlapButton extends ButtonWidget {
   }
 
   draw(): void {
-    const {canvas} = this.appView
+    const {canvas} = this.p5Wrapper
 
     canvas.noStroke()
 
@@ -990,7 +991,7 @@ class AlapButton extends ButtonWidget {
   }
 
   isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(990, 120, 230, 40)
+    return this.p5Wrapper.rectIsUnderCursor(990, 120, 230, 40)
   }
 }
 
@@ -1019,7 +1020,7 @@ class GenerationSlider extends Widget {
   }
 
   draw(): void {
-    const {canvas, font} = this.appView
+    const {canvas, font} = this.p5Wrapper
 
     const {selectedGeneration} = this.appStore.getState()
 
@@ -1047,11 +1048,11 @@ class GenerationSlider extends Widget {
   }
 
   isUnderCursor(): boolean {
-    return this.appView.rectIsUnderCursor(this.xPosition, 340, 50, 50)
+    return this.p5Wrapper.rectIsUnderCursor(this.xPosition, 340, 50, 50)
   }
 
   onDrag(): void {
-    const {cursorX} = this.appView.getCursorPosition()
+    const {cursorX} = this.p5Wrapper.getCursorPosition()
 
     /*
      * Update the slider position with a sluggish effect. This avoids some

@@ -1,7 +1,7 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-export interface AppViewConfig {
+export interface P5WrapperConfig {
   font: Font
   height: number
   p5: p5
@@ -9,7 +9,7 @@ export interface AppViewConfig {
   width: number
 }
 
-export class AppView {
+export class P5Wrapper {
   height: number
   scale: number
   width: number
@@ -17,7 +17,7 @@ export class AppView {
   canvas: p5
   font: Font
 
-  constructor(config: AppViewConfig) {
+  constructor(config: P5WrapperConfig) {
     this.height = config.height
     this.scale = config.scale
     this.width = config.width

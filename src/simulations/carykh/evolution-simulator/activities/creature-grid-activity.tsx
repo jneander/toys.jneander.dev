@@ -34,14 +34,14 @@ export function CreatureGrid(props: CreatureGridProps) {
   } = props
 
   const sketchFn = useMemo(() => {
-    function createActivityFn({appView}: CreateActivityFnParameters) {
+    function createActivityFn({p5Wrapper}: CreateActivityFnParameters) {
       return new CreatureGridP5Activity({
         appController,
         appStore,
-        appView,
         getCreatureAndGridIndexFn,
         gridStartX: 40,
         gridStartY: 42,
+        p5Wrapper,
         showsPopupSimulation
       })
     }
@@ -76,7 +76,7 @@ class CreatureGridP5Activity extends Activity {
   constructor(config: CreatureGridP5ActivityConfig) {
     super(config)
 
-    this.graphics = this.appView.canvas.createGraphics(1920, 1080)
+    this.graphics = this.p5Wrapper.canvas.createGraphics(1920, 1080)
 
     this.gridStartX = config.gridStartX
     this.gridStartY = config.gridStartY
@@ -85,21 +85,21 @@ class CreatureGridP5Activity extends Activity {
     const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridView({
-      appView: this.appView,
       getCreatureAndGridIndexFn,
       gridStartX: this.gridStartX,
       gridStartY: this.gridStartY,
+      p5Wrapper: this.p5Wrapper,
       showsHoverState: this.showsPopupSimulation
     })
 
     this.popupSimulationView = new PopupSimulationView({
-      appView: this.appView,
+      p5Wrapper: this.p5Wrapper,
       simulationConfig: this.appController.getSimulationConfig()
     })
   }
 
   draw(): void {
-    const {canvas, height, width} = this.appView
+    const {canvas, height, width} = this.p5Wrapper
     const {creatureGridView, graphics} = this
 
     canvas.image(graphics, 0, 0, width, height)

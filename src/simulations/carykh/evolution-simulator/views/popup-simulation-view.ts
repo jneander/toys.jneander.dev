@@ -54,11 +54,11 @@ export class PopupSimulationView extends Widget {
 
     this.showSimulationView = false
 
-    const {canvas, font} = this.appView
+    const {canvas, font} = this.p5Wrapper
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.1,
-      creatureDrawer: new CreatureDrawer({appView: this.appView}),
+      creatureDrawer: new CreatureDrawer({p5Wrapper: this.p5Wrapper}),
       creatureSimulation: this.creatureSimulation,
       height: 600,
       p5: canvas,
@@ -119,7 +119,7 @@ export class PopupSimulationView extends Widget {
     creature: Creature,
     rank: number
   ): void {
-    const {canvas, font} = this.appView
+    const {canvas, font} = this.p5Wrapper
 
     const infoBoxCenterX = infoBoxStartX + INFO_BOX_WIDTH / 2
 
@@ -155,7 +155,7 @@ export class PopupSimulationView extends Widget {
 
   private drawSimulationView(x: number, y: number): void {
     this.simulationView.draw()
-    this.appView.canvas.image(
+    this.p5Wrapper.canvas.image(
       this.simulationView.graphics,
       x,
       y,
@@ -185,7 +185,7 @@ export class PopupSimulationView extends Widget {
      */
 
     const spaceToRightOfAnchor =
-      this.appView.width - (anchor.endPositionX + anchor.margin)
+      this.p5Wrapper.width - (anchor.endPositionX + anchor.margin)
     const spaceNeededForInfoBox = INFO_BOX_WIDTH + INFO_BOX_MARGIN
 
     if (spaceToRightOfAnchor >= spaceNeededForInfoBox) {
@@ -204,7 +204,7 @@ export class PopupSimulationView extends Widget {
     simulationViewStartX: number
     simulationViewStartY: number
   } {
-    const {appView} = this
+    const {p5Wrapper} = this
 
     let simulationViewStartX, simulationViewStartY
 
@@ -215,7 +215,7 @@ export class PopupSimulationView extends Widget {
      */
 
     const simulationViewMaxStartX =
-      appView.width - SIMULATION_VIEW_MARGIN - SIMULATION_VIEW_WIDTH
+      p5Wrapper.width - SIMULATION_VIEW_MARGIN - SIMULATION_VIEW_WIDTH
 
     simulationViewStartX =
       infoBoxStartX - INFO_BOX_MARGIN - CREATURE_GRID_TILE_WIDTH
@@ -230,7 +230,8 @@ export class PopupSimulationView extends Widget {
      * (with margins), position the simulation view above the info box instead.
      */
 
-    const spaceBelowInfoBox = appView.height - (infoBoxStartY + INFO_BOX_HEIGHT)
+    const spaceBelowInfoBox =
+      p5Wrapper.height - (infoBoxStartY + INFO_BOX_HEIGHT)
     const spaceNeededForSimulationView =
       INFO_BOX_MARGIN + SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
 

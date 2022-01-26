@@ -28,8 +28,12 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
   }, [appController])
 
   const sketchFn = useMemo(() => {
-    function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new SortingCreaturesP5Activity({appController, appStore, appView})
+    function createActivityFn({p5Wrapper}: CreateActivityFnParameters) {
+      return new SortingCreaturesP5Activity({
+        appController,
+        appStore,
+        p5Wrapper
+      })
     }
 
     return createSketchFn({createActivityFn})
@@ -60,14 +64,14 @@ class SortingCreaturesP5Activity extends Activity {
   constructor(config: ActivityConfig) {
     super(config)
 
-    this.creatureDrawer = new CreatureDrawer({appView: this.appView})
+    this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
 
     this.activityTimer = 0
   }
 
   draw(): void {
-    const {appStore, appView} = this
-    const {canvas} = appView
+    const {appStore, p5Wrapper} = this
+    const {canvas} = p5Wrapper
 
     const scale = 10
 

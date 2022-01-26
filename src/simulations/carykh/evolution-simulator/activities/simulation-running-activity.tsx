@@ -33,12 +33,12 @@ export function SimulationRunningActivity(
   }, [appController, appStore])
 
   const sketchFn = useMemo(() => {
-    function createActivityFn({appView}: CreateActivityFnParameters) {
+    function createActivityFn({p5Wrapper}: CreateActivityFnParameters) {
       return new SimulationRunningP5Activity({
         appController,
         appStore,
-        appView,
-        generationSimulation
+        generationSimulation,
+        p5Wrapper
       })
     }
 
@@ -65,13 +65,13 @@ class SimulationRunningP5Activity extends Activity {
   constructor(config: SimulationRunningActivityConfig) {
     super(config)
 
-    const {canvas, font} = this.appView
+    const {canvas, font} = this.p5Wrapper
 
     this.generationSimulation = config.generationSimulation
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.06,
-      creatureDrawer: new CreatureDrawer({appView: this.appView}),
+      creatureDrawer: new CreatureDrawer({p5Wrapper: this.p5Wrapper}),
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
       height: 900,
       p5: canvas,
@@ -86,13 +86,11 @@ class SimulationRunningP5Activity extends Activity {
     this.simulationView.setCameraPosition(0, 0)
 
     this.skipButton = new SkipButton({
-      appView: this.appView,
-
-      onClick: this.handleSkip.bind(this)
+      onClick: this.handleSkip.bind(this),
+      p5Wrapper: this.p5Wrapper
     })
 
     this.playbackSpeedButton = new PlaybackSpeedButton({
-      appView: this.appView,
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
 
       onClick: () => {
@@ -112,24 +110,26 @@ class SimulationRunningP5Activity extends Activity {
         }
 
         creatureSimulation.setSpeed(speed)
-      }
+      },
+
+      p5Wrapper: this.p5Wrapper
     })
 
     this.finishButton = new FinishButton({
-      appView: this.appView,
-
       onClick: () => {
         this.generationSimulation.finishGenerationSimulation()
         this.appController.setActivityId(ActivityId.SimulationFinished)
-      }
+      },
+
+      p5Wrapper: this.p5Wrapper
     })
 
     this.activityTimer = 0
   }
 
   draw(): void {
-    const {appController, appView, generationSimulation} = this
-    const {canvas, height, width} = appView
+    const {appController, generationSimulation, p5Wrapper} = this
+    const {canvas, height, width} = p5Wrapper
 
     const {speed} = generationSimulation.getCreatureSimulationState()
 
@@ -204,7 +204,7 @@ class SimulationRunningP5Activity extends Activity {
 
   private drawFinalFitness(): void {
     const {generationSimulation} = this
-    const {canvas, font, height, width} = this.appView
+    const {canvas, font, height, width} = this.p5Wrapper
 
     const {nodes} = generationSimulation.getCreatureSimulationState().creature
 
@@ -237,7 +237,7 @@ class SimulationRunningP5Activity extends Activity {
 
 class SkipButton extends ButtonWidget {
   draw(): void {
-    const {canvas, font, height} = this.appView
+    const {canvas, font, height} = this.p5Wrapper
 
     canvas.fill(0)
     canvas.rect(0, height - 40, 90, 40)
@@ -248,8 +248,8 @@ class SkipButton extends ButtonWidget {
   }
 
   isUnderCursor(): boolean {
-    const {appView} = this
-    return appView.rectIsUnderCursor(0, appView.height - 40, 90, 40)
+    const {p5Wrapper} = this
+    return p5Wrapper.rectIsUnderCursor(0, p5Wrapper.height - 40, 90, 40)
   }
 }
 
@@ -267,7 +267,7 @@ class PlaybackSpeedButton extends ButtonWidget {
   }
 
   draw(): void {
-    const {canvas, font, height} = this.appView
+    const {canvas, font, height} = this.p5Wrapper
 
     const {speed} = this.creatureSimulation.getState()
 
@@ -280,14 +280,14 @@ class PlaybackSpeedButton extends ButtonWidget {
   }
 
   isUnderCursor(): boolean {
-    const {appView} = this
-    return appView.rectIsUnderCursor(120, appView.height - 40, 240, 40)
+    const {p5Wrapper} = this
+    return p5Wrapper.rectIsUnderCursor(120, p5Wrapper.height - 40, 240, 40)
   }
 }
 
 class FinishButton extends ButtonWidget {
   draw(): void {
-    const {canvas, font, height, width} = this.appView
+    const {canvas, font, height, width} = this.p5Wrapper
 
     canvas.fill(0)
     canvas.rect(width - 120, height - 40, 120, 40)
@@ -298,8 +298,8 @@ class FinishButton extends ButtonWidget {
   }
 
   isUnderCursor(): boolean {
-    const {height, width} = this.appView
+    const {height, width} = this.p5Wrapper
 
-    return this.appView.rectIsUnderCursor(width - 120, height - 40, 120, 40)
+    return this.p5Wrapper.rectIsUnderCursor(width - 120, height - 40, 120, 40)
   }
 }

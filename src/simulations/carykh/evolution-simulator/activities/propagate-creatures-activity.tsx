@@ -5,7 +5,7 @@ import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {CreatureGridView} from '../views'
+import {CreatureGridView, CreatureGridViewConfig} from '../views'
 import {Activity, ActivityConfig} from './shared'
 
 export interface PropagateCreaturesActivityProps {
@@ -23,11 +23,19 @@ export function PropagateCreaturesActivity(
   }, [appController])
 
   const sketchFn = useMemo(() => {
+    function getCreatureAndGridIndexFn(index: number) {
+      return {
+        creature: appStore.getState().creaturesInLatestGeneration[index],
+        gridIndex: index
+      }
+    }
+
     function createActivityFn({appView}: CreateActivityFnParameters) {
       return new PropagateCreaturesP5Activity({
         appController,
         appStore,
-        appView
+        appView,
+        getCreatureAndGridIndexFn
       })
     }
 
@@ -58,18 +66,17 @@ export function PropagateCreaturesActivity(
   )
 }
 
+interface PropagateCreaturesActivityConfig extends ActivityConfig {
+  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+}
+
 class PropagateCreaturesP5Activity extends Activity {
   private creatureGridView: CreatureGridView
 
-  constructor(config: ActivityConfig) {
+  constructor(config: PropagateCreaturesActivityConfig) {
     super(config)
 
-    const getCreatureAndGridIndexFn = (index: number) => {
-      return {
-        creature: this.appStore.getState().creaturesInLatestGeneration[index],
-        gridIndex: index
-      }
-    }
+    const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridView({
       appView: this.appView,

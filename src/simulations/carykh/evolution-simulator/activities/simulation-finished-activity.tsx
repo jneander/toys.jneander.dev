@@ -100,6 +100,8 @@ class SimulationFinishedP5Activity extends Activity {
     })
 
     this.creatureIdsByGridIndex = new Array<number>(CREATURE_COUNT)
+
+    this.updateCreatureIdsByGridIndex()
   }
 
   draw(): void {
@@ -135,8 +137,6 @@ class SimulationFinishedP5Activity extends Activity {
   }
 
   initialize(): void {
-    this.updateCreatureIdsByGridIndex()
-
     this.graphics.background(220, 253, 102)
     this.creatureGridView.initialize()
   }

@@ -1,11 +1,9 @@
-import {useEffect, useMemo} from 'react'
+import {useCallback, useEffect} from 'react'
 
-import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
 import {ActivityId} from '../constants'
-import {CreateActivityFnParameters, createSketchFn} from '../sketch'
 import type {AppStore} from '../types'
-import {CreatureGridP5Activity} from './creature-grid-activity'
+import {CreatureGrid} from './creature-grid-activity'
 
 export interface CullCreaturesActivityProps {
   appController: AppController
@@ -19,28 +17,15 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
     appController.cullCreatures()
   }, [appController])
 
-  const sketchFn = useMemo(() => {
-    function getCreatureAndGridIndexFn(index: number) {
+  const getCreatureAndGridIndexFn = useCallback(
+    (index: number) => {
       return {
         creature: appStore.getState().creaturesInLatestGeneration[index],
         gridIndex: index
       }
-    }
-
-    function createActivityFn({appView}: CreateActivityFnParameters) {
-      return new CreatureGridP5Activity({
-        appController,
-        appStore,
-        appView,
-        getCreatureAndGridIndexFn,
-        gridStartX: 40,
-        gridStartY: 42,
-        showsPopupSimulation: true
-      })
-    }
-
-    return createSketchFn({createActivityFn})
-  }, [appController, appStore])
+    },
+    [appStore]
+  )
 
   function handlePropagateClick() {
     appController.setActivityId(ActivityId.PropagateCreatures)
@@ -48,9 +33,12 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
 
   return (
     <div>
-      <div style={{height: '576px'}}>
-        <P5ClientView sketch={sketchFn} />
-      </div>
+      <CreatureGrid
+        appController={appController}
+        appStore={appStore}
+        getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
+        showsPopupSimulation
+      />
 
       <p>
         Faster creatures are more likely to survive because they can outrun

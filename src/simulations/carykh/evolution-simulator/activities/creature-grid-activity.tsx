@@ -1,5 +1,10 @@
 import type {Graphics} from 'p5'
+import {useMemo} from 'react'
 
+import {P5ClientView} from '../../../../shared/p5'
+import type {AppController} from '../app-controller'
+import {CreateActivityFnParameters, createSketchFn} from '../sketch'
+import type {AppStore} from '../types'
 import {
   CREATURE_GRID_MARGIN_X,
   CREATURE_GRID_MARGIN_Y,
@@ -13,14 +18,52 @@ import {
 } from '../views'
 import {Activity, ActivityConfig} from './shared'
 
-export interface CreatureGridP5ActivityConfig extends ActivityConfig {
+export interface CreatureGridProps {
+  appController: AppController
+  appStore: AppStore
+  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+  showsPopupSimulation?: boolean
+}
+
+export function CreatureGrid(props: CreatureGridProps) {
+  const {
+    appController,
+    appStore,
+    getCreatureAndGridIndexFn,
+    showsPopupSimulation = false
+  } = props
+
+  const sketchFn = useMemo(() => {
+    function createActivityFn({appView}: CreateActivityFnParameters) {
+      return new CreatureGridP5Activity({
+        appController,
+        appStore,
+        appView,
+        getCreatureAndGridIndexFn,
+        gridStartX: 40,
+        gridStartY: 42,
+        showsPopupSimulation
+      })
+    }
+
+    return createSketchFn({createActivityFn})
+  }, [appController, appStore, getCreatureAndGridIndexFn, showsPopupSimulation])
+
+  return (
+    <div style={{height: '576px'}}>
+      <P5ClientView sketch={sketchFn} />
+    </div>
+  )
+}
+
+interface CreatureGridP5ActivityConfig extends ActivityConfig {
   getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
   gridStartX: number
   gridStartY: number
   showsPopupSimulation: boolean
 }
 
-export class CreatureGridP5Activity extends Activity {
+class CreatureGridP5Activity extends Activity {
   private creatureGridView: CreatureGridView
   private popupSimulationView: PopupSimulationView
 

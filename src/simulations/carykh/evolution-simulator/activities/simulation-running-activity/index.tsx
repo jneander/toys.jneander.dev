@@ -90,7 +90,10 @@ class SimulationRunningP5Activity extends P5Activity {
     this.simulationView.setCameraPosition(0, 0)
 
     this.skipButton = new SkipButton({
-      onClick: this.handleSkip.bind(this),
+      onClick: () => {
+        this.activityController.advanceGenerationSimulation()
+      },
+
       p5Wrapper: this.p5Wrapper
     })
 
@@ -213,15 +216,6 @@ class SimulationRunningP5Activity extends P5Activity {
       width / 2,
       400
     )
-  }
-
-  private handleSkip(): void {
-    const timer = this.activityController.getTimer()
-    for (let count = timer; count < 900; count++) {
-      this.activityController.advanceCreatureSimulation()
-    }
-
-    this.activityController.setTimer(1021)
   }
 }
 

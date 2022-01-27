@@ -1,11 +1,10 @@
-import {Store} from '@jneander/utils-state'
-
 import type {AppController} from '../../app-controller'
 import {GenerationSimulation} from '../../simulation'
 import type {AppStore} from '../../types'
 import type {ActivityStore} from './types'
 
 export interface ActivityControllerConfig {
+  activityStore: ActivityStore
   appController: AppController
   appStore: AppStore
 }
@@ -16,7 +15,9 @@ export class ActivityController {
   private generationSimulation: GenerationSimulation
 
   constructor(config: ActivityControllerConfig) {
-    const {appController, appStore} = config
+    const {activityStore, appController, appStore} = config
+
+    this.store = activityStore
 
     this.generationSimulation = new GenerationSimulation({
       appStore,
@@ -24,10 +25,6 @@ export class ActivityController {
     })
 
     this.generationSimulation.initialize()
-
-    this.store = new Store({
-      timer: 0
-    })
   }
 
   getGenerationSimulation(): GenerationSimulation {

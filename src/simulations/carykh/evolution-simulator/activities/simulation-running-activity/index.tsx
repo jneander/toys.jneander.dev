@@ -97,22 +97,7 @@ class SimulationRunningP5Activity extends P5Activity {
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
 
       onClick: () => {
-        const creatureSimulation =
-          this.generationSimulation.getCreatureSimulation()
-
-        let {speed} = creatureSimulation.getState()
-
-        speed *= 2
-
-        if (speed === 1024) {
-          speed = 900
-        }
-
-        if (speed >= 1800) {
-          speed = 1
-        }
-
-        creatureSimulation.setSpeed(speed)
+        this.activityController.increaseSimulationSpeed()
       },
 
       p5Wrapper: this.p5Wrapper
@@ -132,7 +117,7 @@ class SimulationRunningP5Activity extends P5Activity {
     const {appController, generationSimulation, p5Wrapper} = this
     const {canvas, height, width} = p5Wrapper
 
-    const {speed} = generationSimulation.getCreatureSimulationState()
+    const speed = this.activityController.getSimulationSpeed()
 
     let timer = this.activityController.getTimer()
 

@@ -23,18 +23,7 @@ export function SimulationRunningActivity(
   const {appController, appStore} = props
 
   const activityController = useMemo(() => {
-    return new ActivityController()
-  }, [])
-
-  const generationSimulation = useMemo(() => {
-    const generationSimulation = new GenerationSimulation({
-      appStore: appStore,
-      simulationConfig: appController.getSimulationConfig()
-    })
-
-    generationSimulation.initialize()
-
-    return generationSimulation
+    return new ActivityController({appController, appStore})
   }, [appController, appStore])
 
   const sketchFn = useMemo(() => {
@@ -43,20 +32,18 @@ export function SimulationRunningActivity(
         activityController,
         appController,
         appStore,
-        generationSimulation,
         p5Wrapper
       })
     }
 
     return createSketchFn({createUiFn})
-  }, [activityController, appController, appStore, generationSimulation])
+  }, [activityController, appController, appStore])
 
   return <P5ClientView sketch={sketchFn} />
 }
 
 interface SimulationRunningActivityConfig extends P5ActivityConfig {
   activityController: ActivityController
-  generationSimulation: GenerationSimulation
 }
 
 class SimulationRunningP5Activity extends P5Activity {
@@ -74,7 +61,8 @@ class SimulationRunningP5Activity extends P5Activity {
     const {canvas, font} = this.p5Wrapper
 
     this.activityController = config.activityController
-    this.generationSimulation = config.generationSimulation
+    this.generationSimulation =
+      this.activityController.getGenerationSimulation()
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.06,

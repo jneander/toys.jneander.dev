@@ -2,14 +2,15 @@ import {Store} from '@jneander/utils-state'
 import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../../shared/p5'
+import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
 import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
 import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
-import {CreatureSimulation, GenerationSimulation} from '../../simulation'
+import {GenerationSimulation} from '../../simulation'
 import type {AppStore} from '../../types'
-import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../../views'
+import {SimulationView} from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
 import {ActivityController} from './activity-controller'
 import type {ActivityState} from './types'
@@ -17,6 +18,10 @@ import type {ActivityState} from './types'
 export interface SimulationRunningActivityProps {
   appController: AppController
   appStore: AppStore
+}
+
+function getSimulationSpeed(activityState: ActivityState): number {
+  return activityState.simulationSpeed
 }
 
 export function SimulationRunningActivity(
@@ -48,7 +53,39 @@ export function SimulationRunningActivity(
     return createSketchFn({createUiFn})
   }, [activityController, appController, appStore])
 
-  return <P5ClientView sketch={sketchFn} />
+  const simulationSpeed = useStore(activityStore, getSimulationSpeed)
+
+  function handleSkipClick() {
+    activityController.advanceGenerationSimulation()
+  }
+
+  function handlePlaybackSpeedClick() {
+    activityController.increaseSimulationSpeed()
+  }
+
+  function handleFinishClick() {
+    activityController.finishGenerationSimulation()
+  }
+
+  return (
+    <div>
+      <div style={{height: '576px'}}>
+        <P5ClientView sketch={sketchFn} />
+      </div>
+
+      <button onClick={handleSkipClick} type="button">
+        Skip
+      </button>
+
+      <button onClick={handlePlaybackSpeedClick} type="button">
+        Playback Speed: x{simulationSpeed}
+      </button>
+
+      <button onClick={handleFinishClick} type="button">
+        Finish
+      </button>
+    </div>
+  )
 }
 
 interface SimulationRunningActivityConfig extends P5ActivityConfig {
@@ -57,9 +94,6 @@ interface SimulationRunningActivityConfig extends P5ActivityConfig {
 
 class SimulationRunningP5Activity extends P5Activity {
   private simulationView: SimulationView
-  private skipButton: SkipButton
-  private playbackSpeedButton: PlaybackSpeedButton
-  private finishButton: FinishButton
 
   private activityController: ActivityController
   private generationSimulation: GenerationSimulation
@@ -88,32 +122,6 @@ class SimulationRunningP5Activity extends P5Activity {
 
     this.simulationView.setCameraZoom(0.01)
     this.simulationView.setCameraPosition(0, 0)
-
-    this.skipButton = new SkipButton({
-      onClick: () => {
-        this.activityController.advanceGenerationSimulation()
-      },
-
-      p5Wrapper: this.p5Wrapper
-    })
-
-    this.playbackSpeedButton = new PlaybackSpeedButton({
-      creatureSimulation: this.generationSimulation.getCreatureSimulation(),
-
-      onClick: () => {
-        this.activityController.increaseSimulationSpeed()
-      },
-
-      p5Wrapper: this.p5Wrapper
-    })
-
-    this.finishButton = new FinishButton({
-      onClick: () => {
-        this.activityController.finishGenerationSimulation()
-      },
-
-      p5Wrapper: this.p5Wrapper
-    })
   }
 
   draw(): void {
@@ -136,10 +144,6 @@ class SimulationRunningP5Activity extends P5Activity {
       this.simulationView.draw()
 
       canvas.image(this.simulationView.graphics, 0, 0, width, height)
-
-      this.skipButton.draw()
-      this.playbackSpeedButton.draw()
-      this.finishButton.draw()
     }
 
     if (timer == 900) {
@@ -170,16 +174,6 @@ class SimulationRunningP5Activity extends P5Activity {
 
     if (timer >= 900) {
       this.activityController.setTimer(timer + speed)
-    }
-  }
-
-  onMouseReleased(): void {
-    if (this.skipButton.isUnderCursor()) {
-      this.skipButton.onClick()
-    } else if (this.playbackSpeedButton.isUnderCursor()) {
-      this.playbackSpeedButton.onClick()
-    } else if (this.finishButton.isUnderCursor()) {
-      this.finishButton.onClick()
     }
   }
 
@@ -215,74 +209,5 @@ class SimulationRunningP5Activity extends P5Activity {
       width / 2,
       400
     )
-  }
-}
-
-class SkipButton extends ButtonWidget {
-  draw(): void {
-    const {canvas, font, height} = this.p5Wrapper
-
-    canvas.fill(0)
-    canvas.rect(0, height - 40, 90, 40)
-    canvas.fill(255)
-    canvas.textAlign(canvas.CENTER)
-    canvas.textFont(font, 32)
-    canvas.text('SKIP', 45, height - 8)
-  }
-
-  isUnderCursor(): boolean {
-    const {p5Wrapper} = this
-    return p5Wrapper.rectIsUnderCursor(0, p5Wrapper.height - 40, 90, 40)
-  }
-}
-
-interface StepByStepPlaybackSpeedButtonConfig extends ButtonWidgetConfig {
-  creatureSimulation: CreatureSimulation
-}
-
-class PlaybackSpeedButton extends ButtonWidget {
-  private creatureSimulation: CreatureSimulation
-
-  constructor(config: StepByStepPlaybackSpeedButtonConfig) {
-    super(config)
-
-    this.creatureSimulation = config.creatureSimulation
-  }
-
-  draw(): void {
-    const {canvas, font, height} = this.p5Wrapper
-
-    const {speed} = this.creatureSimulation.getState()
-
-    canvas.fill(0)
-    canvas.rect(120, height - 40, 240, 40)
-    canvas.fill(255)
-    canvas.textAlign(canvas.CENTER)
-    canvas.textFont(font, 32)
-    canvas.text('PB speed: x' + speed, 240, height - 8)
-  }
-
-  isUnderCursor(): boolean {
-    const {p5Wrapper} = this
-    return p5Wrapper.rectIsUnderCursor(120, p5Wrapper.height - 40, 240, 40)
-  }
-}
-
-class FinishButton extends ButtonWidget {
-  draw(): void {
-    const {canvas, font, height, width} = this.p5Wrapper
-
-    canvas.fill(0)
-    canvas.rect(width - 120, height - 40, 120, 40)
-    canvas.fill(255)
-    canvas.textAlign(canvas.CENTER)
-    canvas.textFont(font, 32)
-    canvas.text('FINISH', width - 60, height - 8)
-  }
-
-  isUnderCursor(): boolean {
-    const {height, width} = this.p5Wrapper
-
-    return this.p5Wrapper.rectIsUnderCursor(width - 120, height - 40, 120, 40)
   }
 }

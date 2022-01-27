@@ -1,4 +1,4 @@
-import {CREATURE_COUNT} from '../constants'
+import {CREATURE_COUNT, FRAMES_FOR_CREATURE_FITNESS} from '../constants'
 import {Creature, averagePositionOfNodes, creatureIdToIndex} from '../creatures'
 import type {AppStore, SimulationState} from '../types'
 import {CreatureSimulation, SimulationConfig} from './creature-simulation'
@@ -47,7 +47,9 @@ export class GenerationSimulation {
   advanceCreatureSimulation(): void {
     this.creatureSimulation.advance()
 
-    if (this.getCreatureSimulationState().timer === 900) {
+    if (
+      this.getCreatureSimulationState().timer === FRAMES_FOR_CREATURE_FITNESS
+    ) {
       this.setFitnessOfSimulationCreature()
     }
   }
@@ -69,7 +71,7 @@ export class GenerationSimulation {
   finishGenerationSimulation(): void {
     const {timer} = this.getCreatureSimulationState()
 
-    for (let frame = timer; frame < 900; frame++) {
+    for (let frame = timer; frame < FRAMES_FOR_CREATURE_FITNESS; frame++) {
       this.advanceCreatureSimulation()
     }
 
@@ -105,7 +107,7 @@ export class GenerationSimulation {
     for (let i = creatureIndex; i < CREATURE_COUNT; i++) {
       this.setSimulationState(this.creatureQueue[i])
 
-      for (let s = 0; s < 900; s++) {
+      for (let s = 0; s < FRAMES_FOR_CREATURE_FITNESS; s++) {
         this.advanceCreatureSimulation()
       }
     }

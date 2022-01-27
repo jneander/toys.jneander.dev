@@ -4,7 +4,13 @@ import {useMemo} from 'react'
 import {P5ClientView} from '../../../../../shared/p5'
 import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
-import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../../constants'
+import {
+  ActivityId,
+  FITNESS_LABEL,
+  FITNESS_UNIT_LABEL,
+  FRAMES_FOR_CREATURE_FITNESS,
+  SIMULATION_SPEED_INITIAL
+} from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
 import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
@@ -20,6 +26,10 @@ export interface SimulationRunningActivityProps {
   appStore: AppStore
 }
 
+const FRAMES_FOR_FINAL_FITNESS_VIEW = 120 // 2 seconds at 60fps
+const FRAMES_BEFORE_ADVANCING =
+  FRAMES_FOR_CREATURE_FITNESS + FRAMES_FOR_FINAL_FITNESS_VIEW
+
 function getSimulationSpeed(activityState: ActivityState): number {
   return activityState.simulationSpeed
 }
@@ -31,7 +41,7 @@ export function SimulationRunningActivity(
 
   const activityStore = useMemo(() => {
     return new Store<ActivityState>({
-      simulationSpeed: 1,
+      simulationSpeed: SIMULATION_SPEED_INITIAL,
       timer: 0
     })
   }, [])
@@ -133,21 +143,21 @@ class SimulationRunningP5Activity extends P5Activity {
     let timer = this.activityController.getTimer()
 
     for (let s = 0; s < speed; s++) {
-      if (timer < 900) {
+      if (timer < FRAMES_FOR_CREATURE_FITNESS) {
         // For each point of speed, advance through one cycle of simulation.
         this.activityController.advanceCreatureSimulation()
         timer = this.activityController.getTimer()
       }
     }
 
-    if (timer === 900 && speed >= 30) {
+    if (timer === FRAMES_FOR_CREATURE_FITNESS && speed >= 30) {
       // When the simulation speed is too fast, skip ahead to next simulation using the timer.
-      this.activityController.setTimer(1020)
+      this.activityController.setTimer(FRAMES_BEFORE_ADVANCING)
     }
 
     timer = this.activityController.getTimer()
 
-    if (timer >= 1020) {
+    if (timer >= FRAMES_BEFORE_ADVANCING) {
       generationSimulation.advanceGenerationSimulation()
 
       if (!generationSimulation.isFinished()) {
@@ -161,16 +171,16 @@ class SimulationRunningP5Activity extends P5Activity {
 
     timer = this.activityController.getTimer()
 
-    if (timer >= 900) {
+    if (timer >= FRAMES_FOR_CREATURE_FITNESS) {
       this.activityController.setTimer(timer + speed)
     }
 
-    if (timer <= 900) {
+    if (timer <= FRAMES_FOR_CREATURE_FITNESS) {
       this.simulationView.draw()
       canvas.image(this.simulationView.graphics, 0, 0, width, height)
     }
 
-    if (timer === 900 && speed < 30) {
+    if (timer === FRAMES_FOR_CREATURE_FITNESS && speed < 30) {
       // When the simulation speed is slow enough, display the creature's fitness.
       this.drawFinalFitness()
     }

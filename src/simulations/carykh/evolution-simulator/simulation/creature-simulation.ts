@@ -1,4 +1,9 @@
-import {FRICTION, GRAVITY, PRESSURE_UNIT} from '../constants'
+import {
+  FRICTION,
+  GRAVITY,
+  PRESSURE_UNIT,
+  SIMULATION_SPEED_INITIAL
+} from '../constants'
 import {
   Creature,
   Node,
@@ -27,7 +32,7 @@ export class CreatureSimulation {
         nodes: []
       },
 
-      speed: 1,
+      speed: SIMULATION_SPEED_INITIAL,
       timer: 0
     }
   }

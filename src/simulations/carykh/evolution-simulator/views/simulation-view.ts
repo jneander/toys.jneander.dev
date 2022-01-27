@@ -1,7 +1,11 @@
 import type p5 from 'p5'
 import type {Font, Graphics} from 'p5'
 
-import {POST_FONT_SIZE, SCALE_TO_FIX_BUG} from '../constants'
+import {
+  FRAMES_FOR_CREATURE_FITNESS,
+  POST_FONT_SIZE,
+  SCALE_TO_FIX_BUG
+} from '../constants'
 import type {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../creatures'
 import {toInt} from '../math'
@@ -219,7 +223,10 @@ export class SimulationView {
       -cameraState.y * SCALE_TO_FIX_BUG
     )
 
-    if (simulationState.timer < 900 || simulationState.speed > 30) {
+    if (
+      simulationState.timer < FRAMES_FOR_CREATURE_FITNESS ||
+      simulationState.speed > 30
+    ) {
       simulationGraphics.background(120, 200, 255)
     } else {
       simulationGraphics.background(60, 100, 128)

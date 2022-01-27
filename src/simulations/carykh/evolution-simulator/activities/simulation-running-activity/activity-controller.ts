@@ -31,6 +31,31 @@ export class ActivityController {
     return this.generationSimulation
   }
 
+  getSimulationSpeed(): number {
+    return this.generationSimulation.getCreatureSimulation().getState().speed
+  }
+
+  setSimulationSpeed(speed: number): void {
+    const creatureSimulation = this.generationSimulation.getCreatureSimulation()
+    creatureSimulation.setSpeed(speed)
+  }
+
+  increaseSimulationSpeed(): void {
+    let speed = this.getSimulationSpeed()
+
+    speed *= 2
+
+    if (speed === 1024) {
+      speed = 900
+    }
+
+    if (speed >= 1800) {
+      speed = 1
+    }
+
+    this.setSimulationSpeed(speed)
+  }
+
   getTimer(): number {
     return this.store.getState().timer
   }

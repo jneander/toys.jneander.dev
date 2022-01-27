@@ -159,8 +159,6 @@ class SimulationRunningP5Activity extends P5Activity {
 
       if (!generationSimulation.isFinished()) {
         this.activityController.setTimer(0)
-        this.simulationView.setCameraZoom(0.01)
-        this.simulationView.setCameraPosition(0, 0)
       } else {
         appController.setActivityId(ActivityId.SimulationFinished)
       }
@@ -170,6 +168,12 @@ class SimulationRunningP5Activity extends P5Activity {
 
     if (timer >= FRAMES_FOR_CREATURE_FITNESS) {
       this.activityController.setTimer(timer + speed)
+    }
+
+    if (timer === speed) {
+      // At the first render, reset the camera.
+      this.simulationView.setCameraZoom(0.01)
+      this.simulationView.setCameraPosition(0, 0)
     }
 
     if (timer <= FRAMES_FOR_CREATURE_FITNESS) {

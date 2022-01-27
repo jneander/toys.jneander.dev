@@ -109,8 +109,7 @@ class SimulationRunningP5Activity extends P5Activity {
 
     this.finishButton = new FinishButton({
       onClick: () => {
-        this.generationSimulation.finishGenerationSimulation()
-        this.appController.setActivityId(ActivityId.SimulationFinished)
+        this.activityController.finishGenerationSimulation()
       },
 
       p5Wrapper: this.p5Wrapper

@@ -19,16 +19,13 @@ import type {AppStore} from '../../types'
 import {SimulationView} from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
 import {ActivityController} from './activity-controller'
+import {FRAMES_BEFORE_ADVANCING_GENERATION} from './constants'
 import type {ActivityState} from './types'
 
 export interface SimulationRunningActivityProps {
   appController: AppController
   appStore: AppStore
 }
-
-const FRAMES_FOR_FINAL_FITNESS_VIEW = 120 // 2 seconds at 60fps
-const FRAMES_BEFORE_ADVANCING =
-  FRAMES_FOR_CREATURE_FITNESS + FRAMES_FOR_FINAL_FITNESS_VIEW
 
 function getSimulationSpeed(activityState: ActivityState): number {
   return activityState.simulationSpeed
@@ -152,12 +149,12 @@ class SimulationRunningP5Activity extends P5Activity {
 
     if (timer === FRAMES_FOR_CREATURE_FITNESS && speed >= 30) {
       // When the simulation speed is too fast, skip ahead to next simulation using the timer.
-      this.activityController.setTimer(FRAMES_BEFORE_ADVANCING)
+      this.activityController.setTimer(FRAMES_BEFORE_ADVANCING_GENERATION)
     }
 
     timer = this.activityController.getTimer()
 
-    if (timer >= FRAMES_BEFORE_ADVANCING) {
+    if (timer >= FRAMES_BEFORE_ADVANCING_GENERATION) {
       generationSimulation.advanceGenerationSimulation()
 
       if (!generationSimulation.isFinished()) {

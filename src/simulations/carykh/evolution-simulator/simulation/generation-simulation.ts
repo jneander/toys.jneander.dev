@@ -1,6 +1,5 @@
 import {CREATURE_COUNT} from '../constants'
-import type {Creature} from '../creatures'
-import {averagePositionOfNodes, creatureIdToIndex} from '../helpers'
+import {Creature, averagePositionOfNodes, creatureIdToIndex} from '../creatures'
 import type {AppStore, SimulationState} from '../types'
 import {CreatureSimulation, SimulationConfig} from './creature-simulation'
 

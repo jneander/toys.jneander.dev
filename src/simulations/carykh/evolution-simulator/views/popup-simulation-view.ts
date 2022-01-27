@@ -1,7 +1,6 @@
 import {CreatureDrawer} from '../creature-drawer'
-import type {Creature} from '../creatures'
 import {CREATURE_GRID_TILE_WIDTH} from '../creature-grid'
-import {speciesIdForCreature} from '../helpers'
+import {Creature, speciesIdForCreature} from '../creatures'
 import {getSpeciesColor} from '../p5-utils'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
 import {Widget, WidgetConfig} from './shared'

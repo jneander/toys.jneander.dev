@@ -1,5 +1,6 @@
-import {AIR_FRICTION} from '../constants'
+import {AIR_FRICTION, CREATURE_COUNT} from '../constants'
 import {dist2d} from '../math'
+import type Creature from './Creature'
 import type Muscle from './Muscle'
 import type Node from './Node'
 
@@ -60,4 +61,31 @@ export function applyForcesToNode(node: Node): void {
   node.velocityY *= AIR_FRICTION
   node.positionY += node.velocityY
   node.positionX += node.velocityX
+}
+
+export function averagePositionOfNodes(nodes: Node[]): {
+  averageX: number
+  averageY: number
+} {
+  let averageX = 0
+  let averageY = 0
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i]
+    averageX += node.positionX
+    averageY += node.positionY
+  }
+
+  averageX = averageX / nodes.length
+  averageY = averageY / nodes.length
+
+  return {averageX, averageY}
+}
+
+export function creatureIdToIndex(creatureId: number): number {
+  return (creatureId - 1) % CREATURE_COUNT
+}
+
+export function speciesIdForCreature(creature: Creature): number {
+  return (creature.nodes.length % 10) * 10 + (creature.muscles.length % 10)
 }

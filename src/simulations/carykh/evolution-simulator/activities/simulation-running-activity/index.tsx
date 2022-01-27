@@ -26,6 +26,7 @@ export function SimulationRunningActivity(
 
   const activityStore = useMemo(() => {
     return new Store<ActivityState>({
+      simulationSpeed: 1,
       timer: 0
     })
   }, [])

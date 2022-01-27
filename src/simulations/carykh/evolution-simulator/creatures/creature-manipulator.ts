@@ -1,6 +1,5 @@
 import type {RandomNumberGenerator} from '@jneander/utils-random'
 
-import Node from '../Node'
 import {
   BIG_MUTATION_CHANCE,
   MAX_MUSCLE_LENGTH_INCLUSIVE,
@@ -10,6 +9,7 @@ import {
 import {Creature} from '../creatures'
 import {dist2d} from '../math'
 import Muscle from './Muscle'
+import Node from './Node'
 import {
   adjustNodesToCenter,
   applyForceToMuscle,

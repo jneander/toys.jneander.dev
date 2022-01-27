@@ -1,6 +1,5 @@
-import type Node from './Node'
 import {CREATURE_COUNT} from './constants'
-import type {Creature} from './creatures'
+import type {Creature, Node} from './creatures'
 
 export function averagePositionOfNodes(nodes: Node[]): {
   averageX: number

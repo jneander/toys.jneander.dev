@@ -1,5 +1,10 @@
 import type {AppController} from '../../app-controller'
-import {ActivityId} from '../../constants'
+import {
+  ActivityId,
+  FRAMES_FOR_CREATURE_FITNESS,
+  SIMULATION_SPEED_INITIAL,
+  SIMULATION_SPEED_MAX
+} from '../../constants'
 import {GenerationSimulation} from '../../simulation'
 import type {AppStore} from '../../types'
 import type {ActivityStore} from './types'
@@ -50,11 +55,10 @@ export class ActivityController {
     speed *= 2
 
     if (speed === 1024) {
-      speed = 900
-    }
-
-    if (speed >= 1800) {
-      speed = 1
+      speed = SIMULATION_SPEED_MAX
+    } else if (speed > 1024) {
+      // Roll over and back to initial speed.
+      speed = SIMULATION_SPEED_INITIAL
     }
 
     this.setSimulationSpeed(speed)
@@ -74,7 +78,11 @@ export class ActivityController {
   }
 
   advanceGenerationSimulation(): void {
-    for (let timer = this.getTimer(); timer < 900; timer++) {
+    for (
+      let timer = this.getTimer();
+      timer < FRAMES_FOR_CREATURE_FITNESS;
+      timer++
+    ) {
       this.advanceCreatureSimulation()
     }
 

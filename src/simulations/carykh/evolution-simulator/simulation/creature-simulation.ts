@@ -1,7 +1,7 @@
-import Node from '../Node'
 import {FRICTION, GRAVITY, PRESSURE_UNIT} from '../constants'
 import {
   Creature,
+  Node,
   NodeOperationId,
   applyForceToMuscle,
   applyForcesToNode

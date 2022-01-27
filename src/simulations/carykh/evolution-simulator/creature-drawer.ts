@@ -1,13 +1,13 @@
 import type p5 from 'p5'
 import type {Color, Font} from 'p5'
 
-import type Node from './Node'
 import {SCALE_TO_FIX_BUG} from './constants'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   Creature,
   Muscle,
-  NODE_OPERATION_LABELS_BY_ID
+  NODE_OPERATION_LABELS_BY_ID,
+  Node
 } from './creatures'
 import {toInt} from './math'
 import type {P5Wrapper} from './p5-utils'

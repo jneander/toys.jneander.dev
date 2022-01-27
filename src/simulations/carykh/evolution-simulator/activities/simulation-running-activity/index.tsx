@@ -1,15 +1,15 @@
 import {useMemo, useRef} from 'react'
 
-import {P5ClientView} from '../../../../shared/p5'
-import type {AppController} from '../app-controller'
-import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../constants'
-import {CreatureDrawer} from '../creature-drawer'
-import {averagePositionOfNodes} from '../creatures'
-import {CreateUiFnParameters, createSketchFn} from '../p5-utils'
-import {CreatureSimulation, GenerationSimulation} from '../simulation'
-import type {AppStore} from '../types'
-import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../views'
-import {P5Activity, P5ActivityConfig} from './shared'
+import {P5ClientView} from '../../../../../shared/p5'
+import type {AppController} from '../../app-controller'
+import {ActivityId, FITNESS_LABEL, FITNESS_UNIT_LABEL} from '../../constants'
+import {CreatureDrawer} from '../../creature-drawer'
+import {averagePositionOfNodes} from '../../creatures'
+import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
+import {CreatureSimulation, GenerationSimulation} from '../../simulation'
+import type {AppStore} from '../../types'
+import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../../views'
+import {P5Activity, P5ActivityConfig} from '../shared'
 
 export interface SimulationRunningActivityProps {
   appController: AppController

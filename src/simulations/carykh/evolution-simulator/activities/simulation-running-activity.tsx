@@ -1,4 +1,4 @@
-import {useMemo} from 'react'
+import {useMemo, useRef} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
@@ -16,10 +16,18 @@ export interface SimulationRunningActivityProps {
   appStore: AppStore
 }
 
+type ActivityState = {
+  timer: number
+}
+
 export function SimulationRunningActivity(
   props: SimulationRunningActivityProps
 ) {
   const {appController, appStore} = props
+
+  const mutableActivityState = useRef<ActivityState>({
+    timer: 0
+  })
 
   const generationSimulation = useMemo(() => {
     const generationSimulation = new GenerationSimulation({
@@ -35,6 +43,7 @@ export function SimulationRunningActivity(
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
       return new SimulationRunningP5Activity({
+        activityState: mutableActivityState.current,
         appController,
         appStore,
         generationSimulation,
@@ -49,6 +58,7 @@ export function SimulationRunningActivity(
 }
 
 interface SimulationRunningActivityConfig extends P5ActivityConfig {
+  activityState: ActivityState
   generationSimulation: GenerationSimulation
 }
 
@@ -58,15 +68,15 @@ class SimulationRunningP5Activity extends P5Activity {
   private playbackSpeedButton: PlaybackSpeedButton
   private finishButton: FinishButton
 
+  private activityState: ActivityState
   private generationSimulation: GenerationSimulation
-
-  private activityTimer: number
 
   constructor(config: SimulationRunningActivityConfig) {
     super(config)
 
     const {canvas, font} = this.p5Wrapper
 
+    this.activityState = config.activityState
     this.generationSimulation = config.generationSimulation
 
     this.simulationView = new SimulationView({
@@ -123,8 +133,6 @@ class SimulationRunningP5Activity extends P5Activity {
 
       p5Wrapper: this.p5Wrapper
     })
-
-    this.activityTimer = 0
   }
 
   draw(): void {
@@ -133,9 +141,9 @@ class SimulationRunningP5Activity extends P5Activity {
 
     const {speed} = generationSimulation.getCreatureSimulationState()
 
-    if (this.activityTimer <= 900) {
+    if (this.activityState.timer <= 900) {
       for (let s = 0; s < speed; s++) {
-        if (this.activityTimer < 900) {
+        if (this.activityState.timer < 900) {
           // For each point of speed, advance through one cycle of simulation.
           this.advanceSimulation()
         }
@@ -150,21 +158,21 @@ class SimulationRunningP5Activity extends P5Activity {
       this.finishButton.draw()
     }
 
-    if (this.activityTimer == 900) {
+    if (this.activityState.timer == 900) {
       if (speed < 30) {
         // When the simulation speed is slow enough, display the creature's fitness.
         this.drawFinalFitness()
       } else {
         // When the simulation speed is too fast, skip ahead to next simulation using the timer.
-        this.activityTimer = 1020
+        this.activityState.timer = 1020
       }
     }
 
-    if (this.activityTimer >= 1020) {
+    if (this.activityState.timer >= 1020) {
       generationSimulation.advanceGenerationSimulation()
 
       if (!generationSimulation.isFinished()) {
-        this.activityTimer = 0
+        this.activityState.timer = 0
         this.simulationView.setCameraZoom(0.01)
         this.simulationView.setCameraPosition(0, 0)
       } else {
@@ -172,8 +180,8 @@ class SimulationRunningP5Activity extends P5Activity {
       }
     }
 
-    if (this.activityTimer >= 900) {
-      this.activityTimer += speed
+    if (this.activityState.timer >= 900) {
+      this.activityState.timer += speed
     }
   }
 
@@ -199,7 +207,7 @@ class SimulationRunningP5Activity extends P5Activity {
 
   private advanceSimulation(): void {
     this.generationSimulation.advanceCreatureSimulation()
-    this.activityTimer++
+    this.activityState.timer++
   }
 
   private drawFinalFitness(): void {
@@ -227,11 +235,11 @@ class SimulationRunningP5Activity extends P5Activity {
   }
 
   private handleSkip(): void {
-    for (let count = this.activityTimer; count < 900; count++) {
+    for (let count = this.activityState.timer; count < 900; count++) {
       this.advanceSimulation()
     }
 
-    this.activityTimer = 1021
+    this.activityState.timer = 1021
   }
 }
 

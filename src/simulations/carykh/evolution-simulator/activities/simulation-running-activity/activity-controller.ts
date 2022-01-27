@@ -65,7 +65,7 @@ export class ActivityController {
     this.store.setState({timer})
   }
 
-  advanceSimulation(): void {
+  advanceCreatureSimulation(): void {
     this.generationSimulation.advanceCreatureSimulation()
     this.setTimer(this.getTimer() + 1)
   }

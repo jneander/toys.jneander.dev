@@ -10,14 +10,11 @@ import {CreatureSimulation, GenerationSimulation} from '../../simulation'
 import type {AppStore} from '../../types'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
+import type {ActivityState} from './types'
 
 export interface SimulationRunningActivityProps {
   appController: AppController
   appStore: AppStore
-}
-
-type ActivityState = {
-  timer: number
 }
 
 export function SimulationRunningActivity(

@@ -132,28 +132,17 @@ class SimulationRunningP5Activity extends P5Activity {
 
     let timer = this.activityController.getTimer()
 
-    if (timer <= 900) {
-      for (let s = 0; s < speed; s++) {
-        if (timer < 900) {
-          // For each point of speed, advance through one cycle of simulation.
-          this.activityController.advanceCreatureSimulation()
-          timer = this.activityController.getTimer()
-        }
+    for (let s = 0; s < speed; s++) {
+      if (timer < 900) {
+        // For each point of speed, advance through one cycle of simulation.
+        this.activityController.advanceCreatureSimulation()
+        timer = this.activityController.getTimer()
       }
-
-      this.simulationView.draw()
-
-      canvas.image(this.simulationView.graphics, 0, 0, width, height)
     }
 
-    if (timer == 900) {
-      if (speed < 30) {
-        // When the simulation speed is slow enough, display the creature's fitness.
-        this.drawFinalFitness()
-      } else {
-        // When the simulation speed is too fast, skip ahead to next simulation using the timer.
-        this.activityController.setTimer(1020)
-      }
+    if (timer === 900 && speed >= 30) {
+      // When the simulation speed is too fast, skip ahead to next simulation using the timer.
+      this.activityController.setTimer(1020)
     }
 
     timer = this.activityController.getTimer()
@@ -174,6 +163,16 @@ class SimulationRunningP5Activity extends P5Activity {
 
     if (timer >= 900) {
       this.activityController.setTimer(timer + speed)
+    }
+
+    if (timer <= 900) {
+      this.simulationView.draw()
+      canvas.image(this.simulationView.graphics, 0, 0, width, height)
+    }
+
+    if (timer === 900 && speed < 30) {
+      // When the simulation speed is slow enough, display the creature's fitness.
+      this.drawFinalFitness()
     }
   }
 

@@ -132,7 +132,7 @@ class SimulationRunningP5Activity extends P5Activity {
       for (let s = 0; s < speed; s++) {
         if (timer < 900) {
           // For each point of speed, advance through one cycle of simulation.
-          this.advanceSimulation()
+          this.activityController.advanceSimulation()
           timer = this.activityController.getTimer()
         }
       }
@@ -197,13 +197,6 @@ class SimulationRunningP5Activity extends P5Activity {
     }
   }
 
-  private advanceSimulation(): void {
-    this.generationSimulation.advanceCreatureSimulation()
-
-    const timer = this.activityController.getTimer()
-    this.activityController.setTimer(timer + 1)
-  }
-
   private drawFinalFitness(): void {
     const {generationSimulation} = this
     const {canvas, font, height, width} = this.p5Wrapper
@@ -231,7 +224,7 @@ class SimulationRunningP5Activity extends P5Activity {
   private handleSkip(): void {
     const timer = this.activityController.getTimer()
     for (let count = timer; count < 900; count++) {
-      this.advanceSimulation()
+      this.activityController.advanceSimulation()
     }
 
     this.activityController.setTimer(1021)

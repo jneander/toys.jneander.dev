@@ -41,4 +41,9 @@ export class ActivityController {
   setTimer(timer: number): void {
     this.store.setState({timer})
   }
+
+  advanceSimulation(): void {
+    this.generationSimulation.advanceCreatureSimulation()
+    this.setTimer(this.getTimer() + 1)
+  }
 }

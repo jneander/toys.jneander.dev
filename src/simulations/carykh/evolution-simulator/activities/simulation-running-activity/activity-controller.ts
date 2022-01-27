@@ -1,4 +1,5 @@
 import type {AppController} from '../../app-controller'
+import {ActivityId} from '../../constants'
 import {GenerationSimulation} from '../../simulation'
 import type {AppStore} from '../../types'
 import type {ActivityStore} from './types'
@@ -10,6 +11,7 @@ export interface ActivityControllerConfig {
 }
 
 export class ActivityController {
+  private appController: AppController
   private store: ActivityStore
 
   private generationSimulation: GenerationSimulation
@@ -17,6 +19,7 @@ export class ActivityController {
   constructor(config: ActivityControllerConfig) {
     const {activityStore, appController, appStore} = config
 
+    this.appController = appController
     this.store = activityStore
 
     this.generationSimulation = new GenerationSimulation({
@@ -76,5 +79,10 @@ export class ActivityController {
     }
 
     this.setTimer(1021)
+  }
+
+  finishGenerationSimulation(): void {
+    this.generationSimulation.finishGenerationSimulation()
+    this.appController.setActivityId(ActivityId.SimulationFinished)
   }
 }

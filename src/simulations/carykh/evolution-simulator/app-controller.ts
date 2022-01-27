@@ -8,8 +8,7 @@ import {
   HISTOGRAM_BAR_MIN,
   HISTOGRAM_BAR_SPAN
 } from './constants'
-import {CreatureManipulator} from './creatures'
-import {speciesIdForCreature} from './helpers'
+import {CreatureManipulator, speciesIdForCreature} from './creatures'
 import {SimulationConfig} from './simulation'
 import type {AppStore, GenerationHistoryEntry, SpeciesCount} from './types'
 

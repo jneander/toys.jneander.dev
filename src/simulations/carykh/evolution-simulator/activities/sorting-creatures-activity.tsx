@@ -9,7 +9,7 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH
 } from '../creature-grid'
-import {creatureIdToIndex} from '../helpers'
+import {creatureIdToIndex} from '../creatures'
 import {CreateUiFnParameters, createSketchFn} from '../p5-utils'
 import type {AppStore} from '../types'
 import {P5Activity, P5ActivityConfig} from './shared'

@@ -3,7 +3,7 @@ import type {Font, Graphics} from 'p5'
 
 import {POST_FONT_SIZE, SCALE_TO_FIX_BUG} from '../constants'
 import type {CreatureDrawer} from '../creature-drawer'
-import {averagePositionOfNodes} from '../helpers'
+import {averagePositionOfNodes} from '../creatures'
 import {toInt} from '../math'
 import type {CreatureSimulation, SimulationConfig} from '../simulation'
 import type {SimulationCameraState} from '../types'

@@ -69,4 +69,12 @@ export class ActivityController {
     this.generationSimulation.advanceCreatureSimulation()
     this.setTimer(this.getTimer() + 1)
   }
+
+  advanceGenerationSimulation(): void {
+    for (let timer = this.getTimer(); timer < 900; timer++) {
+      this.advanceCreatureSimulation()
+    }
+
+    this.setTimer(1021)
+  }
 }

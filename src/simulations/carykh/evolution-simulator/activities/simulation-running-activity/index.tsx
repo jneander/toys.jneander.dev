@@ -1,3 +1,4 @@
+import {Store} from '@jneander/utils-state'
 import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../../shared/p5'
@@ -11,6 +12,7 @@ import type {AppStore} from '../../types'
 import {ButtonWidget, ButtonWidgetConfig, SimulationView} from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
 import {ActivityController} from './activity-controller'
+import type {ActivityState} from './types'
 
 export interface SimulationRunningActivityProps {
   appController: AppController
@@ -22,9 +24,15 @@ export function SimulationRunningActivity(
 ) {
   const {appController, appStore} = props
 
+  const activityStore = useMemo(() => {
+    return new Store<ActivityState>({
+      timer: 0
+    })
+  }, [])
+
   const activityController = useMemo(() => {
-    return new ActivityController({appController, appStore})
-  }, [appController, appStore])
+    return new ActivityController({activityStore, appController, appStore})
+  }, [activityStore, appController, appStore])
 
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {

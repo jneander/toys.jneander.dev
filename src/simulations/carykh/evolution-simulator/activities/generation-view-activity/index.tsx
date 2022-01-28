@@ -1,8 +1,10 @@
 import {Store} from '@jneander/utils-state'
 import type {Graphics} from 'p5'
-import {useMemo} from 'react'
+import {ChangeEvent, useMemo} from 'react'
 
+import {RangeInputField} from '../../../../../shared/components'
 import {P5ClientView} from '../../../../../shared/p5'
+import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
 import {
   CREATURE_COUNT,
@@ -26,18 +28,11 @@ import {
   getSpeciesColor
 } from '../../p5-utils'
 import type {AppStore, SpeciesCount} from '../../types'
-import {
-  PopupSimulationView,
-  PopupSimulationViewAnchor,
-  Widget,
-  WidgetConfig
-} from '../../views'
+import {PopupSimulationView, PopupSimulationViewAnchor} from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
 import {ActivityController} from './activity-controller'
 import {GenerationSimulationMode} from './constants'
 import {ActivityState, ActivityStore} from './types'
-
-const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
 
 const CREATURE_TILE_HEIGHT = 140
 const CREATURE_TILE_WIDTH = 140
@@ -82,6 +77,8 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     return createSketchFn({createUiFn})
   }, [activityController, activityStore, appController, appStore])
 
+  const {generationCount, selectedGeneration} = useStore(appStore)
+
   function handleStepByStepClick() {
     activityController.performStepByStepSimulation()
   }
@@ -98,27 +95,49 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     activityController.startAlapGenerationSimulation()
   }
 
+  function handleSelectedGenerationChange(
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    const value = Number.parseInt(event.target.value, 10)
+
+    if (value !== selectedGeneration) {
+      appStore.setState({selectedGeneration: value})
+    }
+  }
+
   return (
     <div>
       <div style={{height: '576px'}}>
         <P5ClientView sketch={sketchFn} />
       </div>
 
-      <button onClick={handleStepByStepClick} type="button">
-        Do 1 step-by-step generation
-      </button>
+      <div>
+        <button onClick={handleStepByStepClick} type="button">
+          Do 1 step-by-step generation
+        </button>
 
-      <button onClick={handleQuickClick} type="button">
-        Do 1 quick generation
-      </button>
+        <button onClick={handleQuickClick} type="button">
+          Do 1 quick generation
+        </button>
 
-      <button onClick={handleAsapClick} type="button">
-        Do 1 gen ASAP
-      </button>
+        <button onClick={handleAsapClick} type="button">
+          Do 1 gen ASAP
+        </button>
 
-      <button onClick={handleAlapClick} type="button">
-        Do gens ALAP
-      </button>
+        <button onClick={handleAlapClick} type="button">
+          Do gens ALAP
+        </button>
+      </div>
+
+      {generationCount > 0 && (
+        <RangeInputField
+          labelText="Displayed Generation"
+          max={generationCount}
+          min={Math.min(1, generationCount - 1)}
+          onChange={handleSelectedGenerationChange}
+          value={selectedGeneration}
+        />
+      )}
     </div>
   )
 }
@@ -133,11 +152,9 @@ class GenerationViewP5Activity extends P5Activity {
   private activityStore: ActivityStore
 
   private popupSimulationView: PopupSimulationView
-  private generationSlider: GenerationSlider
 
   private creatureDrawer: CreatureDrawer
 
-  private draggingSlider: boolean
   private generationCountDepictedInGraph: number
 
   private generationHistoryGraphics: Graphics
@@ -158,12 +175,6 @@ class GenerationViewP5Activity extends P5Activity {
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
 
-    this.generationSlider = new GenerationSlider({
-      appStore: this.appStore,
-      p5Wrapper: this.p5Wrapper
-    })
-
-    this.draggingSlider = false
     this.generationCountDepictedInGraph = -1
 
     const {canvas} = this.p5Wrapper
@@ -177,10 +188,6 @@ class GenerationViewP5Activity extends P5Activity {
     const {canvas, font} = p5Wrapper
 
     const {generationCount} = appStore.getState()
-
-    if (this.draggingSlider && generationCount >= 1) {
-      this.generationSlider.onDrag()
-    }
 
     const {selectedGeneration} = appStore.getState()
 
@@ -213,21 +220,13 @@ class GenerationViewP5Activity extends P5Activity {
     this.drawHistogram(760, 410, 460, 280)
     this.drawGraphImage()
 
-    if (generationCount >= 1) {
-      this.generationSlider.draw()
-    }
-
     if (selectedGeneration >= 1) {
       this.drawWorstMedianAndBestCreatures()
     }
 
     const {pendingGenerationCount} = this.activityStore.getState()
 
-    if (
-      selectedGeneration > 0 &&
-      pendingGenerationCount === 0 &&
-      !this.draggingSlider
-    ) {
+    if (selectedGeneration > 0 && pendingGenerationCount === 0) {
       const worstMedianOrBestIndex = this.getWorstMedianOrBestIndexUnderCursor()
 
       /*
@@ -268,27 +267,16 @@ class GenerationViewP5Activity extends P5Activity {
       appController.updateHistory()
       appController.cullCreatures()
       appController.propagateCreatures()
-
-      this.generationSlider.updatePosition()
     }
   }
 
   onMousePressed(): void {
     this.activityStore.setState({pendingGenerationCount: 0})
-
-    if (
-      this.appStore.getState().generationCount >= 1 &&
-      this.generationSlider.isUnderCursor()
-    ) {
-      this.draggingSlider = true
-    }
   }
 
   onMouseReleased(): void {
     // When the popup simulation is running, mouse clicks will stop it.
     this.popupSimulationView.dismissSimulationView()
-
-    this.draggingSlider = false
   }
 
   private drawGraph(graphWidth: number, graphHeight: number): void {
@@ -904,152 +892,5 @@ class GenerationViewP5Activity extends P5Activity {
     }
 
     return new Array(HISTOGRAM_BAR_SPAN).fill(0)
-  }
-}
-
-interface GenerationSliderConfig extends WidgetConfig {
-  appStore: AppStore
-}
-
-class GenerationSlider extends Widget {
-  private appStore: AppStore
-
-  private xPosition: number
-  private xPositionMax: number
-  private xPositionMin: number
-  private xPositionRange: number
-
-  constructor(config: GenerationSliderConfig) {
-    super(config)
-
-    this.appStore = config.appStore
-
-    this.xPositionMax = 1170
-    this.xPositionMin = 760
-    this.xPositionRange = this.xPositionMax - this.xPositionMin // 410
-
-    this.xPosition = this.getInitialPosition()
-  }
-
-  draw(): void {
-    const {canvas, font} = this.p5Wrapper
-
-    const {selectedGeneration} = this.appStore.getState()
-
-    canvas.noStroke()
-    canvas.textAlign(canvas.CENTER)
-    canvas.fill(100)
-    canvas.rect(760, 340, 460, 50)
-    canvas.fill(220)
-    canvas.rect(this.xPosition, 340, 50, 50)
-
-    let fs = 0
-    if (selectedGeneration >= 1) {
-      fs = Math.floor(Math.log(selectedGeneration) / Math.log(10))
-    }
-
-    const fontSize = FONT_SIZES[fs]
-
-    canvas.textFont(font, fontSize)
-    canvas.fill(0)
-    canvas.text(
-      selectedGeneration,
-      this.xPosition + 25,
-      366 + fontSize * 0.3333
-    )
-  }
-
-  isUnderCursor(): boolean {
-    return this.p5Wrapper.rectIsUnderCursor(this.xPosition, 340, 50, 50)
-  }
-
-  onDrag(): void {
-    const {cursorX} = this.p5Wrapper.getCursorPosition()
-
-    /*
-     * Update the slider position with a sluggish effect. This avoids some
-     * perceived jitter in the control resulting from the frame rate.
-     */
-
-    this.xPosition = Math.min(
-      Math.max(
-        this.xPosition + (cursorX - 25 - this.xPosition) * 0.5,
-        this.xPositionMin
-      ),
-      this.xPositionMax
-    )
-
-    const {generationCount} = this.appStore.getState()
-
-    let selectedGeneration
-
-    if (generationCount > 1) {
-      // After 2 generations, the slider starts at generation 1.
-      selectedGeneration =
-        Math.round(
-          ((this.xPosition - this.xPositionMin) * (generationCount - 1)) /
-            this.xPositionRange
-        ) + 1
-    } else {
-      selectedGeneration = Math.round(
-        ((this.xPosition - this.xPositionMin) * generationCount) /
-          this.xPositionRange
-      )
-    }
-
-    this.appStore.setState({selectedGeneration})
-  }
-
-  updatePosition(): void {
-    // Update slider position to reflect change in generation range.
-
-    const {generationCount, selectedGeneration} = this.appStore.getState()
-
-    if (selectedGeneration === generationCount) {
-      // When selecting the latest generation, push the slider to max.
-      this.xPosition = this.xPositionMax
-      return
-    }
-
-    // Preserve previously-selected generation by shifting slider.
-    let previousGenerationRange = generationCount - 1
-    if (previousGenerationRange > 1) {
-      previousGenerationRange--
-    }
-
-    let currentGenerationRange = generationCount
-    if (generationCount > 1) {
-      // After 2 generations, the slider starts at generation 1.
-      currentGenerationRange--
-    }
-
-    let sliderPercentage =
-      (this.xPosition - this.xPositionMin) / this.xPositionRange
-    sliderPercentage *= previousGenerationRange / currentGenerationRange
-
-    this.xPosition = Math.round(
-      sliderPercentage * this.xPositionRange + this.xPositionMin
-    )
-  }
-
-  private getInitialPosition(): number {
-    // Get initial slider position based on app state.
-
-    const {generationCount, selectedGeneration} = this.appStore.getState()
-
-    if (selectedGeneration === generationCount) {
-      // When selecting the latest generation, push the slider to max.
-      return this.xPositionMax
-    }
-
-    let sliderPercentage = 1
-    if (generationCount > 1) {
-      // After 2 generations, the slider starts at generation 1.
-      sliderPercentage = (selectedGeneration - 1) / (generationCount - 1)
-    }
-
-    return Math.round(
-      sliderPercentage * this.xPositionRange + this.xPositionMin
-    )
   }
 }

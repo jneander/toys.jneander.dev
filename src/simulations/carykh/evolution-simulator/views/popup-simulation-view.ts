@@ -1,12 +1,12 @@
 import {CreatureDrawer} from '../creature-drawer'
 import {CREATURE_GRID_TILE_WIDTH} from '../creature-grid'
 import {Creature, speciesIdForCreature} from '../creatures'
-import {getSpeciesColor} from '../p5-utils'
+import {P5Wrapper, getSpeciesColor} from '../p5-utils'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
-import {Widget, WidgetConfig} from './shared'
 import {SimulationView} from './simulation-view'
 
-export interface PopupSimulationViewConfig extends WidgetConfig {
+export interface PopupSimulationViewConfig {
+  p5Wrapper: P5Wrapper
   simulationConfig: SimulationConfig
 }
 
@@ -31,7 +31,8 @@ const SIMULATION_VIEW_WIDTH = 300
 const SIMULATION_VIEW_HEIGHT = 300
 const SIMULATION_VIEW_MARGIN = 10
 
-export class PopupSimulationView extends Widget {
+export class PopupSimulationView {
+  private p5Wrapper: P5Wrapper
   private simulationView: SimulationView
   private simulationConfig: SimulationConfig
   private creatureSimulation: CreatureSimulation
@@ -42,8 +43,7 @@ export class PopupSimulationView extends Widget {
   private showSimulationView: boolean
 
   constructor(config: PopupSimulationViewConfig) {
-    super(config)
-
+    this.p5Wrapper = config.p5Wrapper
     this.simulationConfig = config.simulationConfig
 
     this.creatureSimulation = new CreatureSimulation(this.simulationConfig)

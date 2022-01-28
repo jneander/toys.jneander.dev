@@ -5,7 +5,6 @@ import {P5ClientView} from '../../../../../shared/p5'
 import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
 import {
-  ActivityId,
   FITNESS_LABEL,
   FITNESS_UNIT_LABEL,
   FRAMES_FOR_CREATURE_FITNESS,
@@ -19,7 +18,6 @@ import type {AppStore} from '../../types'
 import {SimulationView} from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
 import {ActivityController} from './activity-controller'
-import {FRAMES_BEFORE_ADVANCING_GENERATION} from './constants'
 import type {ActivityState} from './types'
 
 export interface SimulationRunningActivityProps {
@@ -132,43 +130,13 @@ class SimulationRunningP5Activity extends P5Activity {
   }
 
   draw(): void {
-    const {appController, generationSimulation, p5Wrapper} = this
+    const {activityController, p5Wrapper} = this
     const {canvas, height, width} = p5Wrapper
 
+    activityController.advanceActivity()
+
     const speed = this.activityController.getSimulationSpeed()
-
-    let timer = this.activityController.getTimer()
-
-    for (let s = 0; s < speed; s++) {
-      if (timer < FRAMES_FOR_CREATURE_FITNESS) {
-        // For each point of speed, advance through one cycle of simulation.
-        this.activityController.advanceCreatureSimulation()
-        timer = this.activityController.getTimer()
-      }
-    }
-
-    if (timer === FRAMES_FOR_CREATURE_FITNESS && speed >= 30) {
-      // When the simulation speed is too fast, skip ahead to next simulation using the timer.
-      this.activityController.setTimer(FRAMES_BEFORE_ADVANCING_GENERATION)
-    }
-
-    timer = this.activityController.getTimer()
-
-    if (timer >= FRAMES_BEFORE_ADVANCING_GENERATION) {
-      generationSimulation.advanceGenerationSimulation()
-
-      if (!generationSimulation.isFinished()) {
-        this.activityController.setTimer(0)
-      } else {
-        appController.setActivityId(ActivityId.SimulationFinished)
-      }
-    }
-
-    timer = this.activityController.getTimer()
-
-    if (timer >= FRAMES_FOR_CREATURE_FITNESS) {
-      this.activityController.setTimer(timer + speed)
-    }
+    const timer = this.activityController.getTimer()
 
     if (timer === speed) {
       // At the first render, reset the camera.

@@ -1,14 +1,14 @@
 import p5 from 'p5'
-import {useEffect, useRef} from 'react'
+import {HTMLAttributes, useEffect, useRef} from 'react'
 
 import type {P5Sketch} from './types'
 
-export interface P5ViewProps {
+export interface P5ViewProps extends HTMLAttributes<HTMLDivElement> {
   sketch: P5Sketch
 }
 
 export function P5View(props: P5ViewProps) {
-  const {sketch} = props
+  const {sketch, ...divProps} = props
 
   const containerRef = useRef(null)
 
@@ -20,5 +20,5 @@ export function P5View(props: P5ViewProps) {
     }
   }, [sketch])
 
-  return <div ref={containerRef}></div>
+  return <div ref={containerRef} {...divProps}></div>
 }

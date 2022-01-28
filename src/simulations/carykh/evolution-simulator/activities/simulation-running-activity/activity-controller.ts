@@ -7,6 +7,7 @@ import {
 } from '../../constants'
 import {GenerationSimulation} from '../../simulation'
 import type {AppStore} from '../../types'
+import {FRAMES_BEFORE_ADVANCING_GENERATION} from './constants'
 import type {ActivityStore} from './types'
 
 export interface ActivityControllerConfig {
@@ -70,6 +71,45 @@ export class ActivityController {
 
   setTimer(timer: number): void {
     this.store.setState({timer})
+  }
+
+  advanceActivity(): void {
+    const {appController, generationSimulation} = this
+
+    const speed = this.getSimulationSpeed()
+
+    let timer = this.getTimer()
+
+    for (let s = 0; s < speed; s++) {
+      if (timer < FRAMES_FOR_CREATURE_FITNESS) {
+        // For each point of speed, advance through one cycle of simulation.
+        this.advanceCreatureSimulation()
+        timer = this.getTimer()
+      }
+    }
+
+    if (timer === FRAMES_FOR_CREATURE_FITNESS && speed >= 30) {
+      // When the simulation speed is too fast, skip ahead to next simulation using the timer.
+      this.setTimer(FRAMES_BEFORE_ADVANCING_GENERATION)
+    }
+
+    timer = this.getTimer()
+
+    if (timer >= FRAMES_BEFORE_ADVANCING_GENERATION) {
+      generationSimulation.advanceGenerationSimulation()
+
+      if (!generationSimulation.isFinished()) {
+        this.setTimer(0)
+      } else {
+        appController.setActivityId(ActivityId.SimulationFinished)
+      }
+    }
+
+    timer = this.getTimer()
+
+    if (timer >= FRAMES_FOR_CREATURE_FITNESS) {
+      this.setTimer(timer + speed)
+    }
   }
 
   advanceCreatureSimulation(): void {

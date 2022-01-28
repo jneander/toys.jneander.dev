@@ -1,0 +1,36 @@
+.Container {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+}
+
+.CanvasContainer {
+  background: rgb(220, 220, 220);
+  height: 240px;
+  width: 240px;
+}
+
+.Canvas {
+  display: inline-block;
+}
+
+.Details {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-small) var(--spacing-medium);
+  margin: 0;
+}
+
+.Details > * {
+  margin: 0;
+  padding: 0;
+}
+
+.Details dt {
+  font-weight: 700;
+}
+
+.FitnessValue {
+  font-variant-numeric: tabular-nums;
+}

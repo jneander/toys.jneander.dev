@@ -1,6 +1,6 @@
 import type {Store} from '@jneander/utils-state'
 
-import type {GenerationSimulationMode} from '../../constants'
+import type {GenerationSimulationMode} from './constants'
 
 export type ActivityState = {
   generationSimulationMode: GenerationSimulationMode

@@ -40,10 +40,3 @@ export enum ActivityId {
   CullCreatures = 'CULL_CREATURES',
   PropagateCreatures = 'PROPAGATE_CREATURES'
 }
-
-export enum GenerationSimulationMode {
-  Off = 'OFF',
-  StepByStep = 'STEP_BY_STEP',
-  Quick = 'QUICK',
-  ASAP = 'ASAP'
-}

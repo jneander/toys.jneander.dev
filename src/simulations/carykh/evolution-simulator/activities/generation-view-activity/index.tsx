@@ -12,7 +12,6 @@ import {
   FITNESS_PERCENTILE_LOWEST_INDEX,
   FITNESS_PERCENTILE_MEDIAN_INDEX,
   FITNESS_UNIT_LABEL,
-  GenerationSimulationMode,
   HISTOGRAM_BARS_PER_METER,
   HISTOGRAM_BAR_MAX,
   HISTOGRAM_BAR_MIN,
@@ -38,6 +37,7 @@ import {
   WidgetConfig
 } from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
+import {GenerationSimulationMode} from './constants'
 import {ActivityState, ActivityStore} from './types'
 
 const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]

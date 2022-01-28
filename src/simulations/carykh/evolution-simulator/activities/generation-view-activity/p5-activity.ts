@@ -10,25 +10,15 @@ import {
   HISTOGRAM_BARS_PER_METER,
   HISTOGRAM_BAR_MAX,
   HISTOGRAM_BAR_MIN,
-  HISTOGRAM_BAR_SPAN,
-  SCALE_TO_FIX_BUG
+  HISTOGRAM_BAR_SPAN
 } from '../../constants'
-import {CreatureDrawer} from '../../creature-drawer'
-import type {Creature} from '../../creatures'
 import {toInt} from '../../math'
 import {getSpeciesColor} from '../../p5-utils'
 import type {SpeciesCount} from '../../types'
-import {PopupSimulationView, PopupSimulationViewAnchor} from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
 import type {ActivityController} from './activity-controller'
 import {GenerationSimulationMode} from './constants'
 import type {ActivityStore} from './types'
-
-const CREATURE_TILE_HEIGHT = 140
-const CREATURE_TILE_WIDTH = 140
-const CREATURE_TILES_START_X = 760
-const CREATURE_TILES_START_Y = 180
-const CREATURE_TILES_GAP = 20
 
 export interface GenerationViewActivityConfig extends P5ActivityConfig {
   activityController: ActivityController
@@ -38,10 +28,6 @@ export interface GenerationViewActivityConfig extends P5ActivityConfig {
 export class GenerationViewP5Activity extends P5Activity {
   private activityController: ActivityController
   private activityStore: ActivityStore
-
-  private popupSimulationView: PopupSimulationView
-
-  private creatureDrawer: CreatureDrawer
 
   private generationCountDepictedInGraph: number
 
@@ -53,15 +39,6 @@ export class GenerationViewP5Activity extends P5Activity {
 
     this.activityController = config.activityController
     this.activityStore = config.activityStore
-
-    this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
-
-    const simulationWidgetConfig = {
-      p5Wrapper: this.p5Wrapper,
-      simulationConfig: this.appController.getSimulationConfig()
-    }
-
-    this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
 
     this.generationCountDepictedInGraph = -1
 
@@ -108,30 +85,7 @@ export class GenerationViewP5Activity extends P5Activity {
     this.drawHistogram(760, 410, 460, 280)
     this.drawGraphImage()
 
-    if (selectedGeneration >= 1) {
-      this.drawWorstMedianAndBestCreatures()
-    }
-
     const {pendingGenerationCount} = this.activityStore.getState()
-
-    if (selectedGeneration > 0 && pendingGenerationCount === 0) {
-      const worstMedianOrBestIndex = this.getWorstMedianOrBestIndexUnderCursor()
-
-      /*
-       * When the cursor is over the worst, median, or best creature, the popup
-       * simulation will be displayed for that creature.
-       */
-
-      if (worstMedianOrBestIndex != null) {
-        this.configurePopupSimulation(worstMedianOrBestIndex)
-        this.drawWorstMedianAndBestHoverState(worstMedianOrBestIndex)
-        this.popupSimulationView.draw()
-      } else {
-        this.clearPopupSimulation()
-      }
-    } else {
-      this.clearPopupSimulation()
-    }
 
     if (this.activityStore.getState().pendingGenerationCount > 0) {
       this.activityStore.setState({
@@ -160,11 +114,6 @@ export class GenerationViewP5Activity extends P5Activity {
 
   onMousePressed(): void {
     this.activityStore.setState({pendingGenerationCount: 0})
-  }
-
-  onMouseReleased(): void {
-    // When the popup simulation is running, mouse clicks will stop it.
-    this.popupSimulationView.dismissSimulationView()
   }
 
   private drawGraph(graphWidth: number, graphHeight: number): void {
@@ -559,72 +508,6 @@ export class GenerationViewP5Activity extends P5Activity {
     canvas.colorMode(canvas.RGB, 255)
   }
 
-  private drawWorstMedianAndBestCreatures(): void {
-    const {canvas, font} = this.p5Wrapper
-
-    canvas.noStroke()
-    canvas.textAlign(canvas.CENTER)
-
-    // i = worstMedianOrBestIndex
-    for (let i = 0; i < 3; i++) {
-      const xOffset = i * (CREATURE_TILE_WIDTH + CREATURE_TILES_GAP)
-
-      canvas.fill(220)
-      canvas.rect(
-        CREATURE_TILES_START_X + xOffset,
-        CREATURE_TILES_START_Y,
-        CREATURE_TILE_WIDTH,
-        CREATURE_TILE_HEIGHT
-      )
-
-      canvas.push()
-
-      // Translate to center bottom of where creature will be drawn.
-      canvas.translate(
-        CREATURE_TILES_START_X + xOffset + CREATURE_TILE_WIDTH / 2,
-        290
-      )
-      canvas.scale(60.0 / SCALE_TO_FIX_BUG)
-
-      const creature =
-        this.activityController.getWorstMedianOrBestCreatureFromHistory(i)
-
-      this.creatureDrawer.drawCreature(creature, 0, 0, canvas)
-
-      canvas.pop()
-    }
-
-    canvas.fill(0)
-    canvas.textFont(font, 16)
-    canvas.text('Worst Creature', 830, 310)
-    canvas.text('Median Creature', 990, 310)
-    canvas.text('Best Creature', 1150, 310)
-  }
-
-  private drawWorstMedianAndBestHoverState(
-    worstMedianOrBestIndex: number
-  ): void {
-    const {canvas} = this.p5Wrapper
-
-    canvas.push()
-
-    canvas.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
-    canvas.strokeWeight(3)
-    canvas.noFill()
-
-    const xOffset =
-      worstMedianOrBestIndex * (CREATURE_TILE_WIDTH + CREATURE_TILES_GAP)
-
-    canvas.rect(
-      CREATURE_TILES_START_X + xOffset,
-      CREATURE_TILES_START_Y,
-      CREATURE_TILE_WIDTH,
-      CREATURE_TILE_HEIGHT
-    )
-
-    canvas.pop()
-  }
-
   private extreme(sign: number): number {
     let record = -sign
 
@@ -654,29 +537,6 @@ export class GenerationViewP5Activity extends P5Activity {
     )
   }
 
-  private getWorstMedianOrBestIndexUnderCursor(): number | null {
-    const {cursorX, cursorY} = this.p5Wrapper.getCursorPosition()
-
-    if (
-      cursorY < CREATURE_TILES_START_Y ||
-      cursorY >= CREATURE_TILES_START_Y + CREATURE_TILE_HEIGHT
-    ) {
-      return null
-    }
-
-    // i = worstMedianOrBestIndex
-    for (let i = 0; i < 3; i++) {
-      const xOffset = i * (CREATURE_TILE_WIDTH + CREATURE_TILES_GAP)
-      let tileStartX = CREATURE_TILES_START_X + xOffset
-
-      if (cursorX >= tileStartX && cursorX < tileStartX + CREATURE_TILE_WIDTH) {
-        return i
-      }
-    }
-
-    return null
-  }
-
   private startGenerationSimulation(): void {
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.ASAP
@@ -703,47 +563,5 @@ export class GenerationViewP5Activity extends P5Activity {
     }
 
     return toInt(i) + ''
-  }
-
-  private configurePopupSimulation(worstMedianOrBestIndex: number): void {
-    const creature =
-      this.activityController.getWorstMedianOrBestCreatureFromHistory(
-        worstMedianOrBestIndex
-      )
-
-    const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
-    const rank = ranks[worstMedianOrBestIndex]
-
-    if (this.activityStore.getState().pendingGenerationCount === 0) {
-      // The full simulation is not running, so the popup simulation can be shown.
-      this.popupSimulationView.setCreatureInfo({creature, rank})
-
-      const anchor = this.calculateAnchorForPopupSimulation(
-        worstMedianOrBestIndex
-      )
-      this.popupSimulationView.setAnchor(anchor)
-    }
-  }
-
-  private clearPopupSimulation(): void {
-    this.popupSimulationView.setCreatureInfo(null)
-  }
-
-  private calculateAnchorForPopupSimulation(
-    worstMedianOrBestIndex: number
-  ): PopupSimulationViewAnchor {
-    const xOffset =
-      worstMedianOrBestIndex * (CREATURE_TILE_WIDTH + CREATURE_TILES_GAP)
-
-    const positionX = CREATURE_TILES_START_X + xOffset - 60 // 60 == half the info box width
-    const positionY = CREATURE_TILES_START_Y
-
-    return {
-      startPositionX: positionX,
-      startPositionY: positionY,
-      endPositionX: positionX,
-      endPositionY: positionY,
-      margin: 0
-    }
   }
 }

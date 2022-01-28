@@ -9,6 +9,7 @@ import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {GenerationSimulationMode} from './constants'
+import {CreatureInfo} from './creature-info'
 import {GenerationViewP5Activity} from './p5-activity'
 import type {ActivityState} from './types'
 
@@ -77,6 +78,8 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     }
   }
 
+  const historyEntry = activityController.getSelectedGenerationHistoryEntry()
+
   return (
     <div>
       <div>
@@ -110,6 +113,31 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
       <div style={{height: '576px'}}>
         <P5ClientView sketch={sketchFn} />
       </div>
+
+      {historyEntry != null && (
+        <div>
+          <CreatureInfo
+            creature={historyEntry.fastest}
+            key={historyEntry.fastest.id}
+            rankText="Best"
+            simulationConfig={appController.getSimulationConfig()}
+          />
+
+          <CreatureInfo
+            creature={historyEntry.median}
+            key={historyEntry.median.id}
+            rankText="Median"
+            simulationConfig={appController.getSimulationConfig()}
+          />
+
+          <CreatureInfo
+            creature={historyEntry.slowest}
+            key={historyEntry.slowest.id}
+            rankText="Worst"
+            simulationConfig={appController.getSimulationConfig()}
+          />
+        </div>
+      )}
     </div>
   )
 }

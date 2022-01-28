@@ -4,9 +4,8 @@ import {
   FITNESS_PERCENTILE_CREATURE_INDICES,
   HISTOGRAM_BAR_SPAN
 } from '../../constants'
-import type {Creature} from '../../creatures'
 import {GenerationSimulation} from '../../simulation'
-import type {AppStore} from '../../types'
+import type {AppStore, GenerationHistoryEntry} from '../../types'
 import {GenerationSimulationMode} from './constants'
 import type {ActivityStore} from './types'
 
@@ -71,22 +70,10 @@ export class ActivityController {
     generationSimulation.simulateWholeGeneration()
   }
 
-  getWorstMedianOrBestCreatureFromHistory(
-    worstMedianOrBestIndex: number
-  ): Creature {
+  getSelectedGenerationHistoryEntry(): GenerationHistoryEntry | null {
     const {generationHistoryMap, selectedGeneration} = this.appStore.getState()
 
-    const historyEntry = generationHistoryMap[selectedGeneration]
-
-    if (worstMedianOrBestIndex === 0) {
-      return historyEntry.slowest
-    }
-
-    if (worstMedianOrBestIndex === 1) {
-      return historyEntry.median
-    }
-
-    return historyEntry.fastest
+    return generationHistoryMap[selectedGeneration]
   }
 
   getFitnessPercentilesFromHistory(generation: number): number[] {

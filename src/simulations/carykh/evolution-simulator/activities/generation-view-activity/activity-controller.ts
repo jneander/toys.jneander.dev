@@ -26,14 +26,16 @@ export class ActivityController {
 
   performStepByStepSimulation(): void {
     this.activityStore.setState({
-      generationSimulationMode: GenerationSimulationMode.StepByStep
+      generationSimulationMode: GenerationSimulationMode.StepByStep,
+      pendingGenerationCount: 0
     })
     this.appController.setActivityId(ActivityId.SimulationRunning)
   }
 
   performQuickGenerationSimulation(): void {
     this.activityStore.setState({
-      generationSimulationMode: GenerationSimulationMode.Quick
+      generationSimulationMode: GenerationSimulationMode.Quick,
+      pendingGenerationCount: 0
     })
     this.simulateWholeGeneration()
     this.appController.setActivityId(ActivityId.SimulationFinished)

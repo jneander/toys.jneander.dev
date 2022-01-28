@@ -27,8 +27,6 @@ import {
 } from '../../p5-utils'
 import type {AppStore, SpeciesCount} from '../../types'
 import {
-  ButtonWidget,
-  ButtonWidgetConfig,
   PopupSimulationView,
   PopupSimulationViewAnchor,
   Widget,
@@ -84,7 +82,45 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     return createSketchFn({createUiFn})
   }, [activityController, activityStore, appController, appStore])
 
-  return <P5ClientView sketch={sketchFn} />
+  function handleStepByStepClick() {
+    activityController.performStepByStepSimulation()
+  }
+
+  function handleQuickClick() {
+    activityController.performQuickGenerationSimulation()
+  }
+
+  function handleAsapClick() {
+    activityController.performAsapGenerationSimulation()
+  }
+
+  function handleAlapClick() {
+    activityController.startAlapGenerationSimulation()
+  }
+
+  return (
+    <div>
+      <div style={{height: '576px'}}>
+        <P5ClientView sketch={sketchFn} />
+      </div>
+
+      <button onClick={handleStepByStepClick} type="button">
+        Do 1 step-by-step generation
+      </button>
+
+      <button onClick={handleQuickClick} type="button">
+        Do 1 quick generation
+      </button>
+
+      <button onClick={handleAsapClick} type="button">
+        Do 1 gen ASAP
+      </button>
+
+      <button onClick={handleAlapClick} type="button">
+        Do gens ALAP
+      </button>
+    </div>
+  )
 }
 
 interface GenerationViewActivityConfig extends P5ActivityConfig {
@@ -97,10 +133,6 @@ class GenerationViewP5Activity extends P5Activity {
   private activityStore: ActivityStore
 
   private popupSimulationView: PopupSimulationView
-  private stepByStepButton: StepByStepButton
-  private quickButton: QuickButton
-  private asapButton: AsapButton
-  private alapButton: AlapButton
   private generationSlider: GenerationSlider
 
   private creatureDrawer: CreatureDrawer
@@ -125,40 +157,6 @@ class GenerationViewP5Activity extends P5Activity {
     }
 
     this.popupSimulationView = new PopupSimulationView(simulationWidgetConfig)
-
-    this.stepByStepButton = new StepByStepButton({
-      onClick: () => {
-        this.activityController.performStepByStepSimulation()
-      },
-
-      p5Wrapper: this.p5Wrapper
-    })
-
-    this.quickButton = new QuickButton({
-      onClick: () => {
-        this.activityController.performQuickGenerationSimulation()
-      },
-
-      p5Wrapper: this.p5Wrapper
-    })
-
-    this.asapButton = new AsapButton({
-      onClick: () => {
-        this.activityController.performAsapGenerationSimulation()
-      },
-
-      p5Wrapper: this.p5Wrapper
-    })
-
-    this.alapButton = new AlapButton({
-      activityStore: this.activityStore,
-
-      onClick: () => {
-        this.activityController.startAlapGenerationSimulation()
-      },
-
-      p5Wrapper: this.p5Wrapper
-    })
 
     this.generationSlider = new GenerationSlider({
       appStore: this.appStore,
@@ -194,11 +192,6 @@ class GenerationViewP5Activity extends P5Activity {
     canvas.textFont(font, 96)
     canvas.text('Generation ' + Math.max(selectedGeneration, 0), 20, 100)
     canvas.textFont(font, 28)
-
-    this.stepByStepButton.draw()
-    this.quickButton.draw()
-    this.asapButton.draw()
-    this.alapButton.draw()
 
     const fitnessPercentiles =
       this.getFitnessPercentilesFromHistory(selectedGeneration)
@@ -296,16 +289,6 @@ class GenerationViewP5Activity extends P5Activity {
     this.popupSimulationView.dismissSimulationView()
 
     this.draggingSlider = false
-
-    if (this.stepByStepButton.isUnderCursor()) {
-      this.stepByStepButton.onClick()
-    } else if (this.quickButton.isUnderCursor()) {
-      this.quickButton.onClick()
-    } else if (this.asapButton.isUnderCursor()) {
-      this.asapButton.onClick()
-    } else if (this.alapButton.isUnderCursor()) {
-      this.alapButton.onClick()
-    }
   }
 
   private drawGraph(graphWidth: number, graphHeight: number): void {
@@ -921,88 +904,6 @@ class GenerationViewP5Activity extends P5Activity {
     }
 
     return new Array(HISTOGRAM_BAR_SPAN).fill(0)
-  }
-}
-
-class StepByStepButton extends ButtonWidget {
-  draw(): void {
-    const {canvas} = this.p5Wrapper
-
-    canvas.noStroke()
-    canvas.fill(100, 200, 100)
-    canvas.rect(760, 20, 460, 40)
-    canvas.fill(0)
-    canvas.text('Do 1 step-by-step generation.', 770, 50)
-  }
-
-  isUnderCursor(): boolean {
-    return this.p5Wrapper.rectIsUnderCursor(760, 20, 460, 40)
-  }
-}
-
-class QuickButton extends ButtonWidget {
-  draw(): void {
-    const {canvas} = this.p5Wrapper
-
-    canvas.noStroke()
-    canvas.fill(100, 200, 100)
-    canvas.rect(760, 70, 460, 40)
-    canvas.fill(0)
-    canvas.text('Do 1 quick generation.', 770, 100)
-  }
-
-  isUnderCursor(): boolean {
-    return this.p5Wrapper.rectIsUnderCursor(760, 70, 460, 40)
-  }
-}
-
-class AsapButton extends ButtonWidget {
-  draw(): void {
-    const {canvas} = this.p5Wrapper
-
-    canvas.noStroke()
-    canvas.fill(100, 200, 100)
-    canvas.rect(760, 120, 230, 40)
-    canvas.fill(0)
-    canvas.text('Do 1 gen ASAP.', 770, 150)
-  }
-
-  isUnderCursor(): boolean {
-    return this.p5Wrapper.rectIsUnderCursor(760, 120, 230, 40)
-  }
-}
-
-interface AlapButtonConfig extends ButtonWidgetConfig {
-  activityStore: ActivityStore
-}
-
-class AlapButton extends ButtonWidget {
-  private activityStore: ActivityStore
-
-  constructor(config: AlapButtonConfig) {
-    super(config)
-
-    this.activityStore = config.activityStore
-  }
-
-  draw(): void {
-    const {canvas} = this.p5Wrapper
-
-    canvas.noStroke()
-
-    if (this.activityStore.getState().pendingGenerationCount > 1) {
-      canvas.fill(128, 255, 128)
-    } else {
-      canvas.fill(70, 140, 70)
-    }
-
-    canvas.rect(990, 120, 230, 40)
-    canvas.fill(0)
-    canvas.text('Do gens ALAP.', 1000, 150)
-  }
-
-  isUnderCursor(): boolean {
-    return this.p5Wrapper.rectIsUnderCursor(990, 120, 230, 40)
   }
 }
 

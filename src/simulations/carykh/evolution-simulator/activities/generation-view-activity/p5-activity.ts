@@ -72,7 +72,7 @@ export class GenerationViewP5Activity extends P5Activity {
   }
 
   draw(): void {
-    const {appController, appStore, p5Wrapper} = this
+    const {activityController, appController, appStore, p5Wrapper} = this
     const {canvas, font} = p5Wrapper
 
     const {generationCount} = appStore.getState()
@@ -89,7 +89,7 @@ export class GenerationViewP5Activity extends P5Activity {
     canvas.textFont(font, 28)
 
     const fitnessPercentiles =
-      this.getFitnessPercentilesFromHistory(selectedGeneration)
+      activityController.getFitnessPercentilesFromHistory(selectedGeneration)
     const fitnessPercentile =
       Math.round(fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX] * 1000) /
       1000
@@ -257,7 +257,7 @@ export class GenerationViewP5Activity extends P5Activity {
   }
 
   private drawHistogram(x: number, y: number, hw: number, hh: number): void {
-    const {appStore, p5Wrapper} = this
+    const {activityController, appStore, p5Wrapper} = this
     const {canvas, font} = p5Wrapper
 
     const {selectedGeneration} = appStore.getState()
@@ -266,7 +266,7 @@ export class GenerationViewP5Activity extends P5Activity {
 
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
       const histogramBarCounts =
-        this.getHistogramBarCountsFromHistory(selectedGeneration)
+        activityController.getHistogramBarCountsFromHistory(selectedGeneration)
 
       if (histogramBarCounts[i] > maxH) {
         maxH = histogramBarCounts[i]
@@ -334,13 +334,13 @@ export class GenerationViewP5Activity extends P5Activity {
     canvas.noStroke()
 
     const fitnessPercentiles =
-      this.getFitnessPercentilesFromHistory(selectedGeneration)
+      activityController.getFitnessPercentilesFromHistory(selectedGeneration)
     const fitnessPercentile =
       fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX]
 
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
       const histogramBarCounts =
-        this.getHistogramBarCountsFromHistory(selectedGeneration)
+        activityController.getHistogramBarCountsFromHistory(selectedGeneration)
       const h = Math.min(histogramBarCounts[i] * multiplier, hh)
 
       if (
@@ -362,7 +362,7 @@ export class GenerationViewP5Activity extends P5Activity {
     graphWidth: number,
     graphHeight: number
   ): void {
-    const {appStore, p5Wrapper} = this
+    const {activityController, appStore, p5Wrapper} = this
     const {canvas, font} = p5Wrapper
 
     const {generationCount} = appStore.getState()
@@ -426,10 +426,12 @@ export class GenerationViewP5Activity extends P5Activity {
       }
 
       for (let i = 0; i < generationCount; i++) {
-        const fitnessPercentiles = this.getFitnessPercentilesFromHistory(i)
+        const fitnessPercentiles =
+          activityController.getFitnessPercentilesFromHistory(i)
         const currentPercentile = fitnessPercentiles[k]
 
-        const nextPercentiles = this.getFitnessPercentilesFromHistory(i + 1)
+        const nextPercentiles =
+          activityController.getFitnessPercentilesFromHistory(i + 1)
         const nextPercentile = nextPercentiles[k]
 
         this.graphGraphics.line(
@@ -584,7 +586,8 @@ export class GenerationViewP5Activity extends P5Activity {
       )
       canvas.scale(60.0 / SCALE_TO_FIX_BUG)
 
-      const creature = this.getWorstMedianOrBestCreatureFromHistory(i)
+      const creature =
+        this.activityController.getWorstMedianOrBestCreatureFromHistory(i)
 
       this.creatureDrawer.drawCreature(creature, 0, 0, canvas)
 
@@ -626,7 +629,8 @@ export class GenerationViewP5Activity extends P5Activity {
     let record = -sign
 
     for (let i = 0; i < this.appStore.getState().generationCount; i++) {
-      const fitnessPercentiles = this.getFitnessPercentilesFromHistory(i + 1)
+      const fitnessPercentiles =
+        this.activityController.getFitnessPercentilesFromHistory(i + 1)
       const toTest =
         fitnessPercentiles[
           toInt(
@@ -702,9 +706,10 @@ export class GenerationViewP5Activity extends P5Activity {
   }
 
   private configurePopupSimulation(worstMedianOrBestIndex: number): void {
-    const creature = this.getWorstMedianOrBestCreatureFromHistory(
-      worstMedianOrBestIndex
-    )
+    const creature =
+      this.activityController.getWorstMedianOrBestCreatureFromHistory(
+        worstMedianOrBestIndex
+      )
 
     const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
     const rank = ranks[worstMedianOrBestIndex]
@@ -740,45 +745,5 @@ export class GenerationViewP5Activity extends P5Activity {
       endPositionY: positionY,
       margin: 0
     }
-  }
-
-  private getWorstMedianOrBestCreatureFromHistory(
-    worstMedianOrBestIndex: number
-  ): Creature {
-    const {generationHistoryMap, selectedGeneration} = this.appStore.getState()
-
-    const historyEntry = generationHistoryMap[selectedGeneration]
-
-    if (worstMedianOrBestIndex === 0) {
-      return historyEntry.slowest
-    }
-
-    if (worstMedianOrBestIndex === 1) {
-      return historyEntry.median
-    }
-
-    return historyEntry.fastest
-  }
-
-  private getFitnessPercentilesFromHistory(generation: number): number[] {
-    const historyEntry =
-      this.appStore.getState().generationHistoryMap[generation]
-
-    if (historyEntry) {
-      return historyEntry.fitnessPercentiles
-    }
-
-    return new Array(FITNESS_PERCENTILE_CREATURE_INDICES.length).fill(0)
-  }
-
-  private getHistogramBarCountsFromHistory(generation: number): number[] {
-    const historyEntry =
-      this.appStore.getState().generationHistoryMap[generation]
-
-    if (historyEntry) {
-      return historyEntry.histogramBarCounts
-    }
-
-    return new Array(HISTOGRAM_BAR_SPAN).fill(0)
   }
 }

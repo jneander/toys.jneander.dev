@@ -56,15 +56,31 @@ export interface GenerationViewActivityProps {
 export function GenerationViewActivity(props: GenerationViewActivityProps) {
   const {appController, appStore} = props
 
+  const activityStore = useMemo(() => {
+    return new Store<ActivityState>({
+      generationSimulationMode: GenerationSimulationMode.Off,
+      pendingGenerationCount: 0
+    })
+  }, [])
+
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
-      return new GenerationViewP5Activity({appController, appStore, p5Wrapper})
+      return new GenerationViewP5Activity({
+        activityStore,
+        appController,
+        appStore,
+        p5Wrapper
+      })
     }
 
     return createSketchFn({createUiFn})
-  }, [appController, appStore])
+  }, [activityStore, appController, appStore])
 
   return <P5ClientView sketch={sketchFn} />
+}
+
+interface GenerationViewActivityConfig extends P5ActivityConfig {
+  activityStore: ActivityStore
 }
 
 class GenerationViewP5Activity extends P5Activity {
@@ -85,13 +101,10 @@ class GenerationViewP5Activity extends P5Activity {
   private generationHistoryGraphics: Graphics
   private graphGraphics: Graphics
 
-  constructor(config: P5ActivityConfig) {
+  constructor(config: GenerationViewActivityConfig) {
     super(config)
 
-    this.activityStore = new Store<ActivityState>({
-      generationSimulationMode: GenerationSimulationMode.Off,
-      pendingGenerationCount: 0
-    })
+    this.activityStore = config.activityStore
 
     this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
 

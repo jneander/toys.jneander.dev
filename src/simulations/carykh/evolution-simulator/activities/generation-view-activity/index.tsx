@@ -79,10 +79,6 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
 
   return (
     <div>
-      <div style={{height: '576px'}}>
-        <P5ClientView sketch={sketchFn} />
-      </div>
-
       <div>
         <button onClick={handleStepByStepClick} type="button">
           Do 1 step-by-step generation
@@ -110,6 +106,10 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
           value={selectedGeneration}
         />
       )}
+
+      <div style={{height: '576px'}}>
+        <P5ClientView sketch={sketchFn} />
+      </div>
     </div>
   )
 }

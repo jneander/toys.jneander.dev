@@ -1,8 +1,8 @@
 import type {Graphics} from 'p5'
 import {useMemo} from 'react'
 
-import {P5ClientView} from '../../../../shared/p5'
-import type {AppController} from '../app-controller'
+import {P5ClientView} from '../../../../../shared/p5'
+import type {AppController} from '../../app-controller'
 import {
   ActivityId,
   CREATURE_COUNT,
@@ -17,17 +17,17 @@ import {
   HISTOGRAM_BAR_MIN,
   HISTOGRAM_BAR_SPAN,
   SCALE_TO_FIX_BUG
-} from '../constants'
-import {CreatureDrawer} from '../creature-drawer'
-import type {Creature} from '../creatures'
-import {toInt} from '../math'
+} from '../../constants'
+import {CreatureDrawer} from '../../creature-drawer'
+import type {Creature} from '../../creatures'
+import {toInt} from '../../math'
 import {
   CreateUiFnParameters,
   createSketchFn,
   getSpeciesColor
-} from '../p5-utils'
-import {GenerationSimulation} from '../simulation'
-import type {AppStore, SpeciesCount} from '../types'
+} from '../../p5-utils'
+import {GenerationSimulation} from '../../simulation'
+import type {AppStore, SpeciesCount} from '../../types'
 import {
   ButtonWidget,
   ButtonWidgetConfig,
@@ -35,8 +35,8 @@ import {
   PopupSimulationViewAnchor,
   Widget,
   WidgetConfig
-} from '../views'
-import {P5Activity, P5ActivityConfig} from './shared'
+} from '../../views'
+import {P5Activity, P5ActivityConfig} from '../shared'
 
 const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
 

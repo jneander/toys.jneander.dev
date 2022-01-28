@@ -1,3 +1,4 @@
+import {Store} from '@jneander/utils-state'
 import type {Graphics} from 'p5'
 import {useMemo} from 'react'
 
@@ -37,6 +38,7 @@ import {
   WidgetConfig
 } from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
+import {ActivityState, ActivityStore} from './types'
 
 const FONT_SIZES = [50, 36, 25, 20, 16, 14, 11, 9]
 
@@ -66,7 +68,7 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
 }
 
 class GenerationViewP5Activity extends P5Activity {
-  pendingGenerationCount: number
+  private activityStore: ActivityStore
 
   private popupSimulationView: PopupSimulationView
   private stepByStepButton: StepByStepButton
@@ -79,13 +81,17 @@ class GenerationViewP5Activity extends P5Activity {
 
   private draggingSlider: boolean
   private generationCountDepictedInGraph: number
-  private generationSimulationMode: GenerationSimulationMode
 
   private generationHistoryGraphics: Graphics
   private graphGraphics: Graphics
 
   constructor(config: P5ActivityConfig) {
     super(config)
+
+    this.activityStore = new Store<ActivityState>({
+      generationSimulationMode: GenerationSimulationMode.Off,
+      pendingGenerationCount: 0
+    })
 
     this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
 
@@ -121,7 +127,7 @@ class GenerationViewP5Activity extends P5Activity {
     })
 
     this.alapButton = new AlapButton({
-      activity: this,
+      activityStore: this.activityStore,
 
       onClick: () => {
         this.startAlapGenerationSimulation()
@@ -137,8 +143,6 @@ class GenerationViewP5Activity extends P5Activity {
 
     this.draggingSlider = false
     this.generationCountDepictedInGraph = -1
-    this.pendingGenerationCount = 0
-    this.generationSimulationMode = GenerationSimulationMode.Off
 
     const {canvas} = this.p5Wrapper
 
@@ -200,9 +204,11 @@ class GenerationViewP5Activity extends P5Activity {
       this.drawWorstMedianAndBestCreatures()
     }
 
+    const {pendingGenerationCount} = this.activityStore.getState()
+
     if (
       selectedGeneration > 0 &&
-      this.pendingGenerationCount === 0 &&
+      pendingGenerationCount === 0 &&
       !this.draggingSlider
     ) {
       const worstMedianOrBestIndex = this.getWorstMedianOrBestIndexUnderCursor()
@@ -223,17 +229,23 @@ class GenerationViewP5Activity extends P5Activity {
       this.clearPopupSimulation()
     }
 
-    if (this.pendingGenerationCount > 0) {
-      this.pendingGenerationCount--
+    if (this.activityStore.getState().pendingGenerationCount > 0) {
+      this.activityStore.setState({
+        pendingGenerationCount: pendingGenerationCount - 1
+      })
 
-      if (this.pendingGenerationCount > 0) {
+      if (pendingGenerationCount - 1 > 0) {
         this.startGenerationSimulation()
       }
     } else {
-      this.generationSimulationMode = GenerationSimulationMode.Off
+      this.activityStore.setState({
+        generationSimulationMode: GenerationSimulationMode.Off
+      })
     }
 
-    if (this.generationSimulationMode === GenerationSimulationMode.ASAP) {
+    const {generationSimulationMode} = this.activityStore.getState()
+
+    if (generationSimulationMode === GenerationSimulationMode.ASAP) {
       this.simulateWholeGeneration()
       appController.sortCreatures()
       appController.updateHistory()
@@ -245,7 +257,7 @@ class GenerationViewP5Activity extends P5Activity {
   }
 
   onMousePressed(): void {
-    this.pendingGenerationCount = 0
+    this.activityStore.setState({pendingGenerationCount: 0})
 
     if (
       this.appStore.getState().generationCount >= 1 &&
@@ -779,28 +791,34 @@ class GenerationViewP5Activity extends P5Activity {
   }
 
   private performStepByStepSimulation(): void {
-    this.generationSimulationMode = GenerationSimulationMode.StepByStep
+    this.activityStore.setState({
+      generationSimulationMode: GenerationSimulationMode.StepByStep
+    })
     this.appController.setActivityId(ActivityId.SimulationRunning)
   }
 
   private performQuickGenerationSimulation(): void {
-    this.generationSimulationMode = GenerationSimulationMode.Quick
+    this.activityStore.setState({
+      generationSimulationMode: GenerationSimulationMode.Quick
+    })
     this.simulateWholeGeneration()
     this.appController.setActivityId(ActivityId.SimulationFinished)
   }
 
   private performAsapGenerationSimulation(): void {
-    this.pendingGenerationCount = 1
+    this.activityStore.setState({pendingGenerationCount: 1})
     this.startGenerationSimulation()
   }
 
   private startAlapGenerationSimulation(): void {
-    this.pendingGenerationCount = 1000000000
+    this.activityStore.setState({pendingGenerationCount: 1000000000})
     this.startGenerationSimulation()
   }
 
   private startGenerationSimulation(): void {
-    this.generationSimulationMode = GenerationSimulationMode.ASAP
+    this.activityStore.setState({
+      generationSimulationMode: GenerationSimulationMode.ASAP
+    })
   }
 
   private simulateWholeGeneration(): void {
@@ -842,7 +860,7 @@ class GenerationViewP5Activity extends P5Activity {
     const ranks = [CREATURE_COUNT, Math.floor(CREATURE_COUNT / 2), 1]
     const rank = ranks[worstMedianOrBestIndex]
 
-    if (this.pendingGenerationCount === 0) {
+    if (this.activityStore.getState().pendingGenerationCount === 0) {
       // The full simulation is not running, so the popup simulation can be shown.
       this.popupSimulationView.setCreatureInfo({creature, rank})
 
@@ -965,16 +983,16 @@ class AsapButton extends ButtonWidget {
 }
 
 interface AlapButtonConfig extends ButtonWidgetConfig {
-  activity: GenerationViewP5Activity
+  activityStore: ActivityStore
 }
 
 class AlapButton extends ButtonWidget {
-  private activity: GenerationViewP5Activity
+  private activityStore: ActivityStore
 
   constructor(config: AlapButtonConfig) {
     super(config)
 
-    this.activity = config.activity
+    this.activityStore = config.activityStore
   }
 
   draw(): void {
@@ -982,7 +1000,7 @@ class AlapButton extends ButtonWidget {
 
     canvas.noStroke()
 
-    if (this.activity.pendingGenerationCount > 1) {
+    if (this.activityStore.getState().pendingGenerationCount > 1) {
       canvas.fill(128, 255, 128)
     } else {
       canvas.fill(70, 140, 70)

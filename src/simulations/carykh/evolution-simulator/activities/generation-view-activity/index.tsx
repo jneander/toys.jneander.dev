@@ -5,7 +5,6 @@ import {useMemo} from 'react'
 import {P5ClientView} from '../../../../../shared/p5'
 import type {AppController} from '../../app-controller'
 import {
-  ActivityId,
   CREATURE_COUNT,
   FITNESS_LABEL,
   FITNESS_PERCENTILE_CREATURE_INDICES,
@@ -26,7 +25,6 @@ import {
   createSketchFn,
   getSpeciesColor
 } from '../../p5-utils'
-import {GenerationSimulation} from '../../simulation'
 import type {AppStore, SpeciesCount} from '../../types'
 import {
   ButtonWidget,
@@ -37,6 +35,7 @@ import {
   WidgetConfig
 } from '../../views'
 import {P5Activity, P5ActivityConfig} from '../shared'
+import {ActivityController} from './activity-controller'
 import {GenerationSimulationMode} from './constants'
 import {ActivityState, ActivityStore} from './types'
 
@@ -63,9 +62,18 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     })
   }, [])
 
+  const activityController = useMemo(() => {
+    return new ActivityController({
+      activityStore,
+      appController,
+      appStore
+    })
+  }, [activityStore, appController, appStore])
+
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
       return new GenerationViewP5Activity({
+        activityController,
         activityStore,
         appController,
         appStore,
@@ -74,16 +82,18 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     }
 
     return createSketchFn({createUiFn})
-  }, [activityStore, appController, appStore])
+  }, [activityController, activityStore, appController, appStore])
 
   return <P5ClientView sketch={sketchFn} />
 }
 
 interface GenerationViewActivityConfig extends P5ActivityConfig {
+  activityController: ActivityController
   activityStore: ActivityStore
 }
 
 class GenerationViewP5Activity extends P5Activity {
+  private activityController: ActivityController
   private activityStore: ActivityStore
 
   private popupSimulationView: PopupSimulationView
@@ -104,6 +114,7 @@ class GenerationViewP5Activity extends P5Activity {
   constructor(config: GenerationViewActivityConfig) {
     super(config)
 
+    this.activityController = config.activityController
     this.activityStore = config.activityStore
 
     this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
@@ -117,7 +128,7 @@ class GenerationViewP5Activity extends P5Activity {
 
     this.stepByStepButton = new StepByStepButton({
       onClick: () => {
-        this.performStepByStepSimulation()
+        this.activityController.performStepByStepSimulation()
       },
 
       p5Wrapper: this.p5Wrapper
@@ -125,7 +136,7 @@ class GenerationViewP5Activity extends P5Activity {
 
     this.quickButton = new QuickButton({
       onClick: () => {
-        this.performQuickGenerationSimulation()
+        this.activityController.performQuickGenerationSimulation()
       },
 
       p5Wrapper: this.p5Wrapper
@@ -133,7 +144,7 @@ class GenerationViewP5Activity extends P5Activity {
 
     this.asapButton = new AsapButton({
       onClick: () => {
-        this.performAsapGenerationSimulation()
+        this.activityController.performAsapGenerationSimulation()
       },
 
       p5Wrapper: this.p5Wrapper
@@ -143,7 +154,7 @@ class GenerationViewP5Activity extends P5Activity {
       activityStore: this.activityStore,
 
       onClick: () => {
-        this.startAlapGenerationSimulation()
+        this.activityController.startAlapGenerationSimulation()
       },
 
       p5Wrapper: this.p5Wrapper
@@ -259,7 +270,7 @@ class GenerationViewP5Activity extends P5Activity {
     const {generationSimulationMode} = this.activityStore.getState()
 
     if (generationSimulationMode === GenerationSimulationMode.ASAP) {
-      this.simulateWholeGeneration()
+      this.activityController.simulateWholeGeneration()
       appController.sortCreatures()
       appController.updateHistory()
       appController.cullCreatures()
@@ -803,44 +814,10 @@ class GenerationViewP5Activity extends P5Activity {
     return null
   }
 
-  private performStepByStepSimulation(): void {
-    this.activityStore.setState({
-      generationSimulationMode: GenerationSimulationMode.StepByStep
-    })
-    this.appController.setActivityId(ActivityId.SimulationRunning)
-  }
-
-  private performQuickGenerationSimulation(): void {
-    this.activityStore.setState({
-      generationSimulationMode: GenerationSimulationMode.Quick
-    })
-    this.simulateWholeGeneration()
-    this.appController.setActivityId(ActivityId.SimulationFinished)
-  }
-
-  private performAsapGenerationSimulation(): void {
-    this.activityStore.setState({pendingGenerationCount: 1})
-    this.startGenerationSimulation()
-  }
-
-  private startAlapGenerationSimulation(): void {
-    this.activityStore.setState({pendingGenerationCount: 1000000000})
-    this.startGenerationSimulation()
-  }
-
   private startGenerationSimulation(): void {
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.ASAP
     })
-  }
-
-  private simulateWholeGeneration(): void {
-    const generationSimulation = new GenerationSimulation({
-      appStore: this.appStore,
-      simulationConfig: this.appController.getSimulationConfig()
-    })
-
-    generationSimulation.simulateWholeGeneration()
   }
 
   private setUnit(best: number, worst: number): number {

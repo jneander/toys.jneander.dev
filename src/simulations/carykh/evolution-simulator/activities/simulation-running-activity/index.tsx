@@ -176,12 +176,10 @@ class SimulationRunningP5Activity extends P5Activity {
       this.simulationView.setCameraPosition(0, 0)
     }
 
-    if (timer <= FRAMES_FOR_CREATURE_FITNESS) {
-      this.simulationView.draw()
-      canvas.image(this.simulationView.graphics, 0, 0, width, height)
-    }
+    this.simulationView.draw()
+    canvas.image(this.simulationView.graphics, 0, 0, width, height)
 
-    if (timer === FRAMES_FOR_CREATURE_FITNESS && speed < 30) {
+    if (timer >= FRAMES_FOR_CREATURE_FITNESS && speed < 30) {
       // When the simulation speed is slow enough, display the creature's fitness.
       this.drawFinalFitness()
     }

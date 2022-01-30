@@ -14,6 +14,7 @@
     "@jneander/utils-async": "^2.1.1",
     "@jneander/utils-random": "^1.0.0",
     "@jneander/utils-state": "^2.0.2",
+    "chart.js": "^3.7.0",
     "next": "^12.0.7",
     "normalize.css": "^8.0.0",
     "p5": "^1.4.0",

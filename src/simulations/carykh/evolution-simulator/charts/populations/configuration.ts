@@ -49,6 +49,8 @@ export function createConfiguration(): ChartConfiguration {
         mode: 'index'
       },
 
+      maintainAspectRatio: false,
+
       plugins: {
         tooltip: {
           callbacks: {

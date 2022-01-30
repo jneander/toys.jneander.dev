@@ -15,6 +15,8 @@ import {GenerationSimulationMode} from './constants'
 import {CreatureInfo} from './creature-info'
 import type {ActivityState} from './types'
 
+import styles from './styles.module.css'
+
 export interface GenerationViewActivityProps {
   appController: AppController
   appStore: AppStore
@@ -73,8 +75,8 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
   const historyEntry = activityController.getSelectedGenerationHistoryEntry()
 
   return (
-    <div>
-      <div>
+    <div className={styles.Layout}>
+      <div className={styles.Actions}>
         <button onClick={handleStepByStepClick} type="button">
           Do 1 step-by-step generation
         </button>
@@ -96,53 +98,63 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
         </button>
       </div>
 
-      <RangeInputField
-        labelText="Displayed Generation"
-        disabled={generationCount === 0}
-        max={generationCount}
-        min={Math.min(1, generationCount - 1)}
-        onChange={handleSelectedGenerationChange}
-        value={selectedGeneration}
-      />
+      <div className={styles.GenerationRange}>
+        <RangeInputField
+          labelText="Displayed Generation"
+          disabled={generationCount === 0}
+          max={generationCount}
+          min={Math.min(1, generationCount - 1)}
+          onChange={handleSelectedGenerationChange}
+          value={selectedGeneration}
+        />
+      </div>
 
       <p>Generation {selectedGeneration}</p>
 
-      <div style={{width: '1024px', height: '576px'}}>
-        <PercentilesChart appStore={appStore} />
-      </div>
-
-      <div style={{width: '1024px', height: '576px'}}>
-        <PopulationsChart appStore={appStore} />
-      </div>
-
-      <div style={{width: '1024px', height: '576px'}}>
-        <FitnessDistributionChart appStore={appStore} />
-      </div>
-
-      {historyEntry != null && (
+      <div className={styles.Charts}>
         <div>
-          <CreatureInfo
-            creature={historyEntry.fastest}
-            key={historyEntry.fastest.id}
-            rankText="Best"
-            simulationConfig={appController.getSimulationConfig()}
-          />
+          <div className={styles.ChartContainer}>
+            <PercentilesChart appStore={appStore} />
+          </div>
 
-          <CreatureInfo
-            creature={historyEntry.median}
-            key={historyEntry.median.id}
-            rankText="Median"
-            simulationConfig={appController.getSimulationConfig()}
-          />
-
-          <CreatureInfo
-            creature={historyEntry.slowest}
-            key={historyEntry.slowest.id}
-            rankText="Worst"
-            simulationConfig={appController.getSimulationConfig()}
-          />
+          <div className={styles.PopulationsChartContainer}>
+            <PopulationsChart appStore={appStore} />
+          </div>
         </div>
-      )}
+
+        <div>
+          <div className={styles.Creatures}>
+            {historyEntry != null && (
+              <>
+                <CreatureInfo
+                  creature={historyEntry.fastest}
+                  key={historyEntry.fastest.id}
+                  rankText="Best"
+                  simulationConfig={appController.getSimulationConfig()}
+                />
+
+                <CreatureInfo
+                  creature={historyEntry.median}
+                  key={historyEntry.median.id}
+                  rankText="Median"
+                  simulationConfig={appController.getSimulationConfig()}
+                />
+
+                <CreatureInfo
+                  creature={historyEntry.slowest}
+                  key={historyEntry.slowest.id}
+                  rankText="Worst"
+                  simulationConfig={appController.getSimulationConfig()}
+                />
+              </>
+            )}
+          </div>
+
+          <div className={styles.ChartContainer}>
+            <FitnessDistributionChart appStore={appStore} />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

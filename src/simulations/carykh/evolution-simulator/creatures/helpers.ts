@@ -1,8 +1,13 @@
-import {AIR_FRICTION, CREATURE_COUNT} from '../constants'
-import {dist2d} from '../math'
 import type Creature from './Creature'
 import type Muscle from './Muscle'
 import type Node from './Node'
+import {
+  AIR_FRICTION,
+  CREATURE_COUNT,
+  HISTOGRAM_BARS_PER_METER,
+  HISTOGRAM_BAR_MIN
+} from '../constants'
+import {dist2d} from '../math'
 
 export function adjustNodesToCenter(nodes: Node[]): void {
   let averageX = 0
@@ -148,4 +153,8 @@ export function getSpeciesColorHSB(speciesId: number, adjust: boolean): HSB {
   }
 
   return [hue, 1.0, brightness]
+}
+
+export function fitnessToHistogramBarIndex(fitness: number): number {
+  return Math.floor(fitness * HISTOGRAM_BARS_PER_METER - HISTOGRAM_BAR_MIN)
 }

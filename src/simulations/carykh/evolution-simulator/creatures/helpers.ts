@@ -123,6 +123,19 @@ export function getSpeciesColorHsl(speciesId: number, adjust: boolean): HSL {
   return hsbToHsl(...getSpeciesColorHSB(speciesId, adjust))
 }
 
+export function getSpeciesColorHslString(
+  speciesId: number,
+  adjust: boolean
+): string {
+  const [h, s, l] = getSpeciesColorHsl(speciesId, adjust)
+
+  const hue = Math.floor(h * 360)
+  const saturation = Math.floor(s * 100)
+  const lightness = Math.floor(l * 100)
+
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+}
+
 export function getSpeciesColorHSB(speciesId: number, adjust: boolean): HSB {
   let hue = (speciesId * 1.618034) % 1
   if (speciesId == 46) {

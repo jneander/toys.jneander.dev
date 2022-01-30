@@ -4,7 +4,7 @@ import {useMemo} from 'react'
 import {P5ClientView} from '../../../../../../shared/p5'
 import {
   Creature,
-  getSpeciesColorHsl,
+  getSpeciesColorHslString,
   speciesIdForCreature
 } from '../../../creatures'
 import {CreateUiFnParameters} from '../../../p5-utils'
@@ -52,10 +52,7 @@ export function CreatureInfo(props: CreatureInfoProps) {
   }
 
   const speciesId = speciesIdForCreature(creature)
-  const [h, s, l] = getSpeciesColorHsl(speciesId, false)
-  const color = `hsl(${Math.floor(h * 360)}, ${Math.floor(
-    s * 100
-  )}%, ${Math.floor(l * 100)}%)`
+  const color = getSpeciesColorHslString(speciesId, false)
 
   return (
     <div className={styles.Container}>

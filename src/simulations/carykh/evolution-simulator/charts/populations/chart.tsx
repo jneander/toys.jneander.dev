@@ -58,7 +58,7 @@ export function PopulationsChart(props: PopulationsChartProps) {
         const activeElements: ActiveDataPoint[] = []
 
         chart.data.datasets.forEach((dataset, index) => {
-          if (dataset.data[selectedGeneration]! > 0) {
+          if (dataset.data[selectedGeneration]! > 25) {
             activeElements.push({
               datasetIndex: index,
               index: selectedGeneration

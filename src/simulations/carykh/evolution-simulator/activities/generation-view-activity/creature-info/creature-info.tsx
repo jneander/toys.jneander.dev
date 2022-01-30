@@ -2,8 +2,12 @@ import {Store} from '@jneander/utils-state'
 import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../../../shared/p5'
-import {Creature, speciesIdForCreature} from '../../../creatures'
-import {CreateUiFnParameters, getSpeciesColorHSL} from '../../../p5-utils'
+import {
+  Creature,
+  getSpeciesColorHsl,
+  speciesIdForCreature
+} from '../../../creatures'
+import {CreateUiFnParameters} from '../../../p5-utils'
 import type {SimulationConfig} from '../../../simulation'
 import {CreatureInfoP5View} from './p5-view'
 import {createSketchFn} from './sketch'
@@ -48,7 +52,7 @@ export function CreatureInfo(props: CreatureInfoProps) {
   }
 
   const speciesId = speciesIdForCreature(creature)
-  const [h, s, l] = getSpeciesColorHSL(speciesId, false)
+  const [h, s, l] = getSpeciesColorHsl(speciesId, false)
   const color = `hsl(${Math.floor(h * 360)}, ${Math.floor(
     s * 100
   )}%, ${Math.floor(l * 100)}%)`

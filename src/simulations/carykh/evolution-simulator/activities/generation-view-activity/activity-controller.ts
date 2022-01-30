@@ -46,32 +46,25 @@ export class ActivityController {
   }
 
   performAsapGenerationSimulation(): void {
-    this.activityStore.setState({pendingGenerationCount: 1})
-    this.startGenerationSimulation()
+    this.activityStore.setState({
+      generationSimulationMode: GenerationSimulationMode.ASAP,
+      pendingGenerationCount: 1
+    })
+
+    this.enqueueGenerationSimulationCycle()
   }
 
   startAlapGenerationSimulation(): void {
-    this.activityStore.setState({pendingGenerationCount: 1000000000})
-    this.startGenerationSimulation()
+    this.activityStore.setState({
+      generationSimulationMode: GenerationSimulationMode.ASAP,
+      pendingGenerationCount: 1000000000
+    })
+
+    this.enqueueGenerationSimulationCycle()
   }
 
   endAlapGenerationSimulation(): void {
     this.activityStore.setState({pendingGenerationCount: 0})
-  }
-
-  startGenerationSimulation(): void {
-    this.activityStore.setState({
-      generationSimulationMode: GenerationSimulationMode.ASAP
-    })
-  }
-
-  simulateWholeGeneration(): void {
-    const generationSimulation = new GenerationSimulation({
-      appStore: this.appStore,
-      simulationConfig: this.appController.getSimulationConfig()
-    })
-
-    generationSimulation.simulateWholeGeneration()
   }
 
   getSelectedGenerationHistoryEntry(): GenerationHistoryEntry | null {
@@ -100,5 +93,56 @@ export class ActivityController {
     }
 
     return new Array(HISTOGRAM_BAR_SPAN).fill(0)
+  }
+
+  private enqueueGenerationSimulationCycle(): void {
+    requestAnimationFrame(() => {
+      this.performGenerationCycle()
+    })
+  }
+
+  private performGenerationCycle(): void {
+    const {appController} = this
+
+    this.simulateWholeGeneration()
+
+    appController.sortCreatures()
+    appController.updateHistory()
+    appController.cullCreatures()
+    appController.propagateCreatures()
+
+    setTimeout(() => {
+      this.maybePerformAdditionalCycle()
+    }, 0)
+  }
+
+  private maybePerformAdditionalCycle(): void {
+    let {generationSimulationMode, pendingGenerationCount} =
+      this.activityStore.getState()
+
+    if (generationSimulationMode !== GenerationSimulationMode.ASAP) {
+      return
+    }
+
+    if (pendingGenerationCount > 0) {
+      pendingGenerationCount--
+
+      this.activityStore.setState({
+        pendingGenerationCount
+      })
+    }
+
+    if (pendingGenerationCount > 0) {
+      this.performGenerationCycle()
+    }
+  }
+
+  private simulateWholeGeneration(): void {
+    const generationSimulation = new GenerationSimulation({
+      appStore: this.appStore,
+      simulationConfig: this.appController.getSimulationConfig()
+    })
+
+    generationSimulation.simulateWholeGeneration()
   }
 }

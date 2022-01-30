@@ -73,6 +73,10 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     activityController.startAlapGenerationSimulation()
   }
 
+  function handleEndAlapClick() {
+    activityController.endAlapGenerationSimulation()
+  }
+
   function handleSelectedGenerationChange(
     event: ChangeEvent<HTMLInputElement>
   ) {
@@ -102,6 +106,10 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
 
         <button onClick={handleAlapClick} type="button">
           Do gens ALAP
+        </button>
+
+        <button onClick={handleEndAlapClick} type="button">
+          End ALAP
         </button>
       </div>
 

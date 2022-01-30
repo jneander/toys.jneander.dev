@@ -55,6 +55,10 @@ export class ActivityController {
     this.startGenerationSimulation()
   }
 
+  endAlapGenerationSimulation(): void {
+    this.activityStore.setState({pendingGenerationCount: 0})
+  }
+
   startGenerationSimulation(): void {
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.ASAP

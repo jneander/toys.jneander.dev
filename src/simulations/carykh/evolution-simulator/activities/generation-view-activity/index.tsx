@@ -114,6 +114,8 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
         value={selectedGeneration}
       />
 
+      <p>Generation {selectedGeneration}</p>
+
       <div style={{width: '1024px', height: '576px'}}>
         <PercentilesChart appStore={appStore} />
       </div>

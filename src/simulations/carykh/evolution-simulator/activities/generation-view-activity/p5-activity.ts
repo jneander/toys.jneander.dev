@@ -3,8 +3,6 @@ import type {Graphics} from 'p5'
 import {
   CREATURE_COUNT,
   FITNESS_LABEL,
-  FITNESS_PERCENTILE_CREATURE_INDICES,
-  FITNESS_PERCENTILE_LOWEST_INDEX,
   FITNESS_PERCENTILE_MEDIAN_INDEX,
   FITNESS_UNIT_LABEL,
   HISTOGRAM_BARS_PER_METER,
@@ -12,7 +10,6 @@ import {
   HISTOGRAM_BAR_MIN,
   HISTOGRAM_BAR_SPAN
 } from '../../constants'
-import {toInt} from '../../math'
 import {getSpeciesColor} from '../../p5-utils'
 import type {SpeciesCount} from '../../types'
 import {P5Activity, P5ActivityConfig} from '../shared'
@@ -32,7 +29,6 @@ export class GenerationViewP5Activity extends P5Activity {
   private generationCountDepictedInGraph: number
 
   private generationHistoryGraphics: Graphics
-  private graphGraphics: Graphics
 
   constructor(config: GenerationViewActivityConfig) {
     super(config)
@@ -45,7 +41,6 @@ export class GenerationViewP5Activity extends P5Activity {
     const {canvas} = this.p5Wrapper
 
     this.generationHistoryGraphics = canvas.createGraphics(975, 150)
-    this.graphGraphics = canvas.createGraphics(975, 570)
   }
 
   draw(): void {
@@ -78,7 +73,7 @@ export class GenerationViewP5Activity extends P5Activity {
     canvas.text(fitnessPercentile + ' ' + FITNESS_UNIT_LABEL, 700, 160)
 
     if (this.generationCountDepictedInGraph !== generationCount) {
-      this.drawGraph(975, 570)
+      this.drawGraph(975)
       this.generationCountDepictedInGraph = generationCount
     }
 
@@ -116,17 +111,10 @@ export class GenerationViewP5Activity extends P5Activity {
     this.activityStore.setState({pendingGenerationCount: 0})
   }
 
-  private drawGraph(graphWidth: number, graphHeight: number): void {
+  private drawGraph(graphWidth: number): void {
     this.generationHistoryGraphics.background(220)
-    this.graphGraphics.background(220)
 
     if (this.appStore.getState().generationCount >= 1) {
-      this.drawLines(
-        90,
-        toInt(graphHeight * 0.05),
-        graphWidth - 90,
-        toInt(graphHeight * 0.9)
-      )
       this.drawSegBars(90, 0, graphWidth - 90, 150)
     }
   }
@@ -138,7 +126,6 @@ export class GenerationViewP5Activity extends P5Activity {
     const {generationCount, generationHistoryMap, selectedGeneration} =
       appStore.getState()
 
-    canvas.image(this.graphGraphics, 50, 180, 650, 380)
     canvas.image(this.generationHistoryGraphics, 50, 580, 650, 100)
 
     if (generationCount >= 1) {
@@ -305,94 +292,6 @@ export class GenerationViewP5Activity extends P5Activity {
     }
   }
 
-  private drawLines(
-    x: number,
-    y: number,
-    graphWidth: number,
-    graphHeight: number
-  ): void {
-    const {activityController, appStore, p5Wrapper} = this
-    const {canvas, font} = p5Wrapper
-
-    const {generationCount} = appStore.getState()
-
-    const gh = graphHeight
-    const genWidth = graphWidth / generationCount
-    const best = this.extreme(1)
-    const worst = this.extreme(-1)
-    const meterHeight = graphHeight / (best - worst)
-    const zero = (best / (best - worst)) * gh
-    const unit = this.setUnit(best, worst)
-
-    this.graphGraphics.stroke(150)
-    this.graphGraphics.strokeWeight(2)
-    this.graphGraphics.fill(150)
-    this.graphGraphics.textFont(font, 18)
-    this.graphGraphics.textAlign(canvas.RIGHT)
-
-    for (
-      let i = Math.ceil((worst - (best - worst) / 18.0) / unit) * unit;
-      i < best + (best - worst) / 18.0;
-      i += unit
-    ) {
-      const lineY = y - i * meterHeight + zero
-      this.graphGraphics.line(x, lineY, graphWidth + x, lineY)
-      this.graphGraphics.text(
-        this.showUnit(i, unit) + ' ' + FITNESS_UNIT_LABEL,
-        x - 5,
-        lineY + 4
-      )
-    }
-
-    this.graphGraphics.stroke(0)
-
-    for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
-      let k
-
-      if (i == FITNESS_PERCENTILE_LOWEST_INDEX) {
-        k = FITNESS_PERCENTILE_MEDIAN_INDEX
-      } else if (i < FITNESS_PERCENTILE_MEDIAN_INDEX) {
-        k = i
-      } else {
-        k = i + 1
-      }
-
-      if (k == FITNESS_PERCENTILE_MEDIAN_INDEX) {
-        this.graphGraphics.stroke(255, 0, 0, 255)
-        this.graphGraphics.strokeWeight(5)
-      } else {
-        canvas.stroke(0)
-
-        if (
-          k == 0 ||
-          k == FITNESS_PERCENTILE_LOWEST_INDEX ||
-          (k >= 10 && k <= 18)
-        ) {
-          this.graphGraphics.strokeWeight(3)
-        } else {
-          this.graphGraphics.strokeWeight(1)
-        }
-      }
-
-      for (let i = 0; i < generationCount; i++) {
-        const fitnessPercentiles =
-          activityController.getFitnessPercentilesFromHistory(i)
-        const currentPercentile = fitnessPercentiles[k]
-
-        const nextPercentiles =
-          activityController.getFitnessPercentilesFromHistory(i + 1)
-        const nextPercentile = nextPercentiles[k]
-
-        this.graphGraphics.line(
-          x + i * genWidth,
-          -currentPercentile * meterHeight + zero + y,
-          x + (i + 1) * genWidth,
-          -nextPercentile * meterHeight + zero + y
-        )
-      }
-    }
-  }
-
   private drawSegBars(
     x: number,
     y: number,
@@ -508,28 +407,6 @@ export class GenerationViewP5Activity extends P5Activity {
     canvas.colorMode(canvas.RGB, 255)
   }
 
-  private extreme(sign: number): number {
-    let record = -sign
-
-    for (let i = 0; i < this.appStore.getState().generationCount; i++) {
-      const fitnessPercentiles =
-        this.activityController.getFitnessPercentilesFromHistory(i + 1)
-      const toTest =
-        fitnessPercentiles[
-          toInt(
-            FITNESS_PERCENTILE_MEDIAN_INDEX -
-              sign * FITNESS_PERCENTILE_MEDIAN_INDEX
-          )
-        ]
-
-      if (toTest * sign > record * sign) {
-        record = toTest
-      }
-    }
-
-    return record
-  }
-
   private getSpeciesCountsForGeneration(generation: number): SpeciesCount[] {
     return (
       this.appStore.getState().generationHistoryMap[generation]
@@ -541,27 +418,5 @@ export class GenerationViewP5Activity extends P5Activity {
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.ASAP
     })
-  }
-
-  private setUnit(best: number, worst: number): number {
-    const unit2 = (3 * Math.log(best - worst)) / Math.log(10) - 2
-
-    if ((unit2 + 90) % 3 < 1) {
-      return Math.pow(10, Math.floor(unit2 / 3))
-    }
-
-    if ((unit2 + 90) % 3 < 2) {
-      return Math.pow(10, Math.floor((unit2 - 1) / 3)) * 2
-    }
-
-    return Math.pow(10, Math.floor((unit2 - 2) / 3)) * 5
-  }
-
-  private showUnit(i: number, unit: number): String {
-    if (unit < 1) {
-      return this.p5Wrapper.canvas.nf(i, 0, 2) + ''
-    }
-
-    return toInt(i) + ''
   }
 }

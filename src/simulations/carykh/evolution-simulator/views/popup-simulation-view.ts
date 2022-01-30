@@ -141,10 +141,7 @@ export class PopupSimulationView {
 
     canvas.fill(getSpeciesColor(canvas, speciesId, true))
     canvas.text(
-      'Species: S' +
-        (creature.nodes.length % 10) +
-        '' +
-        (creature.muscles.length % 10),
+      `Species: S${speciesIdForCreature(creature)}`,
       infoBoxCenterX,
       infoBoxStartY + 48
     )

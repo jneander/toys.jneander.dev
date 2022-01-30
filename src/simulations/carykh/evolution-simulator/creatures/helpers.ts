@@ -158,3 +158,9 @@ export function getSpeciesColorHSB(speciesId: number, adjust: boolean): HSB {
 export function fitnessToHistogramBarIndex(fitness: number): number {
   return Math.floor(fitness * HISTOGRAM_BARS_PER_METER - HISTOGRAM_BAR_MIN)
 }
+
+export function histogramBarIndexToApproximateFitness(
+  barIndex: number
+): number {
+  return (barIndex + HISTOGRAM_BAR_MIN) / HISTOGRAM_BARS_PER_METER
+}

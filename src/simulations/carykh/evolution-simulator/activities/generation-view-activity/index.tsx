@@ -2,7 +2,6 @@ import {Store} from '@jneander/utils-state'
 import {ChangeEvent, useMemo} from 'react'
 
 import {RangeInputField} from '../../../../../shared/components'
-import {P5ClientView} from '../../../../../shared/p5'
 import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
 import {
@@ -10,12 +9,10 @@ import {
   PercentilesChart,
   PopulationsChart
 } from '../../charts'
-import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {GenerationSimulationMode} from './constants'
 import {CreatureInfo} from './creature-info'
-import {GenerationViewP5Activity} from './p5-activity'
 import type {ActivityState} from './types'
 
 export interface GenerationViewActivityProps {
@@ -40,20 +37,6 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
       appStore
     })
   }, [activityStore, appController, appStore])
-
-  const sketchFn = useMemo(() => {
-    function createUiFn({p5Wrapper}: CreateUiFnParameters) {
-      return new GenerationViewP5Activity({
-        activityController,
-        activityStore,
-        appController,
-        appStore,
-        p5Wrapper
-      })
-    }
-
-    return createSketchFn({createUiFn})
-  }, [activityController, activityStore, appController, appStore])
 
   const {generationCount, selectedGeneration} = useStore(appStore)
 
@@ -134,10 +117,6 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
 
       <div style={{width: '1024px', height: '576px'}}>
         <FitnessDistributionChart appStore={appStore} />
-      </div>
-
-      <div style={{height: '576px'}}>
-        <P5ClientView sketch={sketchFn} />
       </div>
 
       {historyEntry != null && (

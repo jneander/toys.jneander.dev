@@ -88,31 +88,38 @@ export class GenerationViewP5Activity extends P5Activity {
     this.activityStore.setState({pendingGenerationCount: 0})
   }
 
-  private drawHistogram(x: number, y: number, hw: number, hh: number): void {
+  private drawHistogram(
+    histogramStartX: number,
+    histogramStartY: number,
+    histogramWidth: number,
+    histogramHeight: number
+  ): void {
     const {activityController, appStore, p5Wrapper} = this
     const {canvas, font} = p5Wrapper
 
     const {selectedGeneration} = appStore.getState()
 
-    let maxH = 1
+    const histogramBarCounts =
+      activityController.getHistogramBarCountsFromHistory(selectedGeneration)
 
-    for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
-      const histogramBarCounts =
-        activityController.getHistogramBarCountsFromHistory(selectedGeneration)
+    const largestCount = Math.max(...histogramBarCounts)
 
-      if (histogramBarCounts[i] > maxH) {
-        maxH = histogramBarCounts[i]
-      }
-    }
-
+    // Draw background.
     canvas.fill(200)
     canvas.noStroke()
-    canvas.rect(x, y, hw, hh)
+    canvas.rect(
+      histogramStartX,
+      histogramStartY,
+      histogramWidth,
+      histogramHeight
+    )
+
+    const barWidth = histogramWidth / HISTOGRAM_BAR_SPAN
+    const verticalScaleToFit = 0.9
+    const barHeightMultiplier =
+      (histogramHeight / largestCount) * verticalScaleToFit
+
     canvas.fill(0, 0, 0)
-
-    const barW = hw / HISTOGRAM_BAR_SPAN
-    const multiplier = (hh / maxH) * 0.9
-
     canvas.textAlign(canvas.LEFT)
     canvas.textFont(font, 16)
     canvas.stroke(128)
@@ -120,32 +127,34 @@ export class GenerationViewP5Activity extends P5Activity {
 
     let unit = 100
 
-    if (maxH < 300) {
+    if (largestCount < 300) {
       unit = 50
     }
 
-    if (maxH < 100) {
+    if (largestCount < 100) {
       unit = 20
     }
 
-    if (maxH < 50) {
+    if (largestCount < 50) {
       unit = 10
     }
 
-    for (let i = 0; i < hh / multiplier; i += unit) {
-      let theY = y + hh - i * multiplier
+    // Draw horizontal ticks and labels.
+    for (let i = 0; i < histogramHeight / barHeightMultiplier; i += unit) {
+      let theY = histogramStartY + histogramHeight - i * barHeightMultiplier
 
-      canvas.line(x, theY, x + hw, theY)
+      canvas.line(histogramStartX, theY, histogramStartX + histogramWidth, theY)
 
       if (i == 0) {
         theY -= 5
       }
 
-      canvas.text(i, x + hw + 5, theY + 7)
+      canvas.text(i, histogramStartX + histogramWidth + 5, theY + 7)
     }
 
     canvas.textAlign(canvas.CENTER)
 
+    // Draw vertical ticks and labels.
     for (let i = HISTOGRAM_BAR_MIN; i <= HISTOGRAM_BAR_MAX; i += 10) {
       if (i == 0) {
         canvas.stroke(0, 0, 255)
@@ -153,14 +162,19 @@ export class GenerationViewP5Activity extends P5Activity {
         canvas.stroke(128)
       }
 
-      const theX = x + (i - HISTOGRAM_BAR_MIN) * barW
+      const theX = histogramStartX + (i - HISTOGRAM_BAR_MIN) * barWidth
 
       canvas.text(
         canvas.nf(i / HISTOGRAM_BARS_PER_METER, 0, 1),
         theX,
-        y + hh + 14
+        histogramStartY + histogramHeight + 14
       )
-      canvas.line(theX, y, theX, y + hh)
+      canvas.line(
+        theX,
+        histogramStartY,
+        theX,
+        histogramStartY + histogramHeight
+      )
     }
 
     canvas.noStroke()
@@ -170,10 +184,14 @@ export class GenerationViewP5Activity extends P5Activity {
     const fitnessPercentile =
       fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX]
 
+    // Draw bars.
+    // SPAN == 110
+    // i => [0, 1, 2, ..., 109]
     for (let i = 0; i < HISTOGRAM_BAR_SPAN; i++) {
-      const histogramBarCounts =
-        activityController.getHistogramBarCountsFromHistory(selectedGeneration)
-      const h = Math.min(histogramBarCounts[i] * multiplier, hh)
+      const barHeight = Math.min(
+        histogramBarCounts[i] * barHeightMultiplier,
+        histogramHeight
+      )
 
       if (
         i + HISTOGRAM_BAR_MIN ==
@@ -184,7 +202,12 @@ export class GenerationViewP5Activity extends P5Activity {
         canvas.fill(0, 0, 0)
       }
 
-      canvas.rect(x + i * barW, y + hh - h, barW, h)
+      canvas.rect(
+        histogramStartX + i * barWidth,
+        histogramStartY + histogramHeight - barHeight,
+        barWidth,
+        barHeight
+      )
     }
   }
 

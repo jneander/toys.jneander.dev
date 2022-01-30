@@ -4,11 +4,13 @@ import {
   ActivityId,
   CREATURE_COUNT,
   FITNESS_PERCENTILE_CREATURE_INDICES,
-  HISTOGRAM_BARS_PER_METER,
-  HISTOGRAM_BAR_MIN,
   HISTOGRAM_BAR_SPAN
 } from './constants'
-import {CreatureManipulator, speciesIdForCreature} from './creatures'
+import {
+  CreatureManipulator,
+  fitnessToHistogramBarIndex,
+  speciesIdForCreature
+} from './creatures'
 import {SimulationConfig} from './simulation'
 import type {AppStore, GenerationHistoryEntry, SpeciesCount} from './types'
 
@@ -84,10 +86,8 @@ export class AppController {
     const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const bar = Math.floor(
-        appState.creaturesInLatestGeneration[i].fitness *
-          HISTOGRAM_BARS_PER_METER -
-          HISTOGRAM_BAR_MIN
+      const bar = fitnessToHistogramBarIndex(
+        appState.creaturesInLatestGeneration[i].fitness
       )
 
       if (bar >= 0 && bar < HISTOGRAM_BAR_SPAN) {

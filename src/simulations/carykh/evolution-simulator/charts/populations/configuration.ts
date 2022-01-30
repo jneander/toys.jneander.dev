@@ -52,8 +52,8 @@ export function createConfiguration(): ChartConfiguration {
       plugins: {
         tooltip: {
           callbacks: {
-            title(tooltipItems) {
-              return `Generation ${tooltipItems[0].dataIndex}`
+            title() {
+              return ''
             }
           },
 

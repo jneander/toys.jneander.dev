@@ -105,15 +105,14 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
         </button>
       </div>
 
-      {generationCount > 0 && (
-        <RangeInputField
-          labelText="Displayed Generation"
-          max={generationCount}
-          min={Math.min(1, generationCount - 1)}
-          onChange={handleSelectedGenerationChange}
-          value={selectedGeneration}
-        />
-      )}
+      <RangeInputField
+        labelText="Displayed Generation"
+        disabled={generationCount === 0}
+        max={generationCount}
+        min={Math.min(1, generationCount - 1)}
+        onChange={handleSelectedGenerationChange}
+        value={selectedGeneration}
+      />
 
       <div style={{width: '1024px', height: '576px'}}>
         <PercentilesChart appStore={appStore} />

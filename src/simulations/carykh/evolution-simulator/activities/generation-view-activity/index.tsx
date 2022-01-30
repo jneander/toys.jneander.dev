@@ -5,6 +5,7 @@ import {RangeInputField} from '../../../../../shared/components'
 import {P5ClientView} from '../../../../../shared/p5'
 import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
+import {PercentilesChart} from '../../charts'
 import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
@@ -109,6 +110,10 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
           value={selectedGeneration}
         />
       )}
+
+      <div style={{width: '1024px', height: '576px'}}>
+        <PercentilesChart appStore={appStore} />
+      </div>
 
       <div style={{height: '576px'}}>
         <P5ClientView sketch={sketchFn} />

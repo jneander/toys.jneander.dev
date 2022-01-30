@@ -87,5 +87,15 @@ export function creatureIdToIndex(creatureId: number): number {
 }
 
 export function speciesIdForCreature(creature: Creature): number {
-  return (creature.nodes.length % 10) * 10 + (creature.muscles.length % 10)
+  return speciesIdFromNodesAndMuscles(
+    creature.nodes.length,
+    creature.muscles.length
+  )
+}
+
+export function speciesIdFromNodesAndMuscles(
+  nodeCount: number,
+  muscleCount: number
+): number {
+  return (nodeCount % 10) * 10 + (muscleCount % 10)
 }

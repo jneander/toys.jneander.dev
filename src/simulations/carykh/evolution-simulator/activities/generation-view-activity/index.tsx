@@ -127,22 +127,22 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
             {historyEntry != null && (
               <>
                 <CreatureInfo
-                  creature={historyEntry.fastest}
-                  key={historyEntry.fastest.id}
+                  creature={historyEntry.bestCreature}
+                  key={historyEntry.bestCreature.id}
                   rankText="Best"
                   simulationConfig={appController.getSimulationConfig()}
                 />
 
                 <CreatureInfo
-                  creature={historyEntry.median}
-                  key={historyEntry.median.id}
+                  creature={historyEntry.medianCreature}
+                  key={historyEntry.medianCreature.id}
                   rankText="Median"
                   simulationConfig={appController.getSimulationConfig()}
                 />
 
                 <CreatureInfo
-                  creature={historyEntry.slowest}
-                  key={historyEntry.slowest.id}
+                  creature={historyEntry.worstCreature}
+                  key={historyEntry.worstCreature.id}
                   rankText="Worst"
                   simulationConfig={appController.getSimulationConfig()}
                 />

@@ -114,9 +114,11 @@ export class AppController {
       })
 
     const historyEntry: GenerationHistoryEntry = {
-      fastest: appState.creaturesInLatestGeneration[0].clone(),
-      median: appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
-      slowest: appState.creaturesInLatestGeneration[lastCreatureIndex].clone(),
+      bestCreature: appState.creaturesInLatestGeneration[0].clone(),
+      medianCreature:
+        appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
+      worstCreature:
+        appState.creaturesInLatestGeneration[lastCreatureIndex].clone(),
       fitnessPercentiles,
       histogramBarCounts,
       speciesCounts

@@ -34,9 +34,9 @@ export type SpeciesCount = {
 }
 
 export type GenerationHistoryEntry = {
-  fastest: Creature
-  median: Creature
-  slowest: Creature
+  bestCreature: Creature
+  medianCreature: Creature
+  worstCreature: Creature
   fitnessPercentiles: number[]
   histogramBarCounts: number[]
   speciesCounts: SpeciesCount[]

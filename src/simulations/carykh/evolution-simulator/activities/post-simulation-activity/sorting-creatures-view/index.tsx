@@ -10,8 +10,8 @@ import {
   CREATURE_GRID_TILE_WIDTH
 } from '../../../creature-grid'
 import {creatureIdToIndex} from '../../../creatures'
+import {P5UI, P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
-import {P5Activity, P5ActivityConfig} from '../../shared'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
 import {CreateUiFnParameters, createSketchFn} from './sketch'
@@ -32,16 +32,15 @@ export function SortingCreaturesView(props: SortingCreaturesViewProps) {
 
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
-      return new SortingCreaturesP5Activity({
+      return new SortingCreaturesP5View({
         activityController,
-        appController,
         appStore,
         p5Wrapper
       })
     }
 
     return createSketchFn({createUiFn})
-  }, [activityController, appController, appStore])
+  }, [activityController, appStore])
 
   function handleSkipClick() {
     activityController.setCurrentActivityStep(ActivityStep.SortedCreatures)
@@ -60,20 +59,24 @@ export function SortingCreaturesView(props: SortingCreaturesViewProps) {
   )
 }
 
-interface SortingCreaturesP5ActivityConfig extends P5ActivityConfig {
+interface SortingCreaturesP5ViewConfig {
   activityController: ActivityController
+  appStore: AppStore
+  p5Wrapper: P5Wrapper
 }
 
-class SortingCreaturesP5Activity extends P5Activity {
+class SortingCreaturesP5View implements P5UI {
   private activityController: ActivityController
+  private appStore: AppStore
+  private p5Wrapper: P5Wrapper
   private creatureDrawer: CreatureDrawer
 
   private activityTimer: number
 
-  constructor(config: SortingCreaturesP5ActivityConfig) {
-    super(config)
-
+  constructor(config: SortingCreaturesP5ViewConfig) {
     this.activityController = config.activityController
+    this.appStore = config.appStore
+    this.p5Wrapper = config.p5Wrapper
 
     this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
 
@@ -136,6 +139,11 @@ class SortingCreaturesP5Activity extends P5Activity {
       )
     }
   }
+
+  initialize(): void {}
+  onMousePressed(): void {}
+  onMouseReleased(): void {}
+  onMouseWheel(event: WheelEvent): void {}
 
   private interpolate(a: number, b: number, offset: number): number {
     return a + (b - a) * offset

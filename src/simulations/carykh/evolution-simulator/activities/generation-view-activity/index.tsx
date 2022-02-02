@@ -41,6 +41,8 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     })
   }, [activityStore, appController, appStore])
 
+  const {currentGenerationSimulation, pendingGenerationCount} =
+    useStore(activityStore)
   const {generationCount, selectedGeneration} = useStore(appStore)
 
   function handleStepByStepClick() {
@@ -74,6 +76,11 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
   }
 
   const historyEntry = activityController.getSelectedGenerationHistoryEntry()
+
+  let displayedPendingGenerationCount = pendingGenerationCount
+  if (pendingGenerationCount === 0 && currentGenerationSimulation) {
+    displayedPendingGenerationCount = 1
+  }
 
   return (
     <div className={styles.Layout}>
@@ -110,7 +117,24 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
         />
       </div>
 
-      <p>Generation {selectedGeneration}</p>
+      <p>
+        <span>Generation {selectedGeneration}</span>
+
+        {displayedPendingGenerationCount === 1 && (
+          <>
+            &nbsp;— <span>Simulating next generation...</span>
+          </>
+        )}
+
+        {displayedPendingGenerationCount > 1 && (
+          <>
+            &nbsp;—{' '}
+            <span>
+              Simulating next {displayedPendingGenerationCount} generations...
+            </span>
+          </>
+        )}
+      </p>
 
       <div className={styles.Charts}>
         <div>

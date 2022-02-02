@@ -10,11 +10,11 @@ import {
   CREATURE_GRID_TILE_WIDTH
 } from '../../../creature-grid'
 import {creatureIdToIndex} from '../../../creatures'
-import {CreateUiFnParameters, createSketchFn} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import {P5Activity, P5ActivityConfig} from '../../shared'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
+import {CreateUiFnParameters, createSketchFn} from './sketch'
 
 export interface SortingCreaturesViewProps {
   activityController: ActivityController

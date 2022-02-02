@@ -20,6 +20,8 @@ import {
 } from './constants'
 import {CreatureGridView, CreatureGridViewConfig} from './p5-view'
 
+import styles from './styles.module.css'
+
 export interface CreatureGridProps {
   appController: AppController
   appStore: AppStore
@@ -52,7 +54,7 @@ export function CreatureGrid(props: CreatureGridProps) {
   }, [appController, appStore, getCreatureAndGridIndexFn, showsPopupSimulation])
 
   return (
-    <div style={{height: '576px'}}>
+    <div className={styles.Container}>
       <P5ClientView sketch={sketchFn} />
     </div>
   )

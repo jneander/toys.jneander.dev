@@ -1,3 +1,4 @@
+export * from './component'
 export * from './cull-creatures-activity'
 export * from './propagate-creatures-activity'
 export * from './simulation-finished-activity'

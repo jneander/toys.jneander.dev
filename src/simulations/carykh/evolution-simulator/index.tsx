@@ -4,14 +4,10 @@ import {useMemo} from 'react'
 
 import {useStore} from '../../../shared/state'
 import {
-  CullCreaturesActivity,
   GenerateCreaturesActivity,
   GenerationViewActivity,
-  PropagateCreaturesActivity,
-  SimulationFinishedActivity,
+  PostSimulationActivity,
   SimulationRunningActivity,
-  SortedCreaturesActivity,
-  SortingCreaturesActivity,
   StartActivity
 } from './activities'
 import {AppController} from './app-controller'
@@ -78,45 +74,15 @@ export function CarykhEvolutionSimulator() {
     )
   }
 
-  if (currentActivityId === ActivityId.SimulationFinished) {
+  if (
+    currentActivityId === ActivityId.SimulationFinished ||
+    currentActivityId === ActivityId.SortingCreatures ||
+    currentActivityId === ActivityId.SortedCreatures ||
+    currentActivityId === ActivityId.CullCreatures ||
+    currentActivityId === ActivityId.PropagateCreatures
+  ) {
     return (
-      <SimulationFinishedActivity
-        appController={appController}
-        appStore={appStore}
-      />
-    )
-  }
-
-  if (currentActivityId === ActivityId.SortingCreatures) {
-    return (
-      <SortingCreaturesActivity
-        appController={appController}
-        appStore={appStore}
-      />
-    )
-  }
-
-  if (currentActivityId === ActivityId.SortedCreatures) {
-    return (
-      <SortedCreaturesActivity
-        appController={appController}
-        appStore={appStore}
-      />
-    )
-  }
-
-  if (currentActivityId === ActivityId.CullCreatures) {
-    return (
-      <CullCreaturesActivity
-        appController={appController}
-        appStore={appStore}
-      />
-    )
-  }
-
-  if (currentActivityId === ActivityId.PropagateCreatures) {
-    return (
-      <PropagateCreaturesActivity
+      <PostSimulationActivity
         appController={appController}
         appStore={appStore}
       />

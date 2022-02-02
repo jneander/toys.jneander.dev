@@ -34,9 +34,10 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   const activityController = useMemo(() => {
     return new ActivityController({
       activityStore,
-      appController
+      appController,
+      appStore
     })
-  }, [activityStore, appController])
+  }, [activityStore, appController, appStore])
 
   const currentActivityStep = useStore(activityStore, getCurrentActivityStep)
 

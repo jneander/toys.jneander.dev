@@ -20,13 +20,8 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
   }, [appController])
 
   const getCreatureAndGridIndexFn = useCallback(
-    (index: number) => {
-      return {
-        creature: appStore.getState().creaturesInLatestGeneration[index],
-        gridIndex: index
-      }
-    },
-    [appStore]
+    (index: number) => activityController.getCreatureAndGridIndex(index),
+    [activityController]
   )
 
   function handlePropagateClick() {

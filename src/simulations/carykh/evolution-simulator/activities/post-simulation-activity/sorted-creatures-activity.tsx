@@ -17,13 +17,8 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
   const {activityController, appController, appStore} = props
 
   const getCreatureAndGridIndexFn = useCallback(
-    (index: number) => {
-      return {
-        creature: appStore.getState().creaturesInLatestGeneration[index],
-        gridIndex: index
-      }
-    },
-    [appStore]
+    (index: number) => activityController.getCreatureAndGridIndex(index),
+    [activityController]
   )
 
   function handleCullClick() {

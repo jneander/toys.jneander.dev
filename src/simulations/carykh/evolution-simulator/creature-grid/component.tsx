@@ -1,5 +1,5 @@
 import type {Graphics} from 'p5'
-import {useMemo} from 'react'
+import {useMemo, useRef} from 'react'
 
 import {P5ClientView} from '../../../../shared/p5'
 import type {AppController} from '../app-controller'
@@ -30,12 +30,10 @@ export interface CreatureGridProps {
 }
 
 export function CreatureGrid(props: CreatureGridProps) {
-  const {
-    appController,
-    appStore,
-    getCreatureAndGridIndexFn,
-    showsPopupSimulation = false
-  } = props
+  const {appController, appStore, getCreatureAndGridIndexFn} = props
+
+  const propsRef = useRef(props)
+  propsRef.current = props
 
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
@@ -46,12 +44,12 @@ export function CreatureGrid(props: CreatureGridProps) {
         gridStartX: 40,
         gridStartY: 42,
         p5Wrapper,
-        showsPopupSimulation
+        showsPopupSimulation: () => !!propsRef.current.showsPopupSimulation
       })
     }
 
     return createSketchFn({createUiFn})
-  }, [appController, appStore, getCreatureAndGridIndexFn, showsPopupSimulation])
+  }, [appController, appStore, getCreatureAndGridIndexFn])
 
   return (
     <div className={styles.Container}>
@@ -67,7 +65,7 @@ interface CreatureGridP5UIConfig {
   getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
   gridStartX: number
   gridStartY: number
-  showsPopupSimulation: boolean
+  showsPopupSimulation: () => boolean
 }
 
 class CreatureGridP5UI implements P5UI {
@@ -81,7 +79,7 @@ class CreatureGridP5UI implements P5UI {
 
   private gridStartX: number
   private gridStartY: number
-  private showsPopupSimulation: boolean
+  private showsPopupSimulation: () => boolean
 
   constructor(config: CreatureGridP5UIConfig) {
     this.appController = config.appController
@@ -122,7 +120,7 @@ class CreatureGridP5UI implements P5UI {
     creatureGridView.draw()
     canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
 
-    if (!this.showsPopupSimulation) {
+    if (!this.showsPopupSimulation()) {
       return
     }
 

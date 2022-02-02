@@ -20,7 +20,7 @@ export interface CreatureGridViewConfig {
   gridStartX: number
   gridStartY: number
   p5Wrapper: P5Wrapper
-  showsHoverState: boolean
+  showsHoverState: () => boolean
 }
 
 export class CreatureGridView {
@@ -54,7 +54,7 @@ export class CreatureGridView {
   }
 
   draw(): void {
-    if (this.config.showsHoverState) {
+    if (this.config.showsHoverState()) {
       this.drawCreatureHoverState()
     }
 

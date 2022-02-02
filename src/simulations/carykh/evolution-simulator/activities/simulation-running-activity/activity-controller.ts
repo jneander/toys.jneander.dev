@@ -101,7 +101,7 @@ export class ActivityController {
       if (!generationSimulation.isFinished()) {
         this.setTimer(0)
       } else {
-        appController.setActivityId(ActivityId.SimulationFinished)
+        appController.setActivityId(ActivityId.PostSimulation)
       }
     }
 
@@ -131,6 +131,6 @@ export class ActivityController {
 
   finishGenerationSimulation(): void {
     this.generationSimulation.finishGenerationSimulation()
-    this.appController.setActivityId(ActivityId.SimulationFinished)
+    this.appController.setActivityId(ActivityId.PostSimulation)
   }
 }

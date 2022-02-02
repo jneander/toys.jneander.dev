@@ -1,10 +1,11 @@
 import {useCallback} from 'react'
 
 import type {AppController} from '../../app-controller'
-import {ActivityId, CREATURE_COUNT} from '../../constants'
+import {CREATURE_COUNT} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import type {AppStore} from '../../types'
 import type {ActivityController} from './activity-controller'
+import {ActivityStep} from './constants'
 
 export interface SortedCreaturesActivityProps {
   activityController: ActivityController
@@ -26,7 +27,7 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
   )
 
   function handleCullClick() {
-    activityController.setActivityId(ActivityId.CullCreatures)
+    activityController.setCurrentActivityStep(ActivityStep.CullCreatures)
   }
 
   return (

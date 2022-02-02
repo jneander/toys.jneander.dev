@@ -1,10 +1,10 @@
 import {useCallback, useEffect} from 'react'
 
 import type {AppController} from '../../app-controller'
-import {ActivityId} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import type {AppStore} from '../../types'
 import type {ActivityController} from './activity-controller'
+import {ActivityStep} from './constants'
 
 export interface CullCreaturesActivityProps {
   activityController: ActivityController
@@ -30,7 +30,7 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
   )
 
   function handlePropagateClick() {
-    activityController.setActivityId(ActivityId.PropagateCreatures)
+    activityController.setCurrentActivityStep(ActivityStep.PropagateCreatures)
   }
 
   return (

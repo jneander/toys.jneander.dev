@@ -74,13 +74,7 @@ export function CarykhEvolutionSimulator() {
     )
   }
 
-  if (
-    currentActivityId === ActivityId.SimulationFinished ||
-    currentActivityId === ActivityId.SortingCreatures ||
-    currentActivityId === ActivityId.SortedCreatures ||
-    currentActivityId === ActivityId.CullCreatures ||
-    currentActivityId === ActivityId.PropagateCreatures
-  ) {
+  if (currentActivityId === ActivityId.PostSimulation) {
     return (
       <PostSimulationActivity
         appController={appController}

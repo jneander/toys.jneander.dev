@@ -130,43 +130,65 @@ export class CreatureSimulation {
     const axonValue1 = nodes[node.axon1].value
     const axonValue2 = nodes[node.axon2].value
 
-    if (node.operation === NodeOperationId.Constant) {
-      // constant
-    } else if (node.operation === NodeOperationId.TimeInSeconds) {
-      // time
-      nodeCache.nextValue = this.state.timer / 60.0
-    } else if (node.operation === NodeOperationId.NodePositionXFifthed) {
-      // x - coordinate
-      nodeCache.nextValue = node.positionX * 0.2
-    } else if (
-      node.operation === NodeOperationId.NegativeNodePositionYFifthed
-    ) {
-      // node.y - coordinate
-      nodeCache.nextValue = -node.positionY * 0.2
-    } else if (node.operation === NodeOperationId.AddAxons) {
-      // plus
-      nodeCache.nextValue = axonValue1 + axonValue2
-    } else if (node.operation === NodeOperationId.SubtractAxon2FromAxon1) {
-      // minus
-      nodeCache.nextValue = axonValue1 - axonValue2
-    } else if (node.operation === NodeOperationId.MultiplyAxons) {
-      // times
-      nodeCache.nextValue = axonValue1 * axonValue2
-    } else if (node.operation === NodeOperationId.DivideAxon2FromAxon1) {
-      // divide
-      nodeCache.nextValue = axonValue2 === 0 ? 0 : axonValue1 / axonValue2
-    } else if (node.operation === NodeOperationId.ModuloAxon1WithAxon2) {
-      // modulus
-      nodeCache.nextValue = axonValue2 === 0 ? 0 : axonValue1 % axonValue2
-    } else if (node.operation === NodeOperationId.SineOfAxon1) {
-      // sin
-      nodeCache.nextValue = Math.sin(axonValue1)
-    } else if (node.operation === NodeOperationId.SigmoidOfAxon1) {
-      // sig
-      nodeCache.nextValue = 1 / (1 + Math.pow(2.71828182846, -axonValue1))
-    } else if (node.operation === NodeOperationId.NodePressure) {
-      // pressure
-      nodeCache.nextValue = node.pressure
+    switch (node.operation) {
+      case NodeOperationId.Constant: {
+        break
+      }
+
+      case NodeOperationId.TimeInSeconds: {
+        nodeCache.nextValue = this.state.timer / 60.0
+        break
+      }
+
+      case NodeOperationId.NodePositionXFifthed: {
+        nodeCache.nextValue = node.positionX * 0.2
+        break
+      }
+
+      case NodeOperationId.NegativeNodePositionYFifthed: {
+        nodeCache.nextValue = -node.positionY * 0.2
+        break
+      }
+
+      case NodeOperationId.AddAxons: {
+        nodeCache.nextValue = axonValue1 + axonValue2
+        break
+      }
+
+      case NodeOperationId.SubtractAxon2FromAxon1: {
+        nodeCache.nextValue = axonValue1 - axonValue2
+        break
+      }
+
+      case NodeOperationId.MultiplyAxons: {
+        nodeCache.nextValue = axonValue1 * axonValue2
+        break
+      }
+
+      case NodeOperationId.DivideAxon2FromAxon1: {
+        nodeCache.nextValue = axonValue2 === 0 ? 0 : axonValue1 / axonValue2
+        break
+      }
+
+      case NodeOperationId.ModuloAxon1WithAxon2: {
+        nodeCache.nextValue = axonValue2 === 0 ? 0 : axonValue1 % axonValue2
+        break
+      }
+
+      case NodeOperationId.SineOfAxon1: {
+        nodeCache.nextValue = Math.sin(axonValue1)
+        break
+      }
+
+      case NodeOperationId.SigmoidOfAxon1: {
+        nodeCache.nextValue = 1 / (1 + Math.pow(2.71828182846, -axonValue1))
+        break
+      }
+
+      case NodeOperationId.NodePressure: {
+        nodeCache.nextValue = node.pressure
+        break
+      }
     }
   }
 

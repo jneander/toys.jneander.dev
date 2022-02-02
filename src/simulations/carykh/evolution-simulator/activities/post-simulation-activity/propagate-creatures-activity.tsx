@@ -4,8 +4,10 @@ import type {AppController} from '../../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import type {AppStore} from '../../types'
+import type {ActivityController} from './activity-controller'
 
 export interface PropagateCreaturesActivityProps {
+  activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
@@ -13,7 +15,7 @@ export interface PropagateCreaturesActivityProps {
 export function PropagateCreaturesActivity(
   props: PropagateCreaturesActivityProps
 ) {
-  const {appController, appStore} = props
+  const {activityController, appController, appStore} = props
 
   useEffect(() => {
     appController.propagateCreatures()
@@ -30,7 +32,7 @@ export function PropagateCreaturesActivity(
   )
 
   function handleBackClick() {
-    appController.setActivityId(ActivityId.GenerationView)
+    activityController.setActivityId(ActivityId.GenerationView)
   }
 
   return (

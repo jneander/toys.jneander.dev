@@ -5,8 +5,10 @@ import {ActivityId} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import {creatureIdToIndex} from '../../creatures'
 import type {AppStore} from '../../types'
+import type {ActivityController} from './activity-controller'
 
 export interface SimulationFinishedActivityProps {
+  activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
@@ -14,7 +16,7 @@ export interface SimulationFinishedActivityProps {
 export function SimulationFinishedActivity(
   props: SimulationFinishedActivityProps
 ) {
-  const {appController, appStore} = props
+  const {activityController, appController, appStore} = props
 
   const getCreatureAndGridIndexFn = useCallback(
     (index: number) => {
@@ -27,7 +29,7 @@ export function SimulationFinishedActivity(
   )
 
   function handleSortClick() {
-    appController.setActivityId(ActivityId.SortingCreatures)
+    activityController.setActivityId(ActivityId.SortingCreatures)
   }
 
   return (

@@ -4,14 +4,16 @@ import type {AppController} from '../../app-controller'
 import {ActivityId} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import type {AppStore} from '../../types'
+import type {ActivityController} from './activity-controller'
 
 export interface CullCreaturesActivityProps {
+  activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
 
 export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
-  const {appController, appStore} = props
+  const {activityController, appController, appStore} = props
 
   useEffect(() => {
     appController.cullCreatures()
@@ -28,7 +30,7 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
   )
 
   function handlePropagateClick() {
-    appController.setActivityId(ActivityId.PropagateCreatures)
+    activityController.setActivityId(ActivityId.PropagateCreatures)
   }
 
   return (

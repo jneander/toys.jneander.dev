@@ -13,14 +13,16 @@ import {creatureIdToIndex} from '../../creatures'
 import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {P5Activity, P5ActivityConfig} from '../shared'
+import type {ActivityController} from './activity-controller'
 
 export interface SortingCreaturesActivityProps {
+  activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
 
 export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
-  const {appController, appStore} = props
+  const {activityController, appController, appStore} = props
 
   useEffect(() => {
     appController.sortCreatures()
@@ -30,6 +32,7 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
       return new SortingCreaturesP5Activity({
+        activityController,
         appController,
         appStore,
         p5Wrapper
@@ -37,10 +40,10 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
     }
 
     return createSketchFn({createUiFn})
-  }, [appController, appStore])
+  }, [activityController, appController, appStore])
 
   function handleSkipClick() {
-    appController.setActivityId(ActivityId.SortedCreatures)
+    activityController.setActivityId(ActivityId.SortedCreatures)
   }
 
   return (
@@ -56,13 +59,20 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
   )
 }
 
+interface SortingCreaturesP5ActivityConfig extends P5ActivityConfig {
+  activityController: ActivityController
+}
+
 class SortingCreaturesP5Activity extends P5Activity {
+  private activityController: ActivityController
   private creatureDrawer: CreatureDrawer
 
   private activityTimer: number
 
-  constructor(config: P5ActivityConfig) {
+  constructor(config: SortingCreaturesP5ActivityConfig) {
     super(config)
+
+    this.activityController = config.activityController
 
     this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
 
@@ -120,7 +130,7 @@ class SortingCreaturesP5Activity extends P5Activity {
     this.activityTimer += 10
 
     if (this.activityTimer > 60 * Math.PI) {
-      this.appController.setActivityId(ActivityId.SortedCreatures)
+      this.activityController.setActivityId(ActivityId.SortedCreatures)
     }
   }
 

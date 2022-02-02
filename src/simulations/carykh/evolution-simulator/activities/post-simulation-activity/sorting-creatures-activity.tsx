@@ -2,7 +2,7 @@ import {useEffect, useMemo} from 'react'
 
 import {P5ClientView} from '../../../../../shared/p5'
 import type {AppController} from '../../app-controller'
-import {ActivityId, CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../../constants'
+import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {
   CREATURE_GRID_TILES_PER_ROW,
@@ -14,6 +14,7 @@ import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {P5Activity, P5ActivityConfig} from '../shared'
 import type {ActivityController} from './activity-controller'
+import {ActivityStep} from './constants'
 
 export interface SortingCreaturesActivityProps {
   activityController: ActivityController
@@ -43,7 +44,7 @@ export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
   }, [activityController, appController, appStore])
 
   function handleSkipClick() {
-    activityController.setActivityId(ActivityId.SortedCreatures)
+    activityController.setCurrentActivityStep(ActivityStep.SortedCreatures)
   }
 
   return (
@@ -130,7 +131,9 @@ class SortingCreaturesP5Activity extends P5Activity {
     this.activityTimer += 10
 
     if (this.activityTimer > 60 * Math.PI) {
-      this.activityController.setActivityId(ActivityId.SortedCreatures)
+      this.activityController.setCurrentActivityStep(
+        ActivityStep.SortedCreatures
+      )
     }
   }
 

@@ -1,11 +1,11 @@
 import {useCallback} from 'react'
 
 import type {AppController} from '../../app-controller'
-import {ActivityId} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import {creatureIdToIndex} from '../../creatures'
 import type {AppStore} from '../../types'
 import type {ActivityController} from './activity-controller'
+import {ActivityStep} from './constants'
 
 export interface SimulationFinishedActivityProps {
   activityController: ActivityController
@@ -29,7 +29,7 @@ export function SimulationFinishedActivity(
   )
 
   function handleSortClick() {
-    activityController.setActivityId(ActivityId.SortingCreatures)
+    activityController.setCurrentActivityStep(ActivityStep.SortingCreatures)
   }
 
   return (

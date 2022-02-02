@@ -1,18 +1,20 @@
+import {Store} from '@jneander/utils-state'
 import {useMemo} from 'react'
 
 import {useStore} from '../../../../../shared/state'
 import {AppController} from '../../app-controller'
-import {ActivityId} from '../../constants'
-import {AppState, AppStore} from '../../types'
+import {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
+import {ActivityStep} from './constants'
 import {CullCreaturesActivity} from './cull-creatures-activity'
 import {PropagateCreaturesActivity} from './propagate-creatures-activity'
 import {SimulationFinishedActivity} from './simulation-finished-activity'
 import {SortedCreaturesActivity} from './sorted-creatures-activity'
 import {SortingCreaturesActivity} from './sorting-creatures-activity'
+import type {ActivityState, ActivityStore} from './types'
 
-function getCurrentActivityId(appState: AppState): ActivityId | null {
-  return appState.currentActivityId
+function getCurrentActivityStep(activityState: ActivityState): ActivityStep {
+  return activityState.currentActivityStep
 }
 
 export interface PostSimulationActivityProps {
@@ -23,15 +25,22 @@ export interface PostSimulationActivityProps {
 export function PostSimulationActivity(props: PostSimulationActivityProps) {
   const {appController, appStore} = props
 
+  const activityStore = useMemo<ActivityStore>(() => {
+    return new Store<ActivityState>({
+      currentActivityStep: ActivityStep.SimulationFinished
+    })
+  }, [])
+
   const activityController = useMemo(() => {
     return new ActivityController({
+      activityStore,
       appController
     })
-  }, [appController])
+  }, [activityStore, appController])
 
-  const currentActivityId = useStore(appStore, getCurrentActivityId)
+  const currentActivityStep = useStore(activityStore, getCurrentActivityStep)
 
-  if (currentActivityId === ActivityId.SortingCreatures) {
+  if (currentActivityStep === ActivityStep.SortingCreatures) {
     return (
       <SortingCreaturesActivity
         activityController={activityController}
@@ -41,7 +50,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     )
   }
 
-  if (currentActivityId === ActivityId.SortedCreatures) {
+  if (currentActivityStep === ActivityStep.SortedCreatures) {
     return (
       <SortedCreaturesActivity
         activityController={activityController}
@@ -51,7 +60,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     )
   }
 
-  if (currentActivityId === ActivityId.CullCreatures) {
+  if (currentActivityStep === ActivityStep.CullCreatures) {
     return (
       <CullCreaturesActivity
         activityController={activityController}
@@ -61,7 +70,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     )
   }
 
-  if (currentActivityId === ActivityId.PropagateCreatures) {
+  if (currentActivityStep === ActivityStep.PropagateCreatures) {
     return (
       <PropagateCreaturesActivity
         activityController={activityController}

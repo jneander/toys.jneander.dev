@@ -34,9 +34,5 @@ export enum ActivityId {
   GenerationView = 'GENERATION_VIEW',
   GenerateCreatures = 'GENERATE_CREATURES',
   SimulationRunning = 'SIMULATION_RUNNING',
-  SimulationFinished = 'SIMULATION_FINISHED',
-  SortingCreatures = 'SORTING_CREATURES',
-  SortedCreatures = 'SORTED_CREATURES',
-  CullCreatures = 'CULL_CREATURES',
-  PropagateCreatures = 'PROPAGATE_CREATURES'
+  PostSimulation = 'POST_SIMULATION'
 }

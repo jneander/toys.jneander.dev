@@ -58,7 +58,7 @@ export class ActivityController {
 
     await this.simulateWholeGeneration()
 
-    this.appController.setActivityId(ActivityId.SimulationFinished)
+    this.appController.setActivityId(ActivityId.PostSimulation)
   }
 
   performAsapGenerationSimulation(): void {

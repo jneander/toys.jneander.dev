@@ -1,14 +1,19 @@
 import type {AppController} from '../../app-controller'
 import {ActivityId} from '../../constants'
+import {ActivityStep} from './constants'
+import type {ActivityStore} from './types'
 
 export interface ActivityControllerConfig {
+  activityStore: ActivityStore
   appController: AppController
 }
 
 export class ActivityController {
+  private activityStore: ActivityStore
   private appController: AppController
 
   constructor(config: ActivityControllerConfig) {
+    this.activityStore = config.activityStore
     this.appController = config.appController
   }
 
@@ -16,7 +21,7 @@ export class ActivityController {
     this.appController.setActivityId(ActivityId.GenerationView)
   }
 
-  setActivityId(activityId: ActivityId): void {
-    this.appController.setActivityId(activityId)
+  setCurrentActivityStep(activityStep: ActivityStep): void {
+    this.activityStore.setState({currentActivityStep: activityStep})
   }
 }

@@ -4,14 +4,16 @@ import type {AppController} from '../../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import type {AppStore} from '../../types'
+import type {ActivityController} from './activity-controller'
 
 export interface SortedCreaturesActivityProps {
+  activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
 
 export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
-  const {appController, appStore} = props
+  const {activityController, appController, appStore} = props
 
   const getCreatureAndGridIndexFn = useCallback(
     (index: number) => {
@@ -24,7 +26,7 @@ export function SortedCreaturesActivity(props: SortedCreaturesActivityProps) {
   )
 
   function handleCullClick() {
-    appController.setActivityId(ActivityId.CullCreatures)
+    activityController.setActivityId(ActivityId.CullCreatures)
   }
 
   return (

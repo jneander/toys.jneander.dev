@@ -40,6 +40,8 @@ export function createConfiguration(): ChartConfiguration {
     data: createInitialData(),
 
     options: {
+      animation: false,
+
       // Ignore hover to avoid changing programmatically-set active elements.
       events: [],
 

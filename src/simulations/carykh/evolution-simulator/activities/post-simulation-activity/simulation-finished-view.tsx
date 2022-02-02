@@ -6,15 +6,13 @@ import type {AppStore} from '../../types'
 import type {ActivityController} from './activity-controller'
 import {ActivityStep} from './constants'
 
-export interface SimulationFinishedActivityProps {
+export interface SimulationFinishedViewProps {
   activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
 
-export function SimulationFinishedActivity(
-  props: SimulationFinishedActivityProps
-) {
+export function SimulationFinishedView(props: SimulationFinishedViewProps) {
   const {activityController, appController, appStore} = props
 
   const getCreatureAndGridIndexFn = useCallback(

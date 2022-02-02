@@ -6,7 +6,7 @@ import {
   CREATURE_GRID_TILE_WIDTH
 } from '../../../creature-grid'
 import {creatureIdToIndex} from '../../../creatures'
-import {P5UI, P5Wrapper} from '../../../p5-utils'
+import {P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
@@ -17,7 +17,7 @@ export interface SortingCreaturesP5ViewConfig {
   p5Wrapper: P5Wrapper
 }
 
-export class SortingCreaturesP5View implements P5UI {
+export class SortingCreaturesP5View {
   private activityController: ActivityController
   private appStore: AppStore
   private p5Wrapper: P5Wrapper
@@ -91,11 +91,6 @@ export class SortingCreaturesP5View implements P5UI {
       )
     }
   }
-
-  initialize(): void {}
-  onMousePressed(): void {}
-  onMouseReleased(): void {}
-  onMouseWheel(event: WheelEvent): void {}
 
   private interpolate(a: number, b: number, offset: number): number {
     return a + (b - a) * offset

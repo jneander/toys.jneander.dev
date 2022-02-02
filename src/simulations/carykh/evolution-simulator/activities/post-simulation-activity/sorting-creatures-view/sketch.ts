@@ -1,14 +1,15 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import {P5UI, P5Wrapper} from '../../../p5-utils'
+import {P5Wrapper} from '../../../p5-utils'
+import type {SortingCreaturesP5View} from './p5-view'
 
 export interface CreateUiFnParameters {
   p5Wrapper: P5Wrapper
 }
 
 export interface CreateSketchFnConfig {
-  createUiFn(parameters: CreateUiFnParameters): P5UI
+  createUiFn(parameters: CreateUiFnParameters): SortingCreaturesP5View
 }
 
 let font: Font
@@ -17,21 +18,9 @@ export function createSketchFn({createUiFn}: CreateSketchFnConfig) {
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentUI: P5UI
+    let currentUI: SortingCreaturesP5View
 
     let p5Wrapper: P5Wrapper
-
-    p5.mouseWheel = (event: WheelEvent) => {
-      currentUI.onMouseWheel(event)
-    }
-
-    p5.mousePressed = () => {
-      currentUI.onMousePressed()
-    }
-
-    p5.mouseReleased = () => {
-      currentUI.onMouseReleased()
-    }
 
     if (font == null) {
       p5.preload = () => {
@@ -56,7 +45,6 @@ export function createSketchFn({createUiFn}: CreateSketchFnConfig) {
 
       if (currentUI == null) {
         currentUI = createUiFn({p5Wrapper})
-        currentUI.initialize()
       }
 
       currentUI.draw()

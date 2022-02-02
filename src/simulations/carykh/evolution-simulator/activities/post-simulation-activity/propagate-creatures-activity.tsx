@@ -1,7 +1,7 @@
 import {useCallback, useEffect} from 'react'
 
 import type {AppController} from '../../app-controller'
-import {ActivityId, CREATURE_COUNT} from '../../constants'
+import {CREATURE_COUNT} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import type {AppStore} from '../../types'
 import type {ActivityController} from './activity-controller'
@@ -32,7 +32,7 @@ export function PropagateCreaturesActivity(
   )
 
   function handleBackClick() {
-    activityController.setActivityId(ActivityId.GenerationView)
+    activityController.finishPostSimulation()
   }
 
   return (

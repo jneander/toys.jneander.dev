@@ -12,6 +12,10 @@ export class ActivityController {
     this.appController = config.appController
   }
 
+  finishPostSimulation(): void {
+    this.appController.setActivityId(ActivityId.GenerationView)
+  }
+
   setActivityId(activityId: ActivityId): void {
     this.appController.setActivityId(activityId)
   }

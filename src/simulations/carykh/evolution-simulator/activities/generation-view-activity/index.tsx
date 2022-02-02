@@ -27,6 +27,7 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
 
   const activityStore = useMemo(() => {
     return new Store<ActivityState>({
+      currentGenerationSimulation: null,
       generationSimulationMode: GenerationSimulationMode.Off,
       pendingGenerationCount: 0
     })

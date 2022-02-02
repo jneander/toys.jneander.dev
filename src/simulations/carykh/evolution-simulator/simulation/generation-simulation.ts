@@ -68,6 +68,14 @@ export class GenerationSimulation {
     this.finishGenerationSimulationFromIndex(0)
   }
 
+  performCreatureSimulation(): void {
+    for (let s = 0; s < FRAMES_FOR_CREATURE_FITNESS; s++) {
+      this.advanceCreatureSimulation()
+    }
+
+    this.advanceGenerationSimulation()
+  }
+
   finishGenerationSimulation(): void {
     const {timer} = this.getCreatureSimulationState()
 

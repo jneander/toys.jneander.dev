@@ -1,3 +1,5 @@
+import {ControlledLoopSync} from '@jneander/utils-async'
+
 import type {AppController} from '../../app-controller'
 import {
   ActivityId,
@@ -28,7 +30,15 @@ export class ActivityController {
     this.appStore = appStore
   }
 
+  isSimulating(): boolean {
+    return this.activityStore.getState().currentGenerationSimulation != null
+  }
+
   performStepByStepSimulation(): void {
+    if (this.isSimulating()) {
+      return
+    }
+
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.StepByStep,
       pendingGenerationCount: 0
@@ -36,16 +46,26 @@ export class ActivityController {
     this.appController.setActivityId(ActivityId.SimulationRunning)
   }
 
-  performQuickGenerationSimulation(): void {
+  async performQuickGenerationSimulation(): Promise<void> {
+    if (this.isSimulating()) {
+      return
+    }
+
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.Quick,
       pendingGenerationCount: 0
     })
-    this.simulateWholeGeneration()
+
+    await this.simulateWholeGeneration()
+
     this.appController.setActivityId(ActivityId.SimulationFinished)
   }
 
   performAsapGenerationSimulation(): void {
+    if (this.isSimulating()) {
+      return
+    }
+
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.ASAP,
       pendingGenerationCount: 1
@@ -55,6 +75,10 @@ export class ActivityController {
   }
 
   startAlapGenerationSimulation(): void {
+    if (this.isSimulating()) {
+      return
+    }
+
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.ASAP,
       pendingGenerationCount: 1000000000
@@ -101,10 +125,10 @@ export class ActivityController {
     })
   }
 
-  private performGenerationCycle(): void {
+  private async performGenerationCycle(): Promise<void> {
     const {appController} = this
 
-    this.simulateWholeGeneration()
+    await this.simulateWholeGeneration()
 
     appController.sortCreatures()
     appController.updateHistory()
@@ -137,12 +161,35 @@ export class ActivityController {
     }
   }
 
-  private simulateWholeGeneration(): void {
-    const generationSimulation = new GenerationSimulation({
-      appStore: this.appStore,
-      simulationConfig: this.appController.getSimulationConfig()
-    })
+  private async simulateWholeGeneration(): Promise<void> {
+    return new Promise(resolve => {
+      let loop: ControlledLoopSync
 
-    generationSimulation.simulateWholeGeneration()
+      const generationSimulation = new GenerationSimulation({
+        appStore: this.appStore,
+        simulationConfig: this.appController.getSimulationConfig()
+      })
+
+      generationSimulation.initialize()
+
+      this.activityStore.setState({
+        currentGenerationSimulation: generationSimulation
+      })
+
+      const loopFn = () => {
+        if (!generationSimulation.isFinished()) {
+          generationSimulation.performCreatureSimulation()
+          return
+        }
+
+        loop.stop()
+        this.activityStore.setState({currentGenerationSimulation: null})
+
+        resolve()
+      }
+
+      loop = new ControlledLoopSync({loopFn})
+      loop.start()
+    })
   }
 }

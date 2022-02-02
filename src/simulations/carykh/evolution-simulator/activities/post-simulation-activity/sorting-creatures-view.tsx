@@ -16,13 +16,13 @@ import {P5Activity, P5ActivityConfig} from '../shared'
 import type {ActivityController} from './activity-controller'
 import {ActivityStep} from './constants'
 
-export interface SortingCreaturesActivityProps {
+export interface SortingCreaturesViewProps {
   activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
 
-export function SortingCreaturesActivity(props: SortingCreaturesActivityProps) {
+export function SortingCreaturesView(props: SortingCreaturesViewProps) {
   const {activityController, appController, appStore} = props
 
   useEffect(() => {

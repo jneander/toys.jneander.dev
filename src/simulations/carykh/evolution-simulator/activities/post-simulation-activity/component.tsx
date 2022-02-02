@@ -6,11 +6,11 @@ import {AppController} from '../../app-controller'
 import {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {ActivityStep} from './constants'
-import {CullCreaturesActivity} from './cull-creatures-activity'
-import {PropagateCreaturesActivity} from './propagate-creatures-activity'
-import {SimulationFinishedActivity} from './simulation-finished-activity'
-import {SortedCreaturesActivity} from './sorted-creatures-activity'
-import {SortingCreaturesActivity} from './sorting-creatures-activity'
+import {CullCreaturesView} from './cull-creatures-view'
+import {PropagateCreaturesView} from './propagate-creatures-view'
+import {SimulationFinishedView} from './simulation-finished-view'
+import {SortedCreaturesView} from './sorted-creatures-view'
+import {SortingCreaturesView} from './sorting-creatures-view'
 import type {ActivityState, ActivityStore} from './types'
 
 function getCurrentActivityStep(activityState: ActivityState): ActivityStep {
@@ -43,7 +43,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
 
   if (currentActivityStep === ActivityStep.SortingCreatures) {
     return (
-      <SortingCreaturesActivity
+      <SortingCreaturesView
         activityController={activityController}
         appController={appController}
         appStore={appStore}
@@ -53,7 +53,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
 
   if (currentActivityStep === ActivityStep.SortedCreatures) {
     return (
-      <SortedCreaturesActivity
+      <SortedCreaturesView
         activityController={activityController}
         appController={appController}
         appStore={appStore}
@@ -63,7 +63,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
 
   if (currentActivityStep === ActivityStep.CullCreatures) {
     return (
-      <CullCreaturesActivity
+      <CullCreaturesView
         activityController={activityController}
         appController={appController}
         appStore={appStore}
@@ -73,7 +73,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
 
   if (currentActivityStep === ActivityStep.PropagateCreatures) {
     return (
-      <PropagateCreaturesActivity
+      <PropagateCreaturesView
         activityController={activityController}
         appController={appController}
         appStore={appStore}
@@ -82,7 +82,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   }
 
   return (
-    <SimulationFinishedActivity
+    <SimulationFinishedView
       activityController={activityController}
       appController={appController}
       appStore={appStore}

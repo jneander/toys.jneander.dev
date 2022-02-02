@@ -1,31 +1,28 @@
-import {useCallback, useEffect} from 'react'
+import {useCallback} from 'react'
 
 import type {AppController} from '../../app-controller'
+import {CREATURE_COUNT} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import type {AppStore} from '../../types'
 import type {ActivityController} from './activity-controller'
 import {ActivityStep} from './constants'
 
-export interface CullCreaturesActivityProps {
+export interface SortedCreaturesViewProps {
   activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
 
-export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
+export function SortedCreaturesView(props: SortedCreaturesViewProps) {
   const {activityController, appController, appStore} = props
-
-  useEffect(() => {
-    appController.cullCreatures()
-  }, [appController])
 
   const getCreatureAndGridIndexFn = useCallback(
     (index: number) => activityController.getCreatureAndGridIndex(index),
     [activityController]
   )
 
-  function handlePropagateClick() {
-    activityController.setCurrentActivityStep(ActivityStep.PropagateCreatures)
+  function handleCullClick() {
+    activityController.setCurrentActivityStep(ActivityStep.CullCreatures)
   }
 
   return (
@@ -38,17 +35,12 @@ export function CullCreaturesActivity(props: CullCreaturesActivityProps) {
       />
 
       <p>
-        Faster creatures are more likely to survive because they can outrun
-        their predators. Slow creatures get eaten.
+        Fastest creatures at the top! Slowest creatures at the bottom. (Going
+        backward = slow)
       </p>
 
-      <p>
-        Because of random chance, a few fast ones get eaten, while a few slow
-        ones survive.
-      </p>
-
-      <button onClick={handlePropagateClick} type="button">
-        Reproduce
+      <button onClick={handleCullClick} type="button">
+        Kill {Math.floor(CREATURE_COUNT / 2)}
       </button>
     </div>
   )

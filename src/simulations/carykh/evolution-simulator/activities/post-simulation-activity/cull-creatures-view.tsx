@@ -1,24 +1,22 @@
 import {useCallback, useEffect} from 'react'
 
 import type {AppController} from '../../app-controller'
-import {CREATURE_COUNT} from '../../constants'
 import {CreatureGrid} from '../../creature-grid'
 import type {AppStore} from '../../types'
 import type {ActivityController} from './activity-controller'
+import {ActivityStep} from './constants'
 
-export interface PropagateCreaturesActivityProps {
+export interface CullCreaturesViewProps {
   activityController: ActivityController
   appController: AppController
   appStore: AppStore
 }
 
-export function PropagateCreaturesActivity(
-  props: PropagateCreaturesActivityProps
-) {
+export function CullCreaturesView(props: CullCreaturesViewProps) {
   const {activityController, appController, appStore} = props
 
   useEffect(() => {
-    appController.propagateCreatures()
+    appController.cullCreatures()
   }, [appController])
 
   const getCreatureAndGridIndexFn = useCallback(
@@ -26,8 +24,8 @@ export function PropagateCreaturesActivity(
     [activityController]
   )
 
-  function handleBackClick() {
-    activityController.finishPostSimulation()
+  function handlePropagateClick() {
+    activityController.setCurrentActivityStep(ActivityStep.PropagateCreatures)
   }
 
   return (
@@ -36,17 +34,21 @@ export function PropagateCreaturesActivity(
         appController={appController}
         appStore={appStore}
         getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
+        showsPopupSimulation
       />
 
       <p>
-        These are the {CREATURE_COUNT} creatures of generation #
-        {appStore.getState().generationCount + 1}.
+        Faster creatures are more likely to survive because they can outrun
+        their predators. Slow creatures get eaten.
       </p>
 
-      <p>What perils will they face? Find out next time!</p>
+      <p>
+        Because of random chance, a few fast ones get eaten, while a few slow
+        ones survive.
+      </p>
 
-      <button onClick={handleBackClick} type="button">
-        Back
+      <button onClick={handlePropagateClick} type="button">
+        Reproduce
       </button>
     </div>
   )

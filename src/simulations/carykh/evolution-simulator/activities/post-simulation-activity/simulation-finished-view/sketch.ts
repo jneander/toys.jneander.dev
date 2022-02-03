@@ -1,14 +1,15 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import {P5UI, P5Wrapper} from '../../../p5-utils'
+import {P5Wrapper} from '../../../p5-utils'
+import {CreatureGridP5UI} from './creature-grid-p5-ui'
 
 export interface CreateUiFnParameters {
   p5Wrapper: P5Wrapper
 }
 
 export interface CreateSketchFnConfig {
-  createUiFn(parameters: CreateUiFnParameters): P5UI
+  createUiFn(parameters: CreateUiFnParameters): CreatureGridP5UI
 }
 
 let font: Font
@@ -17,17 +18,8 @@ export function createSketchFn({createUiFn}: CreateSketchFnConfig) {
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentUI: P5UI
-
+    let currentUI: CreatureGridP5UI
     let p5Wrapper: P5Wrapper
-
-    p5.mouseWheel = (event: WheelEvent) => {
-      currentUI.onMouseWheel(event)
-    }
-
-    p5.mousePressed = () => {
-      currentUI.onMousePressed()
-    }
 
     p5.mouseReleased = () => {
       currentUI.onMouseReleased()

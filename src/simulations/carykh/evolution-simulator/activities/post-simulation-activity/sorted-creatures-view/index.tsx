@@ -1,11 +1,11 @@
 import {useCallback} from 'react'
 
-import type {AppController} from '../../app-controller'
-import {CREATURE_COUNT} from '../../constants'
-import {CreatureGrid} from '../../creature-grid'
-import type {AppStore} from '../../types'
-import type {ActivityController} from './activity-controller'
-import {ActivityStep} from './constants'
+import type {AppController} from '../../../app-controller'
+import {CREATURE_COUNT} from '../../../constants'
+import {CreatureGrid} from '../../../creature-grid'
+import type {AppStore} from '../../../types'
+import type {ActivityController} from '../activity-controller'
+import {ActivityStep} from '../constants'
 
 export interface SortedCreaturesViewProps {
   activityController: ActivityController

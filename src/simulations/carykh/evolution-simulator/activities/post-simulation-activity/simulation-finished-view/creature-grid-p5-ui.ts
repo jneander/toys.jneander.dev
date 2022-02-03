@@ -1,7 +1,7 @@
 import type {Graphics} from 'p5'
 
 import type {AppController} from '../../../app-controller'
-import {P5UI, P5Wrapper} from '../../../p5-utils'
+import {P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import {PopupSimulationView, PopupSimulationViewAnchor} from '../../../views'
 import {
@@ -23,7 +23,7 @@ export interface CreatureGridP5UIConfig {
   showsPopupSimulation: () => boolean
 }
 
-export class CreatureGridP5UI implements P5UI {
+export class CreatureGridP5UI {
   private appController: AppController
   private appStore: AppStore
   private p5Wrapper: P5Wrapper
@@ -98,8 +98,6 @@ export class CreatureGridP5UI implements P5UI {
     }
   }
 
-  onMousePressed(): void {}
-
   initialize(): void {
     this.graphics.background(220, 253, 102)
     this.creatureGridView.initialize()
@@ -109,8 +107,6 @@ export class CreatureGridP5UI implements P5UI {
     // When the popup simulation is running, mouse clicks will stop it.
     this.popupSimulationView.dismissSimulationView()
   }
-
-  onMouseWheel(event: WheelEvent): void {}
 
   private setPopupSimulationCreatureInfo(
     generationCreatureIndex: number

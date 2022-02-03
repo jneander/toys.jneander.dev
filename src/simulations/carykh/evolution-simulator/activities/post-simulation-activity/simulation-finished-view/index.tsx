@@ -1,8 +1,7 @@
 import {useMemo} from 'react'
 
-import {P5ClientView} from '../../../../../../shared/p5'
 import type {AppController} from '../../../app-controller'
-import {P5ClientViewController} from '../../../p5-utils'
+import {P5ControlledClientView} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
@@ -27,23 +26,15 @@ export function SimulationFinishedView(props: SimulationFinishedViewProps) {
     })
   }, [activityController, appController, appStore])
 
-  const viewController = useMemo(() => {
-    const controller = new P5ClientViewController()
-
-    controller.setAdapter(creatureGridAdapter)
-
-    return controller
-  }, [creatureGridAdapter])
-
   function handleSortClick() {
     activityController.setCurrentActivityStep(ActivityStep.SortingCreatures)
   }
 
   return (
     <div>
-      <P5ClientView
+      <P5ControlledClientView
         className={styles.Container}
-        sketch={viewController.sketch}
+        clientViewAdapter={creatureGridAdapter}
       />
 
       <p>{"All 1,000 creatures have been tested. Now let's sort them!"}</p>

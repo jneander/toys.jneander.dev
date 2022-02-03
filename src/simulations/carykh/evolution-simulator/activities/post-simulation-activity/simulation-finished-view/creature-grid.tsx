@@ -1,4 +1,4 @@
-import {useMemo, useRef} from 'react'
+import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../../../shared/p5'
 import type {AppController} from '../../../app-controller'
@@ -13,14 +13,10 @@ export interface CreatureGridProps {
   appController: AppController
   appStore: AppStore
   getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
-  showsPopupSimulation?: boolean
 }
 
 export function CreatureGrid(props: CreatureGridProps) {
   const {appController, appStore, getCreatureAndGridIndexFn} = props
-
-  const propsRef = useRef(props)
-  propsRef.current = props
 
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
@@ -31,7 +27,7 @@ export function CreatureGrid(props: CreatureGridProps) {
         gridStartX: 40,
         gridStartY: 42,
         p5Wrapper,
-        showsPopupSimulation: () => !!propsRef.current.showsPopupSimulation
+        showsPopupSimulation: () => true
       })
     }
 

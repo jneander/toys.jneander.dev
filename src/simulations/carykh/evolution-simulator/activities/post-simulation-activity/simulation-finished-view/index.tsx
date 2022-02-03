@@ -30,7 +30,6 @@ export function SimulationFinishedView(props: SimulationFinishedViewProps) {
         appController={appController}
         appStore={appStore}
         getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
-        showsPopupSimulation
       />
 
       <p>{"All 1,000 creatures have been tested. Now let's sort them!"}</p>

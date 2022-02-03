@@ -10,12 +10,10 @@ import {
 import {Creature, creatureIdToIndex} from '../../../creatures'
 import {P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
-import type {ActivityController} from '../activity-controller'
-import {ActivityStep} from '../constants'
 
 export interface SortingCreaturesP5ViewConfig {
-  activityController: ActivityController
   appStore: AppStore
+  onAnimationFinished: () => void
   p5Wrapper: P5Wrapper
 }
 
@@ -24,7 +22,6 @@ type CreatureImageCache = {
 }
 
 export class SortingCreaturesP5View {
-  private activityController: ActivityController
   private appStore: AppStore
   private p5Wrapper: P5Wrapper
   private creatureDrawer: CreatureDrawer
@@ -32,10 +29,10 @@ export class SortingCreaturesP5View {
   private creatureGraphics: Graphics
   private creatureImageCache: CreatureImageCache
 
+  private onAnimationFinished: () => void
   private firstDrawTimestamp: number
 
   constructor(config: SortingCreaturesP5ViewConfig) {
-    this.activityController = config.activityController
     this.appStore = config.appStore
     this.p5Wrapper = config.p5Wrapper
 
@@ -47,6 +44,7 @@ export class SortingCreaturesP5View {
     )
     this.creatureImageCache = {}
 
+    this.onAnimationFinished = config.onAnimationFinished
     this.firstDrawTimestamp = 0
   }
 
@@ -111,9 +109,7 @@ export class SortingCreaturesP5View {
     canvas.pop()
 
     if (timer > 60 * Math.PI) {
-      this.activityController.setCurrentActivityStep(
-        ActivityStep.SortedCreatures
-      )
+      this.onAnimationFinished()
     }
   }
 

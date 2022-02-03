@@ -8,6 +8,8 @@ import {ActivityStep} from '../constants'
 import {SortingCreaturesP5View} from './p5-view'
 import {CreateUiFnParameters, createSketchFn} from './sketch'
 
+import styles from './styles.module.css'
+
 export interface SortingCreaturesViewProps {
   activityController: ActivityController
   appController: AppController
@@ -40,7 +42,7 @@ export function SortingCreaturesView(props: SortingCreaturesViewProps) {
 
   return (
     <div>
-      <div style={{height: '576px'}}>
+      <div className={styles.Container}>
         <P5ClientView sketch={sketchFn} />
       </div>
 

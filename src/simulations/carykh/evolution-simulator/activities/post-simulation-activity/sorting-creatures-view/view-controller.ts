@@ -16,6 +16,7 @@ let font: Font
 export class ViewController {
   private container: HTMLElement | null
   private p5Instance: p5 | null
+  private p5View: SortingCreaturesP5View | null
 
   private activityController: ActivityController
   private appStore: AppStore
@@ -26,6 +27,7 @@ export class ViewController {
 
     this.container = null
     this.p5Instance = null
+    this.p5View = null
   }
 
   async initialize(container: HTMLElement) {
@@ -46,7 +48,6 @@ export class ViewController {
   private sketch(p5: p5): void {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentUI: SortingCreaturesP5View
     let p5Wrapper: P5Wrapper
 
     if (font == null) {
@@ -68,15 +69,15 @@ export class ViewController {
     }
 
     p5.draw = () => {
-      if (currentUI == null) {
-        currentUI = new SortingCreaturesP5View({
+      if (this.p5View == null) {
+        this.p5View = new SortingCreaturesP5View({
           activityController: this.activityController,
           appStore: this.appStore,
           p5Wrapper
         })
       }
 
-      currentUI.draw()
+      this.p5View.draw()
     }
   }
 }

@@ -68,8 +68,6 @@ export class ViewController {
     }
 
     p5.draw = () => {
-      p5.scale(p5Wrapper.scale)
-
       if (currentUI == null) {
         currentUI = new SortingCreaturesP5View({
           activityController: this.activityController,

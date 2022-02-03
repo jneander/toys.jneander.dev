@@ -54,7 +54,7 @@ export class SortingCreaturesP5View {
     const {appStore, p5Wrapper} = this
     const {canvas} = p5Wrapper
 
-    const scale = 10
+    const scale = 10 * p5Wrapper.scale
 
     canvas.background(220, 253, 102)
     canvas.push()

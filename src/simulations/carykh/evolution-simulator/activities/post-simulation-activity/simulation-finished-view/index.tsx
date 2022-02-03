@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef} from 'react'
+import {useEffect, useMemo, useRef} from 'react'
 
 import type {AppController} from '../../../app-controller'
 import type {AppStore} from '../../../types'
@@ -19,18 +19,13 @@ export function SimulationFinishedView(props: SimulationFinishedViewProps) {
 
   const containerRef = useRef(null)
 
-  const getCreatureAndGridIndexFn = useCallback(
-    (index: number) => activityController.getCreatureAndGridIndex(index),
-    [activityController]
-  )
-
   const viewController = useMemo(() => {
     return new ViewController({
+      activityController,
       appController,
-      appStore,
-      getCreatureAndGridIndexFn
+      appStore
     })
-  }, [appController, appStore, getCreatureAndGridIndexFn])
+  }, [activityController, appController, appStore])
 
   useEffect(() => {
     viewController.initialize(containerRef.current!)

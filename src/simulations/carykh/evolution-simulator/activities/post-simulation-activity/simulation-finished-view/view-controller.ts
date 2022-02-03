@@ -4,13 +4,13 @@ import type {Font} from 'p5'
 import type {AppController} from '../../../app-controller'
 import {P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
+import type {ActivityController} from '../activity-controller'
 import {CreatureGridP5UI} from './creature-grid-p5-ui'
-import type {CreatureGridViewConfig} from './p5-view'
 
 export interface ViewControllerConfig {
+  activityController: ActivityController
   appController: AppController
   appStore: AppStore
-  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
 }
 
 let font: Font
@@ -19,14 +19,14 @@ export class ViewController {
   private container: HTMLElement | null
   private p5Instance: p5 | null
 
+  private activityController: ActivityController
   private appController: AppController
   private appStore: AppStore
-  private getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
 
   constructor(config: ViewControllerConfig) {
+    this.activityController = config.activityController
     this.appController = config.appController
     this.appStore = config.appStore
-    this.getCreatureAndGridIndexFn = config.getCreatureAndGridIndexFn
 
     this.container = null
     this.p5Instance = null
@@ -79,10 +79,14 @@ export class ViewController {
       p5.scale(p5Wrapper.scale)
 
       if (currentUI == null) {
+        const getCreatureAndGridIndexFn = (index: number) => {
+          return this.activityController.getCreatureAndGridIndex(index)
+        }
+
         currentUI = new CreatureGridP5UI({
           appController: this.appController,
           appStore: this.appStore,
-          getCreatureAndGridIndexFn: this.getCreatureAndGridIndexFn,
+          getCreatureAndGridIndexFn,
           gridStartX: 40,
           gridStartY: 42,
           p5Wrapper,

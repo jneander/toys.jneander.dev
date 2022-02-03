@@ -1,3 +1,4 @@
+import {TimerSync} from '@jneander/utils-async'
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
@@ -22,6 +23,8 @@ export class ViewController {
   private activityController: ActivityController
   private appStore: AppStore
 
+  private timer: TimerSync
+
   constructor(config: ViewControllerConfig) {
     this.activityController = config.activityController
     this.appStore = config.appStore
@@ -30,6 +33,11 @@ export class ViewController {
     this.p5Instance = null
     this.p5View = null
     this.p5Wrapper = null
+
+    this.timer = new TimerSync({
+      onTick: this.draw.bind(this),
+      targetTickIntervalMs: 16
+    })
   }
 
   async initialize(container: HTMLElement) {
@@ -39,17 +47,17 @@ export class ViewController {
 
     if (this.container != null) {
       this.p5Instance = new p5(this.sketch.bind(this), this.container)
+      this.timer.start()
     }
   }
 
   deinitialize() {
+    this.timer.stop()
     this.p5Instance?.remove()
     this.container = null
   }
 
   private sketch(p5: p5): void {
-    const FRAME_RATE = 60 // target frames per second
-
     if (font == null) {
       p5.preload = () => {
         font = p5.loadFont('/fonts/Helvetica-Bold.otf')
@@ -57,8 +65,6 @@ export class ViewController {
     }
 
     p5.setup = () => {
-      p5.frameRate(FRAME_RATE)
-
       this.p5Wrapper = new P5Wrapper({
         font,
         height: 720,
@@ -67,17 +73,21 @@ export class ViewController {
         width: 1280
       })
     }
+  }
 
-    p5.draw = () => {
-      if (this.p5View == null) {
-        this.p5View = new SortingCreaturesP5View({
-          activityController: this.activityController,
-          appStore: this.appStore,
-          p5Wrapper: this.p5Wrapper!
-        })
-      }
-
-      this.p5View.draw()
+  private draw(): void {
+    if (this.p5Wrapper == null) {
+      return
     }
+
+    if (this.p5View == null) {
+      this.p5View = new SortingCreaturesP5View({
+        activityController: this.activityController,
+        appStore: this.appStore,
+        p5Wrapper: this.p5Wrapper
+      })
+    }
+
+    this.p5View.draw()
   }
 }

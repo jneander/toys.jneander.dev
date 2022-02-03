@@ -2,10 +2,10 @@ import {useMemo, useRef} from 'react'
 
 import {P5ClientView} from '../../../../../../shared/p5'
 import type {AppController} from '../../../app-controller'
-import {CreateUiFnParameters, createSketchFn} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import {CreatureGridP5UI} from './creature-grid-p5-ui'
 import type {CreatureGridViewConfig} from './p5-view'
+import {CreateUiFnParameters, createSketchFn} from './sketch'
 
 import styles from './styles.module.css'
 

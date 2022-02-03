@@ -5,7 +5,8 @@ import type {AppController} from '../../../app-controller'
 import {P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
-import {CreatureGridP5UI} from './creature-grid-p5-ui'
+import {CreatureGridAdapter} from './creature-grid-adapter'
+import type {P5ClientViewAdapter} from './types'
 
 export interface ViewControllerConfig {
   activityController: ActivityController
@@ -31,11 +32,19 @@ export class ViewController {
   sketch(p5: p5): void {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentUI: CreatureGridP5UI
+    let currentAdapter: P5ClientViewAdapter | null
     let p5Wrapper: P5Wrapper
 
+    p5.mousePressed = () => {
+      currentAdapter?.onMousePressed?.()
+    }
+
     p5.mouseReleased = () => {
-      currentUI.onMouseReleased()
+      currentAdapter?.onMouseReleased?.()
+    }
+
+    p5.mouseWheel = (event: WheelEvent) => {
+      currentAdapter?.onMouseWheel?.(event)
     }
 
     if (font == null) {
@@ -59,25 +68,17 @@ export class ViewController {
     p5.draw = () => {
       p5.scale(p5Wrapper.scale)
 
-      if (currentUI == null) {
-        const getCreatureAndGridIndexFn = (index: number) => {
-          return this.activityController.getCreatureAndGridIndex(index)
-        }
-
-        currentUI = new CreatureGridP5UI({
+      if (currentAdapter == null) {
+        currentAdapter = new CreatureGridAdapter({
+          activityController: this.activityController,
           appController: this.appController,
-          appStore: this.appStore,
-          getCreatureAndGridIndexFn,
-          gridStartX: 40,
-          gridStartY: 42,
-          p5Wrapper,
-          showsPopupSimulation: () => true
+          appStore: this.appStore
         })
 
-        currentUI.initialize()
+        currentAdapter.initialize(p5Wrapper)
       }
 
-      currentUI.draw()
+      currentAdapter.draw?.()
     }
   }
 }

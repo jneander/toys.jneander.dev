@@ -11,6 +11,12 @@ import {Creature, creatureIdToIndex} from '../../../creatures'
 import {P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 
+const ANIMATION_DURATION_MS = 5000
+
+function easeInOutQuad(x: number): number {
+  return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2
+}
+
 export interface SortingCreaturesP5ViewConfig {
   appStore: AppStore
   onAnimationFinished: () => void
@@ -59,7 +65,8 @@ export class SortingCreaturesP5View {
       elapsedTimeMs = Date.now() - this.firstDrawTimestamp
     }
 
-    const timer = elapsedTimeMs / 60
+    const animationProgress = elapsedTimeMs / ANIMATION_DURATION_MS
+    const easedProgress = easeInOutQuad(animationProgress)
 
     const scale = 10 * p5Wrapper.scale
 
@@ -68,8 +75,6 @@ export class SortingCreaturesP5View {
     canvas.scale(scale / SCALE_TO_FIX_BUG)
 
     const creatureScale = 0.1
-
-    const transition = 0.5 - 0.5 * Math.cos(Math.min(timer / 60, Math.PI))
 
     const gridStartX = 40 * creatureScale
     const gridStartY = 42 * creatureScale
@@ -88,8 +93,8 @@ export class SortingCreaturesP5View {
       const y1 = Math.floor(i1 / CREATURE_GRID_TILES_PER_ROW)
       const x2 = i2 % CREATURE_GRID_TILES_PER_ROW
       const y2 = Math.floor(i2 / CREATURE_GRID_TILES_PER_ROW)
-      const x3 = this.interpolate(x1, x2, transition)
-      const y3 = this.interpolate(y1, y2, transition)
+      const x3 = this.interpolate(x1, x2, easedProgress)
+      const y3 = this.interpolate(y1, y2, easedProgress)
 
       const creatureCenterX = x3 * scaledCreatureWidth + scaledCreatureWidth / 2
       const creatureBottomY = y3 * scaledCreatureHeight + scaledCreatureHeight
@@ -108,7 +113,7 @@ export class SortingCreaturesP5View {
 
     canvas.pop()
 
-    if (timer > 60 * Math.PI) {
+    if (animationProgress >= 1) {
       this.onAnimationFinished()
     }
   }

@@ -1,5 +1,6 @@
-import {useEffect, useMemo, useRef} from 'react'
+import {useMemo} from 'react'
 
+import {P5ClientView} from '../../../../../../shared/p5'
 import type {AppController} from '../../../app-controller'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
@@ -17,8 +18,6 @@ export interface SimulationFinishedViewProps {
 export function SimulationFinishedView(props: SimulationFinishedViewProps) {
   const {activityController, appController, appStore} = props
 
-  const containerRef = useRef(null)
-
   const viewController = useMemo(() => {
     return new ViewController({
       activityController,
@@ -27,21 +26,16 @@ export function SimulationFinishedView(props: SimulationFinishedViewProps) {
     })
   }, [activityController, appController, appStore])
 
-  useEffect(() => {
-    viewController.initialize(containerRef.current!)
-
-    return () => {
-      viewController.deinitialize()
-    }
-  }, [viewController])
-
   function handleSortClick() {
     activityController.setCurrentActivityStep(ActivityStep.SortingCreatures)
   }
 
   return (
     <div>
-      <div className={styles.Container} ref={containerRef} />
+      <P5ClientView
+        className={styles.Container}
+        sketch={viewController.sketch}
+      />
 
       <p>{"All 1,000 creatures have been tested. Now let's sort them!"}</p>
 

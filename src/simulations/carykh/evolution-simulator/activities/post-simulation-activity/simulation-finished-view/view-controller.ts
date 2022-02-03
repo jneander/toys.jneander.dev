@@ -16,9 +16,6 @@ export interface ViewControllerConfig {
 let font: Font
 
 export class ViewController {
-  private container: HTMLElement | null
-  private p5Instance: p5 | null
-
   private activityController: ActivityController
   private appController: AppController
   private appStore: AppStore
@@ -28,26 +25,10 @@ export class ViewController {
     this.appController = config.appController
     this.appStore = config.appStore
 
-    this.container = null
-    this.p5Instance = null
+    this.sketch = this.sketch.bind(this)
   }
 
-  async initialize(container: HTMLElement) {
-    this.container = container
-
-    const p5 = (await import('p5')).default
-
-    if (this.container != null) {
-      this.p5Instance = new p5(this.sketch.bind(this), this.container)
-    }
-  }
-
-  deinitialize() {
-    this.p5Instance?.remove()
-    this.container = null
-  }
-
-  private sketch(p5: p5): void {
+  sketch(p5: p5): void {
     const FRAME_RATE = 60 // target frames per second
 
     let currentUI: CreatureGridP5UI

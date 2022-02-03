@@ -5,6 +5,7 @@ import type {AppController} from '../../../app-controller'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
+import {CreatureGridAdapter} from './creature-grid-adapter'
 import {ViewController} from './view-controller'
 
 import styles from './styles.module.css'
@@ -18,13 +19,21 @@ export interface SimulationFinishedViewProps {
 export function SimulationFinishedView(props: SimulationFinishedViewProps) {
   const {activityController, appController, appStore} = props
 
-  const viewController = useMemo(() => {
-    return new ViewController({
+  const creatureGridAdapter = useMemo(() => {
+    return new CreatureGridAdapter({
       activityController,
       appController,
       appStore
     })
   }, [activityController, appController, appStore])
+
+  const viewController = useMemo(() => {
+    const controller = new ViewController()
+
+    controller.setAdapter(creatureGridAdapter)
+
+    return controller
+  }, [creatureGridAdapter])
 
   function handleSortClick() {
     activityController.setCurrentActivityStep(ActivityStep.SortingCreatures)

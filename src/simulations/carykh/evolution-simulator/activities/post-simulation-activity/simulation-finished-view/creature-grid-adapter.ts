@@ -1,9 +1,8 @@
 import type {AppController} from '../../../app-controller'
-import type {P5Wrapper} from '../../../p5-utils'
+import type {P5ClientViewAdapter, P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {CreatureGridP5UI} from './creature-grid-p5-ui'
-import type {P5ClientViewAdapter} from './types'
 
 export interface CreatureGridAdapterConfig {
   activityController: ActivityController

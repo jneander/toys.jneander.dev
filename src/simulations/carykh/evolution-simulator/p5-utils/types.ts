@@ -1,3 +1,16 @@
+import {P5Wrapper} from './p5-wrapper'
+
+export interface P5ClientViewAdapter {
+  initialize(p5Wrapper: P5Wrapper): void
+  deinitialize(): void
+
+  draw?: () => void
+
+  onMousePressed?: () => void
+  onMouseReleased?: () => void
+  onMouseWheel?: (event: WheelEvent) => void
+}
+
 export interface P5UI {
   initialize(): void
   draw(): void

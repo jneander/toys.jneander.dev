@@ -2,11 +2,11 @@ import {useMemo} from 'react'
 
 import {P5ClientView} from '../../../../../../shared/p5'
 import type {AppController} from '../../../app-controller'
+import {P5ClientViewController} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
 import {CreatureGridAdapter} from './creature-grid-adapter'
-import {P5ClientViewController} from './p5-client-view-controller'
 
 import styles from './styles.module.css'
 

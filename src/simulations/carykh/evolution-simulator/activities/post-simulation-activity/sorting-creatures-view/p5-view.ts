@@ -32,7 +32,7 @@ export class SortingCreaturesP5View {
   private creatureGraphics: Graphics
   private creatureImageCache: CreatureImageCache
 
-  private activityTimer: number
+  private firstDrawTimestamp: number
 
   constructor(config: SortingCreaturesP5ViewConfig) {
     this.activityController = config.activityController
@@ -47,12 +47,21 @@ export class SortingCreaturesP5View {
     )
     this.creatureImageCache = {}
 
-    this.activityTimer = 0
+    this.firstDrawTimestamp = 0
   }
 
   draw(): void {
     const {appStore, p5Wrapper} = this
     const {canvas} = p5Wrapper
+
+    let elapsedTimeMs = 0
+    if (this.firstDrawTimestamp === 0) {
+      this.firstDrawTimestamp = Date.now()
+    } else {
+      elapsedTimeMs = Date.now() - this.firstDrawTimestamp
+    }
+
+    const timer = elapsedTimeMs / 60
 
     const scale = 10 * p5Wrapper.scale
 
@@ -62,8 +71,7 @@ export class SortingCreaturesP5View {
 
     const creatureScale = 0.1
 
-    const transition =
-      0.5 - 0.5 * Math.cos(Math.min(this.activityTimer / 60, Math.PI))
+    const transition = 0.5 - 0.5 * Math.cos(Math.min(timer / 60, Math.PI))
 
     const gridStartX = 40 * creatureScale
     const gridStartY = 42 * creatureScale
@@ -102,9 +110,7 @@ export class SortingCreaturesP5View {
 
     canvas.pop()
 
-    this.activityTimer += 1
-
-    if (this.activityTimer > 60 * Math.PI) {
+    if (timer > 60 * Math.PI) {
       this.activityController.setCurrentActivityStep(
         ActivityStep.SortedCreatures
       )

@@ -17,6 +17,7 @@ export class ViewController {
   private container: HTMLElement | null
   private p5Instance: p5 | null
   private p5View: SortingCreaturesP5View | null
+  private p5Wrapper: P5Wrapper | null
 
   private activityController: ActivityController
   private appStore: AppStore
@@ -28,6 +29,7 @@ export class ViewController {
     this.container = null
     this.p5Instance = null
     this.p5View = null
+    this.p5Wrapper = null
   }
 
   async initialize(container: HTMLElement) {
@@ -48,8 +50,6 @@ export class ViewController {
   private sketch(p5: p5): void {
     const FRAME_RATE = 60 // target frames per second
 
-    let p5Wrapper: P5Wrapper
-
     if (font == null) {
       p5.preload = () => {
         font = p5.loadFont('/fonts/Helvetica-Bold.otf')
@@ -59,7 +59,7 @@ export class ViewController {
     p5.setup = () => {
       p5.frameRate(FRAME_RATE)
 
-      p5Wrapper = new P5Wrapper({
+      this.p5Wrapper = new P5Wrapper({
         font,
         height: 720,
         p5,
@@ -73,7 +73,7 @@ export class ViewController {
         this.p5View = new SortingCreaturesP5View({
           activityController: this.activityController,
           appStore: this.appStore,
-          p5Wrapper
+          p5Wrapper: this.p5Wrapper!
         })
       }
 

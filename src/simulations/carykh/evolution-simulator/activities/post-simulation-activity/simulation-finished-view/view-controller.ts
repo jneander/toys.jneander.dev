@@ -1,32 +1,23 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import type {AppController} from '../../../app-controller'
 import {P5Wrapper} from '../../../p5-utils'
-import type {AppStore} from '../../../types'
-import type {ActivityController} from '../activity-controller'
-import {CreatureGridAdapter} from './creature-grid-adapter'
 import type {P5ClientViewAdapter} from './types'
-
-export interface ViewControllerConfig {
-  activityController: ActivityController
-  appController: AppController
-  appStore: AppStore
-}
 
 let font: Font
 
 export class ViewController {
-  private activityController: ActivityController
-  private appController: AppController
-  private appStore: AppStore
+  private adapter: P5ClientViewAdapter | null
 
-  constructor(config: ViewControllerConfig) {
-    this.activityController = config.activityController
-    this.appController = config.appController
-    this.appStore = config.appStore
+  constructor() {
+    this.adapter = null
 
     this.sketch = this.sketch.bind(this)
+  }
+
+  setAdapter(adapter: P5ClientViewAdapter | null): void {
+    this.adapter?.deinitialize()
+    this.adapter = adapter
   }
 
   sketch(p5: p5): void {
@@ -68,17 +59,12 @@ export class ViewController {
     p5.draw = () => {
       p5.scale(p5Wrapper.scale)
 
-      if (currentAdapter == null) {
-        currentAdapter = new CreatureGridAdapter({
-          activityController: this.activityController,
-          appController: this.appController,
-          appStore: this.appStore
-        })
-
-        currentAdapter.initialize(p5Wrapper)
+      if (currentAdapter !== this.adapter) {
+        currentAdapter = this.adapter
+        currentAdapter?.initialize(p5Wrapper)
       }
 
-      currentAdapter.draw?.()
+      currentAdapter?.draw?.()
     }
   }
 }

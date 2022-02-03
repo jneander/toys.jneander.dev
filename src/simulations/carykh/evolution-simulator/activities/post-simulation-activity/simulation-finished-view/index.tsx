@@ -1,10 +1,12 @@
-import {useCallback} from 'react'
+import {useCallback, useEffect, useMemo, useRef} from 'react'
 
 import type {AppController} from '../../../app-controller'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
-import {CreatureGrid} from './creature-grid'
+import {ViewController} from './view-controller'
+
+import styles from './styles.module.css'
 
 export interface SimulationFinishedViewProps {
   activityController: ActivityController
@@ -15,10 +17,28 @@ export interface SimulationFinishedViewProps {
 export function SimulationFinishedView(props: SimulationFinishedViewProps) {
   const {activityController, appController, appStore} = props
 
+  const containerRef = useRef(null)
+
   const getCreatureAndGridIndexFn = useCallback(
     (index: number) => activityController.getCreatureAndGridIndex(index),
     [activityController]
   )
+
+  const viewController = useMemo(() => {
+    return new ViewController({
+      appController,
+      appStore,
+      getCreatureAndGridIndexFn
+    })
+  }, [appController, appStore, getCreatureAndGridIndexFn])
+
+  useEffect(() => {
+    viewController.initialize(containerRef.current!)
+
+    return () => {
+      viewController.deinitialize()
+    }
+  }, [viewController])
 
   function handleSortClick() {
     activityController.setCurrentActivityStep(ActivityStep.SortingCreatures)
@@ -26,11 +46,7 @@ export function SimulationFinishedView(props: SimulationFinishedViewProps) {
 
   return (
     <div>
-      <CreatureGrid
-        appController={appController}
-        appStore={appStore}
-        getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
-      />
+      <div className={styles.Container} ref={containerRef} />
 
       <p>{"All 1,000 creatures have been tested. Now let's sort them!"}</p>
 

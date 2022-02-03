@@ -6,7 +6,7 @@ import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
 import {CreatureGridAdapter} from './creature-grid-adapter'
-import {ViewController} from './view-controller'
+import {P5ClientViewController} from './p5-client-view-controller'
 
 import styles from './styles.module.css'
 
@@ -28,7 +28,7 @@ export function SimulationFinishedView(props: SimulationFinishedViewProps) {
   }, [activityController, appController, appStore])
 
   const viewController = useMemo(() => {
-    const controller = new ViewController()
+    const controller = new P5ClientViewController()
 
     controller.setAdapter(creatureGridAdapter)
 

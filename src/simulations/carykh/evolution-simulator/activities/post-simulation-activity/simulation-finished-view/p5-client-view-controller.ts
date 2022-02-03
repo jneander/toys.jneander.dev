@@ -6,7 +6,7 @@ import type {P5ClientViewAdapter} from './types'
 
 let font: Font
 
-export class ViewController {
+export class P5ClientViewController {
   private adapter: P5ClientViewAdapter | null
 
   constructor() {

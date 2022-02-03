@@ -5,6 +5,7 @@ import type {Font} from 'p5'
 import {P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
+import {ActivityStep} from '../constants'
 import {SortingCreaturesP5View} from './p5-view'
 
 export interface ViewControllerConfig {
@@ -81,9 +82,15 @@ export class ViewController {
     }
 
     if (this.p5View == null) {
+      const onAnimationFinished = () => {
+        this.activityController.setCurrentActivityStep(
+          ActivityStep.SortedCreatures
+        )
+      }
+
       this.p5View = new SortingCreaturesP5View({
-        activityController: this.activityController,
         appStore: this.appStore,
+        onAnimationFinished,
         p5Wrapper: this.p5Wrapper
       })
     }

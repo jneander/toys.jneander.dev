@@ -11,13 +11,16 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH
 } from './constants'
-import {CreatureGridView, CreatureGridViewConfig} from './p5-view'
+import {
+  CreatureGridP5View,
+  CreatureGridP5ViewConfig
+} from './creature-grid-p5-view'
 
 export interface CreatureGridP5UIConfig {
   appController: AppController
   appStore: AppStore
   p5Wrapper: P5Wrapper
-  getCreatureAndGridIndexFn: CreatureGridViewConfig['getCreatureAndGridIndexFn']
+  getCreatureAndGridIndexFn: CreatureGridP5ViewConfig['getCreatureAndGridIndexFn']
   gridStartX: number
   gridStartY: number
   showsPopupSimulation: () => boolean
@@ -27,7 +30,7 @@ export class CreatureGridP5UI {
   private appController: AppController
   private appStore: AppStore
   private p5Wrapper: P5Wrapper
-  private creatureGridView: CreatureGridView
+  private creatureGridView: CreatureGridP5View
   private popupSimulationView: PopupSimulationView
 
   private graphics: Graphics
@@ -49,7 +52,7 @@ export class CreatureGridP5UI {
 
     const {getCreatureAndGridIndexFn} = config
 
-    this.creatureGridView = new CreatureGridView({
+    this.creatureGridView = new CreatureGridP5View({
       getCreatureAndGridIndexFn,
       gridStartX: this.gridStartX,
       gridStartY: this.gridStartY,

@@ -1,5 +1,5 @@
-import type {P5ClientViewAdapter, P5Wrapper} from '../../../p5-utils'
-import type {AppStore} from '../../../types'
+import type {P5ClientViewAdapter, P5Wrapper} from '../p5-utils'
+import type {AppStore} from '../types'
 import {SortingCreaturesP5View} from './sorting-creatures-p5-view'
 
 export interface SortingCreaturesAdapterConfig {

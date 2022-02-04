@@ -2,7 +2,7 @@ import type {P5ClientViewAdapter, P5Wrapper} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
-import {SortingCreaturesP5View} from './p5-view'
+import {SortingCreaturesP5View} from './sorting-creatures-p5-view'
 
 export interface SortingCreaturesAdapterConfig {
   activityController: ActivityController

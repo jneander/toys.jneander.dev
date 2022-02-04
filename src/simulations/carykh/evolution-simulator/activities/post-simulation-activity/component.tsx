@@ -51,8 +51,13 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   const creatureCollectionAdapter = useMemo(() => {
     if (currentActivityStep === ActivityStep.SortingCreatures) {
       return new SortingCreaturesAdapter({
-        activityController,
-        appStore
+        appStore,
+
+        onAnimationFinished() {
+          activityController.setCurrentActivityStep(
+            ActivityStep.SortedCreatures
+          )
+        }
       })
     }
 

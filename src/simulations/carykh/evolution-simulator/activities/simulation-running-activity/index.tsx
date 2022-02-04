@@ -5,10 +5,10 @@ import {P5ClientView} from '../../../../../shared/p5'
 import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
 import {SIMULATION_SPEED_INITIAL} from '../../constants'
-import {CreateUiFnParameters, createSketchFn} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {SimulationRunningP5Activity} from './p5-activity'
+import {CreateUiFnParameters, createSketchFn} from './sketch'
 import type {ActivityState} from './types'
 
 export interface SimulationRunningActivityProps {

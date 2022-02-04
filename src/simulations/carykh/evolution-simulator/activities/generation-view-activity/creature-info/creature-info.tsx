@@ -7,10 +7,9 @@ import {
   getSpeciesColorHslString,
   speciesIdForCreature
 } from '../../../creatures'
-import {CreateUiFnParameters} from '../../../p5-utils'
 import type {SimulationConfig} from '../../../simulation'
 import {CreatureInfoP5View} from './p5-view'
-import {createSketchFn} from './sketch'
+import {CreateUiFnParameters, createSketchFn} from './sketch'
 import type {CreatureInfoState} from './types'
 
 import styles from './styles.module.css'

@@ -1,9 +1,8 @@
 import {Store} from '@jneander/utils-state'
-import {useCallback, useMemo} from 'react'
+import {useMemo} from 'react'
 
 import {useStore} from '../../../../../shared/state'
 import {AppController} from '../../app-controller'
-import {CreatureGrid} from '../../creature-grid'
 import {P5ControlledClientView} from '../../p5-utils'
 import {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
@@ -66,38 +65,15 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     })
   }, [activityController, appController, appStore, currentActivityStep])
 
-  const getCreatureAndGridIndexFn = useCallback(
-    (index: number) => activityController.getCreatureAndGridIndex(index),
-    [activityController]
-  )
-
-  let creatureCollectionView
   let activityView
 
   if (currentActivityStep === ActivityStep.SortingCreatures) {
-    creatureCollectionView = (
-      <P5ControlledClientView
-        className={styles.Container}
-        clientViewAdapter={creatureCollectionAdapter}
-      />
-    )
-
     activityView = (
       <SortingCreaturesView activityController={activityController} />
     )
   }
 
   if (currentActivityStep === ActivityStep.SortedCreatures) {
-    creatureCollectionView = (
-      <CreatureGrid
-        appController={appController}
-        appStore={appStore}
-        getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
-        key={currentActivityStep}
-        showsPopupSimulation
-      />
-    )
-
     activityView = (
       <SortedCreaturesView
         activityController={activityController}
@@ -107,16 +83,6 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   }
 
   if (currentActivityStep === ActivityStep.CullCreatures) {
-    creatureCollectionView = (
-      <CreatureGrid
-        appController={appController}
-        appStore={appStore}
-        getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
-        key={currentActivityStep}
-        showsPopupSimulation
-      />
-    )
-
     activityView = (
       <CullCreaturesView
         activityController={activityController}
@@ -126,15 +92,6 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   }
 
   if (currentActivityStep === ActivityStep.PropagateCreatures) {
-    creatureCollectionView = (
-      <CreatureGrid
-        appController={appController}
-        appStore={appStore}
-        getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
-        key={currentActivityStep}
-      />
-    )
-
     activityView = (
       <PropagateCreaturesView
         activityController={activityController}
@@ -144,13 +101,6 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   }
 
   if (currentActivityStep === ActivityStep.SimulationFinished) {
-    creatureCollectionView = (
-      <P5ControlledClientView
-        className={styles.Container}
-        clientViewAdapter={creatureCollectionAdapter}
-      />
-    )
-
     activityView = (
       <SimulationFinishedView
         activityController={activityController}
@@ -161,7 +111,11 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
 
   return (
     <div>
-      {creatureCollectionView}
+      <P5ControlledClientView
+        className={styles.Container}
+        clientViewAdapter={creatureCollectionAdapter}
+      />
+
       {activityView}
     </div>
   )

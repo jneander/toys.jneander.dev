@@ -7,12 +7,9 @@
 
 .CanvasContainer {
   background: rgb(220, 220, 220);
+  display: inline-block;
   height: 240px;
   width: 240px;
-}
-
-.Canvas {
-  display: inline-block;
 }
 
 .Details {

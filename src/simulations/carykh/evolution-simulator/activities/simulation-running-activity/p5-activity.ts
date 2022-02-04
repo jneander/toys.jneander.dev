@@ -1,3 +1,4 @@
+import type {AppController} from '../../app-controller'
 import {
   FITNESS_LABEL,
   FITNESS_UNIT_LABEL,
@@ -5,23 +6,29 @@ import {
 } from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
+import {P5UI, P5Wrapper} from '../../p5-utils'
 import {GenerationSimulation} from '../../simulation'
 import {SimulationView} from '../../views'
-import {P5Activity, P5ActivityConfig} from '../shared'
-import {ActivityController} from './activity-controller'
+import type {ActivityController} from './activity-controller'
 
-export interface SimulationRunningActivityConfig extends P5ActivityConfig {
+export interface SimulationRunningActivityConfig {
   activityController: ActivityController
+  appController: AppController
+  p5Wrapper: P5Wrapper
 }
 
-export class SimulationRunningP5Activity extends P5Activity {
+export class SimulationRunningP5Activity implements P5UI {
+  private appController: AppController
+  private p5Wrapper: P5Wrapper
+
   private simulationView: SimulationView
 
   private activityController: ActivityController
   private generationSimulation: GenerationSimulation
 
   constructor(config: SimulationRunningActivityConfig) {
-    super(config)
+    this.appController = config.appController
+    this.p5Wrapper = config.p5Wrapper
 
     const {canvas, font} = this.p5Wrapper
 
@@ -46,6 +53,8 @@ export class SimulationRunningP5Activity extends P5Activity {
     this.simulationView.setCameraPosition(0, 0)
   }
 
+  initialize(): void {}
+
   draw(): void {
     const {activityController, p5Wrapper} = this
     const {canvas, height, width} = p5Wrapper
@@ -69,6 +78,10 @@ export class SimulationRunningP5Activity extends P5Activity {
       this.drawFinalFitness()
     }
   }
+
+  onMousePressed(): void {}
+
+  onMouseReleased(): void {}
 
   onMouseWheel(event: WheelEvent): void {
     const delta = event.deltaX

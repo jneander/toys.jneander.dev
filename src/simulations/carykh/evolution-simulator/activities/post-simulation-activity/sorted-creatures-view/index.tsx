@@ -22,6 +22,7 @@ export function SortedCreaturesView(props: SortedCreaturesViewProps) {
   )
 
   function handleCullClick() {
+    appController.cullCreatures()
     activityController.setCurrentActivityStep(ActivityStep.CullCreatures)
   }
 

@@ -27,6 +27,8 @@ export function SimulationFinishedView(props: SimulationFinishedViewProps) {
   }, [activityController, appController, appStore])
 
   function handleSortClick() {
+    appController.sortCreatures()
+    appController.updateHistory()
     activityController.setCurrentActivityStep(ActivityStep.SortingCreatures)
   }
 

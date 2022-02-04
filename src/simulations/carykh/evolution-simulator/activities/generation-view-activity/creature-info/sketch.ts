@@ -40,8 +40,6 @@ export function createSketchFn({createUiFn}: CreateSketchFnConfig) {
     }
 
     p5.draw = () => {
-      p5.scale(p5Wrapper.scale)
-
       if (currentUI == null) {
         currentUI = createUiFn({p5Wrapper})
       }

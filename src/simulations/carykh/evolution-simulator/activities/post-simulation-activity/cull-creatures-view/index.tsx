@@ -1,24 +1,14 @@
-import {useCallback} from 'react'
-
 import type {AppController} from '../../../app-controller'
-import {CreatureGrid} from '../../../creature-grid'
-import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
 
 export interface CullCreaturesViewProps {
   activityController: ActivityController
   appController: AppController
-  appStore: AppStore
 }
 
 export function CullCreaturesView(props: CullCreaturesViewProps) {
-  const {activityController, appController, appStore} = props
-
-  const getCreatureAndGridIndexFn = useCallback(
-    (index: number) => activityController.getCreatureAndGridIndex(index),
-    [activityController]
-  )
+  const {activityController, appController} = props
 
   function handlePropagateClick() {
     appController.propagateCreatures()
@@ -27,13 +17,6 @@ export function CullCreaturesView(props: CullCreaturesViewProps) {
 
   return (
     <div>
-      <CreatureGrid
-        appController={appController}
-        appStore={appStore}
-        getCreatureAndGridIndexFn={getCreatureAndGridIndexFn}
-        showsPopupSimulation
-      />
-
       <p>
         Faster creatures are more likely to survive because they can outrun
         their predators. Slow creatures get eaten.

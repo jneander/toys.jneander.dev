@@ -41,13 +41,12 @@ export function SimulationRunningActivity(
       return new SimulationRunningP5Activity({
         activityController,
         appController,
-        appStore,
         p5Wrapper
       })
     }
 
     return createSketchFn({createUiFn})
-  }, [activityController, appController, appStore])
+  }, [activityController, appController])
 
   const simulationSpeed = useStore(activityStore, getSimulationSpeed)
 

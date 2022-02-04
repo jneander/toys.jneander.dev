@@ -10,6 +10,10 @@ import {
 import {Creature, creatureIdToIndex} from '../creatures'
 import {P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
+import {
+  getCachedCreatureImage,
+  setCachedCreatureImage
+} from './creature-image-cache'
 
 const ANIMATION_DURATION_MS = 5000
 
@@ -23,17 +27,12 @@ export interface SortingCreaturesP5ViewConfig {
   p5Wrapper: P5Wrapper
 }
 
-type CreatureImageCache = {
-  [creatureId: number]: Image
-}
-
 export class SortingCreaturesP5View {
   private appStore: AppStore
   private p5Wrapper: P5Wrapper
   private creatureDrawer: CreatureDrawer
 
   private creatureGraphics: Graphics
-  private creatureImageCache: CreatureImageCache
 
   private onAnimationFinished: () => void
   private firstDrawTimestamp: number
@@ -48,7 +47,6 @@ export class SortingCreaturesP5View {
       CREATURE_GRID_TILE_WIDTH * 3,
       CREATURE_GRID_TILE_HEIGHT * 3
     )
-    this.creatureImageCache = {}
 
     this.onAnimationFinished = config.onAnimationFinished
     this.firstDrawTimestamp = 0
@@ -119,7 +117,7 @@ export class SortingCreaturesP5View {
   }
 
   private getCreatureImage(creature: Creature): Image {
-    let image = this.creatureImageCache[creature.id]
+    let image = getCachedCreatureImage(creature)
 
     if (image != null) {
       return image
@@ -148,7 +146,7 @@ export class SortingCreaturesP5View {
       this.creatureGraphics.height
     )
 
-    this.creatureImageCache[creature.id] = image
+    setCachedCreatureImage(creature, image)
 
     return image
   }

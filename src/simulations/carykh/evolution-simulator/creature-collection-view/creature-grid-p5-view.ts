@@ -1,4 +1,4 @@
-import type {Graphics} from 'p5'
+import type {Graphics, Image} from 'p5'
 
 import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
@@ -10,6 +10,10 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH
 } from './constants'
+import {
+  getCachedCreatureImage,
+  setCachedCreatureImage
+} from './creature-image-cache'
 
 export interface CreatureGridP5ViewConfig {
   getCreatureAndGridIndexFn: (index: number) => {
@@ -29,6 +33,7 @@ export class CreatureGridP5View {
   private config: CreatureGridP5ViewConfig
   private creatureDrawer: CreatureDrawer
 
+  private creatureGraphics: Graphics
   private gridGraphics: Graphics
   private hoverGraphics: Graphics
 
@@ -41,9 +46,15 @@ export class CreatureGridP5View {
     const height =
       (CREATURE_GRID_TILES_PER_COLUMN + 1) * CREATURE_GRID_TILE_HEIGHT
 
-    this.gridGraphics = config.p5Wrapper.canvas.createGraphics(width, height)
-    this.hoverGraphics = config.p5Wrapper.canvas.createGraphics(width, height)
-    this.graphics = config.p5Wrapper.canvas.createGraphics(width, height)
+    const {canvas} = config.p5Wrapper
+
+    this.creatureGraphics = canvas.createGraphics(
+      CREATURE_GRID_TILE_WIDTH * 3,
+      CREATURE_GRID_TILE_HEIGHT * 3
+    )
+    this.gridGraphics = canvas.createGraphics(width, height)
+    this.hoverGraphics = canvas.createGraphics(width, height)
+    this.graphics = canvas.createGraphics(width, height)
   }
 
   initialize(): void {
@@ -124,11 +135,13 @@ export class CreatureGridP5View {
         const creatureCenterX = gridX * scaledCreatureWidth + marginX
         const creatureBottomY = gridY * scaledCreatureHeight + marginY
 
-        this.creatureDrawer.drawCreature(
-          creature,
-          creatureCenterX,
-          creatureBottomY,
-          gridGraphics
+        const creatureImage = this.getCreatureImage(creature)
+        gridGraphics.image(
+          creatureImage,
+          (creatureCenterX - scaledCreatureWidth * 1.5) * SCALE_TO_FIX_BUG,
+          (creatureBottomY - scaledCreatureHeight * 2) * SCALE_TO_FIX_BUG,
+          scaledCreatureWidth * 3 * SCALE_TO_FIX_BUG,
+          scaledCreatureHeight * 3 * SCALE_TO_FIX_BUG
         )
       } else {
         const blankLeftX =
@@ -142,6 +155,41 @@ export class CreatureGridP5View {
     }
 
     gridGraphics.pop()
+  }
+
+  private getCreatureImage(creature: Creature): Image {
+    let image = getCachedCreatureImage(creature)
+
+    if (image != null) {
+      return image
+    }
+
+    this.creatureGraphics.clear()
+
+    this.creatureGraphics.push()
+
+    // Translate to the bottom center of where the creature is drawn.
+    this.creatureGraphics.translate(
+      this.creatureGraphics.width / 2,
+      (this.creatureGraphics.height * 2) / 3
+    )
+    // Scale to fit the creature in the center.
+    this.creatureGraphics.scale(10 / SCALE_TO_FIX_BUG)
+
+    this.creatureDrawer.drawCreature(creature, 0, 0, this.creatureGraphics)
+
+    this.creatureGraphics.pop()
+
+    image = this.creatureGraphics.get(
+      0,
+      0,
+      this.creatureGraphics.width,
+      this.creatureGraphics.height
+    )
+
+    setCachedCreatureImage(creature, image)
+
+    return image
   }
 
   private drawCreatureHoverState(): void {

@@ -1,11 +1,11 @@
 import {useEffect, useMemo} from 'react'
 
-import {P5ClientView} from '../../../../../../shared/p5'
 import type {AppController} from '../../../app-controller'
+import {P5ControlledClientView} from '../../../p5-utils'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
-import {ViewController} from './view-controller'
+import {SortingCreaturesAdapter} from './sorting-creatures-adapter'
 
 import styles from './styles.module.css'
 
@@ -23,8 +23,8 @@ export function SortingCreaturesView(props: SortingCreaturesViewProps) {
     appController.updateHistory()
   }, [appController])
 
-  const viewController = useMemo(() => {
-    return new ViewController({
+  const sortingCreaturesAdapter = useMemo(() => {
+    return new SortingCreaturesAdapter({
       activityController,
       appStore
     })
@@ -36,9 +36,9 @@ export function SortingCreaturesView(props: SortingCreaturesViewProps) {
 
   return (
     <div>
-      <P5ClientView
+      <P5ControlledClientView
         className={styles.Container}
-        sketch={viewController.sketch}
+        clientViewAdapter={sortingCreaturesAdapter}
       />
 
       <button onClick={handleSkipClick} type="button">

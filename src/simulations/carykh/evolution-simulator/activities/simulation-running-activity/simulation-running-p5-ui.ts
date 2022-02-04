@@ -13,13 +13,13 @@ import {SimulationView} from '../../views'
 import type {ActivityController} from './activity-controller'
 import type {P5UI} from './types'
 
-export interface SimulationRunningActivityConfig {
+export interface SimulationRunningP5UiConfig {
   activityController: ActivityController
   appController: AppController
   p5Wrapper: P5Wrapper
 }
 
-export class SimulationRunningP5Activity implements P5UI {
+export class SimulationRunningP5Ui implements P5UI {
   private appController: AppController
   private p5Wrapper: P5Wrapper
 
@@ -28,7 +28,7 @@ export class SimulationRunningP5Activity implements P5UI {
   private activityController: ActivityController
   private generationSimulation: GenerationSimulation
 
-  constructor(config: SimulationRunningActivityConfig) {
+  constructor(config: SimulationRunningP5UiConfig) {
     this.appController = config.appController
     this.p5Wrapper = config.p5Wrapper
 

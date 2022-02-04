@@ -1,9 +1,10 @@
 import type {AppController} from '../../app-controller'
 import {ActivityId} from '../../constants'
+import type {CreatureAndGridIndex} from '../../creature-collection-view'
 import {creatureIdToIndex} from '../../creatures'
 import type {AppStore} from '../../types'
 import {ActivityStep} from './constants'
-import type {ActivityStore, CreatureAndGridIndex} from './types'
+import type {ActivityStore} from './types'
 
 export interface ActivityControllerConfig {
   activityStore: ActivityStore

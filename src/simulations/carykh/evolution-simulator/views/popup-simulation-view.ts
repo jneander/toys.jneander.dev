@@ -59,6 +59,7 @@ export class PopupSimulationView {
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.1,
+      canvas,
 
       creatureDrawer: new CreatureDrawer({
         p5Wrapper: this.p5Wrapper,
@@ -67,7 +68,6 @@ export class PopupSimulationView {
 
       creatureSimulation: this.creatureSimulation,
       height: 600,
-      p5: canvas,
       postFont: font,
       showArrow: false,
       simulationConfig: this.simulationConfig,

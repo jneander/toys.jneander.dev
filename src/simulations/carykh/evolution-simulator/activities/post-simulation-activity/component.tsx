@@ -3,7 +3,7 @@ import {useMemo} from 'react'
 
 import {useStore} from '../../../../../shared/state'
 import {AppController} from '../../app-controller'
-import {P5ControlledClientView} from '../../p5-utils'
+import {CreatureCollectionView} from '../../creature-collection-view'
 import {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {ActivityStep} from './constants'
@@ -19,8 +19,6 @@ import {
   SortingCreaturesView
 } from './sorting-creatures-view'
 import type {ActivityState, ActivityStore} from './types'
-
-import styles from './styles.module.css'
 
 function getCurrentActivityStep(activityState: ActivityState): ActivityStep {
   return activityState.currentActivityStep
@@ -111,10 +109,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
 
   return (
     <div>
-      <P5ControlledClientView
-        className={styles.Container}
-        clientViewAdapter={creatureCollectionAdapter}
-      />
+      <CreatureCollectionView adapter={creatureCollectionAdapter} />
 
       {activityView}
     </div>

@@ -2,14 +2,14 @@ import type p5 from 'p5'
 import type {Font} from 'p5'
 
 import {P5Wrapper} from '../../../p5-utils'
-import type {CreatureInfoP5View} from './p5-view'
+import type {CreatureInfoP5Ui} from './creature-info-p5-ui'
 
 export interface CreateUiFnParameters {
   p5Wrapper: P5Wrapper
 }
 
 export interface CreateSketchFnConfig {
-  createUiFn(parameters: CreateUiFnParameters): CreatureInfoP5View
+  createUiFn(parameters: CreateUiFnParameters): CreatureInfoP5Ui
 }
 
 let font: Font
@@ -18,7 +18,7 @@ export function createSketchFn({createUiFn}: CreateSketchFnConfig) {
   return function sketch(p5: p5) {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentUI: CreatureInfoP5View
+    let currentUI: CreatureInfoP5Ui
     let p5Wrapper: P5Wrapper
 
     if (font == null) {

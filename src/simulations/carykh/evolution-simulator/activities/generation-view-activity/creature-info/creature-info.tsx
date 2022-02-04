@@ -8,7 +8,7 @@ import {
   speciesIdForCreature
 } from '../../../creatures'
 import type {SimulationConfig} from '../../../simulation'
-import {CreatureInfoP5View} from './p5-view'
+import {CreatureInfoP5Ui} from './creature-info-p5-ui'
 import {CreateUiFnParameters, createSketchFn} from './sketch'
 import type {CreatureInfoState} from './types'
 
@@ -31,7 +31,7 @@ export function CreatureInfo(props: CreatureInfoProps) {
 
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
-      return new CreatureInfoP5View({
+      return new CreatureInfoP5Ui({
         creature,
         p5Wrapper,
         simulationConfig,

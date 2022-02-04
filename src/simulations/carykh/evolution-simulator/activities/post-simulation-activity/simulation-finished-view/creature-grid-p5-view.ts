@@ -11,7 +11,7 @@ import {
   CREATURE_GRID_TILE_WIDTH
 } from './constants'
 
-export interface CreatureGridViewConfig {
+export interface CreatureGridP5ViewConfig {
   getCreatureAndGridIndexFn: (index: number) => {
     creature: Creature
     gridIndex: number
@@ -23,15 +23,15 @@ export interface CreatureGridViewConfig {
   showsHoverState: () => boolean
 }
 
-export class CreatureGridView {
-  private config: CreatureGridViewConfig
+export class CreatureGridP5View {
+  private config: CreatureGridP5ViewConfig
   private creatureDrawer: CreatureDrawer
 
   graphics: Graphics
   private creatureGraphics: Graphics
   private hoverGraphics: Graphics
 
-  constructor(config: CreatureGridViewConfig) {
+  constructor(config: CreatureGridP5ViewConfig) {
     this.config = config
 
     this.creatureDrawer = new CreatureDrawer({p5Wrapper: config.p5Wrapper})

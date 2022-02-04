@@ -39,6 +39,7 @@ export class SimulationRunningP5Ui {
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.06,
+      canvas,
 
       creatureDrawer: new CreatureDrawer({
         p5Wrapper: this.p5Wrapper,
@@ -47,7 +48,6 @@ export class SimulationRunningP5Ui {
 
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
       height: 900,
-      p5: canvas,
       postFont: font,
       showArrow: true,
       simulationConfig: this.appController.getSimulationConfig(),

@@ -1,4 +1,4 @@
-import {useCallback, useEffect} from 'react'
+import {useCallback} from 'react'
 
 import type {AppController} from '../../../app-controller'
 import {CREATURE_COUNT} from '../../../constants'
@@ -14,10 +14,6 @@ export interface PropagateCreaturesViewProps {
 
 export function PropagateCreaturesView(props: PropagateCreaturesViewProps) {
   const {activityController, appController, appStore} = props
-
-  useEffect(() => {
-    appController.propagateCreatures()
-  }, [appController])
 
   const getCreatureAndGridIndexFn = useCallback(
     (index: number) => activityController.getCreatureAndGridIndex(index),

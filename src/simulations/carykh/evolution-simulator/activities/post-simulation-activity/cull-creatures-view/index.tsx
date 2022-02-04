@@ -1,4 +1,4 @@
-import {useCallback, useEffect} from 'react'
+import {useCallback} from 'react'
 
 import type {AppController} from '../../../app-controller'
 import {CreatureGrid} from '../../../creature-grid'
@@ -15,16 +15,13 @@ export interface CullCreaturesViewProps {
 export function CullCreaturesView(props: CullCreaturesViewProps) {
   const {activityController, appController, appStore} = props
 
-  useEffect(() => {
-    appController.cullCreatures()
-  }, [appController])
-
   const getCreatureAndGridIndexFn = useCallback(
     (index: number) => activityController.getCreatureAndGridIndex(index),
     [activityController]
   )
 
   function handlePropagateClick() {
+    appController.propagateCreatures()
     activityController.setCurrentActivityStep(ActivityStep.PropagateCreatures)
   }
 

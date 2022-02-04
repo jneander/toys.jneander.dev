@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from 'react'
+import {useMemo} from 'react'
 
 import type {AppController} from '../../../app-controller'
 import {P5ControlledClientView} from '../../../p5-utils'
@@ -16,12 +16,7 @@ export interface SortingCreaturesViewProps {
 }
 
 export function SortingCreaturesView(props: SortingCreaturesViewProps) {
-  const {activityController, appController, appStore} = props
-
-  useEffect(() => {
-    appController.sortCreatures()
-    appController.updateHistory()
-  }, [appController])
+  const {activityController, appStore} = props
 
   const sortingCreaturesAdapter = useMemo(() => {
     return new SortingCreaturesAdapter({

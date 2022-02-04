@@ -6,10 +6,11 @@ import {
 } from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
-import {P5UI, P5Wrapper} from '../../p5-utils'
+import {P5Wrapper} from '../../p5-utils'
 import {GenerationSimulation} from '../../simulation'
 import {SimulationView} from '../../views'
 import type {ActivityController} from './activity-controller'
+import type {P5UI} from './types'
 
 export interface SimulationRunningActivityConfig {
   activityController: ActivityController

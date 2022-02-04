@@ -1,7 +1,8 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import {P5UI, P5Wrapper} from '../../p5-utils'
+import {P5Wrapper} from '../../p5-utils'
+import type {P5UI} from './types'
 
 export interface CreateUiFnParameters {
   p5Wrapper: P5Wrapper

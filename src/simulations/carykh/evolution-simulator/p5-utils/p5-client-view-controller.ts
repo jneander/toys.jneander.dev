@@ -6,10 +6,20 @@ import type {P5ClientViewAdapter} from './types'
 
 let font: Font
 
+export interface P5ClientViewControllerConfig {
+  height: number
+  scale: number
+  width: number
+}
+
 export class P5ClientViewController {
+  private config: P5ClientViewControllerConfig
   private adapter: P5ClientViewAdapter | null
 
-  constructor() {
+  constructor(config: Partial<P5ClientViewControllerConfig> = {}) {
+    const {height = 720, scale = 0.8, width = 1280} = config
+    this.config = {height, scale, width}
+
     this.adapter = null
 
     this.sketch = this.sketch.bind(this)
@@ -47,12 +57,14 @@ export class P5ClientViewController {
     p5.setup = () => {
       p5.frameRate(FRAME_RATE)
 
+      const {height, scale, width} = this.config
+
       p5Wrapper = new P5Wrapper({
         font,
-        height: 720,
+        height,
         p5,
-        scale: 0.8,
-        width: 1280
+        scale,
+        width
       })
     }
 

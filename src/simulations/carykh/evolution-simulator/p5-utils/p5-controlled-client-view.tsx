@@ -7,14 +7,17 @@ import type {P5ClientViewAdapter} from './types'
 export interface P5ControlledClientViewProps
   extends Omit<P5ClientViewProps, 'sketch'> {
   clientViewAdapter: P5ClientViewAdapter
+  height?: number
+  scale?: number
+  width?: number
 }
 
 export function P5ControlledClientView(props: P5ControlledClientViewProps) {
-  const {clientViewAdapter, ...clientViewProps} = props
+  const {clientViewAdapter, height, scale, width, ...clientViewProps} = props
 
   const clientViewController = useMemo(() => {
-    return new P5ClientViewController()
-  }, [])
+    return new P5ClientViewController({height, scale, width})
+  }, [height, scale, width])
 
   useEffect(() => {
     clientViewController.setAdapter(clientViewAdapter)

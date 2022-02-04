@@ -11,6 +11,8 @@ import {SimulationRunningP5Ui} from './simulation-running-p5-ui'
 import {CreateUiFnParameters, createSketchFn} from './sketch'
 import type {ActivityState} from './types'
 
+import styles from './styles.module.css'
+
 export interface SimulationRunningActivityProps {
   appController: AppController
   appStore: AppStore
@@ -64,7 +66,7 @@ export function SimulationRunningActivity(
 
   return (
     <div>
-      <div style={{height: '576px'}}>
+      <div className={styles.Container}>
         <P5ClientView sketch={sketchFn} />
       </div>
 

@@ -68,7 +68,7 @@ export class SortingCreaturesP5View {
     const animationProgress = elapsedTimeMs / ANIMATION_DURATION_MS
     const easedProgress = easeInOutQuad(animationProgress)
 
-    const scale = 10 * p5Wrapper.scale
+    const scale = 10
 
     canvas.background(220, 253, 102)
     canvas.push()

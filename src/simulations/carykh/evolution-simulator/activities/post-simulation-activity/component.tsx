@@ -49,27 +49,27 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     })
   }, [activityStore, appController, appStore])
 
-  const creatureGridAdapter = useMemo(() => {
+  const currentActivityStep = useStore(activityStore, getCurrentActivityStep)
+
+  const creatureCollectionAdapter = useMemo(() => {
+    if (currentActivityStep === ActivityStep.SortingCreatures) {
+      return new SortingCreaturesAdapter({
+        activityController,
+        appStore
+      })
+    }
+
     return new CreatureGridAdapter({
       activityController,
       appController,
       appStore
     })
-  }, [activityController, appController, appStore])
-
-  const sortingCreaturesAdapter = useMemo(() => {
-    return new SortingCreaturesAdapter({
-      activityController,
-      appStore
-    })
-  }, [activityController, appStore])
+  }, [activityController, appController, appStore, currentActivityStep])
 
   const getCreatureAndGridIndexFn = useCallback(
     (index: number) => activityController.getCreatureAndGridIndex(index),
     [activityController]
   )
-
-  const currentActivityStep = useStore(activityStore, getCurrentActivityStep)
 
   let creatureCollectionView
   let activityView
@@ -78,7 +78,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     creatureCollectionView = (
       <P5ControlledClientView
         className={styles.Container}
-        clientViewAdapter={sortingCreaturesAdapter}
+        clientViewAdapter={creatureCollectionAdapter}
       />
     )
 
@@ -147,7 +147,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     creatureCollectionView = (
       <P5ControlledClientView
         className={styles.Container}
-        clientViewAdapter={creatureGridAdapter}
+        clientViewAdapter={creatureCollectionAdapter}
       />
     )
 

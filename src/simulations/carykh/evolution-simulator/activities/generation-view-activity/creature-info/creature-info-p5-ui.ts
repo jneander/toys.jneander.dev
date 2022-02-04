@@ -6,14 +6,14 @@ import {CreatureSimulation, SimulationConfig} from '../../../simulation'
 import {SimulationView} from '../../../views'
 import type {CreatureInfoStore} from './types'
 
-export interface CreatureInfoP5ViewConfig {
+export interface CreatureInfoP5UiConfig {
   creature: Creature
   p5Wrapper: P5Wrapper
   simulationConfig: SimulationConfig
   store: CreatureInfoStore
 }
 
-export class CreatureInfoP5View {
+export class CreatureInfoP5Ui {
   private creature: Creature
   private p5Wrapper: P5Wrapper
   private store: CreatureInfoStore
@@ -26,7 +26,7 @@ export class CreatureInfoP5View {
   private creatureDrawn: boolean
   private simulationStarted: boolean
 
-  constructor(config: CreatureInfoP5ViewConfig) {
+  constructor(config: CreatureInfoP5UiConfig) {
     this.creature = config.creature
     this.p5Wrapper = config.p5Wrapper
     this.simulationConfig = config.simulationConfig

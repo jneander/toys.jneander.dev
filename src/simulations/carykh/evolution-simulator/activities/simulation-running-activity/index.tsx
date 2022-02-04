@@ -7,7 +7,7 @@ import type {AppController} from '../../app-controller'
 import {SIMULATION_SPEED_INITIAL} from '../../constants'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
-import {SimulationRunningP5Activity} from './p5-activity'
+import {SimulationRunningP5Ui} from './simulation-running-p5-ui'
 import {CreateUiFnParameters, createSketchFn} from './sketch'
 import type {ActivityState} from './types'
 
@@ -38,7 +38,7 @@ export function SimulationRunningActivity(
 
   const sketchFn = useMemo(() => {
     function createUiFn({p5Wrapper}: CreateUiFnParameters) {
-      return new SimulationRunningP5Activity({
+      return new SimulationRunningP5Ui({
         activityController,
         appController,
         p5Wrapper

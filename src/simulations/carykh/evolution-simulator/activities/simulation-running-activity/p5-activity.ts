@@ -2,7 +2,8 @@ import type {AppController} from '../../app-controller'
 import {
   FITNESS_LABEL,
   FITNESS_UNIT_LABEL,
-  FRAMES_FOR_CREATURE_FITNESS
+  FRAMES_FOR_CREATURE_FITNESS,
+  SCALE_TO_FIX_BUG
 } from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
@@ -39,7 +40,12 @@ export class SimulationRunningP5Activity implements P5UI {
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.06,
-      creatureDrawer: new CreatureDrawer({p5Wrapper: this.p5Wrapper}),
+
+      creatureDrawer: new CreatureDrawer({
+        p5Wrapper: this.p5Wrapper,
+        scale: SCALE_TO_FIX_BUG
+      }),
+
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
       height: 900,
       p5: canvas,

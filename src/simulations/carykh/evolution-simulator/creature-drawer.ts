@@ -1,7 +1,6 @@
 import type p5 from 'p5'
 import type {Color, Font} from 'p5'
 
-import {SCALE_TO_FIX_BUG} from './constants'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   Creature,
@@ -17,17 +16,22 @@ const NODE_TEXT_LINE_MULTIPLIER_Y2 = 0.35
 
 export interface CreatureDrawerConfig {
   p5Wrapper: P5Wrapper
+  scale?: number
 }
 
 export class CreatureDrawer {
   private axonColor: Color
   private axonFont: Font
 
+  private scale: number
+
   constructor(config: CreatureDrawerConfig) {
-    const {p5Wrapper} = config
+    const {p5Wrapper, scale = 1} = config
 
     this.axonColor = p5Wrapper.canvas.color(255, 255, 0)
     this.axonFont = p5Wrapper.font
+
+    this.scale = scale
   }
 
   drawCreature(creature: Creature, x: number, y: number, graphics: p5): void {
@@ -72,10 +76,10 @@ export class CreatureDrawer {
     graphics.fill(color)
     graphics.noStroke()
     graphics.ellipse(
-      (node.positionX + x) * SCALE_TO_FIX_BUG,
-      (node.positionY + y) * SCALE_TO_FIX_BUG,
-      node.mass * SCALE_TO_FIX_BUG,
-      node.mass * SCALE_TO_FIX_BUG
+      (node.positionX + x) * this.scale,
+      (node.positionY + y) * this.scale,
+      node.mass * this.scale,
+      node.mass * this.scale
     )
 
     if (node.friction >= 0.5) {
@@ -85,18 +89,18 @@ export class CreatureDrawer {
     }
 
     graphics.textAlign(graphics.CENTER)
-    graphics.textFont(this.axonFont, 0.4 * node.mass * SCALE_TO_FIX_BUG)
+    graphics.textFont(this.axonFont, 0.4 * node.mass * this.scale)
     graphics.text(
       graphics.nf(node.value, 0, 2),
-      (node.positionX + x) * SCALE_TO_FIX_BUG,
+      (node.positionX + x) * this.scale,
       (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
-        SCALE_TO_FIX_BUG
+        this.scale
     )
     graphics.text(
       NODE_OPERATION_LABELS_BY_ID[node.operation],
-      (node.positionX + x) * SCALE_TO_FIX_BUG,
+      (node.positionX + x) * this.scale,
       (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
-        SCALE_TO_FIX_BUG
+        this.scale
     )
   }
 
@@ -141,26 +145,24 @@ export class CreatureDrawer {
     const angle = Math.atan2(y2 - y1, x2 - x1)
 
     graphics.stroke(this.axonColor)
-    graphics.strokeWeight(0.03 * SCALE_TO_FIX_BUG)
+    graphics.strokeWeight(0.03 * this.scale)
     graphics.line(
-      x1 * SCALE_TO_FIX_BUG,
-      y1 * SCALE_TO_FIX_BUG,
-      x2 * SCALE_TO_FIX_BUG,
-      y2 * SCALE_TO_FIX_BUG
+      x1 * this.scale,
+      y1 * this.scale,
+      x2 * this.scale,
+      y2 * this.scale
     )
     graphics.line(
-      x1 * SCALE_TO_FIX_BUG,
-      y1 * SCALE_TO_FIX_BUG,
-      (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) *
-        SCALE_TO_FIX_BUG,
-      (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * SCALE_TO_FIX_BUG
+      x1 * this.scale,
+      y1 * this.scale,
+      (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * this.scale,
+      (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * this.scale
     )
     graphics.line(
-      x1 * SCALE_TO_FIX_BUG,
-      y1 * SCALE_TO_FIX_BUG,
-      (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) *
-        SCALE_TO_FIX_BUG,
-      (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * SCALE_TO_FIX_BUG
+      x1 * this.scale,
+      y1 * this.scale,
+      (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * this.scale,
+      (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * this.scale
     )
     graphics.noStroke()
   }
@@ -181,13 +183,13 @@ export class CreatureDrawer {
       w = nodes[muscle.axon].getClampedValue() * 0.15
     }
 
-    graphics.strokeWeight(w * SCALE_TO_FIX_BUG)
+    graphics.strokeWeight(w * this.scale)
     graphics.stroke(70, 35, 0, muscle.rigidity * 3000)
     graphics.line(
-      (ni1.positionX + x) * SCALE_TO_FIX_BUG,
-      (ni1.positionY + y) * SCALE_TO_FIX_BUG,
-      (ni2.positionX + x) * SCALE_TO_FIX_BUG,
-      (ni2.positionY + y) * SCALE_TO_FIX_BUG
+      (ni1.positionX + x) * this.scale,
+      (ni1.positionY + y) * this.scale,
+      (ni2.positionX + x) * this.scale,
+      (ni2.positionY + y) * this.scale
     )
   }
 
@@ -220,11 +222,11 @@ export class CreatureDrawer {
 
       graphics.fill(this.axonColor)
       graphics.textAlign(graphics.CENTER)
-      graphics.textFont(this.axonFont, 0.4 * averageMass * SCALE_TO_FIX_BUG)
+      graphics.textFont(this.axonFont, 0.4 * averageMass * this.scale)
       graphics.text(
         graphics.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
-        muscleMidX * SCALE_TO_FIX_BUG,
-        muscleMidY * SCALE_TO_FIX_BUG
+        muscleMidX * this.scale,
+        muscleMidY * this.scale
       )
     }
   }

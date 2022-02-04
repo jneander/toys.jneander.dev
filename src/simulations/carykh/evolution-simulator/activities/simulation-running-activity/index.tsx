@@ -1,14 +1,13 @@
 import {Store} from '@jneander/utils-state'
 import {useMemo} from 'react'
 
-import {P5ClientView} from '../../../../../shared/p5'
 import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
 import {SIMULATION_SPEED_INITIAL} from '../../constants'
+import {P5ControlledClientView} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
-import {SimulationRunningP5Ui} from './simulation-running-p5-ui'
-import {CreateUiFnParameters, createSketchFn} from './sketch'
+import {SimulationRunningAdapter} from './simulation-running-adapter'
 import type {ActivityState} from './types'
 
 import styles from './styles.module.css'
@@ -38,16 +37,11 @@ export function SimulationRunningActivity(
     return new ActivityController({activityStore, appController, appStore})
   }, [activityStore, appController, appStore])
 
-  const sketchFn = useMemo(() => {
-    function createUiFn({p5Wrapper}: CreateUiFnParameters) {
-      return new SimulationRunningP5Ui({
-        activityController,
-        appController,
-        p5Wrapper
-      })
-    }
-
-    return createSketchFn({createUiFn})
+  const clientViewAdapter = useMemo(() => {
+    return new SimulationRunningAdapter({
+      activityController,
+      appController
+    })
   }, [activityController, appController])
 
   const simulationSpeed = useStore(activityStore, getSimulationSpeed)
@@ -67,7 +61,7 @@ export function SimulationRunningActivity(
   return (
     <div>
       <div className={styles.Container}>
-        <P5ClientView sketch={sketchFn} />
+        <P5ControlledClientView clientViewAdapter={clientViewAdapter} />
       </div>
 
       <button onClick={handleSkipClick} type="button">

@@ -1,8 +1,9 @@
 import {CreatureDrawer} from '../creature-drawer'
 import {CREATURE_GRID_TILE_WIDTH} from '../creature-collection-view'
 import {Creature, speciesIdForCreature} from '../creatures'
-import {P5Wrapper, getSpeciesColor} from '../p5-utils'
+import {P5Wrapper} from '../p5-utils'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
+import {getSpeciesColor} from './helpers'
 import {SimulationView} from './simulation-view'
 
 export interface PopupSimulationViewConfig {

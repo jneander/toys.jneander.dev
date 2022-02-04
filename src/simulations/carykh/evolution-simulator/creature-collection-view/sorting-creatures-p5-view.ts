@@ -68,7 +68,7 @@ export class SortingCreaturesP5View {
 
     const scale = 10
 
-    canvas.background(220, 253, 102)
+    canvas.clear()
     canvas.push()
     canvas.scale(scale / SCALE_TO_FIX_BUG)
 

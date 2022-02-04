@@ -57,7 +57,6 @@ export function CreatureInfo(props: CreatureInfoProps) {
     <div className={styles.Container}>
       <div className={styles.CanvasContainer}>
         <P5ClientView
-          className={styles.Canvas}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           sketch={sketchFn}

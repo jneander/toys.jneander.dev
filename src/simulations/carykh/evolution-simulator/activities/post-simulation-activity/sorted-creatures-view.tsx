@@ -1,7 +1,7 @@
-import type {AppController} from '../../../app-controller'
-import {CREATURE_COUNT} from '../../../constants'
-import type {ActivityController} from '../activity-controller'
-import {ActivityStep} from '../constants'
+import type {AppController} from '../../app-controller'
+import {CREATURE_COUNT} from '../../constants'
+import type {ActivityController} from './activity-controller'
+import {ActivityStep} from './constants'
 
 export interface SortedCreaturesViewProps {
   activityController: ActivityController

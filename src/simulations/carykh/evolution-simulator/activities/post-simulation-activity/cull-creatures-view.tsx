@@ -1,6 +1,6 @@
-import type {AppController} from '../../../app-controller'
-import type {ActivityController} from '../activity-controller'
-import {ActivityStep} from '../constants'
+import type {AppController} from '../../app-controller'
+import type {ActivityController} from './activity-controller'
+import {ActivityStep} from './constants'
 
 export interface CullCreaturesViewProps {
   activityController: ActivityController

@@ -2,14 +2,14 @@ import type {Graphics, Image} from 'p5'
 
 import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
+import {Creature, creatureIdToIndex} from '../creatures'
+import {P5Wrapper} from '../p5-utils'
+import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH
-} from '../creature-grid'
-import {Creature, creatureIdToIndex} from '../creatures'
-import {P5Wrapper} from '../p5-utils'
-import type {AppStore} from '../types'
+} from './constants'
 import {
   getCachedCreatureImage,
   setCachedCreatureImage

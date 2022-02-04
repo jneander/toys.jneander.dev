@@ -41,8 +41,10 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
 
   const currentActivityStep = useStore(activityStore, getCurrentActivityStep)
 
+  let activityView
+
   if (currentActivityStep === ActivityStep.SortingCreatures) {
-    return (
+    activityView = (
       <SortingCreaturesView
         activityController={activityController}
         appController={appController}
@@ -52,7 +54,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   }
 
   if (currentActivityStep === ActivityStep.SortedCreatures) {
-    return (
+    activityView = (
       <SortedCreaturesView
         activityController={activityController}
         appController={appController}
@@ -62,7 +64,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   }
 
   if (currentActivityStep === ActivityStep.CullCreatures) {
-    return (
+    activityView = (
       <CullCreaturesView
         activityController={activityController}
         appController={appController}
@@ -72,7 +74,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   }
 
   if (currentActivityStep === ActivityStep.PropagateCreatures) {
-    return (
+    activityView = (
       <PropagateCreaturesView
         activityController={activityController}
         appController={appController}
@@ -81,11 +83,15 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     )
   }
 
-  return (
-    <SimulationFinishedView
-      activityController={activityController}
-      appController={appController}
-      appStore={appStore}
-    />
-  )
+  if (currentActivityStep === ActivityStep.SimulationFinished) {
+    activityView = (
+      <SimulationFinishedView
+        activityController={activityController}
+        appController={appController}
+        appStore={appStore}
+      />
+    )
+  }
+
+  return activityView
 }

@@ -24,11 +24,12 @@ export interface CreatureGridP5ViewConfig {
 }
 
 export class CreatureGridP5View {
+  public graphics: Graphics
+
   private config: CreatureGridP5ViewConfig
   private creatureDrawer: CreatureDrawer
 
-  graphics: Graphics
-  private creatureGraphics: Graphics
+  private gridGraphics: Graphics
   private hoverGraphics: Graphics
 
   constructor(config: CreatureGridP5ViewConfig) {
@@ -40,17 +41,14 @@ export class CreatureGridP5View {
     const height =
       (CREATURE_GRID_TILES_PER_COLUMN + 1) * CREATURE_GRID_TILE_HEIGHT
 
-    this.creatureGraphics = config.p5Wrapper.canvas.createGraphics(
-      width,
-      height
-    )
+    this.gridGraphics = config.p5Wrapper.canvas.createGraphics(width, height)
     this.hoverGraphics = config.p5Wrapper.canvas.createGraphics(width, height)
     this.graphics = config.p5Wrapper.canvas.createGraphics(width, height)
   }
 
   initialize(): void {
     this.drawCreatureGrid()
-    this.graphics.image(this.creatureGraphics, 0, 0)
+    this.graphics.image(this.gridGraphics, 0, 0)
   }
 
   draw(): void {
@@ -58,11 +56,11 @@ export class CreatureGridP5View {
       this.drawCreatureHoverState()
     }
 
-    const {creatureGraphics, hoverGraphics, graphics} = this
+    const {gridGraphics, hoverGraphics, graphics} = this
 
     graphics.clear()
 
-    graphics.image(creatureGraphics, 0, 0)
+    graphics.image(gridGraphics, 0, 0)
     graphics.image(hoverGraphics, 0, 0)
   }
 
@@ -94,13 +92,13 @@ export class CreatureGridP5View {
 
   private drawCreatureGrid(): void {
     const {getCreatureAndGridIndexFn} = this.config
-    const {creatureGraphics} = this
+    const {gridGraphics} = this
 
     const scale = 10
 
-    creatureGraphics.clear()
-    creatureGraphics.push()
-    creatureGraphics.scale(scale / SCALE_TO_FIX_BUG)
+    gridGraphics.clear()
+    gridGraphics.push()
+    gridGraphics.scale(scale / SCALE_TO_FIX_BUG)
 
     const creatureScale = 0.1
 
@@ -130,7 +128,7 @@ export class CreatureGridP5View {
           creature,
           creatureCenterX,
           creatureBottomY,
-          creatureGraphics
+          gridGraphics
         )
       } else {
         const blankLeftX =
@@ -138,12 +136,12 @@ export class CreatureGridP5View {
         const blankTopY =
           (gridY * scaledCreatureHeight + blankMarginY) * SCALE_TO_FIX_BUG
 
-        creatureGraphics.fill(0)
-        creatureGraphics.rect(blankLeftX, blankTopY, blankWidth, blankHeight)
+        gridGraphics.fill(0)
+        gridGraphics.rect(blankLeftX, blankTopY, blankWidth, blankHeight)
       }
     }
 
-    creatureGraphics.pop()
+    gridGraphics.pop()
   }
 
   private drawCreatureHoverState(): void {

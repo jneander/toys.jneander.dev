@@ -1,3 +1,4 @@
+import {SCALE_TO_FIX_BUG} from '../../../constants'
 import {CreatureDrawer} from '../../../creature-drawer'
 import type {Creature} from '../../../creatures'
 import type {P5Wrapper} from '../../../p5-utils'
@@ -35,7 +36,8 @@ export class CreatureInfoP5View {
     this.simulationStarted = false
 
     this.creatureDrawer = new CreatureDrawer({
-      p5Wrapper: this.p5Wrapper
+      p5Wrapper: this.p5Wrapper,
+      scale: SCALE_TO_FIX_BUG
     })
 
     this.creatureSimulation = new CreatureSimulation(this.simulationConfig)
@@ -44,7 +46,7 @@ export class CreatureInfoP5View {
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.1,
-      creatureDrawer: new CreatureDrawer({p5Wrapper: this.p5Wrapper}),
+      creatureDrawer: this.creatureDrawer,
       creatureSimulation: this.creatureSimulation,
       height: 480,
       p5: canvas,

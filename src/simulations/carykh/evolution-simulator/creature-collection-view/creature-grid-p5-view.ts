@@ -40,7 +40,10 @@ export class CreatureGridP5View {
   constructor(config: CreatureGridP5ViewConfig) {
     this.config = config
 
-    this.creatureDrawer = new CreatureDrawer({p5Wrapper: config.p5Wrapper})
+    this.creatureDrawer = new CreatureDrawer({
+      p5Wrapper: config.p5Wrapper,
+      scale: SCALE_TO_FIX_BUG
+    })
 
     const width = (CREATURE_GRID_TILES_PER_ROW + 1) * CREATURE_GRID_TILE_WIDTH
     const height =

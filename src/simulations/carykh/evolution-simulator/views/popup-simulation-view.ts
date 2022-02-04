@@ -1,3 +1,4 @@
+import {SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {CREATURE_GRID_TILE_WIDTH} from '../creature-collection-view'
 import {Creature, speciesIdForCreature} from '../creatures'
@@ -58,7 +59,12 @@ export class PopupSimulationView {
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.1,
-      creatureDrawer: new CreatureDrawer({p5Wrapper: this.p5Wrapper}),
+
+      creatureDrawer: new CreatureDrawer({
+        p5Wrapper: this.p5Wrapper,
+        scale: SCALE_TO_FIX_BUG
+      }),
+
       creatureSimulation: this.creatureSimulation,
       height: 600,
       p5: canvas,

@@ -41,7 +41,10 @@ export class SortingCreaturesP5View {
     this.appStore = config.appStore
     this.p5Wrapper = config.p5Wrapper
 
-    this.creatureDrawer = new CreatureDrawer({p5Wrapper: this.p5Wrapper})
+    this.creatureDrawer = new CreatureDrawer({
+      p5Wrapper: this.p5Wrapper,
+      scale: SCALE_TO_FIX_BUG
+    })
 
     this.creatureGraphics = this.p5Wrapper.canvas.createGraphics(
       CREATURE_GRID_TILE_WIDTH * 3,

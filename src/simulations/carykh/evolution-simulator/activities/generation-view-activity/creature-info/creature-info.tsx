@@ -1,15 +1,14 @@
 import {Store} from '@jneander/utils-state'
 import {useMemo} from 'react'
 
-import {P5ClientView} from '../../../../../../shared/p5'
 import {
   Creature,
   getSpeciesColorHslString,
   speciesIdForCreature
 } from '../../../creatures'
+import {P5ControlledClientView} from '../../../p5-utils'
 import type {SimulationConfig} from '../../../simulation'
-import {CreatureInfoP5Ui} from './creature-info-p5-ui'
-import {CreateUiFnParameters, createSketchFn} from './sketch'
+import {CreatureInfoAdapter} from './creature-info-adapter'
 import type {CreatureInfoState} from './types'
 
 import styles from './styles.module.css'
@@ -29,17 +28,12 @@ export function CreatureInfo(props: CreatureInfoProps) {
     })
   }, [])
 
-  const sketchFn = useMemo(() => {
-    function createUiFn({p5Wrapper}: CreateUiFnParameters) {
-      return new CreatureInfoP5Ui({
-        creature,
-        p5Wrapper,
-        simulationConfig,
-        store
-      })
-    }
-
-    return createSketchFn({createUiFn})
+  const clientViewAdapter = useMemo(() => {
+    return new CreatureInfoAdapter({
+      creature,
+      simulationConfig,
+      creatureInfoStore: store
+    })
   }, [creature, simulationConfig, store])
 
   function handleMouseEnter() {
@@ -56,10 +50,13 @@ export function CreatureInfo(props: CreatureInfoProps) {
   return (
     <div className={styles.Container}>
       <div className={styles.CanvasContainer}>
-        <P5ClientView
+        <P5ControlledClientView
+          clientViewAdapter={clientViewAdapter}
+          height={240}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          sketch={sketchFn}
+          scale={1}
+          width={240}
         />
       </div>
 

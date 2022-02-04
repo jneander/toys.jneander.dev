@@ -1,6 +1,6 @@
-import {CREATURE_COUNT} from '../../../constants'
-import type {AppStore} from '../../../types'
-import type {ActivityController} from '../activity-controller'
+import {CREATURE_COUNT} from '../../constants'
+import type {AppStore} from '../../types'
+import type {ActivityController} from './activity-controller'
 
 export interface PropagateCreaturesViewProps {
   activityController: ActivityController

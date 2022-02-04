@@ -1,9 +1,6 @@
 import type {AppController} from '../../../app-controller'
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
-import {CreatureGridAdapter} from './creature-grid-adapter'
-
-export {CreatureGridAdapter}
 
 export interface SimulationFinishedViewProps {
   activityController: ActivityController

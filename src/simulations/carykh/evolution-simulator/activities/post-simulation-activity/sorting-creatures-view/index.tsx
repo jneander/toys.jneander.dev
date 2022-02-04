@@ -1,8 +1,5 @@
 import type {ActivityController} from '../activity-controller'
 import {ActivityStep} from '../constants'
-import {SortingCreaturesAdapter} from './sorting-creatures-adapter'
-
-export {SortingCreaturesAdapter}
 
 export interface SortingCreaturesViewProps {
   activityController: ActivityController

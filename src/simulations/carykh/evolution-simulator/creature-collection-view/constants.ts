@@ -1,4 +1,4 @@
-import {CREATURE_COUNT} from '../../../constants'
+import {CREATURE_COUNT} from '../constants'
 
 export const CREATURE_GRID_TILE_WIDTH = 30
 export const CREATURE_GRID_TILE_HEIGHT = 25

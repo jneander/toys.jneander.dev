@@ -3,21 +3,19 @@ import {useMemo} from 'react'
 
 import {useStore} from '../../../../../shared/state'
 import {AppController} from '../../app-controller'
-import {CreatureCollectionView} from '../../creature-collection-view'
+import {
+  CreatureCollectionView,
+  CreatureGridAdapter,
+  SortingCreaturesAdapter
+} from '../../creature-collection-view'
 import {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {ActivityStep} from './constants'
 import {CullCreaturesView} from './cull-creatures-view'
 import {PropagateCreaturesView} from './propagate-creatures-view'
-import {
-  CreatureGridAdapter,
-  SimulationFinishedView
-} from './simulation-finished-view'
+import {SimulationFinishedView} from './simulation-finished-view'
 import {SortedCreaturesView} from './sorted-creatures-view'
-import {
-  SortingCreaturesAdapter,
-  SortingCreaturesView
-} from './sorting-creatures-view'
+import {SortingCreaturesView} from './sorting-creatures-view'
 import type {ActivityState, ActivityStore} from './types'
 
 function getCurrentActivityStep(activityState: ActivityState): ActivityStep {

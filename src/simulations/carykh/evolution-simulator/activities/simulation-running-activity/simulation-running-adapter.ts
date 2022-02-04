@@ -25,8 +25,6 @@ export class SimulationRunningAdapter implements P5ClientViewAdapter {
       appController: this.config.appController,
       p5Wrapper
     })
-
-    this.simulationRunningP5Ui.initialize()
   }
 
   deinitialize(): void {

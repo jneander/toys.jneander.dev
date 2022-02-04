@@ -11,7 +11,6 @@ import {P5Wrapper} from '../../p5-utils'
 import {GenerationSimulation} from '../../simulation'
 import {SimulationView} from '../../views'
 import type {ActivityController} from './activity-controller'
-import type {P5UI} from './types'
 
 export interface SimulationRunningP5UiConfig {
   activityController: ActivityController
@@ -19,7 +18,7 @@ export interface SimulationRunningP5UiConfig {
   p5Wrapper: P5Wrapper
 }
 
-export class SimulationRunningP5Ui implements P5UI {
+export class SimulationRunningP5Ui {
   private appController: AppController
   private p5Wrapper: P5Wrapper
 
@@ -60,8 +59,6 @@ export class SimulationRunningP5Ui implements P5UI {
     this.simulationView.setCameraPosition(0, 0)
   }
 
-  initialize(): void {}
-
   draw(): void {
     const {activityController, p5Wrapper} = this
     const {canvas, height, width} = p5Wrapper
@@ -85,10 +82,6 @@ export class SimulationRunningP5Ui implements P5UI {
       this.drawFinalFitness()
     }
   }
-
-  onMousePressed(): void {}
-
-  onMouseReleased(): void {}
 
   onMouseWheel(event: WheelEvent): void {
     const delta = event.deltaX

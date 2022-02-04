@@ -37,7 +37,8 @@ export class CreatureGridAdapter implements P5ClientViewAdapter {
       gridStartX: 40,
       gridStartY: 42,
       p5Wrapper,
-      showsPopupSimulation: () => true
+      showsPopupSimulation: () =>
+        this.activityController.currentStepShowsPopupSimulation()
     })
 
     this.creatureGridP5Ui.initialize()

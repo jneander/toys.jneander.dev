@@ -34,6 +34,11 @@ export class ActivityController {
     return {creature, gridIndex}
   }
 
+  currentStepShowsPopupSimulation(): boolean {
+    const {currentActivityStep} = this.activityStore.getState()
+    return currentActivityStep !== ActivityStep.PropagateCreatures
+  }
+
   finishPostSimulation(): void {
     this.appController.setActivityId(ActivityId.GenerationView)
   }

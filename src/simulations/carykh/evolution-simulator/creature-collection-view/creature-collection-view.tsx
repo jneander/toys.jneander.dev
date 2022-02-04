@@ -10,9 +10,8 @@ export function CreatureCollectionView(props: CreatureCollectionViewProps) {
   const {adapter} = props
 
   return (
-    <P5ControlledClientView
-      className={styles.Container}
-      clientViewAdapter={adapter}
-    />
+    <div className={styles.Container}>
+      <P5ControlledClientView clientViewAdapter={adapter} />
+    </div>
   )
 }

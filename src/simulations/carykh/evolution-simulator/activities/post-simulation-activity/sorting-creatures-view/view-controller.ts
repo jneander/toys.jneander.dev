@@ -16,8 +16,6 @@ export interface ViewControllerConfig {
 let font: Font
 
 export class ViewController {
-  private container: HTMLElement | null
-  private p5Instance: p5 | null
   private p5View: SortingCreaturesP5View | null
   private p5Wrapper: P5Wrapper | null
 
@@ -30,8 +28,6 @@ export class ViewController {
     this.activityController = config.activityController
     this.appStore = config.appStore
 
-    this.container = null
-    this.p5Instance = null
     this.p5View = null
     this.p5Wrapper = null
 
@@ -39,26 +35,13 @@ export class ViewController {
       onTick: this.draw.bind(this),
       targetTickIntervalMs: 16
     })
+
+    this.sketch = this.sketch.bind(this)
   }
 
-  async initialize(container: HTMLElement) {
-    this.container = container
+  sketch(p5: p5): void {
+    let startedTimer = false
 
-    const p5 = (await import('p5')).default
-
-    if (this.container != null) {
-      this.p5Instance = new p5(this.sketch.bind(this), this.container)
-      this.timer.start()
-    }
-  }
-
-  deinitialize() {
-    this.timer.stop()
-    this.p5Instance?.remove()
-    this.container = null
-  }
-
-  private sketch(p5: p5): void {
     if (font == null) {
       p5.preload = () => {
         font = p5.loadFont('/fonts/Helvetica-Bold.otf')
@@ -73,6 +56,13 @@ export class ViewController {
         scale: 0.8,
         width: 1280
       })
+    }
+
+    p5.draw = () => {
+      if (!startedTimer) {
+        this.timer.start()
+        startedTimer = true
+      }
     }
   }
 

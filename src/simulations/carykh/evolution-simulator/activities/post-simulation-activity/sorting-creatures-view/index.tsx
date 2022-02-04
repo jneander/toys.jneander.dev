@@ -1,5 +1,6 @@
-import {useEffect, useMemo, useRef} from 'react'
+import {useEffect, useMemo} from 'react'
 
+import {P5ClientView} from '../../../../../../shared/p5'
 import type {AppController} from '../../../app-controller'
 import type {AppStore} from '../../../types'
 import type {ActivityController} from '../activity-controller'
@@ -17,8 +18,6 @@ export interface SortingCreaturesViewProps {
 export function SortingCreaturesView(props: SortingCreaturesViewProps) {
   const {activityController, appController, appStore} = props
 
-  const containerRef = useRef(null)
-
   useEffect(() => {
     appController.sortCreatures()
     appController.updateHistory()
@@ -31,21 +30,16 @@ export function SortingCreaturesView(props: SortingCreaturesViewProps) {
     })
   }, [activityController, appStore])
 
-  useEffect(() => {
-    viewController.initialize(containerRef.current!)
-
-    return () => {
-      viewController.deinitialize()
-    }
-  }, [viewController])
-
   function handleSkipClick() {
     activityController.setCurrentActivityStep(ActivityStep.SortedCreatures)
   }
 
   return (
     <div>
-      <div className={styles.Container} ref={containerRef} />
+      <P5ClientView
+        className={styles.Container}
+        sketch={viewController.sketch}
+      />
 
       <button onClick={handleSkipClick} type="button">
         Skip

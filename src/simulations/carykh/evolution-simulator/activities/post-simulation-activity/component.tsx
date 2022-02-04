@@ -62,9 +62,15 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     }
 
     return new CreatureGridAdapter({
-      activityController,
       appController,
-      appStore
+      appStore,
+
+      getCreatureAndGridIndexFn(index: number) {
+        return activityController.getCreatureAndGridIndex(index)
+      },
+
+      showsPopupSimulation: () =>
+        activityController.currentStepShowsPopupSimulation()
     })
   }, [activityController, appController, appStore, currentActivityStep])
 

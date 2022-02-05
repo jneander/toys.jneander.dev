@@ -49,6 +49,7 @@ export class SimulationRunningP5Ui {
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
       height: 900,
       postFont: font,
+      scale: SCALE_TO_FIX_BUG,
       showArrow: true,
       simulationConfig: this.appController.getSimulationConfig(),
       statsFont: font,

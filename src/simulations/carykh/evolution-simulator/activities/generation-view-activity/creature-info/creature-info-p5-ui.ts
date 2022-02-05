@@ -51,6 +51,7 @@ export class CreatureInfoP5Ui {
       creatureSimulation: this.creatureSimulation,
       height: 480,
       postFont: font,
+      scale: SCALE_TO_FIX_BUG,
       showArrow: false,
       simulationConfig: this.simulationConfig,
       statsFont: font,

@@ -69,6 +69,7 @@ export class PopupSimulationView {
       creatureSimulation: this.creatureSimulation,
       height: 600,
       postFont: font,
+      scale: SCALE_TO_FIX_BUG,
       showArrow: false,
       simulationConfig: this.simulationConfig,
       statsFont: font,

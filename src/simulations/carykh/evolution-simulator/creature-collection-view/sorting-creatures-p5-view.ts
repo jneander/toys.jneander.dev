@@ -9,8 +9,8 @@ import {
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
-  GRID_AREA_START_X,
-  GRID_AREA_START_Y
+  VIEW_PADDING_START_X,
+  VIEW_PADDING_START_Y
 } from './constants'
 import {
   getCachedCreatureImage,
@@ -78,8 +78,8 @@ export class SortingCreaturesP5View {
 
     const creatureScale = 0.1
 
-    const gridStartX = GRID_AREA_START_X * creatureScale
-    const gridStartY = GRID_AREA_START_Y * creatureScale
+    const gridStartX = VIEW_PADDING_START_X * creatureScale
+    const gridStartY = VIEW_PADDING_START_Y * creatureScale
 
     const scaledCreatureWidth = CREATURE_GRID_TILE_WIDTH * creatureScale
     const scaledCreatureHeight = CREATURE_GRID_TILE_HEIGHT * creatureScale

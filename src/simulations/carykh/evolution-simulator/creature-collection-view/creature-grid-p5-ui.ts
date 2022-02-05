@@ -9,8 +9,8 @@ import {
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
-  GRID_AREA_START_X,
-  GRID_AREA_START_Y
+  VIEW_PADDING_START_X,
+  VIEW_PADDING_START_Y
 } from './constants'
 import {
   CreatureGridP5View,
@@ -69,8 +69,8 @@ export class CreatureGridP5UI {
 
     canvas.image(graphics, 0, 0, width, height)
 
-    const gridStartX = GRID_AREA_START_X - CREATURE_GRID_MARGIN_X
-    const gridStartY = GRID_AREA_START_Y - CREATURE_GRID_MARGIN_Y
+    const gridStartX = VIEW_PADDING_START_X - CREATURE_GRID_MARGIN_X
+    const gridStartY = VIEW_PADDING_START_Y - CREATURE_GRID_MARGIN_Y
 
     creatureGridView.draw()
     canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
@@ -135,9 +135,9 @@ export class CreatureGridP5UI {
     creatureColumnIndex = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
 
     const creatureStartX =
-      creatureRowIndex * CREATURE_GRID_TILE_WIDTH + GRID_AREA_START_X
+      creatureRowIndex * CREATURE_GRID_TILE_WIDTH + VIEW_PADDING_START_X
     const creatureStartY =
-      creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + GRID_AREA_START_Y
+      creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + VIEW_PADDING_START_Y
 
     return {
       startPositionX: creatureStartX,

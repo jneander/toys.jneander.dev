@@ -1,11 +1,7 @@
 import type p5 from 'p5'
 import type {Font, Graphics} from 'p5'
 
-import {
-  FRAMES_FOR_CREATURE_FITNESS,
-  POST_FONT_SIZE,
-  SCALE_TO_FIX_BUG
-} from '../constants'
+import {FRAMES_FOR_CREATURE_FITNESS, POST_FONT_SIZE} from '../constants'
 import type {CreatureDrawer} from '../creature-drawer'
 import {averagePositionOfNodes} from '../creatures'
 import {toInt} from '../math'
@@ -19,6 +15,7 @@ export interface SimulationViewConfig {
   creatureSimulation: CreatureSimulation
   height: number
   postFont: Font
+  scale?: number
   showArrow: boolean
   simulationConfig: SimulationConfig
   statsFont: Font
@@ -34,6 +31,8 @@ export class SimulationView {
   private simulationGraphics: Graphics
   private statsGraphics: Graphics
 
+  private scale: number
+
   constructor(config: SimulationViewConfig) {
     this.config = config
 
@@ -48,6 +47,8 @@ export class SimulationView {
     this.graphics = canvas.createGraphics(width, height)
     this.simulationGraphics = canvas.createGraphics(width, height)
     this.statsGraphics = canvas.createGraphics(width, height)
+
+    this.scale = config.scale || 1
   }
 
   draw(): void {
@@ -90,34 +91,25 @@ export class SimulationView {
     const {averageX} = averagePositionOfNodes(nodes)
 
     simulationGraphics.textAlign(simulationGraphics.CENTER)
-    simulationGraphics.textFont(postFont, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+    simulationGraphics.textFont(postFont, POST_FONT_SIZE * this.scale)
     simulationGraphics.noStroke()
     simulationGraphics.fill(120, 0, 255)
     simulationGraphics.rect(
-      (averageX - 1.7) * SCALE_TO_FIX_BUG,
-      -4.8 * SCALE_TO_FIX_BUG,
-      3.4 * SCALE_TO_FIX_BUG,
-      1.1 * SCALE_TO_FIX_BUG
+      (averageX - 1.7) * this.scale,
+      -4.8 * this.scale,
+      3.4 * this.scale,
+      1.1 * this.scale
     )
     simulationGraphics.beginShape()
-    simulationGraphics.vertex(
-      averageX * SCALE_TO_FIX_BUG,
-      -3.2 * SCALE_TO_FIX_BUG
-    )
-    simulationGraphics.vertex(
-      (averageX - 0.5) * SCALE_TO_FIX_BUG,
-      -3.7 * SCALE_TO_FIX_BUG
-    )
-    simulationGraphics.vertex(
-      (averageX + 0.5) * SCALE_TO_FIX_BUG,
-      -3.7 * SCALE_TO_FIX_BUG
-    )
+    simulationGraphics.vertex(averageX * this.scale, -3.2 * this.scale)
+    simulationGraphics.vertex((averageX - 0.5) * this.scale, -3.7 * this.scale)
+    simulationGraphics.vertex((averageX + 0.5) * this.scale, -3.7 * this.scale)
     simulationGraphics.endShape(simulationGraphics.CLOSE)
     simulationGraphics.fill(255)
     simulationGraphics.text(
       Math.round(averageX * 2) / 10 + ' m',
-      averageX * SCALE_TO_FIX_BUG,
-      -3.91 * SCALE_TO_FIX_BUG
+      averageX * this.scale,
+      -3.91 * this.scale
     )
   }
 
@@ -137,10 +129,10 @@ export class SimulationView {
     simulationGraphics.fill(0, 130, 0)
 
     const groundX =
-      (cameraState.x - cameraState.zoom * (width / 2)) * SCALE_TO_FIX_BUG
+      (cameraState.x - cameraState.zoom * (width / 2)) * this.scale
     const groundY = 0
-    const groundW = cameraState.zoom * width * SCALE_TO_FIX_BUG
-    const groundH = cameraState.zoom * height * SCALE_TO_FIX_BUG
+    const groundW = cameraState.zoom * width * this.scale
+    const groundH = cameraState.zoom * height * this.scale
 
     simulationGraphics.rect(groundX, groundY, groundW, groundH)
 
@@ -148,17 +140,17 @@ export class SimulationView {
       for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
         simulationGraphics.fill(255, 255, 255, 128)
         simulationGraphics.rect(
-          (averageX - 20) * SCALE_TO_FIX_BUG,
-          -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
-          40 * SCALE_TO_FIX_BUG,
-          simulationConfig.hazelStairs * 0.3 * SCALE_TO_FIX_BUG
+          (averageX - 20) * this.scale,
+          -simulationConfig.hazelStairs * i * this.scale,
+          40 * this.scale,
+          simulationConfig.hazelStairs * 0.3 * this.scale
         )
         simulationGraphics.fill(255, 255, 255, 255)
         simulationGraphics.rect(
-          (averageX - 20) * SCALE_TO_FIX_BUG,
-          -simulationConfig.hazelStairs * i * SCALE_TO_FIX_BUG,
-          40 * SCALE_TO_FIX_BUG,
-          simulationConfig.hazelStairs * 0.15 * SCALE_TO_FIX_BUG
+          (averageX - 20) * this.scale,
+          -simulationConfig.hazelStairs * i * this.scale,
+          40 * this.scale,
+          simulationConfig.hazelStairs * 0.15 * this.scale
         )
       }
     }
@@ -177,29 +169,29 @@ export class SimulationView {
     }
 
     simulationGraphics.textAlign(simulationGraphics.CENTER)
-    simulationGraphics.textFont(postFont, POST_FONT_SIZE * SCALE_TO_FIX_BUG)
+    simulationGraphics.textFont(postFont, POST_FONT_SIZE * this.scale)
     simulationGraphics.noStroke()
 
     for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
       for (let i = toInt(averageX / 5 - 5); i <= toInt(averageX / 5 + 5); i++) {
         simulationGraphics.fill(255)
         simulationGraphics.rect(
-          (i * 5 - 0.1) * SCALE_TO_FIX_BUG,
-          (-3.0 + postY) * SCALE_TO_FIX_BUG,
-          0.2 * SCALE_TO_FIX_BUG,
-          3 * SCALE_TO_FIX_BUG
+          (i * 5 - 0.1) * this.scale,
+          (-3.0 + postY) * this.scale,
+          0.2 * this.scale,
+          3 * this.scale
         )
         simulationGraphics.rect(
-          (i * 5 - 1) * SCALE_TO_FIX_BUG,
-          (-3.0 + postY) * SCALE_TO_FIX_BUG,
-          2 * SCALE_TO_FIX_BUG,
-          1 * SCALE_TO_FIX_BUG
+          (i * 5 - 1) * this.scale,
+          (-3.0 + postY) * this.scale,
+          2 * this.scale,
+          1 * this.scale
         )
         simulationGraphics.fill(120)
         simulationGraphics.text(
           i + ' m',
-          i * 5 * SCALE_TO_FIX_BUG,
-          (-2.17 + postY) * SCALE_TO_FIX_BUG
+          i * 5 * this.scale,
+          (-2.17 + postY) * this.scale
         )
       }
     }
@@ -217,10 +209,10 @@ export class SimulationView {
       simulationGraphics.width / 2.0,
       simulationGraphics.height / 2.0
     )
-    simulationGraphics.scale(1.0 / cameraState.zoom / SCALE_TO_FIX_BUG)
+    simulationGraphics.scale(1.0 / cameraState.zoom / this.scale)
     simulationGraphics.translate(
-      -cameraState.x * SCALE_TO_FIX_BUG,
-      -cameraState.y * SCALE_TO_FIX_BUG
+      -cameraState.x * this.scale,
+      -cameraState.y * this.scale
     )
 
     if (

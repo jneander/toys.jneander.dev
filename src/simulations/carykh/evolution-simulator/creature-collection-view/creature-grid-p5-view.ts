@@ -8,7 +8,9 @@ import {
   CREATURE_GRID_TILES_PER_COLUMN,
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
-  CREATURE_GRID_TILE_WIDTH
+  CREATURE_GRID_TILE_WIDTH,
+  GRID_AREA_START_X,
+  GRID_AREA_START_Y
 } from './constants'
 import {
   getCachedCreatureImage,
@@ -21,8 +23,6 @@ export interface CreatureGridP5ViewConfig {
     gridIndex: number
   }
 
-  gridStartX: number
-  gridStartY: number
   p5Wrapper: P5Wrapper
   showsHoverState: () => boolean
 }
@@ -78,15 +78,15 @@ export class CreatureGridP5View {
   }
 
   getGridIndexUnderCursor(): number | null {
-    const {gridStartX, gridStartY, p5Wrapper} = this.config
+    const {p5Wrapper} = this.config
 
     const gridWidth = 1200
     const gridHeight = 625
 
     if (
       p5Wrapper.rectIsUnderCursor(
-        gridStartX,
-        gridStartY,
+        GRID_AREA_START_X,
+        GRID_AREA_START_Y,
         gridWidth - 1,
         gridHeight - 1
       )
@@ -94,8 +94,8 @@ export class CreatureGridP5View {
       const {cursorX, cursorY} = p5Wrapper.getCursorPosition()
 
       return (
-        Math.floor((cursorX - gridStartX) / CREATURE_GRID_TILE_WIDTH) +
-        Math.floor((cursorY - gridStartY) / CREATURE_GRID_TILE_HEIGHT) *
+        Math.floor((cursorX - GRID_AREA_START_X) / CREATURE_GRID_TILE_WIDTH) +
+        Math.floor((cursorY - GRID_AREA_START_Y) / CREATURE_GRID_TILE_HEIGHT) *
           CREATURE_GRID_TILES_PER_ROW
       )
     }

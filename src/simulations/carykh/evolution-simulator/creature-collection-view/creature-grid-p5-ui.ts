@@ -8,7 +8,9 @@ import {
   CREATURE_GRID_MARGIN_Y,
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
-  CREATURE_GRID_TILE_WIDTH
+  CREATURE_GRID_TILE_WIDTH,
+  GRID_AREA_START_X,
+  GRID_AREA_START_Y
 } from './constants'
 import {
   CreatureGridP5View,
@@ -24,8 +26,6 @@ export interface CreatureGridP5UIConfig {
   appStore: AppStore
   p5Wrapper: P5Wrapper
   getCreatureAndGridIndexFn: CreatureGridP5ViewConfig['getCreatureAndGridIndexFn']
-  gridStartX: number
-  gridStartY: number
   showsPopupSimulation: () => boolean
 }
 
@@ -38,8 +38,6 @@ export class CreatureGridP5UI {
 
   private graphics: Graphics
 
-  private gridStartX: number
-  private gridStartY: number
   private showsPopupSimulation: () => boolean
 
   constructor(config: CreatureGridP5UIConfig) {
@@ -49,16 +47,12 @@ export class CreatureGridP5UI {
 
     this.graphics = this.p5Wrapper.canvas.createGraphics(1920, 1080)
 
-    this.gridStartX = config.gridStartX
-    this.gridStartY = config.gridStartY
     this.showsPopupSimulation = config.showsPopupSimulation
 
     const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridP5View({
       getCreatureAndGridIndexFn,
-      gridStartX: this.gridStartX,
-      gridStartY: this.gridStartY,
       p5Wrapper: this.p5Wrapper,
       showsHoverState: this.showsPopupSimulation
     })
@@ -75,8 +69,8 @@ export class CreatureGridP5UI {
 
     canvas.image(graphics, 0, 0, width, height)
 
-    const gridStartX = this.gridStartX - CREATURE_GRID_MARGIN_X
-    const gridStartY = this.gridStartY - CREATURE_GRID_MARGIN_Y
+    const gridStartX = GRID_AREA_START_X - CREATURE_GRID_MARGIN_X
+    const gridStartY = GRID_AREA_START_Y - CREATURE_GRID_MARGIN_Y
 
     creatureGridView.draw()
     canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
@@ -141,9 +135,9 @@ export class CreatureGridP5UI {
     creatureColumnIndex = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
 
     const creatureStartX =
-      creatureRowIndex * CREATURE_GRID_TILE_WIDTH + this.gridStartX
+      creatureRowIndex * CREATURE_GRID_TILE_WIDTH + GRID_AREA_START_X
     const creatureStartY =
-      creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + this.gridStartY
+      creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + GRID_AREA_START_Y
 
     return {
       startPositionX: creatureStartX,

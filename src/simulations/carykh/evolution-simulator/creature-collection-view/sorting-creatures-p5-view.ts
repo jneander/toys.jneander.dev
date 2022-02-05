@@ -143,10 +143,10 @@ export class SortingCreaturesP5View {
 
     this.creatureGraphics.push()
 
-    // Translate to the bottom center of where the creature is drawn.
+    // Translate to the center of where the creature is drawn.
     this.creatureGraphics.translate(
       this.creatureGraphics.width / 2,
-      (this.creatureGraphics.height * 2) / 3
+      this.creatureGraphics.height / 2
     )
     // Scale to fit the creature in the center.
     this.creatureGraphics.scale(10)

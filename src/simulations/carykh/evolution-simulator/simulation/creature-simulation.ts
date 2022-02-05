@@ -9,7 +9,8 @@ import {
   Node,
   NodeOperationId,
   applyForceToMuscle,
-  applyForcesToNode
+  applyForcesToNode,
+  positionNodesForStartOfSimulation
 } from '../creatures'
 import type {SimulationNodeCache, SimulationState} from '../types'
 
@@ -71,6 +72,7 @@ export class CreatureSimulation {
     state.creature.muscles = creature.muscles.map(muscle => muscle.clone())
 
     state.creature.nodes = creature.nodes.map(node => node.clone())
+    positionNodesForStartOfSimulation(state.creature.nodes)
 
     state.creature.nodeCaches = state.creature.nodes.map(node => {
       return {

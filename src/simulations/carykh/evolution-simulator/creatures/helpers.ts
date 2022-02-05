@@ -9,7 +9,7 @@ import {
 } from '../constants'
 import {dist2d} from '../math'
 
-export function adjustNodesToCenter(nodes: Node[]): void {
+export function positionNodesForStartOfSimulation(nodes: Node[]): void {
   let averageX = 0
   let lowestY = -Infinity
 
@@ -28,6 +28,26 @@ export function adjustNodesToCenter(nodes: Node[]): void {
     const ni = nodes[i]
     ni.positionX -= averageX
     ni.positionY -= lowestY
+  }
+}
+
+export function positionNodesCenterToOrigin(nodes: Node[]): void {
+  let averageX = 0
+  let averageY = 0
+
+  for (let i = 0; i < nodes.length; i++) {
+    const ni = nodes[i]
+    averageX += ni.positionX
+    averageY += ni.positionY
+  }
+
+  averageX /= nodes.length
+  averageY /= nodes.length
+
+  for (let i = 0; i < nodes.length; i++) {
+    const ni = nodes[i]
+    ni.positionX -= averageX
+    ni.positionY -= averageY
   }
 }
 

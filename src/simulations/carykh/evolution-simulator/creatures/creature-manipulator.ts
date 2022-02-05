@@ -11,9 +11,9 @@ import {dist2d} from '../math'
 import Muscle from './Muscle'
 import Node from './Node'
 import {
-  adjustNodesToCenter,
   applyForceToMuscle,
-  applyForcesToNode
+  applyForcesToNode,
+  positionNodesCenterToOrigin
 } from './helpers'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
@@ -88,7 +88,7 @@ export class CreatureManipulator {
     }
 
     this.stabilizeNodesAndMuscles(nodes, muscles)
-    adjustNodesToCenter(nodes)
+    positionNodesCenterToOrigin(nodes)
 
     const heartbeat = this.randomFract(40, 80)
     const creature = new Creature(id, nodes, muscles, 0, true, heartbeat, 1.0)
@@ -164,7 +164,7 @@ export class CreatureManipulator {
     const {muscles, nodes} = modifiedCreature
 
     this.stabilizeNodesAndMuscles(nodes, muscles)
-    adjustNodesToCenter(nodes)
+    positionNodesCenterToOrigin(nodes)
 
     return modifiedCreature
   }

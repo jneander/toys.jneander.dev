@@ -118,43 +118,38 @@ export class CreatureGridP5View {
     gridGraphics.push()
     gridGraphics.scale(scale)
 
-    const creatureScale = 0.1
+    const gridAreaScale = 0.1
 
-    const scaledCreatureWidth = CREATURE_GRID_TILE_WIDTH * creatureScale
-    const scaledCreatureHeight = CREATURE_GRID_TILE_HEIGHT * creatureScale
+    const tileWidth = CREATURE_GRID_TILE_WIDTH * gridAreaScale
+    const tileHeight = CREATURE_GRID_TILE_HEIGHT * gridAreaScale
 
-    const marginX = scaledCreatureWidth
-    const marginY = scaledCreatureHeight / 2 + scaledCreatureHeight
+    const gridAreaOverdrawMarginX = tileWidth / 2
+    const gridAreaOverdrawMarginY = tileHeight / 2
 
-    const blankMarginX = scaledCreatureWidth / 2
-    const blankMarginY = scaledCreatureHeight / 2
-
-    const blankWidth = scaledCreatureWidth
-    const blankHeight = scaledCreatureHeight
+    const creatureImageOverdrawMarginX = tileWidth
+    const creatureImageOverdrawMarginY = tileHeight
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
       const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
-      if (creature.alive) {
-        const creatureCenterX = columnIndex * scaledCreatureWidth + marginX
-        const creatureBottomY = rowIndex * scaledCreatureHeight + marginY
+      const tileStartX = gridAreaOverdrawMarginX + columnIndex * tileWidth
+      const tileStartY = gridAreaOverdrawMarginY + rowIndex * tileHeight
 
+      if (creature.alive) {
         const creatureImage = this.getCreatureImage(creature)
+
         gridGraphics.image(
           creatureImage,
-          creatureCenterX - scaledCreatureWidth * 1.5,
-          creatureBottomY - scaledCreatureHeight * 2,
-          scaledCreatureWidth * 3,
-          scaledCreatureHeight * 3
+          tileStartX - creatureImageOverdrawMarginX,
+          tileStartY - creatureImageOverdrawMarginY,
+          tileWidth * 3,
+          tileHeight * 3
         )
       } else {
-        const blankLeftX = columnIndex * scaledCreatureWidth + blankMarginX
-        const blankTopY = rowIndex * scaledCreatureHeight + blankMarginY
-
         gridGraphics.fill(0)
         gridGraphics.noStroke()
-        gridGraphics.rect(blankLeftX, blankTopY, blankWidth, blankHeight)
+        gridGraphics.rect(tileStartX, tileStartY, tileWidth, tileHeight)
       }
     }
 

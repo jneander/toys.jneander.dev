@@ -19,7 +19,7 @@ import {
   PopupSimulationViewAnchor
 } from './popup-simulation-view'
 
-export interface CreatureGridP5UIConfig {
+export interface CreatureGridP5UiConfig {
   appController: AppController
   appStore: AppStore
   p5Wrapper: P5Wrapper
@@ -27,7 +27,7 @@ export interface CreatureGridP5UIConfig {
   showsPopupSimulation: () => boolean
 }
 
-export class CreatureGridP5UI {
+export class CreatureGridP5Ui {
   private appController: AppController
   private appStore: AppStore
   private p5Wrapper: P5Wrapper
@@ -36,7 +36,7 @@ export class CreatureGridP5UI {
 
   private showsPopupSimulation: () => boolean
 
-  constructor(config: CreatureGridP5UIConfig) {
+  constructor(config: CreatureGridP5UiConfig) {
     this.appController = config.appController
     this.appStore = config.appStore
     this.p5Wrapper = config.p5Wrapper

@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from 'react'
+import {useMemo} from 'react'
 
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
@@ -17,10 +17,6 @@ export function GenerateCreaturesActivity(
   props: GenerateCreaturesActivityProps
 ) {
   const {appController, appStore} = props
-
-  useEffect(() => {
-    appController.generateCreatures()
-  }, [appController])
 
   const creatureCollectionAdapter = useMemo(() => {
     function getCreatureAndGridIndexFn(index: number) {

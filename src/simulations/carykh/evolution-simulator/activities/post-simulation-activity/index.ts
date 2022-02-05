@@ -1,1 +1,1 @@
-export * from './component'
+export * from './post-simulation-activity'

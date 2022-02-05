@@ -5,7 +5,8 @@ import {CreatureDrawer} from '../creature-drawer'
 import type {Creature} from '../creatures'
 import type {P5Wrapper} from '../p5-utils'
 import {
-  CREATURE_GRID_TILES_PER_COLUMN,
+  CREATURE_GRID_OVERDRAW_MARGIN_X,
+  CREATURE_GRID_OVERDRAW_MARGIN_Y,
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
@@ -46,9 +47,8 @@ export class CreatureGridP5View {
       p5Wrapper: config.p5Wrapper
     })
 
-    const width = (CREATURE_GRID_TILES_PER_ROW + 1) * CREATURE_GRID_TILE_WIDTH
-    const height =
-      (CREATURE_GRID_TILES_PER_COLUMN + 1) * CREATURE_GRID_TILE_HEIGHT
+    const width = GRID_AREA_WIDTH + CREATURE_GRID_OVERDRAW_MARGIN_X * 2
+    const height = GRID_AREA_HEIGHT + CREATURE_GRID_OVERDRAW_MARGIN_Y * 2
 
     const {canvas} = config.p5Wrapper
 

@@ -17,6 +17,7 @@ const NODE_TEXT_LINE_MULTIPLIER_Y2 = 0.35
 export interface CreatureDrawerConfig {
   p5Wrapper: P5Wrapper
   scale?: number
+  showLabels?: boolean
 }
 
 export class CreatureDrawer {
@@ -24,14 +25,16 @@ export class CreatureDrawer {
   private axonFont: Font
 
   private scale: number
+  private showLabels: boolean
 
   constructor(config: CreatureDrawerConfig) {
-    const {p5Wrapper, scale = 1} = config
+    const {p5Wrapper, scale = 1, showLabels = true} = config
 
     this.axonColor = p5Wrapper.canvas.color(255, 255, 0)
     this.axonFont = p5Wrapper.font
 
     this.scale = scale
+    this.showLabels = showLabels
   }
 
   drawCreature(creature: Creature, x: number, y: number, graphics: p5): void {
@@ -86,6 +89,10 @@ export class CreatureDrawer {
       graphics.fill(255)
     } else {
       graphics.fill(0)
+    }
+
+    if (!this.showLabels) {
+      return
     }
 
     graphics.textAlign(graphics.CENTER)
@@ -219,6 +226,10 @@ export class CreatureDrawer {
       )
 
       const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
+
+      if (!this.showLabels) {
+        return
+      }
 
       graphics.fill(this.axonColor)
       graphics.textAlign(graphics.CENTER)

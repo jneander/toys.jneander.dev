@@ -44,7 +44,8 @@ export class CreatureGridP5View {
     this.config = config
 
     this.creatureDrawer = new CreatureDrawer({
-      p5Wrapper: config.p5Wrapper
+      p5Wrapper: config.p5Wrapper,
+      showLabels: false
     })
 
     const width = CREATURE_COLLECTION_VIEW_WIDTH

@@ -124,16 +124,16 @@ export class CreatureGridP5Ui {
   ): PopupSimulationViewAnchor {
     const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
-    const creatureStartX =
-      columnIndex * CREATURE_GRID_TILE_WIDTH + VIEW_PADDING_START_X
-    const creatureStartY =
-      rowIndex * CREATURE_GRID_TILE_HEIGHT + VIEW_PADDING_START_Y
+    const tileStartX =
+      VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
+    const tileStartY =
+      VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT
 
     return {
-      startPositionX: creatureStartX,
-      startPositionY: creatureStartY,
-      endPositionX: creatureStartX + CREATURE_GRID_TILE_WIDTH,
-      endPositionY: creatureStartY + CREATURE_GRID_TILE_HEIGHT,
+      startPositionX: tileStartX,
+      startPositionY: tileStartY,
+      endPositionX: tileStartX + CREATURE_GRID_TILE_WIDTH,
+      endPositionY: tileStartY + CREATURE_GRID_TILE_HEIGHT,
       margin: 5
     }
   }

@@ -200,7 +200,7 @@ export class CreatureGridP5View {
       hoverGraphics.push()
 
       hoverGraphics.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
-      hoverGraphics.strokeWeight(3)
+      hoverGraphics.strokeWeight(2)
       hoverGraphics.noFill()
 
       const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)

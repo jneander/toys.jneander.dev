@@ -18,7 +18,7 @@ export function CreatureCollectionView(props: CreatureCollectionViewProps) {
       <P5ControlledClientView
         clientViewAdapter={adapter}
         height={CREATURE_COLLECTION_VIEW_HEIGHT}
-        scale={0.8}
+        scale={1}
         width={CREATURE_COLLECTION_VIEW_WIDTH}
       />
     </div>

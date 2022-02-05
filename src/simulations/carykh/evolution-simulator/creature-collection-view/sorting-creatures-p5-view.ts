@@ -1,6 +1,6 @@
 import type {Graphics, Image} from 'p5'
 
-import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
+import {CREATURE_COUNT} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {Creature, creatureIdToIndex} from '../creatures'
 import {P5Wrapper} from '../p5-utils'
@@ -42,8 +42,7 @@ export class SortingCreaturesP5View {
     this.p5Wrapper = config.p5Wrapper
 
     this.creatureDrawer = new CreatureDrawer({
-      p5Wrapper: this.p5Wrapper,
-      scale: SCALE_TO_FIX_BUG
+      p5Wrapper: this.p5Wrapper
     })
 
     this.creatureGraphics = this.p5Wrapper.canvas.createGraphics(
@@ -73,7 +72,7 @@ export class SortingCreaturesP5View {
 
     canvas.clear()
     canvas.push()
-    canvas.scale(scale / SCALE_TO_FIX_BUG)
+    canvas.scale(scale)
 
     const creatureScale = 0.1
 
@@ -103,12 +102,10 @@ export class SortingCreaturesP5View {
       const creatureImage = this.getCreatureImage(creature)
       canvas.image(
         creatureImage,
-        (creatureCenterX + gridStartX - scaledCreatureWidth * 1.5) *
-          SCALE_TO_FIX_BUG,
-        (creatureBottomY + gridStartY - scaledCreatureHeight * 2) *
-          SCALE_TO_FIX_BUG,
-        scaledCreatureWidth * 3 * SCALE_TO_FIX_BUG,
-        scaledCreatureHeight * 3 * SCALE_TO_FIX_BUG
+        creatureCenterX + gridStartX - scaledCreatureWidth * 1.5,
+        creatureBottomY + gridStartY - scaledCreatureHeight * 2,
+        scaledCreatureWidth * 3,
+        scaledCreatureHeight * 3
       )
     }
 
@@ -136,7 +133,7 @@ export class SortingCreaturesP5View {
       (this.creatureGraphics.height * 2) / 3
     )
     // Scale to fit the creature in the center.
-    this.creatureGraphics.scale(10 / SCALE_TO_FIX_BUG)
+    this.creatureGraphics.scale(10)
 
     this.creatureDrawer.drawCreature(creature, 0, 0, this.creatureGraphics)
 

@@ -1,6 +1,6 @@
 import type {Graphics, Image} from 'p5'
 
-import {CREATURE_COUNT, SCALE_TO_FIX_BUG} from '../constants'
+import {CREATURE_COUNT} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import type {Creature} from '../creatures'
 import type {P5Wrapper} from '../p5-utils'
@@ -41,8 +41,7 @@ export class CreatureGridP5View {
     this.config = config
 
     this.creatureDrawer = new CreatureDrawer({
-      p5Wrapper: config.p5Wrapper,
-      scale: SCALE_TO_FIX_BUG
+      p5Wrapper: config.p5Wrapper
     })
 
     const width = (CREATURE_GRID_TILES_PER_ROW + 1) * CREATURE_GRID_TILE_WIDTH
@@ -112,7 +111,7 @@ export class CreatureGridP5View {
 
     gridGraphics.clear()
     gridGraphics.push()
-    gridGraphics.scale(scale / SCALE_TO_FIX_BUG)
+    gridGraphics.scale(scale)
 
     const creatureScale = 0.1
 
@@ -125,8 +124,8 @@ export class CreatureGridP5View {
     const blankMarginX = scaledCreatureWidth / 2
     const blankMarginY = scaledCreatureHeight / 2
 
-    const blankWidth = scaledCreatureWidth * SCALE_TO_FIX_BUG
-    const blankHeight = scaledCreatureHeight * SCALE_TO_FIX_BUG
+    const blankWidth = scaledCreatureWidth
+    const blankHeight = scaledCreatureHeight
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
@@ -141,16 +140,14 @@ export class CreatureGridP5View {
         const creatureImage = this.getCreatureImage(creature)
         gridGraphics.image(
           creatureImage,
-          (creatureCenterX - scaledCreatureWidth * 1.5) * SCALE_TO_FIX_BUG,
-          (creatureBottomY - scaledCreatureHeight * 2) * SCALE_TO_FIX_BUG,
-          scaledCreatureWidth * 3 * SCALE_TO_FIX_BUG,
-          scaledCreatureHeight * 3 * SCALE_TO_FIX_BUG
+          creatureCenterX - scaledCreatureWidth * 1.5,
+          creatureBottomY - scaledCreatureHeight * 2,
+          scaledCreatureWidth * 3,
+          scaledCreatureHeight * 3
         )
       } else {
-        const blankLeftX =
-          (gridX * scaledCreatureWidth + blankMarginX) * SCALE_TO_FIX_BUG
-        const blankTopY =
-          (gridY * scaledCreatureHeight + blankMarginY) * SCALE_TO_FIX_BUG
+        const blankLeftX = gridX * scaledCreatureWidth + blankMarginX
+        const blankTopY = gridY * scaledCreatureHeight + blankMarginY
 
         gridGraphics.fill(0)
         gridGraphics.noStroke()
@@ -178,7 +175,7 @@ export class CreatureGridP5View {
       (this.creatureGraphics.height * 2) / 3
     )
     // Scale to fit the creature in the center.
-    this.creatureGraphics.scale(10 / SCALE_TO_FIX_BUG)
+    this.creatureGraphics.scale(10)
 
     this.creatureDrawer.drawCreature(creature, 0, 0, this.creatureGraphics)
 

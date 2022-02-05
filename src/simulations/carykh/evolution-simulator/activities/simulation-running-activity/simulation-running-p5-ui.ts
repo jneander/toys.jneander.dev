@@ -2,8 +2,7 @@ import type {AppController} from '../../app-controller'
 import {
   FITNESS_LABEL,
   FITNESS_UNIT_LABEL,
-  FRAMES_FOR_CREATURE_FITNESS,
-  SCALE_TO_FIX_BUG
+  FRAMES_FOR_CREATURE_FITNESS
 } from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
@@ -42,14 +41,12 @@ export class SimulationRunningP5Ui {
       canvas,
 
       creatureDrawer: new CreatureDrawer({
-        p5Wrapper: this.p5Wrapper,
-        scale: SCALE_TO_FIX_BUG
+        p5Wrapper: this.p5Wrapper
       }),
 
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
       height: 900,
       postFont: font,
-      scale: SCALE_TO_FIX_BUG,
       showArrow: true,
       simulationConfig: this.appController.getSimulationConfig(),
       statsFont: font,

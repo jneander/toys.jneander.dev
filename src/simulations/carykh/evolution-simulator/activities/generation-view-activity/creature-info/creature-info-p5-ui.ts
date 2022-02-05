@@ -1,4 +1,3 @@
-import {SCALE_TO_FIX_BUG} from '../../../constants'
 import {CreatureDrawer} from '../../../creature-drawer'
 import type {Creature} from '../../../creatures'
 import type {P5Wrapper} from '../../../p5-utils'
@@ -36,8 +35,7 @@ export class CreatureInfoP5Ui {
     this.simulationStarted = false
 
     this.creatureDrawer = new CreatureDrawer({
-      p5Wrapper: this.p5Wrapper,
-      scale: SCALE_TO_FIX_BUG
+      p5Wrapper: this.p5Wrapper
     })
 
     this.creatureSimulation = new CreatureSimulation(this.simulationConfig)
@@ -51,7 +49,6 @@ export class CreatureInfoP5Ui {
       creatureSimulation: this.creatureSimulation,
       height: 480,
       postFont: font,
-      scale: SCALE_TO_FIX_BUG,
       showArrow: false,
       simulationConfig: this.simulationConfig,
       statsFont: font,
@@ -93,7 +90,7 @@ export class CreatureInfoP5Ui {
       if (!this.creatureDrawn) {
         canvas.background(220)
         canvas.translate(canvas.width / 2, (canvas.height * 2) / 3)
-        canvas.scale(80 / SCALE_TO_FIX_BUG)
+        canvas.scale(80)
 
         this.creatureDrawer.drawCreature(creature, 0, 0, canvas)
         this.creatureDrawn = true

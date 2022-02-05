@@ -153,6 +153,7 @@ export class CreatureGridP5View {
           (gridY * scaledCreatureHeight + blankMarginY) * SCALE_TO_FIX_BUG
 
         gridGraphics.fill(0)
+        gridGraphics.noStroke()
         gridGraphics.rect(blankLeftX, blankTopY, blankWidth, blankHeight)
       }
     }

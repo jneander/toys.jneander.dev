@@ -208,10 +208,12 @@ export class CreatureGridP5View {
 
       const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
+      const gridAreaOverdrawMarginX = Math.floor(CREATURE_GRID_TILE_WIDTH / 2)
+      const gridAreaOverdrawMarginY = Math.floor(CREATURE_GRID_TILE_HEIGHT / 2)
+
       hoverGraphics.rect(
-        columnIndex * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_TILE_WIDTH / 2,
-        rowIndex * CREATURE_GRID_TILE_HEIGHT +
-          Math.floor(CREATURE_GRID_TILE_HEIGHT / 2),
+        columnIndex * CREATURE_GRID_TILE_WIDTH + gridAreaOverdrawMarginX,
+        rowIndex * CREATURE_GRID_TILE_HEIGHT + gridAreaOverdrawMarginY,
         CREATURE_GRID_TILE_WIDTH,
         CREATURE_GRID_TILE_HEIGHT
       )

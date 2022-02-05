@@ -4,7 +4,6 @@ import type {AppStore} from '../types'
 import {
   CREATURE_GRID_OVERDRAW_MARGIN_X,
   CREATURE_GRID_OVERDRAW_MARGIN_Y,
-  CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   VIEW_PADDING_START_X,
@@ -14,6 +13,7 @@ import {
   CreatureGridP5View,
   CreatureGridP5ViewConfig
 } from './creature-grid-p5-view'
+import {gridIndexToRowAndColumn} from './helpers'
 import {
   PopupSimulationView,
   PopupSimulationViewAnchor
@@ -122,15 +122,12 @@ export class CreatureGridP5Ui {
   private calculateAnchorForPopupSimulation(
     gridIndex: number
   ): PopupSimulationViewAnchor {
-    let creatureRowIndex, creatureColumnIndex
-
-    creatureRowIndex = gridIndex % CREATURE_GRID_TILES_PER_ROW
-    creatureColumnIndex = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
+    const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
     const creatureStartX =
-      creatureRowIndex * CREATURE_GRID_TILE_WIDTH + VIEW_PADDING_START_X
+      columnIndex * CREATURE_GRID_TILE_WIDTH + VIEW_PADDING_START_X
     const creatureStartY =
-      creatureColumnIndex * CREATURE_GRID_TILE_HEIGHT + VIEW_PADDING_START_Y
+      rowIndex * CREATURE_GRID_TILE_HEIGHT + VIEW_PADDING_START_Y
 
     return {
       startPositionX: creatureStartX,

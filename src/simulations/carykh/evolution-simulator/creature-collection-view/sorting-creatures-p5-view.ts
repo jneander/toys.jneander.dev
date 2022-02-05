@@ -6,7 +6,6 @@ import {Creature, creatureIdToIndex} from '../creatures'
 import {P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
-  CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   VIEW_PADDING_START_X,
@@ -16,6 +15,7 @@ import {
   getCachedCreatureImage,
   setCachedCreatureImage
 } from './creature-image-cache'
+import {gridIndexToRowAndColumn} from './helpers'
 
 const ANIMATION_DURATION_MS = 5000
 
@@ -84,17 +84,19 @@ export class SortingCreaturesP5View {
     const scaledCreatureWidth = CREATURE_GRID_TILE_WIDTH * creatureScale
     const scaledCreatureHeight = CREATURE_GRID_TILE_HEIGHT * creatureScale
 
-    for (let i2 = 0; i2 < CREATURE_COUNT; i2++) {
-      // i2 is the index of where the creature is now
-      const creature = appStore.getState().creaturesInLatestGeneration[i2]
+    for (let gridIndex2 = 0; gridIndex2 < CREATURE_COUNT; gridIndex2++) {
+      // gridIndex2 is the index of where the creature is now
+      const creature =
+        appStore.getState().creaturesInLatestGeneration[gridIndex2]
 
-      // i1 is the index of where the creature was
-      const i1 = creatureIdToIndex(creature.id)
+      // gridIndex1 is the index of where the creature was
+      const gridIndex1 = creatureIdToIndex(creature.id)
 
-      const x1 = i1 % CREATURE_GRID_TILES_PER_ROW
-      const y1 = Math.floor(i1 / CREATURE_GRID_TILES_PER_ROW)
-      const x2 = i2 % CREATURE_GRID_TILES_PER_ROW
-      const y2 = Math.floor(i2 / CREATURE_GRID_TILES_PER_ROW)
+      const {columnIndex: x1, rowIndex: y1} =
+        gridIndexToRowAndColumn(gridIndex1)
+      const {columnIndex: x2, rowIndex: y2} =
+        gridIndexToRowAndColumn(gridIndex2)
+
       const x3 = this.interpolate(x1, x2, easedProgress)
       const y3 = this.interpolate(y1, y2, easedProgress)
 

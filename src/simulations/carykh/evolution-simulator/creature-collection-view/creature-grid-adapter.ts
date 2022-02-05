@@ -1,6 +1,7 @@
 import type {AppController} from '../app-controller'
 import type {P5ClientViewAdapter, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
+import {GRID_AREA_START_X, GRID_AREA_START_Y} from './constants'
 import {CreatureGridP5UI} from './creature-grid-p5-ui'
 import type {CreatureAndGridIndex} from './types'
 
@@ -27,8 +28,8 @@ export class CreatureGridAdapter implements P5ClientViewAdapter {
       appController: this.config.appController,
       appStore: this.config.appStore,
       getCreatureAndGridIndexFn: this.config.getCreatureAndGridIndexFn,
-      gridStartX: 40,
-      gridStartY: 42,
+      gridStartX: GRID_AREA_START_X,
+      gridStartY: GRID_AREA_START_Y,
       p5Wrapper,
       showsPopupSimulation: this.config.showsPopupSimulation
     })

@@ -208,8 +208,8 @@ export class CreatureGridP5View {
       hoverGraphics.strokeWeight(3)
       hoverGraphics.noFill()
 
-      const x = gridIndex % 40
-      const y = Math.floor(gridIndex / 40)
+      const x = gridIndex % CREATURE_GRID_TILES_PER_ROW
+      const y = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
 
       hoverGraphics.rect(
         x * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_TILE_WIDTH / 2,

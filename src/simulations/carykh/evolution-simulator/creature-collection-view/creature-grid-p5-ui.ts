@@ -3,7 +3,6 @@ import type {Graphics} from 'p5'
 import type {AppController} from '../app-controller'
 import {P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
-import {PopupSimulationView, PopupSimulationViewAnchor} from '../views'
 import {
   CREATURE_GRID_MARGIN_X,
   CREATURE_GRID_MARGIN_Y,
@@ -15,6 +14,10 @@ import {
   CreatureGridP5View,
   CreatureGridP5ViewConfig
 } from './creature-grid-p5-view'
+import {
+  PopupSimulationView,
+  PopupSimulationViewAnchor
+} from './popup-simulation-view'
 
 export interface CreatureGridP5UIConfig {
   appController: AppController

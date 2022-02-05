@@ -19,6 +19,7 @@ import {
   getCachedCreatureImage,
   setCachedCreatureImage
 } from './creature-image-cache'
+import {gridIndexToRowAndColumn} from './helpers'
 
 export interface CreatureGridP5ViewConfig {
   getCreatureAndGridIndexFn: (index: number) => {
@@ -133,13 +134,11 @@ export class CreatureGridP5View {
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
-
-      const gridX = gridIndex % CREATURE_GRID_TILES_PER_ROW
-      const gridY = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
+      const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
       if (creature.alive) {
-        const creatureCenterX = gridX * scaledCreatureWidth + marginX
-        const creatureBottomY = gridY * scaledCreatureHeight + marginY
+        const creatureCenterX = columnIndex * scaledCreatureWidth + marginX
+        const creatureBottomY = rowIndex * scaledCreatureHeight + marginY
 
         const creatureImage = this.getCreatureImage(creature)
         gridGraphics.image(
@@ -150,8 +149,8 @@ export class CreatureGridP5View {
           scaledCreatureHeight * 3
         )
       } else {
-        const blankLeftX = gridX * scaledCreatureWidth + blankMarginX
-        const blankTopY = gridY * scaledCreatureHeight + blankMarginY
+        const blankLeftX = columnIndex * scaledCreatureWidth + blankMarginX
+        const blankTopY = rowIndex * scaledCreatureHeight + blankMarginY
 
         gridGraphics.fill(0)
         gridGraphics.noStroke()
@@ -212,12 +211,11 @@ export class CreatureGridP5View {
       hoverGraphics.strokeWeight(3)
       hoverGraphics.noFill()
 
-      const x = gridIndex % CREATURE_GRID_TILES_PER_ROW
-      const y = Math.floor(gridIndex / CREATURE_GRID_TILES_PER_ROW)
+      const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
       hoverGraphics.rect(
-        x * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_TILE_WIDTH / 2,
-        y * CREATURE_GRID_TILE_HEIGHT +
+        columnIndex * CREATURE_GRID_TILE_WIDTH + CREATURE_GRID_TILE_WIDTH / 2,
+        rowIndex * CREATURE_GRID_TILE_HEIGHT +
           Math.floor(CREATURE_GRID_TILE_HEIGHT / 2),
         CREATURE_GRID_TILE_WIDTH,
         CREATURE_GRID_TILE_HEIGHT

@@ -1,4 +1,3 @@
-import {SCALE_TO_FIX_BUG} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {CREATURE_GRID_TILE_WIDTH} from '../creature-collection-view'
 import {Creature, speciesIdForCreature} from '../creatures'
@@ -9,6 +8,7 @@ import {SimulationView} from './simulation-view'
 
 export interface PopupSimulationViewConfig {
   p5Wrapper: P5Wrapper
+  scale?: number
   simulationConfig: SimulationConfig
 }
 
@@ -53,6 +53,7 @@ export class PopupSimulationView {
     this.creatureInfo = null
     this.anchor = null
 
+    const scale = config.scale || 1
     this.showSimulationView = false
 
     const {canvas, font} = this.p5Wrapper
@@ -63,13 +64,13 @@ export class PopupSimulationView {
 
       creatureDrawer: new CreatureDrawer({
         p5Wrapper: this.p5Wrapper,
-        scale: SCALE_TO_FIX_BUG
+        scale
       }),
 
       creatureSimulation: this.creatureSimulation,
       height: 600,
       postFont: font,
-      scale: SCALE_TO_FIX_BUG,
+      scale,
       showArrow: false,
       simulationConfig: this.simulationConfig,
       statsFont: font,

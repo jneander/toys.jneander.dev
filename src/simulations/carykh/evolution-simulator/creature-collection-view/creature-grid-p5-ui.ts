@@ -1,5 +1,3 @@
-import type {Graphics} from 'p5'
-
 import type {AppController} from '../app-controller'
 import {P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
@@ -36,16 +34,12 @@ export class CreatureGridP5UI {
   private creatureGridView: CreatureGridP5View
   private popupSimulationView: PopupSimulationView
 
-  private graphics: Graphics
-
   private showsPopupSimulation: () => boolean
 
   constructor(config: CreatureGridP5UIConfig) {
     this.appController = config.appController
     this.appStore = config.appStore
     this.p5Wrapper = config.p5Wrapper
-
-    this.graphics = this.p5Wrapper.canvas.createGraphics(1920, 1080)
 
     this.showsPopupSimulation = config.showsPopupSimulation
 
@@ -64,10 +58,10 @@ export class CreatureGridP5UI {
   }
 
   draw(): void {
-    const {canvas, height, width} = this.p5Wrapper
-    const {creatureGridView, graphics} = this
+    const {canvas} = this.p5Wrapper
+    const {creatureGridView} = this
 
-    canvas.image(graphics, 0, 0, width, height)
+    canvas.clear()
 
     const gridStartX = VIEW_PADDING_START_X - CREATURE_GRID_MARGIN_X
     const gridStartY = VIEW_PADDING_START_Y - CREATURE_GRID_MARGIN_Y
@@ -99,7 +93,6 @@ export class CreatureGridP5UI {
   }
 
   initialize(): void {
-    this.graphics.background(220, 253, 102)
     this.creatureGridView.initialize()
   }
 

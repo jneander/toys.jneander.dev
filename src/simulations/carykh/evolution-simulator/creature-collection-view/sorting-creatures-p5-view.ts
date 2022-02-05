@@ -8,7 +8,9 @@ import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILES_PER_ROW,
   CREATURE_GRID_TILE_HEIGHT,
-  CREATURE_GRID_TILE_WIDTH
+  CREATURE_GRID_TILE_WIDTH,
+  GRID_AREA_START_X,
+  GRID_AREA_START_Y
 } from './constants'
 import {
   getCachedCreatureImage,
@@ -76,8 +78,8 @@ export class SortingCreaturesP5View {
 
     const creatureScale = 0.1
 
-    const gridStartX = 40 * creatureScale
-    const gridStartY = 42 * creatureScale
+    const gridStartX = GRID_AREA_START_X * creatureScale
+    const gridStartY = GRID_AREA_START_Y * creatureScale
 
     const scaledCreatureWidth = CREATURE_GRID_TILE_WIDTH * creatureScale
     const scaledCreatureHeight = CREATURE_GRID_TILE_HEIGHT * creatureScale

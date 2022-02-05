@@ -91,9 +91,10 @@ export class CreatureInfoP5Ui {
 
       if (!this.creatureDrawn) {
         canvas.background(220)
-        canvas.scale(0.08)
+        canvas.translate(canvas.width / 2, (canvas.height * 2) / 3)
+        canvas.scale(80 / SCALE_TO_FIX_BUG)
 
-        this.creatureDrawer.drawCreature(creature, 1.5, 2.25, canvas)
+        this.creatureDrawer.drawCreature(creature, 0, 0, canvas)
         this.creatureDrawn = true
       }
     }

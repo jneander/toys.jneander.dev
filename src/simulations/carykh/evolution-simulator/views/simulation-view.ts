@@ -26,7 +26,7 @@ export interface SimulationViewConfig {
 }
 
 export class SimulationView {
-  graphics: Graphics
+  public graphics: Graphics
 
   private cameraState: SimulationCameraState
 

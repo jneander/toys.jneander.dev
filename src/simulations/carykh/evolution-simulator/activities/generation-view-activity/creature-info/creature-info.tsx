@@ -31,8 +31,8 @@ export function CreatureInfo(props: CreatureInfoProps) {
   const clientViewAdapter = useMemo(() => {
     return new CreatureInfoAdapter({
       creature,
-      simulationConfig,
-      creatureInfoStore: store
+      creatureInfoStore: store,
+      simulationConfig
     })
   }, [creature, simulationConfig, store])
 

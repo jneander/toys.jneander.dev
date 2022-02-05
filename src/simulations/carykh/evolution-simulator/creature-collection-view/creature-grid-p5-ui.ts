@@ -2,8 +2,6 @@ import type {AppController} from '../app-controller'
 import {P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
-  CREATURE_GRID_OVERDRAW_MARGIN_X,
-  CREATURE_GRID_OVERDRAW_MARGIN_Y,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   VIEW_PADDING_START_X,
@@ -63,11 +61,8 @@ export class CreatureGridP5Ui {
 
     canvas.clear()
 
-    const gridStartX = VIEW_PADDING_START_X - CREATURE_GRID_OVERDRAW_MARGIN_X
-    const gridStartY = VIEW_PADDING_START_Y - CREATURE_GRID_OVERDRAW_MARGIN_Y
-
     creatureGridView.draw()
-    canvas.image(creatureGridView.graphics, gridStartX, gridStartY)
+    canvas.image(creatureGridView.graphics, 0, 0)
 
     if (!this.showsPopupSimulation()) {
       return

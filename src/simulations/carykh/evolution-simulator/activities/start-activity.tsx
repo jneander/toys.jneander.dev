@@ -7,6 +7,7 @@ export interface StartActivityProps {
 
 export function StartActivity(props: StartActivityProps) {
   function handleCreateClick() {
+    props.appController.generateCreatures()
     props.appController.setActivityId(ActivityId.GenerateCreatures)
   }
 

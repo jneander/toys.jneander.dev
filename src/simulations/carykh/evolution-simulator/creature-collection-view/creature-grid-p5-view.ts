@@ -19,7 +19,7 @@ import {
   getCachedCreatureImage,
   setCachedCreatureImage
 } from './creature-image-cache'
-import {gridIndexToRowAndColumn} from './helpers'
+import {gridIndexToRowAndColumn, rowAndColumnToGridIndex} from './helpers'
 
 export interface CreatureGridP5ViewConfig {
   getCreatureAndGridIndexFn: (index: number) => {
@@ -94,15 +94,13 @@ export class CreatureGridP5View {
     ) {
       const {cursorX, cursorY} = p5Wrapper.getCursorPosition()
 
-      return (
-        Math.floor(
-          (cursorX - VIEW_PADDING_START_X) / CREATURE_GRID_TILE_WIDTH
-        ) +
-        Math.floor(
-          (cursorY - VIEW_PADDING_START_Y) / CREATURE_GRID_TILE_HEIGHT
-        ) *
-          CREATURE_GRID_TILES_PER_ROW
-      )
+      const gridCursorX = cursorX - VIEW_PADDING_START_X
+      const gridCursorY = cursorY - VIEW_PADDING_START_Y
+
+      return rowAndColumnToGridIndex({
+        columnIndex: Math.floor(gridCursorX / CREATURE_GRID_TILE_WIDTH),
+        rowIndex: Math.floor(gridCursorY / CREATURE_GRID_TILE_HEIGHT)
+      })
     }
 
     return null

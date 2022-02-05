@@ -12,6 +12,12 @@ export function gridIndexToRowAndColumn(gridIndex: number): RowAndColumn {
   return {columnIndex, rowIndex}
 }
 
+export function rowAndColumnToGridIndex(rowAndColumn: RowAndColumn): number {
+  const {columnIndex, rowIndex} = rowAndColumn
+
+  return rowIndex * CREATURE_GRID_TILES_PER_ROW + columnIndex
+}
+
 export function getSpeciesColor(
   p5: p5,
   speciesId: number,

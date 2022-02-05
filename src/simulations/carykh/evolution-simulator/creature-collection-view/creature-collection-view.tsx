@@ -1,4 +1,8 @@
 import {P5ClientViewAdapter, P5ControlledClientView} from '../p5-utils'
+import {
+  CREATURE_COLLECTION_VIEW_HEIGHT,
+  CREATURE_COLLECTION_VIEW_WIDTH
+} from './constants'
 
 import styles from './styles.module.css'
 
@@ -11,7 +15,12 @@ export function CreatureCollectionView(props: CreatureCollectionViewProps) {
 
   return (
     <div className={styles.Container}>
-      <P5ControlledClientView clientViewAdapter={adapter} />
+      <P5ControlledClientView
+        clientViewAdapter={adapter}
+        height={CREATURE_COLLECTION_VIEW_HEIGHT}
+        scale={0.8}
+        width={CREATURE_COLLECTION_VIEW_WIDTH}
+      />
     </div>
   )
 }

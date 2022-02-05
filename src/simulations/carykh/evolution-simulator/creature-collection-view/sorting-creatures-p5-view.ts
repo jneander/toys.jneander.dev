@@ -76,40 +76,52 @@ export class SortingCreaturesP5View {
     canvas.push()
     canvas.scale(scale)
 
-    const creatureScale = 0.1
+    const gridAreaScale = 0.1
 
-    const gridStartX = VIEW_PADDING_START_X * creatureScale
-    const gridStartY = VIEW_PADDING_START_Y * creatureScale
+    const gridStartX = VIEW_PADDING_START_X * gridAreaScale
+    const gridStartY = VIEW_PADDING_START_Y * gridAreaScale
 
-    const scaledCreatureWidth = CREATURE_GRID_TILE_WIDTH * creatureScale
-    const scaledCreatureHeight = CREATURE_GRID_TILE_HEIGHT * creatureScale
+    const tileWidth = CREATURE_GRID_TILE_WIDTH * gridAreaScale
+    const tileHeight = CREATURE_GRID_TILE_HEIGHT * gridAreaScale
 
-    for (let gridIndex2 = 0; gridIndex2 < CREATURE_COUNT; gridIndex2++) {
+    const creatureImageOverdrawMarginX = tileWidth
+    const creatureImageOverdrawMarginY = tileHeight
+
+    for (let endGridIndex = 0; endGridIndex < CREATURE_COUNT; endGridIndex++) {
       // gridIndex2 is the index of where the creature is now
       const creature =
-        appStore.getState().creaturesInLatestGeneration[gridIndex2]
+        appStore.getState().creaturesInLatestGeneration[endGridIndex]
 
       // gridIndex1 is the index of where the creature was
-      const gridIndex1 = creatureIdToIndex(creature.id)
+      const startGridIndex = creatureIdToIndex(creature.id)
 
-      const {columnIndex: x1, rowIndex: y1} =
-        gridIndexToRowAndColumn(gridIndex1)
-      const {columnIndex: x2, rowIndex: y2} =
-        gridIndexToRowAndColumn(gridIndex2)
+      const {columnIndex: startColumnIndex, rowIndex: startRowIndex} =
+        gridIndexToRowAndColumn(startGridIndex)
+      const {columnIndex: endColumnIndex, rowIndex: endRowIndex} =
+        gridIndexToRowAndColumn(endGridIndex)
 
-      const x3 = this.interpolate(x1, x2, easedProgress)
-      const y3 = this.interpolate(y1, y2, easedProgress)
+      const columnIndex = this.interpolate(
+        startColumnIndex,
+        endColumnIndex,
+        easedProgress
+      )
+      const rowIndex = this.interpolate(
+        startRowIndex,
+        endRowIndex,
+        easedProgress
+      )
 
-      const creatureCenterX = x3 * scaledCreatureWidth + scaledCreatureWidth / 2
-      const creatureBottomY = y3 * scaledCreatureHeight + scaledCreatureHeight
+      const tileStartX = gridStartX + columnIndex * tileWidth
+      const tileStartY = gridStartY + rowIndex * tileHeight
 
       const creatureImage = this.getCreatureImage(creature)
+
       canvas.image(
         creatureImage,
-        creatureCenterX + gridStartX - scaledCreatureWidth * 1.5,
-        creatureBottomY + gridStartY - scaledCreatureHeight * 2,
-        scaledCreatureWidth * 3,
-        scaledCreatureHeight * 3
+        tileStartX - creatureImageOverdrawMarginX,
+        tileStartY - creatureImageOverdrawMarginY,
+        tileWidth * 3,
+        tileHeight * 3
       )
     }
 

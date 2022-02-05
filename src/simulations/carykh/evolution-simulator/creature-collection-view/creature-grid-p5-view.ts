@@ -5,9 +5,8 @@ import {CreatureDrawer} from '../creature-drawer'
 import type {Creature} from '../creatures'
 import type {P5Wrapper} from '../p5-utils'
 import {
-  CREATURE_GRID_OVERDRAW_MARGIN_X,
-  CREATURE_GRID_OVERDRAW_MARGIN_Y,
-  CREATURE_GRID_TILES_PER_ROW,
+  CREATURE_COLLECTION_VIEW_HEIGHT,
+  CREATURE_COLLECTION_VIEW_WIDTH,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   GRID_AREA_HEIGHT,
@@ -48,8 +47,8 @@ export class CreatureGridP5View {
       p5Wrapper: config.p5Wrapper
     })
 
-    const width = GRID_AREA_WIDTH + CREATURE_GRID_OVERDRAW_MARGIN_X * 2
-    const height = GRID_AREA_HEIGHT + CREATURE_GRID_OVERDRAW_MARGIN_Y * 2
+    const width = CREATURE_COLLECTION_VIEW_WIDTH
+    const height = CREATURE_COLLECTION_VIEW_HEIGHT
 
     const {canvas} = config.p5Wrapper
 
@@ -118,11 +117,11 @@ export class CreatureGridP5View {
 
     const gridAreaScale = 0.1
 
+    const gridStartX = VIEW_PADDING_START_X * gridAreaScale
+    const gridStartY = VIEW_PADDING_START_Y * gridAreaScale
+
     const tileWidth = CREATURE_GRID_TILE_WIDTH * gridAreaScale
     const tileHeight = CREATURE_GRID_TILE_HEIGHT * gridAreaScale
-
-    const gridAreaOverdrawMarginX = tileWidth / 2
-    const gridAreaOverdrawMarginY = tileHeight / 2
 
     const creatureImageOverdrawMarginX = tileWidth
     const creatureImageOverdrawMarginY = tileHeight
@@ -131,8 +130,8 @@ export class CreatureGridP5View {
       const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
       const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
-      const tileStartX = gridAreaOverdrawMarginX + columnIndex * tileWidth
-      const tileStartY = gridAreaOverdrawMarginY + rowIndex * tileHeight
+      const tileStartX = gridStartX + columnIndex * tileWidth
+      const tileStartY = gridStartY + rowIndex * tileHeight
 
       if (creature.alive) {
         const creatureImage = this.getCreatureImage(creature)
@@ -206,12 +205,14 @@ export class CreatureGridP5View {
 
       const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
-      const gridAreaOverdrawMarginX = Math.floor(CREATURE_GRID_TILE_WIDTH / 2)
-      const gridAreaOverdrawMarginY = Math.floor(CREATURE_GRID_TILE_HEIGHT / 2)
+      const tileStartX =
+        VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
+      const tileStartY =
+        VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT
 
       hoverGraphics.rect(
-        columnIndex * CREATURE_GRID_TILE_WIDTH + gridAreaOverdrawMarginX,
-        rowIndex * CREATURE_GRID_TILE_HEIGHT + gridAreaOverdrawMarginY,
+        tileStartX,
+        tileStartY,
         CREATURE_GRID_TILE_WIDTH,
         CREATURE_GRID_TILE_HEIGHT
       )

@@ -1,6 +1,5 @@
 import type {Graphics} from 'p5'
 
-import {SCALE_TO_FIX_BUG} from '../constants'
 import type {AppController} from '../app-controller'
 import {P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
@@ -63,7 +62,6 @@ export class CreatureGridP5UI {
 
     this.popupSimulationView = new PopupSimulationView({
       p5Wrapper: this.p5Wrapper,
-      scale: SCALE_TO_FIX_BUG,
       simulationConfig: this.appController.getSimulationConfig()
     })
   }

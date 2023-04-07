@@ -2,8 +2,8 @@ import {
   CategoryScale,
   Chart,
   Filler,
-  LineElement,
   LinearScale,
+  LineElement,
   PointElement,
   Tooltip,
 } from 'chart.js'

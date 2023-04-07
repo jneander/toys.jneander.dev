@@ -13,7 +13,11 @@ export function P5View(props: P5ViewProps) {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    const instance = new p5(sketch, containerRef.current!)
+    if (!containerRef.current) {
+      return
+    }
+
+    const instance = new p5(sketch, containerRef.current)
 
     return () => {
       instance.remove()

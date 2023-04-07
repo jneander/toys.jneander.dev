@@ -1,12 +1,12 @@
 import {Chromosome, Fitness, randomEntry, randomInt, range} from '@jneander/genetics'
 
 import {
+  allPositionsForBoard,
   BaseController,
   ChessBoardPosition,
   KNIGHT_UNICODE,
   PropagationOptions,
   PropagationTarget,
-  allPositionsForBoard,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'

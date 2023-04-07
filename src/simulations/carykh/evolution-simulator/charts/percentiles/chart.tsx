@@ -14,10 +14,14 @@ export function PercentilesChart(props: PercentilesChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const ctx = canvasRef.current!.getContext('2d')
+    const ctx = canvasRef.current?.getContext('2d')
+    if (!ctx) {
+      return
+    }
+
     const config = createConfiguration()
 
-    const chart = new Chart(ctx!, config)
+    const chart = new Chart(ctx, config)
 
     let lastGenerationCount = 0
     let lastSelectedGeneration = -1
@@ -29,7 +33,7 @@ export function PercentilesChart(props: PercentilesChartProps) {
         const {data} = chart
 
         for (let g = lastGenerationCount + 1; g <= generationCount; g++) {
-          data.labels!.push(g)
+          data.labels?.push(g)
 
           const historyEntry = state.generationHistoryMap[g]
 

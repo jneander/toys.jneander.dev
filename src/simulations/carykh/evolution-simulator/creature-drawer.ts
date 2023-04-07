@@ -5,8 +5,8 @@ import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   Creature,
   Muscle,
-  NODE_OPERATION_LABELS_BY_ID,
   Node,
+  NODE_OPERATION_LABELS_BY_ID,
 } from './creatures'
 import {toInt} from './math'
 import type {P5Wrapper} from './p5-utils'

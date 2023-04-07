@@ -1,4 +1,4 @@
-import {InternalLink, PrimaryLayout} from '../../shared/components'
+import {PrimaryLayout} from '../../shared/components'
 import {renderPage} from '../render-page'
 
 import styles from './styles.module.css'

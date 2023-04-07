@@ -1,5 +1,4 @@
 import {
-  Chromosome,
   Fitness,
   randomChromosome,
   randomInt,

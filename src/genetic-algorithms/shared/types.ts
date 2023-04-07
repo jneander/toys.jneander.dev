@@ -10,7 +10,7 @@ export type PropagationTarget<GeneType, FitnessValueType> = {
 }
 
 export type State<GeneType, FitnessValueType> = {
-  [key: string]: any
+  [key: string]: unknown
   allIterations: boolean
   best: PropagationRecord<GeneType, FitnessValueType> | null
   current: PropagationRecord<GeneType, FitnessValueType> | null

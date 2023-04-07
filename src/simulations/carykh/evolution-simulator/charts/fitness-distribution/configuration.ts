@@ -1,24 +1,24 @@
-import {ChartConfiguration, ChartData} from 'chart.js'
-
-import {HISTOGRAM_BARS_PER_METER, HISTOGRAM_BAR_MAX, HISTOGRAM_BAR_MIN} from '../../constants'
-import {histogramBarIndexToApproximateFitness} from '../../creatures'
-
 import './controller'
 
-function createInitialData(): ChartData {
-  const data: ChartData = {
+import type {ChartConfiguration, ChartData} from 'chart.js'
+
+import {HISTOGRAM_BAR_MAX, HISTOGRAM_BAR_MIN, HISTOGRAM_BARS_PER_METER} from '../../constants'
+import {histogramBarIndexToApproximateFitness} from '../../creatures'
+
+function createInitialData(): ChartData<'bar', {x: number; y: number}> {
+  const data: ChartData<'bar', {x: number; y: number}> = {
     datasets: [],
     labels: [],
   }
 
   for (let i = HISTOGRAM_BAR_MIN; i <= HISTOGRAM_BAR_MAX; i++) {
-    data.labels!.push(i / HISTOGRAM_BARS_PER_METER)
+    data.labels?.push(i / HISTOGRAM_BARS_PER_METER)
   }
 
   return data
 }
 
-export function createConfiguration(): ChartConfiguration {
+export function createConfiguration(): ChartConfiguration<'bar', {x: number; y: number}> {
   return {
     data: createInitialData(),
 

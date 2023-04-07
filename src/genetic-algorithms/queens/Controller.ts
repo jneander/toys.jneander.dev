@@ -1,11 +1,11 @@
 import {Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 
 import {
+  allPositionsForBoard,
   BaseController,
   PropagationOptions,
   PropagationTarget,
   QUEEN_UNICODE,
-  allPositionsForBoard,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'

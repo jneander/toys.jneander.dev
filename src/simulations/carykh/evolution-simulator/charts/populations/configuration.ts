@@ -1,8 +1,8 @@
+import './controller'
+
 import {ChartConfiguration, ChartData} from 'chart.js'
 
 import {getSpeciesColorHslString, speciesIdFromNodesAndMuscles} from '../../creatures'
-
-import './controller'
 
 function createInitialData(): ChartData {
   const data: ChartData = {

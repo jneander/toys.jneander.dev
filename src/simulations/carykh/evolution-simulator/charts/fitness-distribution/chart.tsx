@@ -1,9 +1,8 @@
-import {Chart} from 'chart.js'
+import {Chart, ChartType, ChartTypeRegistry, ScaleOptionsByType} from 'chart.js'
 import {useEffect, useRef} from 'react'
 
 import {FITNESS_PERCENTILE_MEDIAN_INDEX} from '../../constants'
 import {fitnessToHistogramBarIndex, histogramBarIndexToApproximateFitness} from '../../creatures'
-
 import {AppState, AppStore} from '../../types'
 import {createConfiguration} from './configuration'
 
@@ -17,10 +16,14 @@ export function FitnessDistributionChart(props: FitnessDistributionChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const ctx = canvasRef.current!.getContext('2d')
+    const ctx = canvasRef.current?.getContext('2d')
+    if (!ctx) {
+      return
+    }
+
     const config = createConfiguration()
 
-    const chart = new Chart(ctx!, config)
+    const chart = new Chart<'bar', {x: number; y: number}[]>(ctx, config)
 
     let lastSelectedGeneration = -1
 
@@ -38,7 +41,9 @@ export function FitnessDistributionChart(props: FitnessDistributionChartProps) {
           const {fitnessPercentiles, histogramBarCounts} = historyEntry
           const maxCount = Math.max(...histogramBarCounts)
 
-          const yScale = chart.options.scales!.y!
+          const yScale = chart.options.scales?.y as ScaleOptionsByType<
+            ChartTypeRegistry[ChartType]['scales']
+          >
 
           /*
            * Set the vertical scale to consistently fit the tallest bar in the
@@ -61,7 +66,7 @@ export function FitnessDistributionChart(props: FitnessDistributionChartProps) {
             yAxisTickModulo = 50
           }
 
-          yScale.ticks!.callback = v => {
+          yScale.ticks.callback = v => {
             if (Number(v) % yAxisTickModulo === 0) {
               return v
             }

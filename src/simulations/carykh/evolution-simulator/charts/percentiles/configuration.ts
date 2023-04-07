@@ -1,8 +1,8 @@
+import './controller'
+
 import {ChartConfiguration, ChartData} from 'chart.js'
 
 import {FITNESS_PERCENTILE_CREATURE_INDICES} from '../../constants'
-
-import './controller'
 
 function createInitialData(): ChartData {
   const data: ChartData = {

@@ -1,4 +1,4 @@
-import {Chromosome, PropagationRecord, product, sum} from '@jneander/genetics'
+import {Chromosome, product, PropagationRecord, sum} from '@jneander/genetics'
 
 import {CardSplittingFitnessValue} from './types'
 

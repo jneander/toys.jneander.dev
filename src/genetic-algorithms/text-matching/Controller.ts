@@ -4,15 +4,13 @@ import {
   Fitness,
   randomChromosome,
   replaceOneGene,
-  sampleArray
+  sampleArray,
 } from '@jneander/genetics'
 
 import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
 
 const defaultLength = 50
-const geneSet = '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.'.split(
-  ''
-)
+const geneSet = '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.'.split('')
 
 export default class Controller extends BaseController<string, number> {
   private _fitnessMethod: ArrayMatch<string> | undefined
@@ -27,7 +25,7 @@ export default class Controller extends BaseController<string, number> {
 
   protected propogationOptions(): PropagationOptions<string> {
     return {
-      mutate: parent => replaceOneGene(parent, this.geneSet())
+      mutate: parent => replaceOneGene(parent, this.geneSet()),
     }
   }
 
@@ -38,7 +36,7 @@ export default class Controller extends BaseController<string, number> {
 
     return {
       chromosome,
-      fitness: this.fitnessMethod.getTargetFitness(chromosome)
+      fitness: this.fitnessMethod.getTargetFitness(chromosome),
     }
   }
 

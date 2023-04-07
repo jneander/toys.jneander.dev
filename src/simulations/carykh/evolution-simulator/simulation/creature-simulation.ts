@@ -1,16 +1,11 @@
-import {
-  FRICTION,
-  GRAVITY,
-  PRESSURE_UNIT,
-  SIMULATION_SPEED_INITIAL
-} from '../constants'
+import {FRICTION, GRAVITY, PRESSURE_UNIT, SIMULATION_SPEED_INITIAL} from '../constants'
 import {
   Creature,
   Node,
   NodeOperationId,
   applyForceToMuscle,
   applyForcesToNode,
-  positionNodesForStartOfSimulation
+  positionNodesForStartOfSimulation,
 } from '../creatures'
 import type {SimulationNodeCache, SimulationState} from '../types'
 
@@ -30,11 +25,11 @@ export class CreatureSimulation {
         id: 0,
         muscles: [],
         nodeCaches: [],
-        nodes: []
+        nodes: [],
       },
 
       speed: SIMULATION_SPEED_INITIAL,
-      timer: 0
+      timer: 0,
     }
   }
 
@@ -78,7 +73,7 @@ export class CreatureSimulation {
       return {
         nextValue: node.value,
         previousPositionX: node.positionX,
-        previousPositionY: node.positionY
+        previousPositionY: node.positionY,
       }
     })
 
@@ -94,10 +89,7 @@ export class CreatureSimulation {
     node.velocityY += GRAVITY
   }
 
-  private applyCollisionsToNode(
-    node: Node,
-    nodeCache: SimulationNodeCache
-  ): void {
+  private applyCollisionsToNode(node: Node, nodeCache: SimulationNodeCache): void {
     node.pressure = 0
     let dif = node.positionY + node.mass / 2
 
@@ -105,10 +97,7 @@ export class CreatureSimulation {
       this.pressNodeAgainstGround(node, 0)
     }
 
-    if (
-      node.positionY > nodeCache.previousPositionY &&
-      this.config.hazelStairs >= 0
-    ) {
+    if (node.positionY > nodeCache.previousPositionY && this.config.hazelStairs >= 0) {
       const bottomPointNow = node.positionY + node.mass / 2
       const bottomPointPrev = nodeCache.previousPositionY + node.mass / 2
       const levelNow = Math.ceil(bottomPointNow / this.config.hazelStairs)
@@ -124,11 +113,7 @@ export class CreatureSimulation {
     nodeCache.previousPositionX = node.positionX
   }
 
-  private processNodeAxons(
-    node: Node,
-    nodeCache: SimulationNodeCache,
-    nodes: Node[]
-  ): void {
+  private processNodeAxons(node: Node, nodeCache: SimulationNodeCache, nodes: Node[]): void {
     const axonValue1 = nodes[node.axon1].value
     const axonValue2 = nodes[node.axon2].value
 

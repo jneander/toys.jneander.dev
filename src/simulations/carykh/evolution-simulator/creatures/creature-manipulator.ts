@@ -4,21 +4,17 @@ import {
   BIG_MUTATION_CHANCE,
   MAX_MUSCLE_LENGTH_INCLUSIVE,
   MIN_MUSCLE_LENGTH_INCLUSIVE,
-  NODE_MASS_DEFAULT
+  NODE_MASS_DEFAULT,
 } from '../constants'
 import {Creature} from '../creatures'
 import {dist2d} from '../math'
 import Muscle from './Muscle'
 import Node from './Node'
-import {
-  applyForceToMuscle,
-  applyForcesToNode,
-  positionNodesCenterToOrigin
-} from './helpers'
+import {applyForceToMuscle, applyForcesToNode, positionNodesCenterToOrigin} from './helpers'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   NODE_OPERATION_IDS,
-  NodeOperationId
+  NodeOperationId,
 } from './node-operations'
 
 export type CreatureManipulatorConfig = {
@@ -54,8 +50,8 @@ export class CreatureManipulator {
           this.randomFract(0, 1),
           this.randomArrayValue(NODE_OPERATION_IDS),
           this.randomUint32(0, nodeNum),
-          this.randomUint32(0, nodeNum)
-        )
+          this.randomUint32(0, nodeNum),
+        ),
       )
     }
 
@@ -77,14 +73,9 @@ export class CreatureManipulator {
         }
       }
 
-      const len = this.randomFract(
-        MIN_MUSCLE_LENGTH_INCLUSIVE,
-        MAX_MUSCLE_LENGTH_INCLUSIVE
-      )
+      const len = this.randomFract(MIN_MUSCLE_LENGTH_INCLUSIVE, MAX_MUSCLE_LENGTH_INCLUSIVE)
 
-      muscles.push(
-        new Muscle(taxon, tc1, tc2, len, this.randomFract(0.02, 0.08))
-      )
+      muscles.push(new Muscle(taxon, tc1, tc2, len, this.randomFract(0.02, 0.08)))
     }
 
     this.stabilizeNodesAndMuscles(nodes, muscles)
@@ -105,18 +96,13 @@ export class CreatureManipulator {
       [],
       0,
       true,
-      creature.creatureTimer +
-        this.reducedRandomForMutation() * 16 * creature.mutability,
-      Math.min(creature.mutability * this.randomFract(0.8, 1.25), 2)
+      creature.creatureTimer + this.reducedRandomForMutation() * 16 * creature.mutability,
+      Math.min(creature.mutability * this.randomFract(0.8, 1.25), 2),
     )
 
     for (let i = 0; i < creature.nodes.length; i++) {
       modifiedCreature.nodes.push(
-        this.modifyNode(
-          creature.nodes[i],
-          creature.mutability,
-          creature.nodes.length
-        )
+        this.modifyNode(creature.nodes[i], creature.mutability, creature.nodes.length),
       )
     }
 
@@ -124,7 +110,7 @@ export class CreatureManipulator {
       const muscle = this.modifyMuscle(
         creature.muscles[i],
         creature.nodes.length,
-        creature.mutability
+        creature.mutability,
       )
       modifiedCreature.muscles.push(muscle)
     }
@@ -169,11 +155,7 @@ export class CreatureManipulator {
     return modifiedCreature
   }
 
-  private modifyMuscle(
-    muscle: Muscle,
-    nodeCount: number,
-    mutability: number
-  ): Muscle {
+  private modifyMuscle(muscle: Muscle, nodeCount: number, mutability: number): Muscle {
     let newc1 = muscle.nodeConnection1
     let newc2 = muscle.nodeConnection2
     let newAxon = muscle.axon
@@ -191,32 +173,22 @@ export class CreatureManipulator {
     }
 
     const newR = Math.min(
-      Math.max(
-        muscle.rigidity *
-          (1 + this.reducedRandomForMutation() * 0.9 * mutability),
-        0.01
-      ),
-      0.08
+      Math.max(muscle.rigidity * (1 + this.reducedRandomForMutation() * 0.9 * mutability), 0.01),
+      0.08,
     )
     const newLen = Math.min(
-      Math.max(
-        muscle.length + this.reducedRandomForMutation() * mutability,
-        0.4
-      ),
-      1.25
+      Math.max(muscle.length + this.reducedRandomForMutation() * mutability, 0.4),
+      1.25,
     )
 
     return new Muscle(newAxon, newc1, newc2, newLen, newR)
   }
 
   private modifyNode(node: Node, mutability: number, nodeNum: number): Node {
-    const newX =
-      node.positionX + this.reducedRandomForMutation() * 0.5 * mutability
-    const newY =
-      node.positionY + this.reducedRandomForMutation() * 0.5 * mutability
+    const newX = node.positionX + this.reducedRandomForMutation() * 0.5 * mutability
+    const newY = node.positionY + this.reducedRandomForMutation() * 0.5 * mutability
 
-    let newV =
-      node.value * (1 + this.reducedRandomForMutation() * 0.2 * mutability)
+    let newV = node.value * (1 + this.reducedRandomForMutation() * 0.2 * mutability)
     let newOperation = node.operation
     let newAxon1 = node.axon1
     let newAxon2 = node.axon2
@@ -248,17 +220,11 @@ export class CreatureManipulator {
       0,
       0,
       NODE_MASS_DEFAULT,
-      Math.min(
-        Math.max(
-          node.friction + this.reducedRandomForMutation() * 0.1 * mutability,
-          0
-        ),
-        1
-      ),
+      Math.min(Math.max(node.friction + this.reducedRandomForMutation() * 0.1 * mutability, 0), 1),
       newV,
       newOperation,
       newAxon1,
-      newAxon2
+      newAxon2,
     )
   }
 
@@ -266,10 +232,8 @@ export class CreatureManipulator {
     const parentNode = this.randomUint32(0, creature.nodes.length)
     const ang1 = this.randomFract(0, 2 * Math.PI)
     const distance = Math.sqrt(this.randomFract(0, 1))
-    const x =
-      creature.nodes[parentNode].positionX + Math.cos(ang1) * 0.5 * distance
-    const y =
-      creature.nodes[parentNode].positionY + Math.sin(ang1) * 0.5 * distance
+    const x = creature.nodes[parentNode].positionX + Math.cos(ang1) * 0.5 * distance
+    const y = creature.nodes[parentNode].positionY + Math.sin(ang1) * 0.5 * distance
 
     const newNodeCount = creature.nodes.length + 1
 
@@ -284,8 +248,8 @@ export class CreatureManipulator {
         this.randomFract(0, 1),
         this.randomArrayValue(NODE_OPERATION_IDS),
         this.randomUint32(0, newNodeCount),
-        this.randomUint32(0, newNodeCount)
-      )
+        this.randomUint32(0, newNodeCount),
+      ),
     )
 
     let nextClosestNode = 0
@@ -319,23 +283,18 @@ export class CreatureManipulator {
       }
     }
 
-    let len = this.randomFract(
-      MIN_MUSCLE_LENGTH_INCLUSIVE,
-      MAX_MUSCLE_LENGTH_INCLUSIVE
-    )
+    let len = this.randomFract(MIN_MUSCLE_LENGTH_INCLUSIVE, MAX_MUSCLE_LENGTH_INCLUSIVE)
 
     if (tc1 != -1) {
       len = dist2d(
         creature.nodes[tc1].positionX,
         creature.nodes[tc1].positionY,
         creature.nodes[tc2].positionX,
-        creature.nodes[tc2].positionY
+        creature.nodes[tc2].positionY,
       )
     }
 
-    creature.muscles.push(
-      new Muscle(axon, tc1, tc2, len, this.randomFract(0.02, 0.08))
-    )
+    creature.muscles.push(new Muscle(axon, tc1, tc2, len, this.randomFract(0.02, 0.08)))
   }
 
   private removeRandomNode(creature: Creature): void {
@@ -383,23 +342,16 @@ export class CreatureManipulator {
     for (let i = 0; i < creature.muscles.length; i++) {
       for (let j = i + 1; j < creature.muscles.length; j++) {
         if (
-          creature.muscles[i].nodeConnection1 ==
-            creature.muscles[j].nodeConnection1 &&
-          creature.muscles[i].nodeConnection2 ==
-            creature.muscles[j].nodeConnection2
+          creature.muscles[i].nodeConnection1 == creature.muscles[j].nodeConnection1 &&
+          creature.muscles[i].nodeConnection2 == creature.muscles[j].nodeConnection2
         ) {
           bads.push(i)
         } else if (
-          creature.muscles[i].nodeConnection1 ==
-            creature.muscles[j].nodeConnection2 &&
-          creature.muscles[i].nodeConnection2 ==
-            creature.muscles[j].nodeConnection1
+          creature.muscles[i].nodeConnection1 == creature.muscles[j].nodeConnection2 &&
+          creature.muscles[i].nodeConnection2 == creature.muscles[j].nodeConnection1
         ) {
           bads.push(i)
-        } else if (
-          creature.muscles[i].nodeConnection1 ==
-          creature.muscles[i].nodeConnection2
-        ) {
+        } else if (creature.muscles[i].nodeConnection1 == creature.muscles[i].nodeConnection2) {
           bads.push(i)
         }
       }
@@ -557,10 +509,7 @@ export class CreatureManipulator {
 
       const scale = 2 ** Math.ceil(Math.log2(range))
 
-      randomFract = this.config.randomNumberGenerator.nextFract32(
-        0,
-        range / scale
-      )
+      randomFract = this.config.randomNumberGenerator.nextFract32(0, range / scale)
       randomFract *= scale
     }
 
@@ -568,10 +517,7 @@ export class CreatureManipulator {
   }
 
   private randomUint32(minInclusive: number, maxExclusive: number): number {
-    return this.config.randomNumberGenerator.nextUint32(
-      minInclusive,
-      maxExclusive
-    )
+    return this.config.randomNumberGenerator.nextUint32(minInclusive, maxExclusive)
   }
 
   private randomArrayValue<T>(array: T[]): T {

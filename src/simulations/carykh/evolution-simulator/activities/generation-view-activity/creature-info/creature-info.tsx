@@ -1,11 +1,7 @@
 import {Store} from '@jneander/utils-state'
 import {useMemo} from 'react'
 
-import {
-  Creature,
-  getSpeciesColorHslString,
-  speciesIdForCreature
-} from '../../../creatures'
+import {Creature, getSpeciesColorHslString, speciesIdForCreature} from '../../../creatures'
 import {P5ControlledClientView} from '../../../p5-utils'
 import type {SimulationConfig} from '../../../simulation'
 import {CreatureInfoAdapter} from './creature-info-adapter'
@@ -24,7 +20,7 @@ export function CreatureInfo(props: CreatureInfoProps) {
 
   const store = useMemo(() => {
     return new Store<CreatureInfoState>({
-      showSimulation: false
+      showSimulation: false,
     })
   }, [])
 
@@ -32,7 +28,7 @@ export function CreatureInfo(props: CreatureInfoProps) {
     return new CreatureInfoAdapter({
       creature,
       creatureInfoStore: store,
-      simulationConfig
+      simulationConfig,
     })
   }, [creature, simulationConfig, store])
 

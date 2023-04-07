@@ -5,7 +5,7 @@ import {
   AIR_FRICTION,
   CREATURE_COUNT,
   HISTOGRAM_BARS_PER_METER,
-  HISTOGRAM_BAR_MIN
+  HISTOGRAM_BAR_MIN,
 } from '../constants'
 import {dist2d} from '../math'
 
@@ -63,16 +63,8 @@ export function applyForceToMuscle(muscle: Muscle, nodes: Node[]): void {
   const ni1 = nodes[muscle.nodeConnection1]
   const ni2 = nodes[muscle.nodeConnection2]
 
-  const distance = dist2d(
-    ni1.positionX,
-    ni1.positionY,
-    ni2.positionX,
-    ni2.positionY
-  )
-  const angle = Math.atan2(
-    ni1.positionY - ni2.positionY,
-    ni1.positionX - ni2.positionX
-  )
+  const distance = dist2d(ni1.positionX, ni1.positionY, ni2.positionX, ni2.positionY)
+  const angle = Math.atan2(ni1.positionY - ni2.positionY, ni1.positionX - ni2.positionX)
 
   const force = Math.min(Math.max(1 - distance / target, -0.4), 0.4)
   ni1.velocityX += (Math.cos(angle) * force * muscle.rigidity) / ni1.mass
@@ -112,16 +104,10 @@ export function creatureIdToIndex(creatureId: number): number {
 }
 
 export function speciesIdForCreature(creature: Creature): number {
-  return speciesIdFromNodesAndMuscles(
-    creature.nodes.length,
-    creature.muscles.length
-  )
+  return speciesIdFromNodesAndMuscles(creature.nodes.length, creature.muscles.length)
 }
 
-export function speciesIdFromNodesAndMuscles(
-  nodeCount: number,
-  muscleCount: number
-): number {
+export function speciesIdFromNodesAndMuscles(nodeCount: number, muscleCount: number): number {
   return (nodeCount % 10) * 10 + (muscleCount % 10)
 }
 
@@ -148,10 +134,7 @@ export function getSpeciesColorHsl(speciesId: number, adjust: boolean): HSL {
   return hsbToHsl(...getSpeciesColorHSB(speciesId, adjust))
 }
 
-export function getSpeciesColorHslString(
-  speciesId: number,
-  adjust: boolean
-): string {
+export function getSpeciesColorHslString(speciesId: number, adjust: boolean): string {
   const [h, s, l] = getSpeciesColorHsl(speciesId, adjust)
 
   const hue = Math.floor(h * 360)
@@ -179,8 +162,6 @@ export function fitnessToHistogramBarIndex(fitness: number): number {
   return Math.floor(fitness * HISTOGRAM_BARS_PER_METER - HISTOGRAM_BAR_MIN)
 }
 
-export function histogramBarIndexToApproximateFitness(
-  barIndex: number
-): number {
+export function histogramBarIndexToApproximateFitness(barIndex: number): number {
   return (barIndex + HISTOGRAM_BAR_MIN) / HISTOGRAM_BARS_PER_METER
 }

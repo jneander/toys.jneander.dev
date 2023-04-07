@@ -1,16 +1,13 @@
 import {ChartConfiguration, ChartData} from 'chart.js'
 
-import {
-  getSpeciesColorHslString,
-  speciesIdFromNodesAndMuscles
-} from '../../creatures'
+import {getSpeciesColorHslString, speciesIdFromNodesAndMuscles} from '../../creatures'
 
 import './controller'
 
 function createInitialData(): ChartData {
   const data: ChartData = {
     datasets: [],
-    labels: [0]
+    labels: [0],
   }
 
   for (let nodeCount = 0; nodeCount < 10; nodeCount++) {
@@ -27,7 +24,7 @@ function createInitialData(): ChartData {
         order: 100 - speciesId, // Order species top to bottom.
         pointHitRadius: 0,
         pointHoverRadius: 0,
-        pointRadius: 0
+        pointRadius: 0,
       })
     }
   }
@@ -48,7 +45,7 @@ export function createConfiguration(): ChartConfiguration {
       interaction: {
         axis: 'x',
         intersect: false,
-        mode: 'index'
+        mode: 'index',
       },
 
       maintainAspectRatio: false,
@@ -58,11 +55,11 @@ export function createConfiguration(): ChartConfiguration {
           callbacks: {
             title() {
               return ''
-            }
+            },
           },
 
-          enabled: true
-        }
+          enabled: true,
+        },
       },
 
       responsive: true,
@@ -71,8 +68,8 @@ export function createConfiguration(): ChartConfiguration {
         x: {
           title: {
             display: true,
-            text: 'Generation'
-          }
+            text: 'Generation',
+          },
         },
 
         y: {
@@ -80,12 +77,12 @@ export function createConfiguration(): ChartConfiguration {
 
           title: {
             display: true,
-            text: 'Population'
-          }
-        }
-      }
+            text: 'Population',
+          },
+        },
+      },
     },
 
-    type: 'populations'
+    type: 'populations',
   }
 }

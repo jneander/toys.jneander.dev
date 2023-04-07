@@ -22,7 +22,7 @@ export class SortingCreaturesAdapter implements P5ClientViewAdapter {
     this.sortingCreaturesP5Ui = new SortingCreaturesP5View({
       appStore: this.config.appStore,
       onAnimationFinished: this.config.onAnimationFinished,
-      p5Wrapper
+      p5Wrapper,
     })
   }
 

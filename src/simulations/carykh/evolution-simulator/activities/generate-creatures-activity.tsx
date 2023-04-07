@@ -2,10 +2,7 @@ import {useMemo} from 'react'
 
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
-import {
-  CreatureCollectionView,
-  CreatureGridAdapter
-} from '../creature-collection-view'
+import {CreatureCollectionView, CreatureGridAdapter} from '../creature-collection-view'
 import type {AppStore} from '../types'
 
 export interface GenerateCreaturesActivityProps {
@@ -13,16 +10,14 @@ export interface GenerateCreaturesActivityProps {
   appStore: AppStore
 }
 
-export function GenerateCreaturesActivity(
-  props: GenerateCreaturesActivityProps
-) {
+export function GenerateCreaturesActivity(props: GenerateCreaturesActivityProps) {
   const {appController, appStore} = props
 
   const creatureCollectionAdapter = useMemo(() => {
     function getCreatureAndGridIndexFn(index: number) {
       return {
         creature: appStore.getState().creaturesInLatestGeneration[index],
-        gridIndex: index
+        gridIndex: index,
       }
     }
 
@@ -30,7 +25,7 @@ export function GenerateCreaturesActivity(
       appController,
       appStore,
       getCreatureAndGridIndexFn,
-      showsPopupSimulation: () => false
+      showsPopupSimulation: () => false,
     })
   }, [appController, appStore])
 

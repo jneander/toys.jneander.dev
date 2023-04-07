@@ -50,8 +50,8 @@ export function PopulationsChart(props: PopulationsChartProps) {
         chart.setActiveElements([
           {
             datasetIndex: 0,
-            index: selectedGeneration
-          }
+            index: selectedGeneration,
+          },
         ])
 
         const {chartArea} = chart
@@ -61,7 +61,7 @@ export function PopulationsChart(props: PopulationsChartProps) {
           if (dataset.data[selectedGeneration]! > 25) {
             activeElements.push({
               datasetIndex: index,
-              index: selectedGeneration
+              index: selectedGeneration,
             })
           }
         })
@@ -71,8 +71,8 @@ export function PopulationsChart(props: PopulationsChartProps) {
 
           {
             x: (chartArea.left + chartArea.right) / 2,
-            y: (chartArea.top + chartArea.bottom) / 2
-          }
+            y: (chartArea.top + chartArea.bottom) / 2,
+          },
         )
 
         chart.update()

@@ -17,7 +17,7 @@ export default class Creature {
     fitness: number,
     alive: boolean,
     creatureTimer: number,
-    mutability: number
+    mutability: number,
   ) {
     this.id = id
     this.muscles = muscles
@@ -47,7 +47,7 @@ export default class Creature {
       this.fitness,
       this.alive,
       this.creatureTimer,
-      this.mutability
+      this.mutability,
     )
   }
 }

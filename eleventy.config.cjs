@@ -39,7 +39,7 @@ module.exports = function (config) {
     dir: {
       input: 'eleventy',
       layouts: '_layouts',
-      output: 'dist/final'
-    }
+      output: 'dist/final',
+    },
   }
 }

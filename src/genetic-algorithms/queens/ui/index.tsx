@@ -54,10 +54,7 @@ export function Queens() {
       <Metrics iteration={state.current ? state.current.iteration : 0} />
 
       <div>
-        <ChessBoard
-          positions={state.current?.chromosome?.genes}
-          size={state.boardSize}
-        />
+        <ChessBoard positions={state.current?.chromosome?.genes} size={state.boardSize} />
       </div>
     </div>
   )

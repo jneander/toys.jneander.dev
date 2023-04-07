@@ -1,7 +1,4 @@
-import {
-  MAX_MUSCLE_LENGTH_INCLUSIVE,
-  MIN_MUSCLE_LENGTH_INCLUSIVE
-} from '../constants'
+import {MAX_MUSCLE_LENGTH_INCLUSIVE, MIN_MUSCLE_LENGTH_INCLUSIVE} from '../constants'
 import {NodeOperationId} from './node-operations'
 
 export default class Node {
@@ -34,7 +31,7 @@ export default class Node {
     value: number,
     operationId: NodeOperationId,
     axon1: number,
-    axon2: number
+    axon2: number,
   ) {
     this.positionX = positionX
     this.positionY = positionY
@@ -55,10 +52,7 @@ export default class Node {
 
   getClampedValue(): number {
     // Return this node's value clamped to the range usable by muscles.
-    return Math.min(
-      Math.max(this.value, MIN_MUSCLE_LENGTH_INCLUSIVE),
-      MAX_MUSCLE_LENGTH_INCLUSIVE
-    )
+    return Math.min(Math.max(this.value, MIN_MUSCLE_LENGTH_INCLUSIVE), MAX_MUSCLE_LENGTH_INCLUSIVE)
   }
 
   clone(): Node {
@@ -72,7 +66,7 @@ export default class Node {
       this.value,
       this.operation,
       this.axon1,
-      this.axon2
+      this.axon2,
     )
   }
 }

@@ -13,11 +13,7 @@ function ChessBoardRow({row}: ChessBoardRowProps) {
   return (
     <tr className={styles.Row}>
       {row.map((piece, index) => (
-        <td
-          key={index}
-          className={styles.Space}
-          dangerouslySetInnerHTML={{__html: piece}}
-        />
+        <td key={index} className={styles.Space} dangerouslySetInnerHTML={{__html: piece}} />
       ))}
     </tr>
   )
@@ -31,10 +27,7 @@ interface ChessBoardProps {
 export function ChessBoard(props: ChessBoardProps) {
   const {positions, size} = props
 
-  const board = useMemo(
-    () => buildPopulatedBoard(size, positions),
-    [size, positions]
-  )
+  const board = useMemo(() => buildPopulatedBoard(size, positions), [size, positions])
 
   return (
     <table className={styles.Board}>

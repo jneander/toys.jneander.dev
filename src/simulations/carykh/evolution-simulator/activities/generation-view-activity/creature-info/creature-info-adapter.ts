@@ -26,7 +26,7 @@ export class CreatureInfoAdapter implements P5ClientViewAdapter {
       creature: this.config.creature,
       p5Wrapper,
       simulationConfig: this.config.simulationConfig,
-      store: this.config.creatureInfoStore
+      store: this.config.creatureInfoStore,
     })
   }
 

@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     browser: true,
-    es6: true
+    es6: true,
   },
 
   extends: [
@@ -11,7 +11,7 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    'plugin:react/recommended'
+    'plugin:react/recommended',
   ],
 
   globals: {},
@@ -20,22 +20,22 @@ module.exports = {
   overrides: [
     {
       env: {
-        node: true
+        node: true,
       },
 
-      files: ['./config/**/*.js']
-    }
+      files: ['./config/**/*.js'],
+    },
   ],
 
   parser: '@typescript-eslint/parser',
 
   parserOptions: {
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
 
     ecmaVersion: 2018,
-    sourceType: 'module'
+    sourceType: 'module',
   },
 
   plugins: [
@@ -45,7 +45,7 @@ module.exports = {
     'simple-import-sort',
     'jsx-a11y',
     'react',
-    'react-hooks'
+    'react-hooks',
   ],
 
   root: true,
@@ -55,11 +55,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     'arrow-body-style': 'off',
     'eslint-comments/no-unused-disable': 'error',
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {js: 'never', ts: 'never', tsx: 'never'}
-    ],
+    'import/extensions': ['error', 'ignorePackages', {js: 'never', ts: 'never', tsx: 'never'}],
     'import/no-extraneous-dependencies': ['error', {devDependencies: true}],
     'no-empty': ['error', {allowEmptyCatch: true}],
     'no-unused-vars': 'off',
@@ -100,25 +96,25 @@ module.exports = {
           ['\\.(scss|css)$'],
 
           // Assets.
-          ['\\.svg$']
-        ]
-      }
+          ['\\.svg$'],
+        ],
+      },
     ],
 
-    'simple-import-sort/exports': 'error'
+    'simple-import-sort/exports': 'error',
   },
 
   settings: {
     'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx']
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
 
     'import/resolver': {
-      typescript: {}
+      typescript: {},
     },
 
     react: {
-      version: 'detect'
-    }
-  }
+      version: 'detect',
+    },
+  },
 }

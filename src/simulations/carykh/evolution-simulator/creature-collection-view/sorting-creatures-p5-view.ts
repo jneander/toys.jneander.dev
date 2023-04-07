@@ -9,12 +9,9 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   VIEW_PADDING_START_X,
-  VIEW_PADDING_START_Y
+  VIEW_PADDING_START_Y,
 } from './constants'
-import {
-  getCachedCreatureImage,
-  setCachedCreatureImage
-} from './creature-image-cache'
+import {getCachedCreatureImage, setCachedCreatureImage} from './creature-image-cache'
 import {gridIndexToRowAndColumn} from './helpers'
 
 const ANIMATION_DURATION_MS = 5000
@@ -44,12 +41,12 @@ export class SortingCreaturesP5View {
     this.p5Wrapper = config.p5Wrapper
 
     this.creatureDrawer = new CreatureDrawer({
-      p5Wrapper: this.p5Wrapper
+      p5Wrapper: this.p5Wrapper,
     })
 
     this.creatureGraphics = this.p5Wrapper.canvas.createGraphics(
       CREATURE_GRID_TILE_WIDTH * 3,
-      CREATURE_GRID_TILE_HEIGHT * 3
+      CREATURE_GRID_TILE_HEIGHT * 3,
     )
 
     this.onAnimationFinished = config.onAnimationFinished
@@ -89,8 +86,7 @@ export class SortingCreaturesP5View {
 
     for (let endGridIndex = 0; endGridIndex < CREATURE_COUNT; endGridIndex++) {
       // gridIndex2 is the index of where the creature is now
-      const creature =
-        appStore.getState().creaturesInLatestGeneration[endGridIndex]
+      const creature = appStore.getState().creaturesInLatestGeneration[endGridIndex]
 
       // gridIndex1 is the index of where the creature was
       const startGridIndex = creatureIdToIndex(creature.id)
@@ -100,16 +96,8 @@ export class SortingCreaturesP5View {
       const {columnIndex: endColumnIndex, rowIndex: endRowIndex} =
         gridIndexToRowAndColumn(endGridIndex)
 
-      const columnIndex = this.interpolate(
-        startColumnIndex,
-        endColumnIndex,
-        easedProgress
-      )
-      const rowIndex = this.interpolate(
-        startRowIndex,
-        endRowIndex,
-        easedProgress
-      )
+      const columnIndex = this.interpolate(startColumnIndex, endColumnIndex, easedProgress)
+      const rowIndex = this.interpolate(startRowIndex, endRowIndex, easedProgress)
 
       const tileStartX = gridStartX + columnIndex * tileWidth
       const tileStartY = gridStartY + rowIndex * tileHeight
@@ -121,7 +109,7 @@ export class SortingCreaturesP5View {
         tileStartX - creatureImageOverdrawMarginX,
         tileStartY - creatureImageOverdrawMarginY,
         tileWidth * 3,
-        tileHeight * 3
+        tileHeight * 3,
       )
     }
 
@@ -146,7 +134,7 @@ export class SortingCreaturesP5View {
     // Translate to the center of where the creature is drawn.
     this.creatureGraphics.translate(
       this.creatureGraphics.width / 2,
-      this.creatureGraphics.height / 2
+      this.creatureGraphics.height / 2,
     )
     // Scale to fit the creature in the center.
     this.creatureGraphics.scale(10)
@@ -159,7 +147,7 @@ export class SortingCreaturesP5View {
       0,
       0,
       this.creatureGraphics.width,
-      this.creatureGraphics.height
+      this.creatureGraphics.height,
     )
 
     setCachedCreatureImage(creature, image)

@@ -10,7 +10,7 @@ export enum NodeOperationId {
   ModuloAxon1WithAxon2 = 'MODULO_AXON1_WITH_AXON2',
   SineOfAxon1 = 'SINE_OF_AXON1',
   SigmoidOfAxon1 = 'SIGMOID_OF_AXON1',
-  NodePressure = 'NODE_PRESSURE'
+  NodePressure = 'NODE_PRESSURE',
 }
 
 export const AXON_COUNT_BY_NODE_OPERATION_ID: {
@@ -27,7 +27,7 @@ export const AXON_COUNT_BY_NODE_OPERATION_ID: {
   [NodeOperationId.ModuloAxon1WithAxon2]: 2,
   [NodeOperationId.SineOfAxon1]: 1,
   [NodeOperationId.SigmoidOfAxon1]: 1,
-  [NodeOperationId.NodePressure]: 0
+  [NodeOperationId.NodePressure]: 0,
 }
 
 export const NODE_OPERATION_IDS = [
@@ -42,7 +42,7 @@ export const NODE_OPERATION_IDS = [
   NodeOperationId.ModuloAxon1WithAxon2,
   NodeOperationId.SineOfAxon1,
   NodeOperationId.SigmoidOfAxon1,
-  NodeOperationId.NodePressure
+  NodeOperationId.NodePressure,
 ]
 
 export const NODE_OPERATION_LABELS_BY_ID: {
@@ -59,5 +59,5 @@ export const NODE_OPERATION_LABELS_BY_ID: {
   [NodeOperationId.ModuloAxon1WithAxon2]: '%',
   [NodeOperationId.SineOfAxon1]: 'sin',
   [NodeOperationId.SigmoidOfAxon1]: 'sig',
-  [NodeOperationId.NodePressure]: 'pres'
+  [NodeOperationId.NodePressure]: 'pres',
 }

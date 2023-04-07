@@ -28,7 +28,7 @@ export class CreatureGridAdapter implements P5ClientViewAdapter {
       appStore: this.config.appStore,
       getCreatureAndGridIndexFn: this.config.getCreatureAndGridIndexFn,
       p5Wrapper,
-      showsPopupSimulation: this.config.showsPopupSimulation
+      showsPopupSimulation: this.config.showsPopupSimulation,
     })
 
     this.creatureGridP5Ui.initialize()

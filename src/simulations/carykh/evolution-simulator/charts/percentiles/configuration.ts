@@ -7,7 +7,7 @@ import './controller'
 function createInitialData(): ChartData {
   const data: ChartData = {
     datasets: [],
-    labels: [0]
+    labels: [0],
   }
 
   FITNESS_PERCENTILE_CREATURE_INDICES.forEach(creatureIndex => {
@@ -21,7 +21,7 @@ function createInitialData(): ChartData {
       label: `Percentile ${percentile}`,
       pointHitRadius: 0,
       pointHoverRadius: 0,
-      pointRadius: 0
+      pointRadius: 0,
     })
   })
 
@@ -41,7 +41,7 @@ export function createConfiguration(): ChartConfiguration {
       interaction: {
         axis: 'x',
         intersect: false,
-        mode: 'index'
+        mode: 'index',
       },
 
       responsive: true,
@@ -50,19 +50,19 @@ export function createConfiguration(): ChartConfiguration {
         x: {
           title: {
             display: true,
-            text: 'Generation'
-          }
+            text: 'Generation',
+          },
         },
 
         y: {
           title: {
             display: true,
-            text: 'Fitness'
-          }
-        }
-      }
+            text: 'Fitness',
+          },
+        },
+      },
     },
 
-    type: 'percentiles'
+    type: 'percentiles',
   }
 }

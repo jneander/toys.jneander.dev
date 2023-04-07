@@ -9,9 +9,9 @@ module.exports = {
         modules: false,
 
         targets: {
-          browsers: browserslist
-        }
-      }
+          browsers: browserslist,
+        },
+      },
     ],
 
     ['@babel/preset-typescript'],
@@ -20,10 +20,10 @@ module.exports = {
       '@babel/preset-react',
 
       {
-        runtime: 'automatic'
-      }
-    ]
+        runtime: 'automatic',
+      },
+    ],
   ],
 
-  plugins: []
+  plugins: [],
 }

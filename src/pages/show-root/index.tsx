@@ -10,9 +10,7 @@ renderPage(() => (
 
       <ul>
         <li>
-          <InternalLink href="/genetic-algorithms">
-            Genetic Algorithms
-          </InternalLink>
+          <InternalLink href="/genetic-algorithms">Genetic Algorithms</InternalLink>
         </li>
 
         <li>

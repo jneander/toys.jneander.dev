@@ -12,10 +12,7 @@ function haveSameIdentity(valueA: any, valueB: any): boolean {
 export function useStore<State, Substate = State>(
   store: Store<State>,
   accessorFn: (state: State) => Substate = getState,
-  compareFn: (
-    previous: Substate,
-    current: Substate
-  ) => boolean = haveSameIdentity
+  compareFn: (previous: Substate, current: Substate) => boolean = haveSameIdentity,
 ): Substate {
   const accessorFnRef = useRef<typeof accessorFn>(accessorFn)
   accessorFnRef.current = accessorFn
@@ -23,9 +20,7 @@ export function useStore<State, Substate = State>(
   const compareFnRef = useRef<typeof compareFn>(compareFn)
   compareFnRef.current = compareFn
 
-  const [value, setValue] = useState<Substate>(() =>
-    accessorFn(store.getState())
-  )
+  const [value, setValue] = useState<Substate>(() => accessorFn(store.getState()))
 
   const valueRef = useRef<Substate>(value)
   valueRef.current = value

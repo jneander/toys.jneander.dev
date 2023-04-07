@@ -17,7 +17,7 @@ export class PropagationRecording<GeneType, FitnessValueType> {
 
     this.config = {
       allIterations: false,
-      ...config
+      ...config,
     }
 
     this._recording = false
@@ -30,10 +30,7 @@ export class PropagationRecording<GeneType, FitnessValueType> {
   }
 
   addIteration(record: PropagationRecord<GeneType, FitnessValueType>): void {
-    if (
-      this.config.allIterations &&
-      this._playbackPosition === this._iterations.length
-    ) {
+    if (this.config.allIterations && this._playbackPosition === this._iterations.length) {
       this._playbackPosition++
     }
     if (this.config.allIterations || this._iterations.length === 0) {
@@ -58,8 +55,7 @@ export class PropagationRecording<GeneType, FitnessValueType> {
 
       for (
         let i = 1;
-        i < improvements.length &&
-        improvements[i].iteration <= this._playbackPosition;
+        i < improvements.length && improvements[i].iteration <= this._playbackPosition;
         i++
       ) {
         best = improvements[i]

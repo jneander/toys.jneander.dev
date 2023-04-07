@@ -19,10 +19,10 @@ config.module.rules.push({
       options: {
         modules: {
           localIdentName: '[hash:base64:10]',
-          mode: 'local'
+          mode: 'local',
         },
-        sourceMap: true
-      }
+        sourceMap: true,
+      },
     },
 
     {
@@ -32,15 +32,15 @@ config.module.rules.push({
           plugins: [
             postcssPresetEnv({
               browsers: require('./browserslist.config.cjs'),
-              stage: 4
-            })
-          ]
+              stage: 4,
+            }),
+          ],
         },
 
-        sourceMap: true
-      }
-    }
-  ]
+        sourceMap: true,
+      },
+    },
+  ],
 })
 
 config.optimization.chunkIds = 'deterministic'
@@ -50,13 +50,13 @@ config.output.filename = 'js/[id].[contenthash].min.js'
 config.plugins.push(
   new MiniCssExtractPlugin({
     filename: 'styles/[name].css',
-    chunkFilename: 'styles/index-[contenthash:10].css'
+    chunkFilename: 'styles/index-[contenthash:10].css',
   }),
 
   new CleanWebpackPlugin({
     cleanAfterEveryBuildPatterns: ['*.LICENSE.txt'],
-    protectWebpackAssets: false
-  })
+    protectWebpackAssets: false,
+  }),
 )
 
 module.exports = config

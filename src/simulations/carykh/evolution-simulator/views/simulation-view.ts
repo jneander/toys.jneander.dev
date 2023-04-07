@@ -39,7 +39,7 @@ export class SimulationView {
     this.cameraState = {
       x: 0,
       y: 0,
-      zoom: 0.015
+      zoom: 0.015,
     }
 
     const {canvas, height, width} = this.config
@@ -98,7 +98,7 @@ export class SimulationView {
       (averageX - 1.7) * this.scale,
       -4.8 * this.scale,
       3.4 * this.scale,
-      1.1 * this.scale
+      1.1 * this.scale,
     )
     simulationGraphics.beginShape()
     simulationGraphics.vertex(averageX * this.scale, -3.2 * this.scale)
@@ -109,7 +109,7 @@ export class SimulationView {
     simulationGraphics.text(
       Math.round(averageX * 2) / 10 + ' m',
       averageX * this.scale,
-      -3.91 * this.scale
+      -3.91 * this.scale,
     )
   }
 
@@ -120,16 +120,12 @@ export class SimulationView {
     const {nodes} = creatureSimulation.getState().creature
     const {averageX, averageY} = averagePositionOfNodes(nodes)
 
-    const stairDrawStart = Math.max(
-      1,
-      toInt(-averageY / simulationConfig.hazelStairs) - 10
-    )
+    const stairDrawStart = Math.max(1, toInt(-averageY / simulationConfig.hazelStairs) - 10)
 
     simulationGraphics.noStroke()
     simulationGraphics.fill(0, 130, 0)
 
-    const groundX =
-      (cameraState.x - cameraState.zoom * (width / 2)) * this.scale
+    const groundX = (cameraState.x - cameraState.zoom * (width / 2)) * this.scale
     const groundY = 0
     const groundW = cameraState.zoom * width * this.scale
     const groundH = cameraState.zoom * height * this.scale
@@ -143,14 +139,14 @@ export class SimulationView {
           (averageX - 20) * this.scale,
           -simulationConfig.hazelStairs * i * this.scale,
           40 * this.scale,
-          simulationConfig.hazelStairs * 0.3 * this.scale
+          simulationConfig.hazelStairs * 0.3 * this.scale,
         )
         simulationGraphics.fill(255, 255, 255, 255)
         simulationGraphics.rect(
           (averageX - 20) * this.scale,
           -simulationConfig.hazelStairs * i * this.scale,
           40 * this.scale,
-          simulationConfig.hazelStairs * 0.15 * this.scale
+          simulationConfig.hazelStairs * 0.15 * this.scale,
         )
       }
     }
@@ -179,20 +175,16 @@ export class SimulationView {
           (i * 5 - 0.1) * this.scale,
           (-3.0 + postY) * this.scale,
           0.2 * this.scale,
-          3 * this.scale
+          3 * this.scale,
         )
         simulationGraphics.rect(
           (i * 5 - 1) * this.scale,
           (-3.0 + postY) * this.scale,
           2 * this.scale,
-          1 * this.scale
+          1 * this.scale,
         )
         simulationGraphics.fill(120)
-        simulationGraphics.text(
-          i + ' m',
-          i * 5 * this.scale,
-          (-2.17 + postY) * this.scale
-        )
+        simulationGraphics.text(i + ' m', i * 5 * this.scale, (-2.17 + postY) * this.scale)
       }
     }
   }
@@ -205,20 +197,11 @@ export class SimulationView {
 
     simulationGraphics.push()
 
-    simulationGraphics.translate(
-      simulationGraphics.width / 2.0,
-      simulationGraphics.height / 2.0
-    )
+    simulationGraphics.translate(simulationGraphics.width / 2.0, simulationGraphics.height / 2.0)
     simulationGraphics.scale(1.0 / cameraState.zoom / this.scale)
-    simulationGraphics.translate(
-      -cameraState.x * this.scale,
-      -cameraState.y * this.scale
-    )
+    simulationGraphics.translate(-cameraState.x * this.scale, -cameraState.y * this.scale)
 
-    if (
-      simulationState.timer < FRAMES_FOR_CREATURE_FITNESS ||
-      simulationState.speed > 30
-    ) {
+    if (simulationState.timer < FRAMES_FOR_CREATURE_FITNESS || simulationState.speed > 30) {
       simulationGraphics.background(120, 200, 255)
     } else {
       simulationGraphics.background(60, 100, 128)
@@ -232,7 +215,7 @@ export class SimulationView {
       simulationState.creature.muscles,
       0,
       0,
-      simulationGraphics
+      simulationGraphics,
     )
 
     if (showArrow) {
@@ -264,31 +247,13 @@ export class SimulationView {
 
     const timeShow = simulationState.timer / 60
 
-    statsGraphics.text(
-      'Time: ' + statsGraphics.nf(timeShow, 0, 2) + ' / 15 sec.',
-      0,
-      64
-    )
-    statsGraphics.text(
-      'Playback Speed: x' + Math.max(1, simulationState.speed),
-      0,
-      96
-    )
+    statsGraphics.text('Time: ' + statsGraphics.nf(timeShow, 0, 2) + ' / 15 sec.', 0, 64)
+    statsGraphics.text('Playback Speed: x' + Math.max(1, simulationState.speed), 0, 96)
 
-    const {averageX, averageY} = averagePositionOfNodes(
-      simulationState.creature.nodes
-    )
+    const {averageX, averageY} = averagePositionOfNodes(simulationState.creature.nodes)
 
-    statsGraphics.text(
-      'X: ' + statsGraphics.nf(averageX / 5.0, 0, 2) + '',
-      0,
-      128
-    )
-    statsGraphics.text(
-      'Y: ' + statsGraphics.nf(-averageY / 5.0, 0, 2) + '',
-      0,
-      160
-    )
+    statsGraphics.text('X: ' + statsGraphics.nf(averageX / 5.0, 0, 2) + '', 0, 128)
+    statsGraphics.text('Y: ' + statsGraphics.nf(-averageY / 5.0, 0, 2) + '', 0, 160)
 
     statsGraphics.pop()
   }
@@ -299,9 +264,7 @@ export class SimulationView {
 
     const simulationState = creatureSimulation.getState()
 
-    const {averageX, averageY} = averagePositionOfNodes(
-      simulationState.creature.nodes
-    )
+    const {averageX, averageY} = averagePositionOfNodes(simulationState.creature.nodes)
 
     if (simulationState.speed < 30) {
       for (let s = 0; s < simulationState.speed; s++) {

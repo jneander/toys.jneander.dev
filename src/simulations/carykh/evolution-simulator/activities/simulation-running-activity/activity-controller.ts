@@ -3,7 +3,7 @@ import {
   ActivityId,
   FRAMES_FOR_CREATURE_FITNESS,
   SIMULATION_SPEED_INITIAL,
-  SIMULATION_SPEED_MAX
+  SIMULATION_SPEED_MAX,
 } from '../../constants'
 import {GenerationSimulation} from '../../simulation'
 import type {AppStore} from '../../types'
@@ -30,7 +30,7 @@ export class ActivityController {
 
     this.generationSimulation = new GenerationSimulation({
       appStore,
-      simulationConfig: appController.getSimulationConfig()
+      simulationConfig: appController.getSimulationConfig(),
     })
 
     this.generationSimulation.initialize()
@@ -118,11 +118,7 @@ export class ActivityController {
   }
 
   advanceGenerationSimulation(): void {
-    for (
-      let timer = this.getTimer();
-      timer < FRAMES_FOR_CREATURE_FITNESS;
-      timer++
-    ) {
+    for (let timer = this.getTimer(); timer < FRAMES_FOR_CREATURE_FITNESS; timer++) {
       this.advanceCreatureSimulation()
     }
 

@@ -40,19 +40,9 @@ export class P5Wrapper {
     return {cursorX, cursorY}
   }
 
-  rectIsUnderCursor(
-    x: number,
-    y: number,
-    width: number,
-    height: number
-  ): boolean {
+  rectIsUnderCursor(x: number, y: number, width: number, height: number): boolean {
     const {cursorX, cursorY} = this.getCursorPosition()
 
-    return (
-      cursorX >= x &&
-      cursorX <= x + width &&
-      cursorY >= y &&
-      cursorY <= y + height
-    )
+    return cursorX >= x && cursorX <= x + width && cursorY >= y && cursorY <= y + height
   }
 }

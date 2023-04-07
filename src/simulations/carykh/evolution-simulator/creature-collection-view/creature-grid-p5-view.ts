@@ -12,12 +12,9 @@ import {
   GRID_AREA_HEIGHT,
   GRID_AREA_WIDTH,
   VIEW_PADDING_START_X,
-  VIEW_PADDING_START_Y
+  VIEW_PADDING_START_Y,
 } from './constants'
-import {
-  getCachedCreatureImage,
-  setCachedCreatureImage
-} from './creature-image-cache'
+import {getCachedCreatureImage, setCachedCreatureImage} from './creature-image-cache'
 import {gridIndexToRowAndColumn, rowAndColumnToGridIndex} from './helpers'
 
 export interface CreatureGridP5ViewConfig {
@@ -45,7 +42,7 @@ export class CreatureGridP5View {
 
     this.creatureDrawer = new CreatureDrawer({
       p5Wrapper: config.p5Wrapper,
-      showLabels: false
+      showLabels: false,
     })
 
     const width = CREATURE_COLLECTION_VIEW_WIDTH
@@ -55,7 +52,7 @@ export class CreatureGridP5View {
 
     this.creatureGraphics = canvas.createGraphics(
       CREATURE_GRID_TILE_WIDTH * 3,
-      CREATURE_GRID_TILE_HEIGHT * 3
+      CREATURE_GRID_TILE_HEIGHT * 3,
     )
     this.gridGraphics = canvas.createGraphics(width, height)
     this.hoverGraphics = canvas.createGraphics(width, height)
@@ -89,7 +86,7 @@ export class CreatureGridP5View {
         VIEW_PADDING_START_Y,
         // Subtract the trailing pixel from each dimension.
         GRID_AREA_WIDTH - 1,
-        GRID_AREA_HEIGHT - 1
+        GRID_AREA_HEIGHT - 1,
       )
     ) {
       const {cursorX, cursorY} = p5Wrapper.getCursorPosition()
@@ -99,7 +96,7 @@ export class CreatureGridP5View {
 
       return rowAndColumnToGridIndex({
         columnIndex: Math.floor(gridCursorX / CREATURE_GRID_TILE_WIDTH),
-        rowIndex: Math.floor(gridCursorY / CREATURE_GRID_TILE_HEIGHT)
+        rowIndex: Math.floor(gridCursorY / CREATURE_GRID_TILE_HEIGHT),
       })
     }
 
@@ -142,7 +139,7 @@ export class CreatureGridP5View {
           tileStartX - creatureImageOverdrawMarginX,
           tileStartY - creatureImageOverdrawMarginY,
           tileWidth * 3,
-          tileHeight * 3
+          tileHeight * 3,
         )
       } else {
         gridGraphics.fill(0)
@@ -168,7 +165,7 @@ export class CreatureGridP5View {
     // Translate to the center of where the creature is drawn.
     this.creatureGraphics.translate(
       this.creatureGraphics.width / 2,
-      this.creatureGraphics.height / 2
+      this.creatureGraphics.height / 2,
     )
     // Scale to fit the creature in the center.
     this.creatureGraphics.scale(10)
@@ -181,7 +178,7 @@ export class CreatureGridP5View {
       0,
       0,
       this.creatureGraphics.width,
-      this.creatureGraphics.height
+      this.creatureGraphics.height,
     )
 
     setCachedCreatureImage(creature, image)
@@ -206,16 +203,14 @@ export class CreatureGridP5View {
 
       const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
-      const tileStartX =
-        VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
-      const tileStartY =
-        VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT
+      const tileStartX = VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
+      const tileStartY = VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT
 
       hoverGraphics.rect(
         tileStartX,
         tileStartY,
         CREATURE_GRID_TILE_WIDTH,
-        CREATURE_GRID_TILE_HEIGHT
+        CREATURE_GRID_TILE_HEIGHT,
       )
 
       hoverGraphics.pop()

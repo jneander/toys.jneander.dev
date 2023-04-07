@@ -1,8 +1,7 @@
 import {randomInt} from '@jneander/genetics'
 import {useMemo} from 'react'
 
-const idValues =
-  '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const idValues = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 export function randomId() {
   return Array(8)

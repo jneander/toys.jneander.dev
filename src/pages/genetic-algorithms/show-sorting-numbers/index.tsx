@@ -1,10 +1,9 @@
 import {SortingNumbers} from '../../../genetic-algorithms'
+import {renderPage} from '../../render-page'
 import {ShowGeneticAlgorithmLayout} from '../shared'
 
-export function ShowSortingNumbers() {
-  return (
-    <ShowGeneticAlgorithmLayout pageName="Sorting Numbers">
-      <SortingNumbers />
-    </ShowGeneticAlgorithmLayout>
-  )
-}
+renderPage(() => (
+  <ShowGeneticAlgorithmLayout pageName="Sorting Numbers">
+    <SortingNumbers />
+  </ShowGeneticAlgorithmLayout>
+))

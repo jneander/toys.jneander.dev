@@ -1,7 +1,0 @@
-export * from './show-card-splitting'
-export * from './show-genetic-algorithms'
-export * from './show-knight-covering'
-export * from './show-one-max'
-export * from './show-queens'
-export * from './show-sorting-numbers'
-export * from './show-text-matching'

@@ -1,2 +1,2 @@
-export * from './p5-client-view'
+export * from './p5-view'
 export * from './types'

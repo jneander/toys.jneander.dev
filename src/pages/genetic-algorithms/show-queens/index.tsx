@@ -1,10 +1,9 @@
 import {Queens} from '../../../genetic-algorithms'
+import {renderPage} from '../../render-page'
 import {ShowGeneticAlgorithmLayout} from '../shared'
 
-export function ShowQueens() {
-  return (
-    <ShowGeneticAlgorithmLayout pageName="Queens">
-      <Queens />
-    </ShowGeneticAlgorithmLayout>
-  )
-}
+renderPage(() => (
+  <ShowGeneticAlgorithmLayout pageName="Queens">
+    <Queens />
+  </ShowGeneticAlgorithmLayout>
+))

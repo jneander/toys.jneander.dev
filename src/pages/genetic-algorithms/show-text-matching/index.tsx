@@ -1,10 +1,9 @@
 import {TextMatching} from '../../../genetic-algorithms'
+import {renderPage} from '../../render-page'
 import {ShowGeneticAlgorithmLayout} from '../shared'
 
-export function ShowTextMatching() {
-  return (
-    <ShowGeneticAlgorithmLayout pageName="Text Matching">
-      <TextMatching />
-    </ShowGeneticAlgorithmLayout>
-  )
-}
+renderPage(() => (
+  <ShowGeneticAlgorithmLayout pageName="Text Matching">
+    <TextMatching />
+  </ShowGeneticAlgorithmLayout>
+))

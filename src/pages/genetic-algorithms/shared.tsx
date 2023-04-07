@@ -1,6 +1,6 @@
 import {ReactNode} from 'react'
 
-import {Breadcrumb, ClientOnly, InternalLink, PrimaryLayout} from '../../shared/components'
+import {Breadcrumb, InternalLink, PrimaryLayout} from '../../shared/components'
 
 import styles from './styles.module.css'
 
@@ -18,7 +18,7 @@ export function ShowGeneticAlgorithmLayout({children, pageName}: ShowGeneticAlgo
         <main className={styles.SpacedBlocks}>
           <h1>{pageName}</h1>
 
-          <ClientOnly>{children}</ClientOnly>
+          {children}
         </main>
       </div>
     </PrimaryLayout>

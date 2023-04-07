@@ -1,4 +1,4 @@
-import {Breadcrumb, ClientOnly, InternalLink, PrimaryLayout} from '../../../../shared/components'
+import {Breadcrumb, InternalLink, PrimaryLayout} from '../../../../shared/components'
 import {CarykhEvolutionSimulator} from '../../../../simulations'
 import {renderPage} from '../../../render-page'
 
@@ -22,9 +22,7 @@ renderPage(() => (
       <main className={styles.SpacedBlocks}>
         <h1>{PAGE_NAME}</h1>
 
-        <ClientOnly>
-          <CarykhEvolutionSimulator />
-        </ClientOnly>
+        <CarykhEvolutionSimulator />
       </main>
     </div>
   </PrimaryLayout>

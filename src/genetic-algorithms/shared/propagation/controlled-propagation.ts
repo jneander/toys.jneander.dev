@@ -63,14 +63,14 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
   start(): void {
     if (this.runState === PROPAGATION_STOPPED) {
       this.ensureIterator()
-      this.iterator!.start()
+      this.iterator?.start()
       this.updateState(PROPAGATION_RUNNING)
     }
   }
 
   stop(): void {
     if (this.runState === PROPAGATION_RUNNING) {
-      this.iterator!.stop()
+      this.iterator?.stop()
       this.updateState(PROPAGATION_STOPPED)
     }
   }
@@ -83,7 +83,7 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
     this.propagation.iterate()
 
     if (this.propagation.hasReachedOptimalFitness) {
-      this.iterator!.stop()
+      this.iterator?.stop()
       this.updateState(PROPAGATION_FINISHED)
     }
   }

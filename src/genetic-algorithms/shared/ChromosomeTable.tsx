@@ -29,17 +29,17 @@ function RecordRow<GeneType, FitnessValueType>(props: RecordRowProps<GeneType, F
       <td style={{textAlign: 'right'}}>{record && formatFitness(record.fitness.value)}</td>
 
       <td style={{textAlign: 'right'}}>
-        {record != null && 'iteration' in record! && record.iteration >= 0 && record.iteration}
+        {record != null && 'iteration' in record && record.iteration >= 0 && record.iteration}
       </td>
     </tr>
   )
 }
 
-function defaultFormatFitness<FitnessValueType = any>(fitness: FitnessValueType): ReactNode {
+function defaultFormatFitness<FitnessValueType>(fitness: FitnessValueType): ReactNode {
   return String(fitness)
 }
 
-function defaultFormatGenes<GeneType = any>(genes: GeneType[]): ReactNode {
+function defaultFormatGenes<GeneType>(genes: GeneType[]): ReactNode {
   return genes.join('')
 }
 
@@ -52,7 +52,7 @@ interface ChromosomeTableProps<GeneType, FitnessValueType> {
   target: PropagationTarget<GeneType, FitnessValueType>
 }
 
-export default function ChromosomeTable<GeneType = any, FitnessValueType = any>(
+export default function ChromosomeTable<GeneType, FitnessValueType>(
   props: ChromosomeTableProps<GeneType, FitnessValueType>,
 ) {
   const {formatGenes = defaultFormatGenes} = props

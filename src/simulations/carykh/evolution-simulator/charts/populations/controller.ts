@@ -1,6 +1,6 @@
-import {Chart, LineController} from 'chart.js'
-
 import '../chart-js'
+
+import {Chart, LineController} from 'chart.js'
 
 declare module 'chart.js' {
   interface ChartTypeRegistry {
@@ -22,9 +22,9 @@ class PopulationsController extends LineController {
 
     const {x} = activeElements[0].element
 
-    let ctx = this.chart.ctx
-    let topY = this.chart.scales.y.top
-    let bottomY = this.chart.scales.y.bottom
+    const ctx = this.chart.ctx
+    const topY = this.chart.scales.y.top
+    const bottomY = this.chart.scales.y.bottom
 
     ctx.save()
     ctx.beginPath()

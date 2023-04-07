@@ -14,10 +14,14 @@ export function PopulationsChart(props: PopulationsChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const ctx = canvasRef.current!.getContext('2d')
+    const ctx = canvasRef.current?.getContext('2d')
+    if (!ctx) {
+      return
+    }
+
     const config = createConfiguration()
 
-    const chart = new Chart(ctx!, config)
+    const chart = new Chart(ctx, config)
 
     let lastGenerationCount = 0
     let lastSelectedGeneration = -1
@@ -29,7 +33,7 @@ export function PopulationsChart(props: PopulationsChartProps) {
         const {data} = chart
 
         for (let g = lastGenerationCount + 1; g <= generationCount; g++) {
-          data.labels!.push(g)
+          data.labels?.push(g)
 
           const historyEntry = state.generationHistoryMap[g]
           const speciesCounts = new Array(100).fill(0)
@@ -58,7 +62,10 @@ export function PopulationsChart(props: PopulationsChartProps) {
         const activeElements: ActiveDataPoint[] = []
 
         chart.data.datasets.forEach((dataset, index) => {
-          if (dataset.data[selectedGeneration]! > 25) {
+          if (
+            Number.isFinite(dataset.data[selectedGeneration]) &&
+            (dataset.data[selectedGeneration] as number) > 25
+          ) {
             activeElements.push({
               datasetIndex: index,
               index: selectedGeneration,

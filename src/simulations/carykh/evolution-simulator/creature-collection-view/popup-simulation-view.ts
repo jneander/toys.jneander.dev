@@ -1,10 +1,10 @@
 import {CreatureDrawer} from '../creature-drawer'
-import {CREATURE_GRID_TILE_WIDTH} from '.'
 import {Creature, speciesIdForCreature} from '../creatures'
 import {P5Wrapper} from '../p5-utils'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
-import {getSpeciesColor} from './helpers'
 import {SimulationView} from '../views/simulation-view'
+import {CREATURE_GRID_TILE_WIDTH} from '.'
+import {getSpeciesColor} from './helpers'
 
 export interface PopupSimulationViewConfig {
   p5Wrapper: P5Wrapper
@@ -169,12 +169,15 @@ export class PopupSimulationView {
     infoBoxStartX: number
     infoBoxStartY: number
   } {
-    const anchor = this.anchor!
+    const anchor = this.anchor
+    if (!anchor) {
+      return {infoBoxStartX: 0, infoBoxStartY: 0}
+    }
 
-    let infoBoxStartX, infoBoxStartY
+    let infoBoxStartX
 
     // Align the top edge of the info box to the top edge of the anchor.
-    infoBoxStartY = anchor.startPositionY
+    const infoBoxStartY = anchor.startPositionY
 
     /*
      * Position the info box to the right of the anchor. If there is not

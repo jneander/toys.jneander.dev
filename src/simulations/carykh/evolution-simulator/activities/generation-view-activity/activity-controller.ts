@@ -135,9 +135,10 @@ export class ActivityController {
   }
 
   private maybePerformAdditionalCycle(): void {
-    let {generationSimulationMode, pendingGenerationCount} = this.activityStore.getState()
+    const state = this.activityStore.getState()
+    let {pendingGenerationCount} = state
 
-    if (generationSimulationMode !== GenerationSimulationMode.ASAP) {
+    if (state.generationSimulationMode !== GenerationSimulationMode.ASAP) {
       return
     }
 
@@ -156,8 +157,6 @@ export class ActivityController {
 
   private async simulateWholeGeneration(): Promise<void> {
     return new Promise(resolve => {
-      let loop: ControlledLoopSync
-
       const generationSimulation = new GenerationSimulation({
         appStore: this.appStore,
         simulationConfig: this.appController.getSimulationConfig(),
@@ -181,7 +180,7 @@ export class ActivityController {
         resolve()
       }
 
-      loop = new ControlledLoopSync({loopFn})
+      const loop = new ControlledLoopSync({loopFn})
       loop.start()
     })
   }

@@ -1,13 +1,13 @@
-import type Creature from './Creature'
-import type Muscle from './Muscle'
-import type Node from './Node'
 import {
   AIR_FRICTION,
   CREATURE_COUNT,
-  HISTOGRAM_BARS_PER_METER,
   HISTOGRAM_BAR_MIN,
+  HISTOGRAM_BARS_PER_METER,
 } from '../constants'
 import {dist2d} from '../math'
+import type Creature from './Creature'
+import type Muscle from './Muscle'
+import type Node from './Node'
 
 export function positionNodesForStartOfSimulation(nodes: Node[]): void {
   let averageX = 0

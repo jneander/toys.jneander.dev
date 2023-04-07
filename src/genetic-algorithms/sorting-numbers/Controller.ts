@@ -23,7 +23,7 @@ export default class Controller extends BaseController<number, ArrayOrderFitness
   }
 
   protected generateParent(): Chromosome<number> {
-    const genes = shuffleArray(this.target().chromosome!.genes)
+    const genes = shuffleArray(this.target().chromosome?.genes ?? [])
     return new Chromosome<number>(genes)
   }
 

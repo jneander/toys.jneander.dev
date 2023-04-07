@@ -8,9 +8,9 @@ import {
 } from '../constants'
 import {Creature} from '../creatures'
 import {dist2d} from '../math'
+import {applyForcesToNode, applyForceToMuscle, positionNodesCenterToOrigin} from './helpers'
 import Muscle from './Muscle'
 import Node from './Node'
-import {applyForceToMuscle, applyForcesToNode, positionNodesCenterToOrigin} from './helpers'
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
   NODE_OPERATION_IDS,

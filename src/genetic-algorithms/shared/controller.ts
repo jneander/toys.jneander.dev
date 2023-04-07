@@ -172,7 +172,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
         this.recording.addIteration(chromosome)
       },
       onRunStateChange: this.onRunStateChange.bind(this),
-      optimalFitness: this.target()!.fitness,
+      optimalFitness: this.target().fitness,
       speed: this.propagationSpeed,
       ...this.propogationOptions(),
     })

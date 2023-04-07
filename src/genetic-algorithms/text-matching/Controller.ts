@@ -20,7 +20,13 @@ export default class Controller extends BaseController<string, number> {
   }
 
   protected generateParent(): Chromosome<string> {
-    return randomChromosome(this.target().chromosome!.genes.length, geneSet)
+    const {chromosome} = this.target()
+
+    if (chromosome == null) {
+      throw new Error('Chromosome must exist on the target')
+    }
+
+    return randomChromosome(chromosome.genes.length, geneSet)
   }
 
   protected propogationOptions(): PropagationOptions<string> {
@@ -41,7 +47,13 @@ export default class Controller extends BaseController<string, number> {
   }
 
   protected getFitness(chromosome: Chromosome<string>): Fitness<number> {
-    return this.fitnessMethod.getFitness(chromosome, this.target().chromosome!)
+    const {chromosome: targetChromosome} = this.target()
+
+    if (targetChromosome == null) {
+      throw new Error('Chromosome must exist on the target')
+    }
+
+    return this.fitnessMethod.getFitness(chromosome, targetChromosome)
   }
 
   protected get fitnessMethod() {

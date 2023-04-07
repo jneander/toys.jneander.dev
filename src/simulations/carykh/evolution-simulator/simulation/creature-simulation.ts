@@ -1,10 +1,10 @@
 import {FRICTION, GRAVITY, PRESSURE_UNIT, SIMULATION_SPEED_INITIAL} from '../constants'
 import {
+  applyForcesToNode,
+  applyForceToMuscle,
   Creature,
   Node,
   NodeOperationId,
-  applyForceToMuscle,
-  applyForcesToNode,
   positionNodesForStartOfSimulation,
 } from '../creatures'
 import type {SimulationNodeCache, SimulationState} from '../types'
@@ -91,7 +91,7 @@ export class CreatureSimulation {
 
   private applyCollisionsToNode(node: Node, nodeCache: SimulationNodeCache): void {
     node.pressure = 0
-    let dif = node.positionY + node.mass / 2
+    const dif = node.positionY + node.mass / 2
 
     if (dif >= 0) {
       this.pressNodeAgainstGround(node, 0)

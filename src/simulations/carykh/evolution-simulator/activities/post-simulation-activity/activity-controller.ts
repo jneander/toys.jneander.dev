@@ -24,7 +24,7 @@ export class ActivityController {
   }
 
   getCreatureAndGridIndex(index: number): CreatureAndGridIndex {
-    let creature = this.appStore.getState().creaturesInLatestGeneration[index]
+    const creature = this.appStore.getState().creaturesInLatestGeneration[index]
     let gridIndex = index
 
     const {currentActivityStep} = this.activityStore.getState()

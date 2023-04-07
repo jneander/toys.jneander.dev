@@ -1,10 +1,6 @@
 import {ChangeEvent} from 'react'
 
-import {
-  CheckboxInputField,
-  NumberInputField,
-  RangeInputField
-} from '../../shared/components'
+import {CheckboxInputField, NumberInputField, RangeInputField} from '../../shared/components'
 
 import styles from './styles.module.css'
 
@@ -30,9 +26,7 @@ export default function ExampleControls(props: ExampleControlsProps) {
     props.onPositionChange(Number.parseInt(event.target.value, 10))
   }
 
-  function handleToggleMaxPropagationSpeed(
-    event: ChangeEvent<HTMLInputElement>
-  ) {
+  function handleToggleMaxPropagationSpeed(event: ChangeEvent<HTMLInputElement>) {
     props.onSetMaxPropagationSpeed(event.target.checked)
   }
 
@@ -40,9 +34,7 @@ export default function ExampleControls(props: ExampleControlsProps) {
     props.onSetPropagationSpeed(Number.parseInt(event.target.value, 10))
   }
 
-  function handleToggleRecordAllIterations(
-    event: ChangeEvent<HTMLInputElement>
-  ) {
+  function handleToggleRecordAllIterations(event: ChangeEvent<HTMLInputElement>) {
     props.onSetRecordAllIterations(event.target.checked)
   }
 

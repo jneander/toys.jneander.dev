@@ -1,10 +1,6 @@
 import {ChartConfiguration, ChartData} from 'chart.js'
 
-import {
-  HISTOGRAM_BARS_PER_METER,
-  HISTOGRAM_BAR_MAX,
-  HISTOGRAM_BAR_MIN
-} from '../../constants'
+import {HISTOGRAM_BARS_PER_METER, HISTOGRAM_BAR_MAX, HISTOGRAM_BAR_MIN} from '../../constants'
 import {histogramBarIndexToApproximateFitness} from '../../creatures'
 
 import './controller'
@@ -12,7 +8,7 @@ import './controller'
 function createInitialData(): ChartData {
   const data: ChartData = {
     datasets: [],
-    labels: []
+    labels: [],
   }
 
   for (let i = HISTOGRAM_BAR_MIN; i <= HISTOGRAM_BAR_MAX; i++) {
@@ -32,7 +28,7 @@ export function createConfiguration(): ChartConfiguration {
       interaction: {
         axis: 'x',
         intersect: false,
-        mode: 'index'
+        mode: 'index',
       },
 
       plugins: {
@@ -40,18 +36,15 @@ export function createConfiguration(): ChartConfiguration {
           callbacks: {
             title(tooltipItems) {
               const {dataIndex} = tooltipItems[0]
-              const currentFitness =
-                histogramBarIndexToApproximateFitness(dataIndex)
-              const nextFitness = histogramBarIndexToApproximateFitness(
-                dataIndex + 1
-              )
+              const currentFitness = histogramBarIndexToApproximateFitness(dataIndex)
+              const nextFitness = histogramBarIndexToApproximateFitness(dataIndex + 1)
 
               return `${currentFitness} – ${nextFitness}`
-            }
+            },
           },
 
-          enabled: true
-        }
+          enabled: true,
+        },
       },
 
       responsive: true,
@@ -60,8 +53,8 @@ export function createConfiguration(): ChartConfiguration {
         x: {
           title: {
             display: true,
-            text: 'Fitness'
-          }
+            text: 'Fitness',
+          },
         },
 
         y: {
@@ -70,17 +63,17 @@ export function createConfiguration(): ChartConfiguration {
               if (Number(v) % 100 === 0) {
                 return v
               }
-            }
+            },
           },
 
           title: {
             display: true,
-            text: 'Creatures'
-          }
-        }
-      }
+            text: 'Creatures',
+          },
+        },
+      },
     },
 
-    type: 'bar'
+    type: 'bar',
   }
 }

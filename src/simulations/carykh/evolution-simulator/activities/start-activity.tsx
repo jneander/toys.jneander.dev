@@ -16,8 +16,8 @@ export function StartActivity(props: StartActivityProps) {
       <h2>Evolution!</h2>
 
       <p>
-        Since there are no creatures yet, create {CREATURE_COUNT} creatures!
-        They will be randomly created, and also very simple.
+        Since there are no creatures yet, create {CREATURE_COUNT} creatures! They will be randomly
+        created, and also very simple.
       </p>
 
       <button onClick={handleCreateClick} type="button">

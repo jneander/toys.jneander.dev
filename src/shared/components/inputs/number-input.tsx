@@ -3,10 +3,7 @@ import {HTMLProps} from 'react'
 import styles from './styles.module.css'
 
 interface NumberInputFieldProps
-  extends Omit<
-    HTMLProps<HTMLInputElement>,
-    'className' | 'label' | 'type' | 'checked'
-  > {
+  extends Omit<HTMLProps<HTMLInputElement>, 'className' | 'label' | 'type' | 'checked'> {
   labelText: string
 }
 
@@ -17,11 +14,7 @@ export function NumberInputField(props: NumberInputFieldProps) {
     <label className={styles.InputContainer}>
       <div className={styles.InputLabelContent}>{labelText}</div>
 
-      <input
-        {...inputProps}
-        className={styles.NumberInputField}
-        type="number"
-      />
+      <input {...inputProps} className={styles.NumberInputField} type="number" />
     </label>
   )
 }

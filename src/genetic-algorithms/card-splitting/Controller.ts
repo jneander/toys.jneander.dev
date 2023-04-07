@@ -4,7 +4,7 @@ import {
   randomChromosome,
   randomInt,
   replaceOneGene,
-  swapTwoGenes
+  swapTwoGenes,
 } from '@jneander/genetics'
 
 import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
@@ -21,10 +21,7 @@ function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
   return replaceOneGene(parent, geneSet)
 }
 
-export default class Controller extends BaseController<
-  string,
-  CardSplittingFitnessValue
-> {
+export default class Controller extends BaseController<string, CardSplittingFitnessValue> {
   private _fitnessMethod: SumProductMatch | undefined
 
   protected geneSet(): string[] {
@@ -37,23 +34,17 @@ export default class Controller extends BaseController<
 
   protected propogationOptions(): PropagationOptions<string> {
     return {
-      mutate: (parent: CardSplittingChromosome) =>
-        mutate(parent, this.geneSet())
+      mutate: (parent: CardSplittingChromosome) => mutate(parent, this.geneSet()),
     }
   }
 
-  protected randomTarget(): PropagationTarget<
-    string,
-    CardSplittingFitnessValue
-  > {
+  protected randomTarget(): PropagationTarget<string, CardSplittingFitnessValue> {
     return {
-      fitness: this.fitnessMethod.getTargetFitness()
+      fitness: this.fitnessMethod.getTargetFitness(),
     }
   }
 
-  protected getFitness(
-    chromosome: CardSplittingChromosome
-  ): Fitness<CardSplittingFitnessValue> {
+  protected getFitness(chromosome: CardSplittingChromosome): Fitness<CardSplittingFitnessValue> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 

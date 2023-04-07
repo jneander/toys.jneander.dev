@@ -16,10 +16,7 @@ export function Breadcrumb(props: BreadcrumbProps) {
   return (
     <nav aria-label="Breadcrumb">
       <ol className={styles.breadcrumbList}>
-        {Children.map(
-          children,
-          child => child && <BreadcrumbItem>{child}</BreadcrumbItem>
-        )}
+        {Children.map(children, child => child && <BreadcrumbItem>{child}</BreadcrumbItem>)}
       </ol>
     </nav>
   )

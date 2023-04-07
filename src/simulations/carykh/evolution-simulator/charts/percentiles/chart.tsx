@@ -45,8 +45,8 @@ export function PercentilesChart(props: PercentilesChartProps) {
         chart.setActiveElements([
           {
             datasetIndex: 0,
-            index: selectedGeneration
-          }
+            index: selectedGeneration,
+          },
         ])
 
         chart.update()

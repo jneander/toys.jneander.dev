@@ -3,5 +3,5 @@ export enum ActivityStep {
   SortingCreatures,
   SortedCreatures,
   CullCreatures,
-  PropagateCreatures
+  PropagateCreatures,
 }

@@ -64,7 +64,7 @@ export class P5ClientViewController {
         height,
         p5,
         scale,
-        width
+        width,
       })
     }
 

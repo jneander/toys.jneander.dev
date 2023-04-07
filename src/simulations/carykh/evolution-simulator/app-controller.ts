@@ -4,13 +4,9 @@ import {
   ActivityId,
   CREATURE_COUNT,
   FITNESS_PERCENTILE_CREATURE_INDICES,
-  HISTOGRAM_BAR_SPAN
+  HISTOGRAM_BAR_SPAN,
 } from './constants'
-import {
-  CreatureManipulator,
-  fitnessToHistogramBarIndex,
-  speciesIdForCreature
-} from './creatures'
+import {CreatureManipulator, fitnessToHistogramBarIndex, speciesIdForCreature} from './creatures'
 import {SimulationConfig} from './simulation'
 import type {AppStore, GenerationHistoryEntry, SpeciesCount} from './types'
 
@@ -34,7 +30,7 @@ export class AppController {
     const {randomNumberGenerator} = config
 
     this.creatureManipulator = new CreatureManipulator({
-      randomNumberGenerator
+      randomNumberGenerator,
     })
   }
 
@@ -59,7 +55,7 @@ export class AppController {
     let {creaturesInLatestGeneration} = appStore.getState()
 
     creaturesInLatestGeneration = [...creaturesInLatestGeneration].sort(
-      (creatureA, creatureB) => creatureB.fitness - creatureA.fitness
+      (creatureA, creatureB) => creatureB.fitness - creatureA.fitness,
     )
 
     appStore.setState({creaturesInLatestGeneration})
@@ -72,40 +68,29 @@ export class AppController {
 
     const nextGeneration = appState.generationCount + 1
 
-    const fitnessPercentiles = new Array<number>(
-      FITNESS_PERCENTILE_CREATURE_INDICES.length
-    )
+    const fitnessPercentiles = new Array<number>(FITNESS_PERCENTILE_CREATURE_INDICES.length)
     for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
       fitnessPercentiles[i] =
-        appState.creaturesInLatestGeneration[
-          FITNESS_PERCENTILE_CREATURE_INDICES[i]
-        ].fitness
+        appState.creaturesInLatestGeneration[FITNESS_PERCENTILE_CREATURE_INDICES[i]].fitness
     }
 
     const histogramBarCounts = new Array<number>(HISTOGRAM_BAR_SPAN).fill(0)
     const speciesCountBySpeciesId: {[speciesId: number]: number} = {}
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
-      const bar = fitnessToHistogramBarIndex(
-        appState.creaturesInLatestGeneration[i].fitness
-      )
+      const bar = fitnessToHistogramBarIndex(appState.creaturesInLatestGeneration[i].fitness)
 
       if (bar >= 0 && bar < HISTOGRAM_BAR_SPAN) {
         histogramBarCounts[bar]++
       }
 
-      const speciesId = speciesIdForCreature(
-        appState.creaturesInLatestGeneration[i]
-      )
-      speciesCountBySpeciesId[speciesId] =
-        speciesCountBySpeciesId[speciesId] || 0
+      const speciesId = speciesIdForCreature(appState.creaturesInLatestGeneration[i])
+      speciesCountBySpeciesId[speciesId] = speciesCountBySpeciesId[speciesId] || 0
       speciesCountBySpeciesId[speciesId]++
     }
 
     // Ensure species counts are sorted consistently by species ID.
-    const speciesCounts: SpeciesCount[] = Object.entries(
-      speciesCountBySpeciesId
-    )
+    const speciesCounts: SpeciesCount[] = Object.entries(speciesCountBySpeciesId)
       .map(([speciesId, count]) => {
         return {speciesId: Number(speciesId), count}
       })
@@ -115,29 +100,25 @@ export class AppController {
 
     const historyEntry: GenerationHistoryEntry = {
       bestCreature: appState.creaturesInLatestGeneration[0].clone(),
-      medianCreature:
-        appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
-      worstCreature:
-        appState.creaturesInLatestGeneration[lastCreatureIndex].clone(),
+      medianCreature: appState.creaturesInLatestGeneration[midCreatureIndex].clone(),
+      worstCreature: appState.creaturesInLatestGeneration[lastCreatureIndex].clone(),
       fitnessPercentiles,
       histogramBarCounts,
-      speciesCounts
+      speciesCounts,
     }
 
     appStore.setState({
       generationHistoryMap: {
         ...appState.generationHistoryMap,
-        [nextGeneration]: historyEntry
-      }
+        [nextGeneration]: historyEntry,
+      },
     })
   }
 
   cullCreatures(): void {
     const {appStore, randomNumberGenerator} = this.config
 
-    const creaturesInLatestGeneration = [
-      ...appStore.getState().creaturesInLatestGeneration
-    ]
+    const creaturesInLatestGeneration = [...appStore.getState().creaturesInLatestGeneration]
 
     for (let i = 0; i < 500; i++) {
       const fitnessRankSurvivalChance = i / CREATURE_COUNT
@@ -161,8 +142,7 @@ export class AppController {
        * concerns.
        */
 
-      const survivingCreature =
-        creaturesInLatestGeneration[survivingCreatureIndex]
+      const survivingCreature = creaturesInLatestGeneration[survivingCreatureIndex]
       survivingCreature.alive = true
 
       const culledCreature = creaturesInLatestGeneration[culledCreatureIndex]
@@ -175,8 +155,7 @@ export class AppController {
   propagateCreatures(): void {
     const {appStore} = this.config
 
-    let {creaturesInLatestGeneration, generationCount, selectedGeneration} =
-      appStore.getState()
+    let {creaturesInLatestGeneration, generationCount, selectedGeneration} = appStore.getState()
 
     creaturesInLatestGeneration = [...creaturesInLatestGeneration]
 
@@ -194,18 +173,17 @@ export class AppController {
         culledCreatureIndex = i
       }
 
-      const survivingCreature =
-        creaturesInLatestGeneration[survivingCreatureIndex]
+      const survivingCreature = creaturesInLatestGeneration[survivingCreatureIndex]
       const culledCreature = creaturesInLatestGeneration[culledCreatureIndex]
 
       // Next generation includes a clone and mutated offspring
-      creaturesInLatestGeneration[survivingCreatureIndex] =
-        survivingCreature.clone(survivingCreature.id + CREATURE_COUNT)
-      creaturesInLatestGeneration[culledCreatureIndex] =
-        this.creatureManipulator.modifyCreature(
-          survivingCreature,
-          culledCreature.id + CREATURE_COUNT
-        )
+      creaturesInLatestGeneration[survivingCreatureIndex] = survivingCreature.clone(
+        survivingCreature.id + CREATURE_COUNT,
+      )
+      creaturesInLatestGeneration[culledCreatureIndex] = this.creatureManipulator.modifyCreature(
+        survivingCreature,
+        culledCreature.id + CREATURE_COUNT,
+      )
     }
 
     generationCount++
@@ -218,7 +196,7 @@ export class AppController {
     appStore.setState({
       creaturesInLatestGeneration,
       generationCount,
-      selectedGeneration
+      selectedGeneration,
     })
   }
 

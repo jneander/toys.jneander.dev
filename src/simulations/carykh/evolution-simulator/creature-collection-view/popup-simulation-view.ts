@@ -64,7 +64,7 @@ export class PopupSimulationView {
 
       creatureDrawer: new CreatureDrawer({
         p5Wrapper: this.p5Wrapper,
-        scale
+        scale,
       }),
 
       creatureSimulation: this.creatureSimulation,
@@ -74,7 +74,7 @@ export class PopupSimulationView {
       showArrow: false,
       simulationConfig: this.simulationConfig,
       statsFont: font,
-      width: 600
+      width: 600,
     })
 
     this.simulationView.setCameraZoom(0.009)
@@ -94,8 +94,10 @@ export class PopupSimulationView {
     this.drawInfoBox(infoBoxStartX, infoBoxStartY, creature, rank)
 
     if (showSimulationView) {
-      const {simulationViewStartX, simulationViewStartY} =
-        this.getSimulationViewStartPosition(infoBoxStartX, infoBoxStartY)
+      const {simulationViewStartX, simulationViewStartY} = this.getSimulationViewStartPosition(
+        infoBoxStartX,
+        infoBoxStartY,
+      )
 
       this.drawSimulationView(simulationViewStartX, simulationViewStartY)
     }
@@ -125,7 +127,7 @@ export class PopupSimulationView {
     infoBoxStartX: number,
     infoBoxStartY: number,
     creature: Creature,
-    rank: number
+    rank: number,
   ): void {
     const {canvas, font} = this.p5Wrapper
 
@@ -139,21 +141,13 @@ export class PopupSimulationView {
     canvas.textAlign(canvas.CENTER)
     canvas.text('#' + rank, infoBoxCenterX, infoBoxStartY + 12)
     canvas.text('ID: ' + creature.id, infoBoxCenterX, infoBoxStartY + 24)
-    canvas.text(
-      'Fitness: ' + canvas.nf(creature.fitness, 0, 3),
-      infoBoxCenterX,
-      infoBoxStartY + 36
-    )
+    canvas.text('Fitness: ' + canvas.nf(creature.fitness, 0, 3), infoBoxCenterX, infoBoxStartY + 36)
     canvas.colorMode(canvas.HSB, 1)
 
     const speciesId = speciesIdForCreature(creature)
 
     canvas.fill(getSpeciesColor(canvas, speciesId, true))
-    canvas.text(
-      `Species: S${speciesIdForCreature(creature)}`,
-      infoBoxCenterX,
-      infoBoxStartY + 48
-    )
+    canvas.text(`Species: S${speciesIdForCreature(creature)}`, infoBoxCenterX, infoBoxStartY + 48)
 
     canvas.colorMode(canvas.RGB, 255)
   }
@@ -165,7 +159,7 @@ export class PopupSimulationView {
       x,
       y,
       SIMULATION_VIEW_WIDTH,
-      SIMULATION_VIEW_HEIGHT
+      SIMULATION_VIEW_HEIGHT,
     )
 
     this.creatureSimulation.advance()
@@ -189,8 +183,7 @@ export class PopupSimulationView {
      * instead.
      */
 
-    const spaceToRightOfAnchor =
-      this.p5Wrapper.width - (anchor.endPositionX + anchor.margin)
+    const spaceToRightOfAnchor = this.p5Wrapper.width - (anchor.endPositionX + anchor.margin)
     const spaceNeededForInfoBox = INFO_BOX_WIDTH + INFO_BOX_MARGIN
 
     if (spaceToRightOfAnchor >= spaceNeededForInfoBox) {
@@ -204,7 +197,7 @@ export class PopupSimulationView {
 
   private getSimulationViewStartPosition(
     infoBoxStartX: number,
-    infoBoxStartY: number
+    infoBoxStartY: number,
   ): {
     simulationViewStartX: number
     simulationViewStartY: number
@@ -219,14 +212,12 @@ export class PopupSimulationView {
      * simulation view is within its margin for the right edge of the canvas.
      */
 
-    const simulationViewMaxStartX =
-      p5Wrapper.width - SIMULATION_VIEW_MARGIN - SIMULATION_VIEW_WIDTH
+    const simulationViewMaxStartX = p5Wrapper.width - SIMULATION_VIEW_MARGIN - SIMULATION_VIEW_WIDTH
 
-    simulationViewStartX =
-      infoBoxStartX - INFO_BOX_MARGIN - CREATURE_GRID_TILE_WIDTH
+    simulationViewStartX = infoBoxStartX - INFO_BOX_MARGIN - CREATURE_GRID_TILE_WIDTH
     simulationViewStartX = Math.min(
       Math.max(simulationViewStartX, SIMULATION_VIEW_MARGIN),
-      simulationViewMaxStartX
+      simulationViewMaxStartX,
     )
 
     /*
@@ -235,16 +226,14 @@ export class PopupSimulationView {
      * (with margins), position the simulation view above the info box instead.
      */
 
-    const spaceBelowInfoBox =
-      p5Wrapper.height - (infoBoxStartY + INFO_BOX_HEIGHT)
+    const spaceBelowInfoBox = p5Wrapper.height - (infoBoxStartY + INFO_BOX_HEIGHT)
     const spaceNeededForSimulationView =
       INFO_BOX_MARGIN + SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
 
     if (spaceBelowInfoBox >= spaceNeededForSimulationView) {
       simulationViewStartY = infoBoxStartY + INFO_BOX_HEIGHT + INFO_BOX_MARGIN
     } else {
-      simulationViewStartY =
-        infoBoxStartY - INFO_BOX_MARGIN - SIMULATION_VIEW_HEIGHT
+      simulationViewStartY = infoBoxStartY - INFO_BOX_MARGIN - SIMULATION_VIEW_HEIGHT
     }
 
     return {simulationViewStartX, simulationViewStartY}

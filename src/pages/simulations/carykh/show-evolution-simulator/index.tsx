@@ -1,9 +1,4 @@
-import {
-  Breadcrumb,
-  ClientOnly,
-  InternalLink,
-  PrimaryLayout
-} from '../../../../shared/components'
+import {Breadcrumb, ClientOnly, InternalLink, PrimaryLayout} from '../../../../shared/components'
 import {CarykhEvolutionSimulator} from '../../../../simulations'
 import {renderPage} from '../../../render-page'
 

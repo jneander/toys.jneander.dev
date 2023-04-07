@@ -1,11 +1,6 @@
 import {ReactNode} from 'react'
 
-import {
-  Breadcrumb,
-  ClientOnly,
-  InternalLink,
-  PrimaryLayout
-} from '../../shared/components'
+import {Breadcrumb, ClientOnly, InternalLink, PrimaryLayout} from '../../shared/components'
 
 import styles from './styles.module.css'
 
@@ -14,10 +9,7 @@ interface ShowGeneticAlgorithmLayoutProps {
   pageName: string
 }
 
-export function ShowGeneticAlgorithmLayout({
-  children,
-  pageName
-}: ShowGeneticAlgorithmLayoutProps) {
+export function ShowGeneticAlgorithmLayout({children, pageName}: ShowGeneticAlgorithmLayoutProps) {
   return (
     <PrimaryLayout>
       <div className={styles.Container}>
@@ -37,9 +29,7 @@ interface GeneticAlgorithmNavigationProps {
   pageName: string
 }
 
-export function GeneticAlgorithmNavigation(
-  props: GeneticAlgorithmNavigationProps
-) {
+export function GeneticAlgorithmNavigation(props: GeneticAlgorithmNavigationProps) {
   return (
     <Breadcrumb>
       <InternalLink href="/">Home</InternalLink>

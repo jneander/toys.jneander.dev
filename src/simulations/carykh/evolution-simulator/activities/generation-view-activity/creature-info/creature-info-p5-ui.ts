@@ -35,7 +35,7 @@ export class CreatureInfoP5Ui {
     this.simulationStarted = false
 
     this.creatureDrawer = new CreatureDrawer({
-      p5Wrapper: this.p5Wrapper
+      p5Wrapper: this.p5Wrapper,
     })
 
     this.creatureSimulation = new CreatureSimulation(this.simulationConfig)
@@ -52,7 +52,7 @@ export class CreatureInfoP5Ui {
       showArrow: false,
       simulationConfig: this.simulationConfig,
       statsFont: font,
-      width: 480
+      width: 480,
     })
 
     this.simulationView.setCameraZoom(0.009)
@@ -71,13 +71,7 @@ export class CreatureInfoP5Ui {
       }
 
       this.simulationView.draw()
-      canvas.image(
-        this.simulationView.graphics,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      )
+      canvas.image(this.simulationView.graphics, 0, 0, canvas.width, canvas.height)
 
       this.creatureSimulation.advance()
       this.creatureDrawn = false

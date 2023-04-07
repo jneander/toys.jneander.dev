@@ -5,17 +5,11 @@ import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   VIEW_PADDING_START_X,
-  VIEW_PADDING_START_Y
+  VIEW_PADDING_START_Y,
 } from './constants'
-import {
-  CreatureGridP5View,
-  CreatureGridP5ViewConfig
-} from './creature-grid-p5-view'
+import {CreatureGridP5View, CreatureGridP5ViewConfig} from './creature-grid-p5-view'
 import {gridIndexToRowAndColumn} from './helpers'
-import {
-  PopupSimulationView,
-  PopupSimulationViewAnchor
-} from './popup-simulation-view'
+import {PopupSimulationView, PopupSimulationViewAnchor} from './popup-simulation-view'
 
 export interface CreatureGridP5UiConfig {
   appController: AppController
@@ -46,12 +40,12 @@ export class CreatureGridP5Ui {
     this.creatureGridView = new CreatureGridP5View({
       getCreatureAndGridIndexFn,
       p5Wrapper: this.p5Wrapper,
-      showsHoverState: this.showsPopupSimulation
+      showsHoverState: this.showsPopupSimulation,
     })
 
     this.popupSimulationView = new PopupSimulationView({
       p5Wrapper: this.p5Wrapper,
-      simulationConfig: this.appController.getSimulationConfig()
+      simulationConfig: this.appController.getSimulationConfig(),
     })
   }
 
@@ -96,17 +90,12 @@ export class CreatureGridP5Ui {
     this.popupSimulationView.dismissSimulationView()
   }
 
-  private setPopupSimulationCreatureInfo(
-    generationCreatureIndex: number
-  ): void {
-    const creature =
-      this.appStore.getState().creaturesInLatestGeneration[
-        generationCreatureIndex
-      ]
+  private setPopupSimulationCreatureInfo(generationCreatureIndex: number): void {
+    const creature = this.appStore.getState().creaturesInLatestGeneration[generationCreatureIndex]
 
     this.popupSimulationView.setCreatureInfo({
       creature,
-      rank: generationCreatureIndex + 1
+      rank: generationCreatureIndex + 1,
     })
   }
 
@@ -114,22 +103,18 @@ export class CreatureGridP5Ui {
     this.popupSimulationView.setCreatureInfo(null)
   }
 
-  private calculateAnchorForPopupSimulation(
-    gridIndex: number
-  ): PopupSimulationViewAnchor {
+  private calculateAnchorForPopupSimulation(gridIndex: number): PopupSimulationViewAnchor {
     const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
 
-    const tileStartX =
-      VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
-    const tileStartY =
-      VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT
+    const tileStartX = VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
+    const tileStartY = VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT
 
     return {
       startPositionX: tileStartX,
       startPositionY: tileStartY,
       endPositionX: tileStartX + CREATURE_GRID_TILE_WIDTH,
       endPositionY: tileStartY + CREATURE_GRID_TILE_HEIGHT,
-      margin: 5
+      margin: 5,
     }
   }
 }

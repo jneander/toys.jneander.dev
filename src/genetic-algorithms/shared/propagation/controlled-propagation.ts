@@ -1,22 +1,16 @@
-import {
-  Propagation,
-  PropagationConfig,
-  PropagationRecord
-} from '@jneander/genetics'
+import {Propagation, PropagationConfig, PropagationRecord} from '@jneander/genetics'
 import {ControlledLoopSync, TimerSync} from '@jneander/utils-async'
 
-import {
-  PROPAGATION_FINISHED,
-  PROPAGATION_RUNNING,
-  PROPAGATION_STOPPED
-} from './constants'
+import {PROPAGATION_FINISHED, PROPAGATION_RUNNING, PROPAGATION_STOPPED} from './constants'
 import {RunState} from './types'
 
-export type ControlledPropagationConfig<GeneType, FitnessValueType> =
-  PropagationConfig<GeneType, FitnessValueType> & {
-    onRunStateChange?: (runState: RunState) => void
-    speed: number
-  }
+export type ControlledPropagationConfig<GeneType, FitnessValueType> = PropagationConfig<
+  GeneType,
+  FitnessValueType
+> & {
+  onRunStateChange?: (runState: RunState) => void
+  speed: number
+}
 
 export class ControlledPropagation<GeneType, FitnessValueType> {
   private config: ControlledPropagationConfig<GeneType, FitnessValueType>
@@ -102,7 +96,7 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
 
       this.iterator?.stop()
       this.iterator = new ControlledLoopSync({
-        loopFn: this.iterate.bind(this)
+        loopFn: this.iterate.bind(this),
       })
 
       return
@@ -116,7 +110,7 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
       this.iterator?.stop()
       this.iterator = new TimerSync({
         onTick: this.iterate.bind(this),
-        targetTickIntervalMs
+        targetTickIntervalMs,
       })
     }
   }

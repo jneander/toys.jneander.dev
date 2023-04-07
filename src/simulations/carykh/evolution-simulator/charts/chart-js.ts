@@ -5,7 +5,7 @@ import {
   LineElement,
   LinearScale,
   PointElement,
-  Tooltip
+  Tooltip,
 } from 'chart.js'
 
 Chart.register(CategoryScale)

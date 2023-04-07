@@ -2,10 +2,7 @@ import {Chart} from 'chart.js'
 import {useEffect, useRef} from 'react'
 
 import {FITNESS_PERCENTILE_MEDIAN_INDEX} from '../../constants'
-import {
-  fitnessToHistogramBarIndex,
-  histogramBarIndexToApproximateFitness
-} from '../../creatures'
+import {fitnessToHistogramBarIndex, histogramBarIndexToApproximateFitness} from '../../creatures'
 
 import {AppState, AppStore} from '../../types'
 import {createConfiguration} from './configuration'
@@ -70,13 +67,10 @@ export function FitnessDistributionChart(props: FitnessDistributionChartProps) {
             }
           }
 
-          const medianFitness =
-            fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX]
+          const medianFitness = fitnessPercentiles[FITNESS_PERCENTILE_MEDIAN_INDEX]
           const medianBarIndex = fitnessToHistogramBarIndex(medianFitness)
 
-          const backgroundColor = new Array(histogramBarCounts.length).fill(
-            '#000000'
-          )
+          const backgroundColor = new Array(histogramBarCounts.length).fill('#000000')
           // Use a different color to identify the median fitness bar.
           backgroundColor[medianBarIndex] = '#FF0000'
 
@@ -88,10 +82,10 @@ export function FitnessDistributionChart(props: FitnessDistributionChartProps) {
               data: histogramBarCounts.map((count, index) => {
                 return {
                   x: histogramBarIndexToApproximateFitness(index),
-                  y: count
+                  y: count,
                 }
-              })
-            }
+              }),
+            },
           ]
         }
 

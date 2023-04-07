@@ -8,7 +8,7 @@ import {
   GenerationViewActivity,
   PostSimulationActivity,
   SimulationRunningActivity,
-  StartActivity
+  StartActivity,
 } from './activities'
 import {AppController} from './app-controller'
 import {ActivityId} from './constants'
@@ -26,7 +26,7 @@ export function CarykhEvolutionSimulator() {
       currentActivityId: ActivityId.Start,
       generationCount: -1,
       generationHistoryMap: {},
-      selectedGeneration: 0
+      selectedGeneration: 0,
     })
   }, [])
 
@@ -35,52 +35,32 @@ export function CarykhEvolutionSimulator() {
     const randomNumberGenerator = new AleaNumberGenerator({seed: SEED})
 
     const simulationConfig: SimulationConfig = {
-      hazelStairs: -1
+      hazelStairs: -1,
     }
 
     return new AppController({
       appStore,
       randomNumberGenerator,
-      simulationConfig
+      simulationConfig,
     })
   }, [appStore])
 
   const currentActivityId = useStore(appStore, getCurrentActivityId)
 
   if (currentActivityId === ActivityId.GenerateCreatures) {
-    return (
-      <GenerateCreaturesActivity
-        appController={appController}
-        appStore={appStore}
-      />
-    )
+    return <GenerateCreaturesActivity appController={appController} appStore={appStore} />
   }
 
   if (currentActivityId === ActivityId.GenerationView) {
-    return (
-      <GenerationViewActivity
-        appController={appController}
-        appStore={appStore}
-      />
-    )
+    return <GenerationViewActivity appController={appController} appStore={appStore} />
   }
 
   if (currentActivityId === ActivityId.SimulationRunning) {
-    return (
-      <SimulationRunningActivity
-        appController={appController}
-        appStore={appStore}
-      />
-    )
+    return <SimulationRunningActivity appController={appController} appStore={appStore} />
   }
 
   if (currentActivityId === ActivityId.PostSimulation) {
-    return (
-      <PostSimulationActivity
-        appController={appController}
-        appStore={appStore}
-      />
-    )
+    return <PostSimulationActivity appController={appController} appStore={appStore} />
   }
 
   return <StartActivity appController={appController} />

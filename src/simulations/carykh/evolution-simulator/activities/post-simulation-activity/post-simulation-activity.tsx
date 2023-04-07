@@ -6,7 +6,7 @@ import {AppController} from '../../app-controller'
 import {
   CreatureCollectionView,
   CreatureGridAdapter,
-  SortingCreaturesAdapter
+  SortingCreaturesAdapter,
 } from '../../creature-collection-view'
 import {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
@@ -32,7 +32,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
 
   const activityStore = useMemo<ActivityStore>(() => {
     return new Store<ActivityState>({
-      currentActivityStep: ActivityStep.SimulationFinished
+      currentActivityStep: ActivityStep.SimulationFinished,
     })
   }, [])
 
@@ -40,7 +40,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
     return new ActivityController({
       activityStore,
       appController,
-      appStore
+      appStore,
     })
   }, [activityStore, appController, appStore])
 
@@ -52,10 +52,8 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
         appStore,
 
         onAnimationFinished() {
-          activityController.setCurrentActivityStep(
-            ActivityStep.SortedCreatures
-          )
-        }
+          activityController.setCurrentActivityStep(ActivityStep.SortedCreatures)
+        },
       })
     }
 
@@ -67,43 +65,31 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
         return activityController.getCreatureAndGridIndex(index)
       },
 
-      showsPopupSimulation: () =>
-        activityController.currentStepShowsPopupSimulation()
+      showsPopupSimulation: () => activityController.currentStepShowsPopupSimulation(),
     })
   }, [activityController, appController, appStore, currentActivityStep])
 
   let activityView
 
   if (currentActivityStep === ActivityStep.SortingCreatures) {
-    activityView = (
-      <SortingCreaturesView activityController={activityController} />
-    )
+    activityView = <SortingCreaturesView activityController={activityController} />
   }
 
   if (currentActivityStep === ActivityStep.SortedCreatures) {
     activityView = (
-      <SortedCreaturesView
-        activityController={activityController}
-        appController={appController}
-      />
+      <SortedCreaturesView activityController={activityController} appController={appController} />
     )
   }
 
   if (currentActivityStep === ActivityStep.CullCreatures) {
     activityView = (
-      <CullCreaturesView
-        activityController={activityController}
-        appController={appController}
-      />
+      <CullCreaturesView activityController={activityController} appController={appController} />
     )
   }
 
   if (currentActivityStep === ActivityStep.PropagateCreatures) {
     activityView = (
-      <PropagateCreaturesView
-        activityController={activityController}
-        appStore={appStore}
-      />
+      <PropagateCreaturesView activityController={activityController} appStore={appStore} />
     )
   }
 

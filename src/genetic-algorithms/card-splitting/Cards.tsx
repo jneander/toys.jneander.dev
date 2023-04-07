@@ -36,9 +36,7 @@ export default function Cards(props: CardsProps) {
           </span>
         ))}
 
-        <span className={styles.SetMetrics}>
-          Sum: {geneSum(props.record.chromosome)}
-        </span>
+        <span className={styles.SetMetrics}>Sum: {geneSum(props.record.chromosome)}</span>
       </div>
 
       <div className={styles.CardSet__Bottom}>
@@ -48,9 +46,7 @@ export default function Cards(props: CardsProps) {
           </span>
         ))}
 
-        <span className={styles.SetMetrics}>
-          Product: {geneProduct(props.record.chromosome)}
-        </span>
+        <span className={styles.SetMetrics}>Product: {geneProduct(props.record.chromosome)}</span>
       </div>
     </div>
   )

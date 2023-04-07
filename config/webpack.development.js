@@ -17,10 +17,10 @@ config.module.rules.push({
       options: {
         modules: {
           localIdentName: '[path][name]---[local]',
-          mode: 'local'
+          mode: 'local',
         },
-        sourceMap: true
-      }
+        sourceMap: true,
+      },
     },
 
     {
@@ -30,15 +30,15 @@ config.module.rules.push({
           plugins: [
             postcssPresetEnv({
               browsers: require('./browserslist.config.cjs'),
-              stage: 4
-            })
-          ]
+              stage: 4,
+            }),
+          ],
         },
 
-        sourceMap: true
-      }
-    }
-  ]
+        sourceMap: true,
+      },
+    },
+  ],
 })
 
 config.optimization.chunkIds = 'named'

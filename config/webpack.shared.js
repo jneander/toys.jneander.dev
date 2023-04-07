@@ -5,9 +5,7 @@ const AssetsManifestPlugin = require('webpack-assets-manifest')
 const {routes} = require('./routes')
 
 function selectEnv(env) {
-  return ['development', 'production', 'test'].includes(env)
-    ? env
-    : 'development'
+  return ['development', 'production', 'test'].includes(env) ? env : 'development'
 }
 
 module.exports = function () {
@@ -39,9 +37,9 @@ module.exports = function () {
           test: /\.(js|ts|tsx)$/,
           use: [
             {
-              loader: 'babel-loader'
-            }
-          ]
+              loader: 'babel-loader',
+            },
+          ],
         },
 
         {
@@ -49,11 +47,11 @@ module.exports = function () {
           test: /\.(png|jpg|gif)$/,
           use: [
             {
-              loader: 'url-loader?limit=10000&name=img/[hash:12]/[ext]'
-            }
-          ]
-        }
-      ]
+              loader: 'url-loader?limit=10000&name=img/[hash:12]/[ext]',
+            },
+          ],
+        },
+      ],
     },
 
     optimization: {
@@ -64,14 +62,14 @@ module.exports = function () {
           default: {
             minChunks: 2,
             priority: -20,
-            reuseExistingChunk: true
+            reuseExistingChunk: true,
           },
 
           defaultVendors: {
             priority: -10,
             reuseExistingChunk: true,
-            test: /[\\/]node_modules[\\/]/
-          }
+            test: /[\\/]node_modules[\\/]/,
+          },
         },
 
         chunks: 'all',
@@ -89,35 +87,35 @@ module.exports = function () {
 
           const allChunksNames = chunks.map(chunk => chunk.name).join('~')
           return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`
-        }
+        },
       },
 
-      usedExports: true
+      usedExports: true,
     },
 
     output: {
       path: distPath,
-      publicPath: '/'
+      publicPath: '/',
     },
 
     plugins: [
       new AssetsManifestPlugin({
         entrypoints: true,
-        output: 'assets.json'
-      })
+        output: 'assets.json',
+      }),
     ],
 
     resolve: {
       alias: {
-        React: 'react'
+        React: 'react',
       },
 
       extensions: ['.js', '.ts', '.tsx'],
-      modules: [srcPath, 'node_modules']
+      modules: [srcPath, 'node_modules'],
     },
 
     stats: {
-      colors: true
-    }
+      colors: true,
+    },
   }
 }

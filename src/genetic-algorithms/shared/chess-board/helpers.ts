@@ -16,7 +16,7 @@ function buildScaledBoard(size: number): ChessBoardTable {
 
 function populateBoard(
   originalBoard: ChessBoardTable,
-  positions: ChessBoardPosition[]
+  positions: ChessBoardPosition[],
 ): ChessBoardTable {
   const board = [...originalBoard]
 
@@ -28,10 +28,7 @@ function populateBoard(
   return board
 }
 
-export function buildPopulatedBoard(
-  size: number,
-  positions?: ChessBoardPosition[]
-) {
+export function buildPopulatedBoard(size: number, positions?: ChessBoardPosition[]) {
   const board = buildScaledBoard(size)
 
   if (positions == null) {
@@ -43,7 +40,7 @@ export function buildPopulatedBoard(
 
 export function allPositionsForBoard(
   boardSize: number,
-  piece: string = EMPTY_PIECE
+  piece: string = EMPTY_PIECE,
 ): ChessBoardPosition[] {
   const positions = []
 

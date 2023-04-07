@@ -10,7 +10,7 @@ export default class Muscle {
     nodeConnection1: number,
     nodeConnection2: number,
     length: number,
-    rigidity: number
+    rigidity: number,
   ) {
     this.axon = axon
     this.length = length
@@ -25,7 +25,7 @@ export default class Muscle {
       this.nodeConnection1,
       this.nodeConnection2,
       this.length,
-      this.rigidity
+      this.rigidity,
     )
   }
 }

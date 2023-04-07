@@ -18,11 +18,7 @@ export function rowAndColumnToGridIndex(rowAndColumn: RowAndColumn): number {
   return rowIndex * CREATURE_GRID_TILES_PER_ROW + columnIndex
 }
 
-export function getSpeciesColor(
-  p5: p5,
-  speciesId: number,
-  adjust: boolean
-): Color {
+export function getSpeciesColor(p5: p5, speciesId: number, adjust: boolean): Color {
   const [h, s, b] = getSpeciesColorHSB(speciesId, adjust)
 
   p5.colorMode(p5.HSB, 1.0)

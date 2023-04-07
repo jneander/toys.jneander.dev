@@ -1,8 +1,4 @@
-import {
-  Breadcrumb,
-  InternalLink,
-  PrimaryLayout
-} from '../../../../shared/components'
+import {Breadcrumb, InternalLink, PrimaryLayout} from '../../../../shared/components'
 import {renderPage} from '../../../render-page'
 
 import styles from './styles.module.css'

@@ -1,11 +1,7 @@
 import {ControlledLoopSync} from '@jneander/utils-async'
 
 import type {AppController} from '../../app-controller'
-import {
-  ActivityId,
-  FITNESS_PERCENTILE_CREATURE_INDICES,
-  HISTOGRAM_BAR_SPAN
-} from '../../constants'
+import {ActivityId, FITNESS_PERCENTILE_CREATURE_INDICES, HISTOGRAM_BAR_SPAN} from '../../constants'
 import {GenerationSimulation} from '../../simulation'
 import type {AppStore, GenerationHistoryEntry} from '../../types'
 import {GenerationSimulationMode} from './constants'
@@ -41,7 +37,7 @@ export class ActivityController {
 
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.StepByStep,
-      pendingGenerationCount: 0
+      pendingGenerationCount: 0,
     })
     this.appController.setActivityId(ActivityId.SimulationRunning)
   }
@@ -53,7 +49,7 @@ export class ActivityController {
 
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.Quick,
-      pendingGenerationCount: 0
+      pendingGenerationCount: 0,
     })
 
     await this.simulateWholeGeneration()
@@ -68,7 +64,7 @@ export class ActivityController {
 
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.ASAP,
-      pendingGenerationCount: 1
+      pendingGenerationCount: 1,
     })
 
     this.enqueueGenerationSimulationCycle()
@@ -81,7 +77,7 @@ export class ActivityController {
 
     this.activityStore.setState({
       generationSimulationMode: GenerationSimulationMode.ASAP,
-      pendingGenerationCount: 1000000000
+      pendingGenerationCount: 1000000000,
     })
 
     this.enqueueGenerationSimulationCycle()
@@ -98,8 +94,7 @@ export class ActivityController {
   }
 
   getFitnessPercentilesFromHistory(generation: number): number[] {
-    const historyEntry =
-      this.appStore.getState().generationHistoryMap[generation]
+    const historyEntry = this.appStore.getState().generationHistoryMap[generation]
 
     if (historyEntry) {
       return historyEntry.fitnessPercentiles
@@ -109,8 +104,7 @@ export class ActivityController {
   }
 
   getHistogramBarCountsFromHistory(generation: number): number[] {
-    const historyEntry =
-      this.appStore.getState().generationHistoryMap[generation]
+    const historyEntry = this.appStore.getState().generationHistoryMap[generation]
 
     if (historyEntry) {
       return historyEntry.histogramBarCounts
@@ -141,8 +135,7 @@ export class ActivityController {
   }
 
   private maybePerformAdditionalCycle(): void {
-    let {generationSimulationMode, pendingGenerationCount} =
-      this.activityStore.getState()
+    let {generationSimulationMode, pendingGenerationCount} = this.activityStore.getState()
 
     if (generationSimulationMode !== GenerationSimulationMode.ASAP) {
       return
@@ -152,7 +145,7 @@ export class ActivityController {
       pendingGenerationCount--
 
       this.activityStore.setState({
-        pendingGenerationCount
+        pendingGenerationCount,
       })
     }
 
@@ -167,13 +160,13 @@ export class ActivityController {
 
       const generationSimulation = new GenerationSimulation({
         appStore: this.appStore,
-        simulationConfig: this.appController.getSimulationConfig()
+        simulationConfig: this.appController.getSimulationConfig(),
       })
 
       generationSimulation.initialize()
 
       this.activityStore.setState({
-        currentGenerationSimulation: generationSimulation
+        currentGenerationSimulation: generationSimulation,
       })
 
       const loopFn = () => {

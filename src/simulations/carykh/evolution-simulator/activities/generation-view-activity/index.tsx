@@ -4,11 +4,7 @@ import {ChangeEvent, useMemo} from 'react'
 import {RangeInputField} from '../../../../../shared/components'
 import {useStore} from '../../../../../shared/state'
 import type {AppController} from '../../app-controller'
-import {
-  FitnessDistributionChart,
-  PercentilesChart,
-  PopulationsChart
-} from '../../charts'
+import {FitnessDistributionChart, PercentilesChart, PopulationsChart} from '../../charts'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {GenerationSimulationMode} from './constants'
@@ -29,7 +25,7 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     return new Store<ActivityState>({
       currentGenerationSimulation: null,
       generationSimulationMode: GenerationSimulationMode.Off,
-      pendingGenerationCount: 0
+      pendingGenerationCount: 0,
     })
   }, [])
 
@@ -37,12 +33,11 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     return new ActivityController({
       activityStore,
       appController,
-      appStore
+      appStore,
     })
   }, [activityStore, appController, appStore])
 
-  const {currentGenerationSimulation, pendingGenerationCount} =
-    useStore(activityStore)
+  const {currentGenerationSimulation, pendingGenerationCount} = useStore(activityStore)
   const {generationCount, selectedGeneration} = useStore(appStore)
 
   function handleStepByStepClick() {
@@ -65,9 +60,7 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
     activityController.endAlapGenerationSimulation()
   }
 
-  function handleSelectedGenerationChange(
-    event: ChangeEvent<HTMLInputElement>
-  ) {
+  function handleSelectedGenerationChange(event: ChangeEvent<HTMLInputElement>) {
     const value = Number.parseInt(event.target.value, 10)
 
     if (value !== selectedGeneration) {
@@ -128,10 +121,7 @@ export function GenerationViewActivity(props: GenerationViewActivityProps) {
 
         {displayedPendingGenerationCount > 1 && (
           <>
-            &nbsp;—{' '}
-            <span>
-              Simulating next {displayedPendingGenerationCount} generations...
-            </span>
+            &nbsp;— <span>Simulating next {displayedPendingGenerationCount} generations...</span>
           </>
         )}
       </p>

@@ -9,7 +9,7 @@ import {
   PROPAGATION_STOPPED,
   PropagationListener,
   PropagationRecording,
-  RunState
+  RunState,
 } from './propagation'
 import {PropagationTarget, State} from './types'
 
@@ -32,7 +32,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       playbackPosition: 1,
       propagationSpeed: 1,
       target: this.randomTarget(),
-      ...this.state()
+      ...this.state(),
     })
 
     this.listener = new PropagationListener(this.updateView.bind(this))
@@ -84,7 +84,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
   setTarget(chromosome: PropagationTarget<GeneType, FitnessValueType>): void {
     this.store.setState({
-      target: chromosome
+      target: chromosome,
     })
 
     this.propagation = this.buildPropagation()
@@ -145,7 +145,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       iterationCount: this.propagation?.iterationCount ?? 0,
       playbackPosition: this.recording.playbackPosition(),
       target: this.target(),
-      ...this.state()
+      ...this.state(),
     })
   }
 
@@ -155,21 +155,13 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
   protected abstract geneSet(): GeneType[]
   protected abstract generateParent(): Chromosome<GeneType>
-  protected abstract getFitness(
-    chromosome: Chromosome<GeneType>
-  ): Fitness<FitnessValueType>
+  protected abstract getFitness(chromosome: Chromosome<GeneType>): Fitness<FitnessValueType>
   protected abstract propogationOptions(): {
     mutate: ControlledPropagationConfig<GeneType, FitnessValueType>['mutate']
   }
-  protected abstract randomTarget(): PropagationTarget<
-    GeneType,
-    FitnessValueType
-  >
+  protected abstract randomTarget(): PropagationTarget<GeneType, FitnessValueType>
 
-  private buildPropagation(): ControlledPropagation<
-    GeneType,
-    FitnessValueType
-  > {
+  private buildPropagation(): ControlledPropagation<GeneType, FitnessValueType> {
     return new ControlledPropagation<GeneType, FitnessValueType>({
       calculateFitness: this.getFitness.bind(this),
       generateParent: this.generateParent.bind(this),
@@ -182,7 +174,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       onRunStateChange: this.onRunStateChange.bind(this),
       optimalFitness: this.target()!.fitness,
       speed: this.propagationSpeed,
-      ...this.propogationOptions()
+      ...this.propogationOptions(),
     })
   }
 

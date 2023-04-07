@@ -18,14 +18,11 @@ export function CullCreaturesView(props: CullCreaturesViewProps) {
   return (
     <div>
       <p>
-        Faster creatures are more likely to survive because they can outrun
-        their predators. Slow creatures get eaten.
+        Faster creatures are more likely to survive because they can outrun their predators. Slow
+        creatures get eaten.
       </p>
 
-      <p>
-        Because of random chance, a few fast ones get eaten, while a few slow
-        ones survive.
-      </p>
+      <p>Because of random chance, a few fast ones get eaten, while a few slow ones survive.</p>
 
       <button onClick={handlePropagateClick} type="button">
         Reproduce

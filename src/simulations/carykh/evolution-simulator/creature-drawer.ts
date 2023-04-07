@@ -6,7 +6,7 @@ import {
   Creature,
   Muscle,
   NODE_OPERATION_LABELS_BY_ID,
-  Node
+  Node,
 } from './creatures'
 import {toInt} from './math'
 import type {P5Wrapper} from './p5-utils'
@@ -41,13 +41,7 @@ export class CreatureDrawer {
     this.drawCreaturePieces(creature.nodes, creature.muscles, x, y, graphics)
   }
 
-  drawCreaturePieces(
-    nodes: Node[],
-    muscles: Muscle[],
-    x: number,
-    y: number,
-    graphics: p5
-  ): void {
+  drawCreaturePieces(nodes: Node[], muscles: Muscle[], x: number, y: number, graphics: p5): void {
     for (let i = 0; i < muscles.length; i++) {
       this.drawMuscle(muscles[i], nodes, x, y, graphics)
     }
@@ -72,7 +66,7 @@ export class CreatureDrawer {
       color = graphics.color(
         255,
         255 - toInt(node.friction * 512),
-        255 - toInt(node.friction * 512)
+        255 - toInt(node.friction * 512),
       )
     }
 
@@ -82,7 +76,7 @@ export class CreatureDrawer {
       (node.positionX + x) * this.scale,
       (node.positionY + y) * this.scale,
       node.mass * this.scale,
-      node.mass * this.scale
+      node.mass * this.scale,
     )
 
     if (node.friction >= 0.5) {
@@ -100,14 +94,12 @@ export class CreatureDrawer {
     graphics.text(
       graphics.nf(node.value, 0, 2),
       (node.positionX + x) * this.scale,
-      (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) *
-        this.scale
+      (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * this.scale,
     )
     graphics.text(
       NODE_OPERATION_LABELS_BY_ID[node.operation],
       (node.positionX + x) * this.scale,
-      (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) *
-        this.scale
+      (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y1 + y) * this.scale,
     )
   }
 
@@ -116,7 +108,7 @@ export class CreatureDrawer {
     nodeIndex: number,
     x: number,
     y: number,
-    graphics: p5
+    graphics: p5,
   ): void {
     const node = nodes[nodeIndex]
 
@@ -141,46 +133,29 @@ export class CreatureDrawer {
     }
   }
 
-  private drawSingleAxon(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    graphics: p5
-  ): void {
+  private drawSingleAxon(x1: number, y1: number, x2: number, y2: number, graphics: p5): void {
     const arrowHeadSize = 0.1
     const angle = Math.atan2(y2 - y1, x2 - x1)
 
     graphics.stroke(this.axonColor)
     graphics.strokeWeight(0.03 * this.scale)
-    graphics.line(
-      x1 * this.scale,
-      y1 * this.scale,
-      x2 * this.scale,
-      y2 * this.scale
-    )
+    graphics.line(x1 * this.scale, y1 * this.scale, x2 * this.scale, y2 * this.scale)
     graphics.line(
       x1 * this.scale,
       y1 * this.scale,
       (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * this.scale,
-      (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * this.scale
+      (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * this.scale,
     )
     graphics.line(
       x1 * this.scale,
       y1 * this.scale,
       (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * this.scale,
-      (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * this.scale
+      (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * this.scale,
     )
     graphics.noStroke()
   }
 
-  private drawMuscle(
-    muscle: Muscle,
-    nodes: Node[],
-    x: number,
-    y: number,
-    graphics: p5
-  ): void {
+  private drawMuscle(muscle: Muscle, nodes: Node[], x: number, y: number, graphics: p5): void {
     const ni1 = nodes[muscle.nodeConnection1]
     const ni2 = nodes[muscle.nodeConnection2]
 
@@ -196,33 +171,25 @@ export class CreatureDrawer {
       (ni1.positionX + x) * this.scale,
       (ni1.positionY + y) * this.scale,
       (ni2.positionX + x) * this.scale,
-      (ni2.positionY + y) * this.scale
+      (ni2.positionY + y) * this.scale,
     )
   }
 
-  private drawMuscleAxons(
-    muscle: Muscle,
-    nodes: Node[],
-    x: number,
-    y: number,
-    graphics: p5
-  ): void {
+  private drawMuscleAxons(muscle: Muscle, nodes: Node[], x: number, y: number, graphics: p5): void {
     const connectedNode1 = nodes[muscle.nodeConnection1]
     const connectedNode2 = nodes[muscle.nodeConnection2]
 
     if (muscle.axon >= 0 && muscle.axon < nodes.length) {
       const axonSource = nodes[muscle.axon]
-      const muscleMidX =
-        (connectedNode1.positionX + connectedNode2.positionX) * 0.5 + x
-      const muscleMidY =
-        (connectedNode1.positionY + connectedNode2.positionY) * 0.5 + y
+      const muscleMidX = (connectedNode1.positionX + connectedNode2.positionX) * 0.5 + x
+      const muscleMidY = (connectedNode1.positionY + connectedNode2.positionY) * 0.5 + y
 
       this.drawSingleAxon(
         muscleMidX,
         muscleMidY,
         axonSource.positionX + x,
         axonSource.positionY + axonSource.mass * 0.5 + y,
-        graphics
+        graphics,
       )
 
       const averageMass = (connectedNode1.mass + connectedNode2.mass) * 0.5
@@ -237,7 +204,7 @@ export class CreatureDrawer {
       graphics.text(
         graphics.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
         muscleMidX * this.scale,
-        muscleMidY * this.scale
+        muscleMidY * this.scale,
       )
     }
   }

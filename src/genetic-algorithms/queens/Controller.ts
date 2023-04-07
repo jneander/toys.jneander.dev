@@ -1,30 +1,17 @@
-import {
-  Chromosome,
-  Fitness,
-  randomChromosome,
-  replaceOneGene
-} from '@jneander/genetics'
+import {Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 
 import {
   BaseController,
   PropagationOptions,
   PropagationTarget,
   QUEEN_UNICODE,
-  allPositionsForBoard
+  allPositionsForBoard,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'
-import {
-  QueensChromosome,
-  QueensFitnessValueType,
-  QueensGene,
-  QueensState
-} from './types'
+import {QueensChromosome, QueensFitnessValueType, QueensGene, QueensState} from './types'
 
-export default class Controller extends BaseController<
-  QueensGene,
-  QueensFitnessValueType
-> {
+export default class Controller extends BaseController<QueensGene, QueensFitnessValueType> {
   private _boardSize: number | undefined
   private _fitnessMethod: FewestAttacks | undefined
 
@@ -36,7 +23,7 @@ export default class Controller extends BaseController<
 
   protected state(): QueensState {
     return {
-      boardSize: this.boardSize
+      boardSize: this.boardSize,
     }
   }
 
@@ -50,22 +37,17 @@ export default class Controller extends BaseController<
 
   protected propogationOptions(): PropagationOptions<QueensGene> {
     return {
-      mutate: parent => replaceOneGene(parent, this.geneSet())
+      mutate: parent => replaceOneGene(parent, this.geneSet()),
     }
   }
 
-  protected randomTarget(): PropagationTarget<
-    QueensGene,
-    QueensFitnessValueType
-  > {
+  protected randomTarget(): PropagationTarget<QueensGene, QueensFitnessValueType> {
     return {
-      fitness: this.fitnessMethod.getTargetFitness()
+      fitness: this.fitnessMethod.getTargetFitness(),
     }
   }
 
-  protected getFitness(
-    chromosome: Chromosome<QueensGene>
-  ): Fitness<QueensFitnessValueType> {
+  protected getFitness(chromosome: Chromosome<QueensGene>): Fitness<QueensFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 

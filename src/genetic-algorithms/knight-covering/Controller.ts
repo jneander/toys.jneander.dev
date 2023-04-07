@@ -1,10 +1,4 @@
-import {
-  Chromosome,
-  Fitness,
-  randomEntry,
-  randomInt,
-  range
-} from '@jneander/genetics'
+import {Chromosome, Fitness, randomEntry, randomInt, range} from '@jneander/genetics'
 
 import {
   BaseController,
@@ -12,21 +6,12 @@ import {
   KNIGHT_UNICODE,
   PropagationOptions,
   PropagationTarget,
-  allPositionsForBoard
+  allPositionsForBoard,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
-import {
-  listAttacks,
-  positionFromHash,
-  positionHash,
-  randomPosition
-} from './helpers'
-import {
-  KnightCoveringFitnessValueType,
-  KnightCoveringGene,
-  KnightCoveringState
-} from './types'
+import {listAttacks, positionFromHash, positionHash, randomPosition} from './helpers'
+import {KnightCoveringFitnessValueType, KnightCoveringGene, KnightCoveringState} from './types'
 
 export default class Controller extends BaseController<
   KnightCoveringGene,
@@ -39,25 +24,19 @@ export default class Controller extends BaseController<
   constructor() {
     super()
 
-    this._allBoardPositions = allPositionsForBoard(
-      this.boardSize,
-      KNIGHT_UNICODE
-    )
+    this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
   }
 
   setBoardSize(size: number): void {
     this._boardSize = size
-    this._allBoardPositions = allPositionsForBoard(
-      this.boardSize,
-      KNIGHT_UNICODE
-    )
+    this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
     this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
   }
 
   protected state(): KnightCoveringState {
     return {
-      boardSize: this.boardSize
+      boardSize: this.boardSize,
     }
   }
 
@@ -84,28 +63,23 @@ export default class Controller extends BaseController<
 
   protected propogationOptions(): PropagationOptions<KnightCoveringGene> {
     return {
-      mutate: this.mutate.bind(this)
+      mutate: this.mutate.bind(this),
     }
   }
 
-  protected randomTarget(): PropagationTarget<
-    KnightCoveringGene,
-    KnightCoveringFitnessValueType
-  > {
+  protected randomTarget(): PropagationTarget<KnightCoveringGene, KnightCoveringFitnessValueType> {
     return {
-      fitness: this.fitnessMethod.getTargetFitness()
+      fitness: this.fitnessMethod.getTargetFitness(),
     }
   }
 
   protected getFitness(
-    chromosome: Chromosome<KnightCoveringGene>
+    chromosome: Chromosome<KnightCoveringGene>,
   ): Fitness<KnightCoveringFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 
-  private mutate(
-    chromosome: Chromosome<KnightCoveringGene>
-  ): Chromosome<KnightCoveringGene> {
+  private mutate(chromosome: Chromosome<KnightCoveringGene>): Chromosome<KnightCoveringGene> {
     let count = randomInt(0, 10) === 0 ? 2 : 1
     const genes = [...chromosome.genes]
 
@@ -132,8 +106,7 @@ export default class Controller extends BaseController<
 
       const positionToKnightIndexArray = Array.from(positionToKnightIndexes)
       for (let i = 0; i < positionToKnightIndexArray.length; i++) {
-        const [positionHash, knightIndexesAtPosition] =
-          positionToKnightIndexArray[i]
+        const [positionHash, knightIndexesAtPosition] = positionToKnightIndexArray[i]
         if (knightIndexesAtPosition.length > 1) {
           continue
         }
@@ -149,12 +122,14 @@ export default class Controller extends BaseController<
       let potentialKnightPositions: KnightCoveringGene[] = []
       if (unattacked.length) {
         for (let i = 0; i < unattacked.length; i++) {
-          const positionsWhichCanAttackThisPosition: ChessBoardPosition[] =
-            listAttacks(unattacked[i], this.boardSize)
+          const positionsWhichCanAttackThisPosition: ChessBoardPosition[] = listAttacks(
+            unattacked[i],
+            this.boardSize,
+          )
 
           potentialKnightPositions = [
             ...potentialKnightPositions,
-            ...positionsWhichCanAttackThisPosition
+            ...positionsWhichCanAttackThisPosition,
           ]
         }
       } else {
@@ -188,10 +163,7 @@ export default class Controller extends BaseController<
 
   protected get allBoardPositions(): KnightCoveringGene[] {
     if (this._allBoardPositions == null) {
-      this._allBoardPositions = allPositionsForBoard(
-        this.boardSize,
-        KNIGHT_UNICODE
-      )
+      this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
     }
 
     return this._allBoardPositions

@@ -21,15 +21,13 @@ function getSimulationSpeed(activityState: ActivityState): number {
   return activityState.simulationSpeed
 }
 
-export function SimulationRunningActivity(
-  props: SimulationRunningActivityProps
-) {
+export function SimulationRunningActivity(props: SimulationRunningActivityProps) {
   const {appController, appStore} = props
 
   const activityStore = useMemo(() => {
     return new Store<ActivityState>({
       simulationSpeed: SIMULATION_SPEED_INITIAL,
-      timer: 0
+      timer: 0,
     })
   }, [])
 
@@ -40,7 +38,7 @@ export function SimulationRunningActivity(
   const clientViewAdapter = useMemo(() => {
     return new SimulationRunningAdapter({
       activityController,
-      appController
+      appController,
     })
   }, [activityController, appController])
 

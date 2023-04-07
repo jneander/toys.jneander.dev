@@ -1,9 +1,5 @@
 import type {AppController} from '../../app-controller'
-import {
-  FITNESS_LABEL,
-  FITNESS_UNIT_LABEL,
-  FRAMES_FOR_CREATURE_FITNESS
-} from '../../constants'
+import {FITNESS_LABEL, FITNESS_UNIT_LABEL, FRAMES_FOR_CREATURE_FITNESS} from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
 import {P5Wrapper} from '../../p5-utils'
@@ -33,15 +29,14 @@ export class SimulationRunningP5Ui {
     const {canvas, font} = this.p5Wrapper
 
     this.activityController = config.activityController
-    this.generationSimulation =
-      this.activityController.getGenerationSimulation()
+    this.generationSimulation = this.activityController.getGenerationSimulation()
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.06,
       canvas,
 
       creatureDrawer: new CreatureDrawer({
-        p5Wrapper: this.p5Wrapper
+        p5Wrapper: this.p5Wrapper,
       }),
 
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
@@ -50,7 +45,7 @@ export class SimulationRunningP5Ui {
       showArrow: true,
       simulationConfig: this.appController.getSimulationConfig(),
       statsFont: font,
-      width: 1600
+      width: 1600,
     })
 
     this.simulationView.setCameraZoom(0.01)
@@ -108,10 +103,6 @@ export class SimulationRunningP5Ui {
     canvas.textAlign(canvas.CENTER)
     canvas.textFont(font, 96)
     canvas.text("Creature's " + FITNESS_LABEL + ':', width / 2, 300)
-    canvas.text(
-      canvas.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
-      width / 2,
-      400
-    )
+    canvas.text(canvas.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL, width / 2, 400)
   }
 }

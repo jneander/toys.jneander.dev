@@ -4,8 +4,7 @@ import {P5ClientViewProps, P5View} from '../../../../shared/p5'
 import {P5ClientViewController} from './p5-client-view-controller'
 import type {P5ClientViewAdapter} from './types'
 
-export interface P5ControlledClientViewProps
-  extends Omit<P5ClientViewProps, 'sketch'> {
+export interface P5ControlledClientViewProps extends Omit<P5ClientViewProps, 'sketch'> {
   clientViewAdapter: P5ClientViewAdapter
   height?: number
   scale?: number

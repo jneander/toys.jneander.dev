@@ -47,9 +47,7 @@ export class GenerationSimulation {
   advanceCreatureSimulation(): void {
     this.creatureSimulation.advance()
 
-    if (
-      this.getCreatureSimulationState().timer === FRAMES_FOR_CREATURE_FITNESS
-    ) {
+    if (this.getCreatureSimulationState().timer === FRAMES_FOR_CREATURE_FITNESS) {
       this.setFitnessOfSimulationCreature()
     }
   }
@@ -89,14 +87,10 @@ export class GenerationSimulation {
   }
 
   private setCreatureQueue(): void {
-    this.creatureQueue = [
-      ...this.config.appStore.getState().creaturesInLatestGeneration
-    ]
+    this.creatureQueue = [...this.config.appStore.getState().creaturesInLatestGeneration]
 
     // Creatures are simulated in id order, ascending.
-    this.creatureQueue.sort(
-      (creatureA, creatureB) => creatureA.id - creatureB.id
-    )
+    this.creatureQueue.sort((creatureA, creatureB) => creatureA.id - creatureB.id)
   }
 
   private setSimulationState(simulationCreature: Creature): void {

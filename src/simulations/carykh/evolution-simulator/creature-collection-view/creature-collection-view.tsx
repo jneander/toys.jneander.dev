@@ -1,8 +1,5 @@
 import {P5ClientViewAdapter, P5ControlledClientView} from '../p5-utils'
-import {
-  CREATURE_COLLECTION_VIEW_HEIGHT,
-  CREATURE_COLLECTION_VIEW_WIDTH
-} from './constants'
+import {CREATURE_COLLECTION_VIEW_HEIGHT, CREATURE_COLLECTION_VIEW_WIDTH} from './constants'
 
 import styles from './styles.module.css'
 

@@ -15,12 +15,12 @@
       content="Examples of things I've learned in CS topics"
     />
 
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico">
+
+    {% assets %}
   </head>
 
   <body>
-    <noscript>You need to enable JavaScript to use this site.</noscript>
-
-    <div id="__next"></div>
+    {{ content | safe }}
   </body>
 </html>

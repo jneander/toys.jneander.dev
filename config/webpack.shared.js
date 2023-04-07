@@ -1,7 +1,6 @@
 const path = require('node:path')
 
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const AssetsManifestPlugin = require('webpack-assets-manifest')
 
 const {routes} = require('./routes')
 
@@ -14,7 +13,7 @@ function selectEnv(env) {
 module.exports = function () {
   const pkgPath = path.join(__dirname, '..')
   const srcPath = path.join(pkgPath, 'src')
-  const distPath = path.join(pkgPath, 'dist')
+  const distPath = path.join(pkgPath, 'dist/webpack')
 
   const appEnv = selectEnv(process.env.NODE_ENV)
 
@@ -26,33 +25,6 @@ module.exports = function () {
     })
 
     return entries
-  }
-
-  function htmlPluginForRoute(route) {
-    return new HtmlWebpackPlugin({
-      chunks: [route.key],
-
-      filename: route.path.endsWith('.html')
-        ? `./${route.path}`
-        : `./${route.path}/index.html`,
-
-      inject: true,
-
-      minify: {
-        collapseWhitespace: true,
-        keepClosingSlash: true,
-        minifyCSS: true,
-        minifyJS: true,
-        minifyURLs: true,
-        removeComments: true,
-        removeEmptyAttributes: true,
-        removeRedundantAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        useShortDoctype: true
-      },
-
-      template: path.join(srcPath, 'index.html')
-    })
   }
 
   return {
@@ -129,11 +101,10 @@ module.exports = function () {
     },
 
     plugins: [
-      new CopyWebpackPlugin({
-        patterns: [{from: path.join(pkgPath, 'public'), to: distPath}]
-      }),
-
-      ...routes.map(htmlPluginForRoute)
+      new AssetsManifestPlugin({
+        entrypoints: true,
+        output: 'assets.json'
+      })
     ],
 
     resolve: {

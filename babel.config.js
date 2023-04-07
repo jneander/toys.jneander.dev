@@ -1,13 +1,26 @@
+const browserslist = require('./config/browserslist.config.cjs')
+
 module.exports = {
   presets: [
     [
-      'next/babel',
+      '@babel/preset-env',
 
       {
-        'preset-env': {
-          targets: 'defaults, not IE 11',
-          useBuiltIns: false
+        modules: false,
+
+        targets: {
+          browsers: browserslist
         }
+      }
+    ],
+
+    ['@babel/preset-typescript'],
+
+    [
+      '@babel/preset-react',
+
+      {
+        runtime: 'automatic'
       }
     ]
   ],

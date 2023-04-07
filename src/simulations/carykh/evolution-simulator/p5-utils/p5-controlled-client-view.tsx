@@ -1,6 +1,6 @@
 import {useEffect, useMemo} from 'react'
 
-import {P5ClientView, P5ClientViewProps} from '../../../../shared/p5'
+import {P5ClientViewProps, P5View} from '../../../../shared/p5'
 import {P5ClientViewController} from './p5-client-view-controller'
 import type {P5ClientViewAdapter} from './types'
 
@@ -23,7 +23,5 @@ export function P5ControlledClientView(props: P5ControlledClientViewProps) {
     clientViewController.setAdapter(clientViewAdapter)
   }, [clientViewAdapter, clientViewController])
 
-  return (
-    <P5ClientView {...clientViewProps} sketch={clientViewController.sketch} />
-  )
+  return <P5View {...clientViewProps} sketch={clientViewController.sketch} />
 }

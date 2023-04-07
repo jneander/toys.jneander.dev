@@ -1,4 +1,3 @@
-import NextLink from 'next/link'
 import {HTMLProps} from 'react'
 
 export interface LinkProps extends HTMLProps<HTMLAnchorElement> {
@@ -6,13 +5,7 @@ export interface LinkProps extends HTMLProps<HTMLAnchorElement> {
 }
 
 export function InternalLink(props: LinkProps) {
-  const {href, ...anchorProps} = props
-
-  return (
-    <NextLink href={href}>
-      <a {...anchorProps} />
-    </NextLink>
-  )
+  return <a {...props} />
 }
 
 export function ExternalLink(props: LinkProps) {

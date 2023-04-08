@@ -1,15 +1,5 @@
 module.exports.routes = [
   {
-    key: 'root',
-    component: 'src/pages/show-root/index.tsx',
-  },
-
-  {
-    key: 'genetic-algorithms',
-    component: 'src/pages/genetic-algorithms/show-genetic-algorithms/index.tsx',
-  },
-
-  {
     key: 'card-splitting',
     component: 'src/pages/genetic-algorithms/show-card-splitting/index.tsx',
   },
@@ -40,22 +30,7 @@ module.exports.routes = [
   },
 
   {
-    key: 'simulations-index',
-    component: 'src/pages/simulations/show-simulations/index.tsx',
-  },
-
-  {
-    key: 'carykh-index',
-    component: 'src/pages/simulations/carykh/show-carykh/index.tsx',
-  },
-
-  {
     key: 'carykh-evolution-simulator',
     component: 'src/pages/simulations/carykh/show-evolution-simulator/index.tsx',
-  },
-
-  {
-    key: '404',
-    component: 'src/pages/show-404/index.tsx',
   },
 ]

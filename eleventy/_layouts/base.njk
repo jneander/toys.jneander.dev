@@ -1,3 +1,6 @@
+---
+showBreadcrumb: true
+---
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
   <head>
@@ -23,7 +26,15 @@
   </head>
 
   <body>
-    {{ content | safe }}
+    <div>
+      {%- if showBreadcrumb %}
+        <div class="breadcrumb-container">
+        {% include 'breadcrumb.njk' %}
+        </div>
+      {% endif -%}
+
+      {{ content | safe }}
+    </div>
 
     <footer>
       <a href="https://github.com/jneander/cs.jneander.dev">

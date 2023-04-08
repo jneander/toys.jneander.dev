@@ -1,6 +1,6 @@
 import {ReactNode} from 'react'
 
-import {Breadcrumb, InternalLink, PrimaryLayout} from '../../shared/components'
+import {PrimaryLayout} from '../../shared/components'
 
 interface ShowGeneticAlgorithmLayoutProps {
   children: ReactNode
@@ -10,31 +10,11 @@ interface ShowGeneticAlgorithmLayoutProps {
 export function ShowGeneticAlgorithmLayout({children, pageName}: ShowGeneticAlgorithmLayoutProps) {
   return (
     <PrimaryLayout>
-      <div className="flow">
-        <GeneticAlgorithmNavigation pageName={pageName} />
+      <main className="flow">
+        <h1>{pageName}</h1>
 
-        <main className="flow">
-          <h1>{pageName}</h1>
-
-          {children}
-        </main>
-      </div>
+        {children}
+      </main>
     </PrimaryLayout>
-  )
-}
-
-interface GeneticAlgorithmNavigationProps {
-  pageName: string
-}
-
-export function GeneticAlgorithmNavigation(props: GeneticAlgorithmNavigationProps) {
-  return (
-    <Breadcrumb>
-      <InternalLink href="/">Home</InternalLink>
-
-      <InternalLink href="/genetic-algorithms">Genetic Algorithms</InternalLink>
-
-      <span>{props.pageName}</span>
-    </Breadcrumb>
   )
 }

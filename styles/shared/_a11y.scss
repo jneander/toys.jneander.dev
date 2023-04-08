@@ -1,0 +1,28 @@
+@use '../properties';
+
+@mixin focus-visible {
+  &:focus-visible {
+    @content;
+  }
+
+  @supports not selector(:focus-visible) {
+    &:focus {
+      @content;
+    }
+  }
+}
+
+@mixin focus-outline($selector: &) {
+  #{$selector} {
+    outline-color: transparent;
+    outline-offset: properties.get-value('element', 'focusIndicator', 'outline-offset');
+    outline-style: properties.get-value('element', 'focusIndicator', 'outline-style');
+    outline-width: properties.get-value('element', 'focusIndicator', 'outline-width');
+  }
+
+  @include focus-visible {
+    #{$selector} {
+      outline-color: properties.get-value('element', 'focusIndicator', 'outline-color');
+    }
+  }
+}

@@ -1,0 +1,48 @@
+@use 'sass:list';
+@use 'sass:math';
+
+@function slice($list, $start: 1, $end: list.length($list)) {
+  $result: ();
+  $length: list.length($list);
+
+  @if $length == 0 {
+    @return $result;
+  }
+
+  @if $start < 0 {
+    $start: $length + $start;
+  }
+
+  @if $end < 0 {
+    $end: $length + $end;
+  }
+
+  $start: math.min(math.max($start, 1), $length);
+  $end: math.max($start, math.min($end, $length));
+
+  @for $i from $start through $end {
+    $result: list.append($result, list.nth($list, $i));
+  }
+
+  @return $result;
+}
+
+@function last-value($list) {
+  @return list.nth($list, list.length($list));
+}
+
+@function to-string($list, $separator: '') {
+  @if list.length($list) == 0 {
+    @return '';
+  }
+
+  $result: null;
+
+  @for $i from 1 through list.length($list) {
+    $e: list.nth($list, $i);
+
+    $result: if($i != list.length($list), '#{$result}#{$e}#{$separator}', '#{$result}#{$e}');
+  }
+
+  @return $result;
+}

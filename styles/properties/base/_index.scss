@@ -1,0 +1,21 @@
+@use '../../shared/property';
+
+@use './color';
+@use './font-family' as fontFamily;
+@use './font-size' as fontSize;
+@use './font-weight' as fontWeight;
+@use './line-height' as lineHeight;
+@use './spacing';
+
+$properties: (
+  'color': color.$properties,
+  'fontFamily': fontFamily.$properties,
+  'fontSize': fontSize.$properties,
+  'fontWeight': fontWeight.$properties,
+  'lineHeight': lineHeight.$properties,
+  'spacing': spacing.$properties,
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

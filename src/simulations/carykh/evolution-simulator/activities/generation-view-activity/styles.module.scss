@@ -1,0 +1,44 @@
+@use '../../../../../../styles/properties';
+
+.Layout {
+  display: grid;
+  gap: properties.get-value('base', 'spacing', 'm', 'px');
+  max-width: 100%;
+}
+
+.Actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: properties.get-value('base', 'spacing', 'xxs', 'em');
+}
+
+.GenerationRange {
+  max-width: 300px;
+}
+
+.Charts {
+  display: grid;
+  gap: properties.get-value('base', 'spacing', 'm', 'px');
+  grid-template-columns: minmax(0, auto);
+}
+
+@media only screen and (min-width: 1280px) {
+  .Charts {
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  }
+}
+
+.ChartContainer {
+  max-width: 640px;
+}
+
+.PopulationsChartContainer {
+  height: 12rem;
+  max-width: 640px;
+}
+
+.Creatures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: properties.get-value('base', 'spacing', 'm', 'px');
+}

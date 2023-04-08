@@ -1,0 +1,19 @@
+@use '../../../../styles/properties';
+
+.PrimaryLayout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.PrimaryLayoutContent {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: scroll;
+  padding: properties.get-value('base', 'spacing', 'm', 'px');
+}
+
+.PrimaryLayoutFooter {
+  padding: properties.get-value('base', 'spacing', 'm', 'px');
+}

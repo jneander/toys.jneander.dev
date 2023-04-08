@@ -1,0 +1,13 @@
+@use '../../shared/property';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-element-text-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'maxInlineSize': _define('maxInlineSize', 72ch),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

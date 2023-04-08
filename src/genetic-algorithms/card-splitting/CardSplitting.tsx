@@ -5,7 +5,7 @@ import {ExampleControls, Metrics} from '../shared'
 import Cards from './Cards'
 import Controller from './Controller'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 export default function CardSplitting() {
   const controller = useMemo(() => {
@@ -23,7 +23,7 @@ export default function CardSplitting() {
   }
 
   return (
-    <div className={styles.Container}>
+    <div className="flow">
       <ExampleControls
         maxPropagationSpeed={state.maxPropagationSpeed}
         onIterate={controller.iterate}

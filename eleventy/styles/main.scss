@@ -1,0 +1,12 @@
+@use 'foundation';
+
+@use 'headings';
+@use 'layouts';
+@use 'links';
+@use 'utilities';
+
+@use 'regions/code';
+
+.no-transition * {
+  transition: none !important;
+}

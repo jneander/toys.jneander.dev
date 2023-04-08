@@ -1,0 +1,18 @@
+@use '../../shared/property';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-base-fontFamily-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'root': _define(root, (system-ui, sans-serif)),
+  'secondary':
+    _define(
+      secondary,
+      (Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif)
+    ),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

@@ -7,7 +7,7 @@ import type {SimulationConfig} from '../../../simulation'
 import {CreatureInfoAdapter} from './creature-info-adapter'
 import type {CreatureInfoState} from './types'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 export interface CreatureInfoProps {
   creature: Creature

@@ -1,0 +1,36 @@
+@use '../../../../../../../styles/properties';
+
+.Container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: properties.get-value('base', 'spacing', 'm', 'px');
+}
+
+.CanvasContainer {
+  background: rgb(220, 220, 220);
+  display: inline-block;
+  height: 240px;
+  width: 240px;
+}
+
+.Details {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: properties.get-value('base', 'spacing', 'xxs', 'px')
+    properties.get-value('base', 'spacing', 'm', 'px');
+  margin: 0;
+}
+
+.Details > * {
+  margin: 0;
+  padding: 0;
+}
+
+.Details dt {
+  font-weight: 700;
+}
+
+.FitnessValue {
+  font-variant-numeric: tabular-nums;
+}

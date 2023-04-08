@@ -1,0 +1,24 @@
+@use '../../shared/property';
+@use '../base/color';
+@use '../base/font-family' as fontFamily;
+@use '../base/font-size' as fontSize;
+@use '../base/font-weight' as fontWeight;
+@use '../base/line-height' as lineHeight;
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-element-body-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'backgroundColor': _define('backgroundColor', color.get-value('grey', 50)),
+  'color': _define('color', color.get-value('grey', 950)),
+  'fontFamily': _define('fontFamily', fontFamily.get-value('root')),
+  'fontSize': _define('fontSize', fontSize.get-value('root')),
+  'fontStyle': _define('fontStyle', normal),
+  'fontWeight': _define('fontWeight', fontWeight.get-value('normal')),
+  'lineHeight': _define('lineHeight', lineHeight.get-value('root')),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

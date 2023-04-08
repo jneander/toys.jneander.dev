@@ -1,0 +1,15 @@
+@use '../../shared/property';
+@use '../base/color';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-element-a-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'color': _define('color', color.get-value('primary')),
+  'textUnderlineOffset': _define('textUnderlineOffset', 0.25em),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

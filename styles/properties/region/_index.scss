@@ -1,0 +1,11 @@
+@use '../../shared/property';
+
+@use './code';
+
+$properties: (
+  'code': code.$properties,
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

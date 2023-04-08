@@ -1,0 +1,30 @@
+@use '../../shared/property';
+@use '../base';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-region-codeInline-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'backgroundColor': _define('color', #2d2d2d),
+  'color': _define('color', #ccc),
+  'fontFamily':
+    _define(
+      'fontFamily',
+      (
+        ui-monospace,
+        'Cascadia Code',
+        'Source Code Pro',
+        Menlo,
+        Consolas,
+        'DejaVu Sans Mono',
+        monospace
+      )
+    ),
+  'fontSize': _define('fontSize', 1rem),
+  'lineHeight': _define('lineHeight', base.get-value('lineHeight', 'root')),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

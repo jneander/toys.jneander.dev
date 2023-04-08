@@ -9,7 +9,7 @@ config.bail = true
 
 config.module.rules.push({
   sideEffects: true,
-  test: /\.css$/,
+  test: /\.(scss|css)$/,
 
   use: [
     {loader: MiniCssExtractPlugin.loader},
@@ -40,6 +40,8 @@ config.module.rules.push({
         sourceMap: true,
       },
     },
+
+    {loader: 'sass-loader'},
   ],
 })
 

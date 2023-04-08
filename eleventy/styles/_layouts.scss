@@ -1,0 +1,59 @@
+@use '../../styles/properties/base';
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+body > header {
+  --wrapper-max-inline-size: 48rem;
+
+  background-color: base.get-value('color', 'primary');
+
+  font-family: base.get-value('fontFamily', 'secondary');
+
+  padding-block: base.get-value('spacing', 'm', 'px');
+
+  & > .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: base.get-value('spacing', 'm', 'px');
+  }
+
+  a {
+    color: base.get-value('color', 'secondary');
+  }
+
+  a[aria-current='page'] {
+    text-decoration-style: dashed;
+  }
+
+  nav {
+    // Eliminate space characters in HTML.
+    display: inline-flex;
+
+    margin-inline-start: auto;
+
+    a:not(:last-child) {
+      margin-inline-end: base.get-value('spacing', 'xl', 'px');
+    }
+  }
+}
+
+body > :not(header):not(footer) {
+  grid-row: 2;
+  align-self: self-start;
+}
+
+body > footer {
+  grid-row: 3;
+  background-color: base.get-value('color', 'grey', 100);
+
+  font-size: base.get-value('fontSize', 'small');
+  text-align: center;
+
+  margin-block-start: base.get-value('spacing', 'xxxl', 'px');
+  padding: base.get-value('spacing', 'm', 'px');
+}

@@ -1,0 +1,39 @@
+@use '../../../styles/properties';
+
+.ExampleControlsContainer > *:not(:first-child) {
+  margin-block-start: properties.get-value('base', 'spacing', 'm', 'px');
+}
+
+.ExampleControlsRow {
+  display: flex;
+  align-items: center;
+  gap: properties.get-value('base', 'spacing', 'm', 'em');
+}
+
+.ChromosomeTable {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ChromosomeTable caption {
+  font-weight: 700;
+  text-align: start;
+}
+
+.ChromosomeTable th,
+.ChromosomeTable td {
+  padding: properties.get-value('base', 'spacing', 'm', 'rem');
+}
+
+.ChromosomeTable tbody th,
+.ChromosomeTable tbody td {
+  border-block-start: 1px solid properties.get-value('base', 'color', 'grey', 850);
+}
+
+.ChromosomeTable tbody tr > *:first-child {
+  text-align: start;
+}
+
+.ChromosomeCell {
+  word-break: break-all;
+}

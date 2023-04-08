@@ -1,0 +1,28 @@
+@use '../../shared/property';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-base-spacing-#{$identifier}, $default-value);
+}
+
+@function _defineSet($name: string, $defaultValueScale: number) {
+  @return (
+    px: _define(#{$name}-px, #{$defaultValueScale * 16}px),
+    rem: _define(#{$name}-rem, #{$defaultValueScale}rem),
+    em: _define(#{$name}-em, #{$defaultValueScale}em)
+  );
+}
+
+$properties: (
+  xxs: _defineSet('xxs', 0.25),
+  xs: _defineSet('xs', 0.5),
+  s: _defineSet('s', 0.75),
+  m: _defineSet('m', 1),
+  l: _defineSet('l', 1.5),
+  xl: _defineSet('xl', 2),
+  xxl: _defineSet('xxl', 3),
+  xxxl: _defineSet('xxxl', 4),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

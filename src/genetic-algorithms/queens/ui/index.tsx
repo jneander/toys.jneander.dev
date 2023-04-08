@@ -5,8 +5,6 @@ import {ChessBoard, ExampleControls, Metrics} from '../../shared'
 import Controller from '../Controller'
 import Configuration from './Configuration'
 
-import styles from './styles.module.css'
-
 export function Queens() {
   const controller = useMemo(() => {
     return new Controller()
@@ -27,7 +25,7 @@ export function Queens() {
   }
 
   return (
-    <div className={styles.Container}>
+    <div className="flow">
       <ExampleControls
         maxPropagationSpeed={state.maxPropagationSpeed}
         onIterate={controller.iterate}

@@ -1,0 +1,31 @@
+@use '../../shared/property';
+
+@use './a';
+@use './body';
+@use './focus-indicator' as focusIndicator;
+@use './h1';
+@use './h2';
+@use './h3';
+@use './h4';
+@use './h5';
+@use './h6';
+@use './heading';
+@use './text';
+
+$properties: (
+  'a': a.$properties,
+  'body': body.$properties,
+  'focusIndicator': focusIndicator.$properties,
+  'h1': h1.$properties,
+  'h2': h2.$properties,
+  'h3': h3.$properties,
+  'h4': h4.$properties,
+  'h5': h5.$properties,
+  'h6': h6.$properties,
+  'heading': heading.$properties,
+  'text': text.$properties,
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

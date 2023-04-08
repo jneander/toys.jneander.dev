@@ -1,0 +1,18 @@
+@use '../../shared/property';
+@use '../base/color';
+@use '../base/spacing';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-element-focusIndicator-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'outline-color': _define('outline-color', currentColor),
+  'outline-offset': _define('outline-offset', 0.125rem),
+  'outline-style': _define('outline-style', solid),
+  'outline-width': _define('outline-width', 0.125rem),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

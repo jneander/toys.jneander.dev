@@ -2,8 +2,6 @@ import {ReactNode} from 'react'
 
 import {Breadcrumb, InternalLink, PrimaryLayout} from '../../shared/components'
 
-import styles from './styles.module.css'
-
 interface ShowGeneticAlgorithmLayoutProps {
   children: ReactNode
   pageName: string
@@ -12,10 +10,10 @@ interface ShowGeneticAlgorithmLayoutProps {
 export function ShowGeneticAlgorithmLayout({children, pageName}: ShowGeneticAlgorithmLayoutProps) {
   return (
     <PrimaryLayout>
-      <div className={styles.Container}>
+      <div className="flow">
         <GeneticAlgorithmNavigation pageName={pageName} />
 
-        <main className={styles.SpacedBlocks}>
+        <main className="flow">
           <h1>{pageName}</h1>
 
           {children}

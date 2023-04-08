@@ -2,13 +2,11 @@ import {Breadcrumb, InternalLink, PrimaryLayout} from '../../../../shared/compon
 import {CarykhEvolutionSimulator} from '../../../../simulations'
 import {renderPage} from '../../../render-page'
 
-import styles from './styles.module.css'
-
 const PAGE_NAME = "Carykh's Evolution Simulator"
 
 renderPage(() => (
   <PrimaryLayout>
-    <div className={styles.Container}>
+    <div className="flow">
       <Breadcrumb>
         <InternalLink href="/">Home</InternalLink>
 
@@ -19,7 +17,7 @@ renderPage(() => (
         <span>{PAGE_NAME}</span>
       </Breadcrumb>
 
-      <main className={styles.SpacedBlocks}>
+      <main className="flow">
         <h1>{PAGE_NAME}</h1>
 
         <CarykhEvolutionSimulator />

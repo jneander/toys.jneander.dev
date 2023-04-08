@@ -1,11 +1,9 @@
 import {InternalLink, PrimaryLayout} from '../../shared/components'
 import {renderPage} from '../render-page'
 
-import styles from './styles.module.css'
-
 renderPage(() => (
   <PrimaryLayout>
-    <main className={styles.Container}>
+    <main className="flow">
       <h1>Learning Some CS Topics</h1>
 
       <ul>

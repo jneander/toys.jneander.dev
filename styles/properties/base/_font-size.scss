@@ -1,0 +1,14 @@
+@use '../../shared/property';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-base-fontSize-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'root': _define(root, 1rem),
+  'small': _define(small, 0.75rem),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

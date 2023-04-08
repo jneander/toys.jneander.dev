@@ -1,0 +1,31 @@
+@use '../../../styles/properties';
+
+.breadcrumb-container {
+  padding: properties.get-value('base', 'spacing', 'm', 'px');
+}
+
+.breadcrumb ol {
+  align-items: center;
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  li::before {
+    border-inline-end: calc(1rem / 16) solid currentColor;
+    content: '';
+    display: inline-block;
+    height: 0.75rem;
+    margin: 0 0.5rem;
+    transform: rotate(10deg);
+  }
+
+  li:first-child::before {
+    margin-inline-start: 0;
+  }
+}

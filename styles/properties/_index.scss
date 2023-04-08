@@ -1,0 +1,15 @@
+@use '../shared/property';
+
+@use './base';
+@use './element';
+@use './region';
+
+$properties: (
+  'base': base.$properties,
+  'element': element.$properties,
+  'region': region.$properties,
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

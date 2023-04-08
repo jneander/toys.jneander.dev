@@ -10,7 +10,7 @@ import {ActivityController} from './activity-controller'
 import {SimulationRunningAdapter} from './simulation-running-adapter'
 import type {ActivityState} from './types'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 export interface SimulationRunningActivityProps {
   appController: AppController

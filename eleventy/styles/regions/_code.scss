@@ -1,0 +1,122 @@
+@use '../../../styles/properties/region/code';
+
+/**
+ * prism.js tomorrow night eighties for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.com/chriskempson/tomorrow-theme
+ * @author Rose Pritchard
+ */
+
+code[class*='language-'],
+pre[class*='language-'] {
+  color: code.get-value('color');
+  background: none;
+  font-family: code.get-value('fontFamily');
+  font-size: code.get-value('fontSize');
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: code.get-value('lineHeight');
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*='language-'] {
+  padding: code.get-value('Block', 'padding');
+  overflow: auto;
+}
+
+:not(pre) > code[class*='language-'],
+pre[class*='language-'] {
+  background-color: code.get-value('backgroundColor');
+}
+
+/* Inline code */
+:not(pre) > code[class*='language-'] {
+  border-radius: code.get-value('Inline', 'borderRadius');
+  padding: code.get-value('Inline', 'padding');
+  white-space: normal;
+}
+
+.token.comment,
+.token.block-comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: code.get-value('Palette', 0);
+}
+
+.token.punctuation {
+  color: code.get-value('Palette', 1);
+}
+
+.token.tag,
+.token.attr-name,
+.token.namespace,
+.token.deleted {
+  color: code.get-value('Palette', 2);
+}
+
+.token.function-name {
+  color: code.get-value('Palette', 3);
+}
+
+.token.boolean,
+.token.number,
+.token.function {
+  color: code.get-value('Palette', 4);
+}
+
+.token.property,
+.token.class-name,
+.token.constant,
+.token.symbol {
+  color: code.get-value('Palette', 5);
+}
+
+.token.selector,
+.token.important,
+.token.atrule,
+.token.keyword,
+.token.builtin {
+  color: code.get-value('Palette', 6);
+}
+
+.token.string,
+.token.char,
+.token.attr-value,
+.token.regex,
+.token.variable {
+  color: code.get-value('Palette', 7);
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+  color: code.get-value('Palette', 8);
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.inserted {
+  color: code.get-value('Palette', 9);
+}

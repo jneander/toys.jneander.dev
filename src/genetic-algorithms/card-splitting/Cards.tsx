@@ -2,7 +2,7 @@ import {Chromosome, product, PropagationRecord, sum} from '@jneander/genetics'
 
 import {CardSplittingFitnessValue} from './types'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 function convertGene(gene: string) {
   return gene === 'A' ? 1 : parseInt(gene, 10)

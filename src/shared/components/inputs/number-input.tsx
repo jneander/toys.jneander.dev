@@ -1,6 +1,6 @@
 import {HTMLProps} from 'react'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 interface NumberInputFieldProps
   extends Omit<HTMLProps<HTMLInputElement>, 'className' | 'label' | 'type' | 'checked'> {

@@ -1,0 +1,53 @@
+@use '../../shared/property';
+@use '../base';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-region-code-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'backgroundColor': _define('color', #2d2d2d),
+  'color': _define('color', #ccc),
+  'fontFamily':
+    _define(
+      'fontFamily',
+      (
+        ui-monospace,
+        'Cascadia Code',
+        'Source Code Pro',
+        Menlo,
+        Consolas,
+        'DejaVu Sans Mono',
+        monospace
+      )
+    ),
+  'fontSize': _define('fontSize', 1rem),
+  'lineHeight': _define('lineHeight', base.get-value('lineHeight', 'root')),
+  // Block Code
+  'Block':
+    (
+      'padding': _define('Block-padding', base.get-value('spacing', 'm', 'rem')),
+    ),
+  // Inline Code
+  'Inline':
+    (
+      'borderRadius': _define('Inline-padding', 0.3em),
+      'padding': _define('Inline-padding', 0.1em),
+    ),
+  'Palette': (
+    0: _define('0', #999),
+    1: _define('1', #ccc),
+    2: _define('2', #e2777a),
+    3: _define('3', #6196cc),
+    4: _define('4', #f08d49),
+    5: _define('5', #f8c555),
+    6: _define('6', #cc99cd),
+    7: _define('7', #7ec699),
+    8: _define('8', #67cdcc),
+    9: _define('9', green),
+  ),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

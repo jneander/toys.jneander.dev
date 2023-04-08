@@ -1,0 +1,17 @@
+@use 'sass:math';
+
+@use '../../shared/property';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-base-fontWeight-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'normal': _define('normal', 400),
+  'bold': _define('bold', 700),
+  'black': _define('black', 900),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

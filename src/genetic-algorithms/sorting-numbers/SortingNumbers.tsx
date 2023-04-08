@@ -4,8 +4,6 @@ import {useStore} from '../../shared/state'
 import {ChromosomeTable, ExampleControls} from '../shared'
 import Controller from './Controller'
 
-import styles from './styles.module.css'
-
 export default function SortingNumbers() {
   const controller = useMemo(() => {
     return new Controller()
@@ -22,7 +20,7 @@ export default function SortingNumbers() {
   }
 
   return (
-    <div className={styles.Container}>
+    <div className="flow">
       <ExampleControls
         maxPropagationSpeed={state.maxPropagationSpeed}
         onIterate={controller.iterate}

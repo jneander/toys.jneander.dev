@@ -3,7 +3,7 @@ import {useMemo} from 'react'
 import {buildPopulatedBoard} from './helpers'
 import {ChessBoardPosition} from './types'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 interface ChessBoardRowProps {
   row: string[]

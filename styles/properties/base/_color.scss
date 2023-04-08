@@ -1,0 +1,33 @@
+@use '../../shared/property';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-base-color-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'black': _define(black, #000),
+  'white': _define(white, #fff),
+  'primary': _define(primary, #615377),
+  'secondary': _define(secondary, #f1eef5),
+  // Greys (Cool)
+  'grey':
+    (
+      50: _define(grey-050, #f9f7fb),
+      100: _define(grey-100, #f3f0f7),
+      150: _define(grey-150, #ede8f3),
+      200: _define(grey-200, #e7e1f0),
+      300: _define(grey-300, #dbd3e8),
+      400: _define(grey-400, #cfc4e0),
+      500: _define(grey-500, #c3b5d9),
+      600: _define(grey-600, #9c91ad),
+      700: _define(grey-700, #756d82),
+      800: _define(grey-800, #4e4857),
+      850: _define(grey-850, #3a3641),
+      900: _define(grey-900, #27242b),
+      950: _define(grey-950, #131216),
+    ),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

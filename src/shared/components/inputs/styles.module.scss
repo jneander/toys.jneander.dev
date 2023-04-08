@@ -1,0 +1,20 @@
+@use '../../../../styles/properties';
+
+.InputContainer {
+  display: block;
+}
+
+.InputLabelContent {
+  margin-block-end: properties.get-value('base', 'spacing', 'xxs', 'rem');
+}
+
+.NumberInputField,
+.RangeInputField {
+  width: 100%;
+}
+
+.CheckboxInputField {
+  align-items: center;
+  display: flex;
+  gap: properties.get-value('base', 'spacing', 'xxs', 'rem');
+}

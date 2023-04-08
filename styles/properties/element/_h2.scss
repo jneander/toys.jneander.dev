@@ -1,0 +1,20 @@
+@use '../../shared/property';
+@use './heading';
+
+@function _define($identifier, $default-value) {
+  @return property.define(jn-element-h2-#{$identifier}, $default-value);
+}
+
+$properties: (
+  'color': _define('color', heading.get-value('color')),
+  'fontFamily': _define('fontFamily', heading.get-value('fontFamily')),
+  'fontSize': _define('fontSize', heading.modular-font-size(2)),
+  'fontStyle': _define('fontStyle', heading.get-value('fontStyle')),
+  'fontWeight': _define('fontWeight', heading.get-value('fontWeight')),
+  'lineHeight': _define('lineHeight', heading.get-value('lineHeight')),
+  'maxInlineSize': _define('maxInlineSize', heading.modular-max-inline-size(2)),
+);
+
+@function get-value($keys...) {
+  @return property.get-value($properties, $keys...);
+}

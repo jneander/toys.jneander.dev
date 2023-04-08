@@ -2,7 +2,7 @@ import {HTMLProps} from 'react'
 
 import {useId} from '../utils'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 interface CheckboxInputFieldProps
   extends Omit<HTMLProps<HTMLInputElement>, 'className' | 'label' | 'type'> {

@@ -3,7 +3,7 @@ import {ReactNode} from 'react'
 
 import {PropagationTarget} from './types'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 interface RecordRowProps<GeneType, FitnessValueType> {
   formatFitness: (fitness: FitnessValueType) => ReactNode

@@ -1,0 +1,104 @@
+@use 'sass:list';
+@use 'sass:map';
+
+@use './lists';
+
+/*
+ * Build and return a property consisting of an identifier, default value, and
+ * `var` form. The given `$identifier` will be used for the custom property
+ * identifier. The given `$default-value` will be used for the default/fallback
+ * value of the custom property. Both will be used to build the `var` form.
+ *
+ * e.g.
+ * Given: `($identifier: jn-body-fontSize, $default-value: 1rem)`
+ * Result:
+ *   (
+ *     identifier: jn-body-fontSize,
+ *     defaultValue: 1rem,
+ *     var: var(--jn-body-fontSize, 1rem)
+ *   );
+ */
+@function define($identifier, $default-value) {
+  @return (
+    identifier: $identifier,
+    defaultValue: $default-value,
+    var: var(--#{$identifier}, $default-value)
+  );
+}
+
+/*
+ * Get the value or property found by navigating into the given `$property-map`
+ * map using the given `$keys`. When no `$keys` are provided, the given
+ * `$property-map` will be used. When the `$property-map` value is not a map, it
+ * will be returned without modification.
+ */
+@function get($property-map, $keys...) {
+  @if map.has-key($property-map, $keys...) {
+    @return map.get($property-map, $keys...);
+  }
+
+  @if list.length($keys) > 0 {
+    @error "Property #{lists.to-string($keys, '.')} not found in property-map.";
+  }
+
+  @if type-of($property-map) == 'map' {
+    @error "$property-map is not a custom property map.";
+  }
+
+  @return $property-map;
+}
+
+/*
+ * Get the default value for the target property. The target property will be
+ * found by navigating into the given `$property-or-value` map using the given
+ * `$keys`. When no `$keys` are provided, the given `$property-or-value` will be
+ * used. When the `$property-or-value` value is not a map, it will be returned
+ * without modification.
+ */
+@function get-default-value($property-or-value, $keys...) {
+  @if type-of($property-or-value) == 'map' {
+    @return get($property-or-value, list.append($keys, 'defaultValue')...);
+  }
+
+  @return $property-or-value;
+}
+
+/*
+ * Get the identifier for the target property. The target property will be found
+ * by navigating into the given `$property-or-identifier` map using the given
+ * `$keys`.  When no `$keys` are provided, the given `$property-or-identifier`
+ * will be used.  When the `$property-or-identifier` value is not a map, it will
+ * be returned without modification.
+ */
+@function get-identifier($property-or-identifier, $keys...) {
+  @if type-of($property-or-identifier) == 'map' {
+    @return get($property-or-identifier, list.append($keys, 'identifier')...);
+  }
+
+  @return $property-or-identifier;
+}
+
+/*
+ * Get the `var` form of the target property. The target property will be found
+ * by navigating into the given `$property-or-var` map using the given `$keys`.
+ * When no `$keys` are provided, the given `$property-or-var` will be used.
+ * When the `$property-or-var` value is not a map, it will be returned without
+ * modification.
+ */
+@function get-value($property-or-var, $keys...) {
+  @if type-of($property-or-var) == 'map' {
+    @return get($property-or-var, list.append($keys, 'var')...);
+  }
+
+  @return $property-or-var;
+}
+
+/*
+ * Assign a custom property using the identifier of the given `$target-property`
+ * with the applicable value of the given `$source-property-or-value`. When the
+ * source property parameter is a property, the `var` form of that property will
+ * be used. Otherwise, the value provided will be used without modification.
+ */
+@mixin assign($target-property, $source-property-or-value) {
+  --#{get-identifier($target-property)}: #{get-value($source-property-or-value)};
+}

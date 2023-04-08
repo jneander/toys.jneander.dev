@@ -11,7 +11,7 @@ import {GenerationSimulationMode} from './constants'
 import {CreatureInfo} from './creature-info'
 import type {ActivityState} from './types'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 export interface GenerationViewActivityProps {
   appController: AppController

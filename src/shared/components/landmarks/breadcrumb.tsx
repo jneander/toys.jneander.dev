@@ -1,6 +1,6 @@
 import {Children, HTMLProps, ReactNode} from 'react'
 
-import styles from './landmarks.module.css'
+import styles from './landmarks.module.scss'
 
 function BreadcrumbItem(props: HTMLProps<HTMLLIElement>) {
   return <li {...props} className={styles.breadcrumbListItem} />

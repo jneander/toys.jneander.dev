@@ -1,0 +1,5 @@
+@mixin motion-allowed {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
+}

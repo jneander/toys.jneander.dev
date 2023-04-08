@@ -1,11 +1,9 @@
 import {Breadcrumb, InternalLink, PrimaryLayout} from '../../../../shared/components'
 import {renderPage} from '../../../render-page'
 
-import styles from './styles.module.css'
-
 renderPage(() => (
   <PrimaryLayout>
-    <div className={styles.Container}>
+    <div className="flow">
       <Breadcrumb>
         <InternalLink href="/">Home</InternalLink>
 

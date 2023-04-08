@@ -2,7 +2,7 @@ import {ReactNode} from 'react'
 
 import {ExternalLink} from '../commands'
 
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 interface PrimaryLayoutProps {
   children: ReactNode

@@ -1,4 +1,4 @@
-export default class Muscle {
+export class Muscle {
   axon: number
   nodeConnection1: number
   nodeConnection2: number

@@ -11,7 +11,7 @@ import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'
 import {QueensChromosome, QueensFitnessValueType, QueensGene, QueensState} from './types'
 
-export default class Controller extends BaseController<QueensGene, QueensFitnessValueType> {
+export class Controller extends BaseController<QueensGene, QueensFitnessValueType> {
   private _boardSize: number | undefined
   private _fitnessMethod: FewestAttacks | undefined
 

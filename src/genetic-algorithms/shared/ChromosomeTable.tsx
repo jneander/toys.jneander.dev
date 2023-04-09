@@ -52,7 +52,7 @@ interface ChromosomeTableProps<GeneType, FitnessValueType> {
   target: PropagationTarget<GeneType, FitnessValueType>
 }
 
-export default function ChromosomeTable<GeneType, FitnessValueType>(
+export function ChromosomeTable<GeneType, FitnessValueType>(
   props: ChromosomeTableProps<GeneType, FitnessValueType>,
 ) {
   const {formatGenes = defaultFormatGenes} = props

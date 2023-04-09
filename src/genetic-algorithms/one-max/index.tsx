@@ -1,1 +1,1 @@
-export {default as OneMax} from './OneMax'
+export {OneMax} from './OneMax'

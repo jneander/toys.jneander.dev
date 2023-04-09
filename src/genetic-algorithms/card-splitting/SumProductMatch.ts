@@ -45,7 +45,7 @@ class CardSplittingFitness implements Fitness<CardSplittingFitnessValue> {
   }
 }
 
-export default class SumProductMatch {
+export class SumProductMatch {
   getFitness(chromosome: Chromosome<string>): CardSplittingFitness {
     const groupSum = sum(chromosome.genes.slice(0, 5).map(convertGene))
     const groupProduct = product(chromosome.genes.slice(5, 10).map(convertGene))

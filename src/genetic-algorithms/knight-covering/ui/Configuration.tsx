@@ -9,7 +9,7 @@ interface ConfigurationProps {
   onBoardSizeChange: (size: number) => void
 }
 
-export default function Configuration(props: ConfigurationProps) {
+export function Configuration(props: ConfigurationProps) {
   function handleBoardSizeChange(event: ChangeEvent<HTMLInputElement>) {
     const size = Number.parseInt(event.target.value, 10)
 

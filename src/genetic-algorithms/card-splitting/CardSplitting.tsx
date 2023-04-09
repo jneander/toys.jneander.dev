@@ -2,12 +2,12 @@ import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
 import {ExampleControls, Metrics} from '../shared'
-import Cards from './Cards'
-import Controller from './Controller'
+import {Cards} from './Cards'
+import {Controller} from './Controller'
 
 import styles from './styles.module.scss'
 
-export default function CardSplitting() {
+export function CardSplitting() {
   const controller = useMemo(() => {
     return new Controller()
   }, [])

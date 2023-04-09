@@ -1,8 +1,7 @@
 const path = require('node:path')
 
+const FastGlob = require('fast-glob')
 const AssetsManifestPlugin = require('webpack-assets-manifest')
-
-const {routes} = require('./routes')
 
 function selectEnv(env) {
   return ['development', 'production', 'test'].includes(env) ? env : 'development'
@@ -18,8 +17,11 @@ module.exports = function () {
   function getEntries() {
     const entries = {}
 
-    routes.forEach(route => {
-      entries[route.key] = path.join(pkgPath, route.component)
+    const globs = FastGlob.sync('**/*.entry.*', {cwd: srcPath})
+    globs.forEach(filePath => {
+      const fileName = path.basename(filePath)
+      const [entryName] = fileName.split('.entry.')
+      entries[entryName] = filePath
     })
 
     return entries

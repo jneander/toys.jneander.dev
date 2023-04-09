@@ -1,9 +1,17 @@
-import {OneMax} from '../../../genetic-algorithms'
-import {renderPage} from '../../render-page'
-import {ShowGeneticAlgorithmLayout} from '../shared'
+import {render, unmountComponentAtNode} from 'react-dom'
 
-renderPage(() => (
-  <ShowGeneticAlgorithmLayout pageName="One Max">
-    <OneMax />
-  </ShowGeneticAlgorithmLayout>
-))
+import {OneMax} from '../../../genetic-algorithms'
+
+class OneMaxElement extends HTMLElement {
+  connectedCallback() {
+    render(<OneMax />, this)
+  }
+
+  disconnectedCallback() {
+    unmountComponentAtNode(this)
+  }
+}
+
+if (!customElements.get('one-max')) {
+  window.customElements.define('one-max', OneMaxElement)
+}

@@ -1,13 +1,17 @@
-import {PrimaryLayout} from '../../../../shared/components'
+import {render, unmountComponentAtNode} from 'react-dom'
+
 import {CarykhEvolutionSimulator} from '../../../../simulations'
-import {renderPage} from '../../../render-page'
 
-renderPage(() => (
-  <PrimaryLayout>
-    <main className="flow">
-      <h1>{"Carykh's Evolution Simulator"}</h1>
+class CarykhEvolutionSimulatorElement extends HTMLElement {
+  connectedCallback() {
+    render(<CarykhEvolutionSimulator />, this)
+  }
 
-      <CarykhEvolutionSimulator />
-    </main>
-  </PrimaryLayout>
-))
+  disconnectedCallback() {
+    unmountComponentAtNode(this)
+  }
+}
+
+if (!customElements.get('carykh-evolution-simulator')) {
+  window.customElements.define('carykh-evolution-simulator', CarykhEvolutionSimulatorElement)
+}

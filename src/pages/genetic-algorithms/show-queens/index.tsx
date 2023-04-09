@@ -1,9 +1,17 @@
-import {Queens} from '../../../genetic-algorithms'
-import {renderPage} from '../../render-page'
-import {ShowGeneticAlgorithmLayout} from '../shared'
+import {render, unmountComponentAtNode} from 'react-dom'
 
-renderPage(() => (
-  <ShowGeneticAlgorithmLayout pageName="Queens">
-    <Queens />
-  </ShowGeneticAlgorithmLayout>
-))
+import {Queens} from '../../../genetic-algorithms'
+
+class QueensElement extends HTMLElement {
+  connectedCallback() {
+    render(<Queens />, this)
+  }
+
+  disconnectedCallback() {
+    unmountComponentAtNode(this)
+  }
+}
+
+if (!customElements.get('ga-queens')) {
+  window.customElements.define('ga-queens', QueensElement)
+}

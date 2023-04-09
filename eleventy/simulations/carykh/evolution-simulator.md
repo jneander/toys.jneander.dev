@@ -1,5 +1,5 @@
 ---
-layout: next
+layout: content-page
 entrypoint: carykh-evolution-simulator
 title: Carykh's Evolution Simulator
 breadcrumb:
@@ -8,3 +8,5 @@ breadcrumb:
   - title: carykh
     href: /simulations/carykh
 ---
+
+<carykh-evolution-simulator></carykh-evolution-simulator>

@@ -25,7 +25,7 @@ showBreadcrumb: true
     {% assets %}
   </head>
 
-  <body>
+  <body class="no-transition">
     <div>
       {%- if showBreadcrumb %}
         <div class="breadcrumb-container">
@@ -41,5 +41,9 @@ showBreadcrumb: true
         View this site on Github
       </a>
     </footer>
+
+    <script>
+      document.body.classList.remove("no-transition");
+    </script>
   </body>
 </html>

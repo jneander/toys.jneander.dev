@@ -1,9 +1,17 @@
-import {CardSplitting} from '../../../genetic-algorithms'
-import {renderPage} from '../../render-page'
-import {ShowGeneticAlgorithmLayout} from '../shared'
+import {render, unmountComponentAtNode} from 'react-dom'
 
-renderPage(() => (
-  <ShowGeneticAlgorithmLayout pageName="Card Splitting">
-    <CardSplitting />
-  </ShowGeneticAlgorithmLayout>
-))
+import {CardSplitting} from '../../../genetic-algorithms'
+
+class CardSplittingElement extends HTMLElement {
+  connectedCallback() {
+    render(<CardSplitting />, this)
+  }
+
+  disconnectedCallback() {
+    unmountComponentAtNode(this)
+  }
+}
+
+if (!customElements.get('card-splitting')) {
+  window.customElements.define('card-splitting', CardSplittingElement)
+}

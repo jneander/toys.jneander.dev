@@ -1,9 +1,17 @@
-import {KnightCovering} from '../../../genetic-algorithms'
-import {renderPage} from '../../render-page'
-import {ShowGeneticAlgorithmLayout} from '../shared'
+import {render, unmountComponentAtNode} from 'react-dom'
 
-renderPage(() => (
-  <ShowGeneticAlgorithmLayout pageName="Knight Covering">
-    <KnightCovering />
-  </ShowGeneticAlgorithmLayout>
-))
+import {KnightCovering} from '../../../genetic-algorithms'
+
+class KnightCoveringElement extends HTMLElement {
+  connectedCallback() {
+    render(<KnightCovering />, this)
+  }
+
+  disconnectedCallback() {
+    unmountComponentAtNode(this)
+  }
+}
+
+if (!customElements.get('knight-covering')) {
+  window.customElements.define('knight-covering', KnightCoveringElement)
+}

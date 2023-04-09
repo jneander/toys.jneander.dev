@@ -2,9 +2,6 @@
 layout: content-page
 entrypoint: queens
 title: Queens
-breadcrumb:
-  - title: Genetic Algorithms
-    href: /genetic-algorithms
 ---
 
 This exercise uses a genetic algorithm to place queen pieces on a chess board in such a way that no

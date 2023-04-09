@@ -1,5 +1,5 @@
-import type {Muscle} from './Muscle'
-import type {Node} from './Node'
+import type {Muscle} from './muscle'
+import type {Node} from './node'
 
 export class Creature {
   nodes: Node[]

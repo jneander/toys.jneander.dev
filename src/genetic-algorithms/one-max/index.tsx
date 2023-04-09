@@ -1,1 +1,1 @@
-export {OneMax} from './OneMax'
+export * from './one-max'

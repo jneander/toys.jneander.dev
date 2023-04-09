@@ -1,1 +1,1 @@
-export {TextMatching} from './TextMatching'
+export * from './text-matching'

@@ -1,7 +1,7 @@
 import {ArrayMatch, Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 
 import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
-import {TextArray} from './TextArray'
+import {TextArray} from './text-array'
 
 const defaultLength = 150
 const geneSet = ['0', '1']

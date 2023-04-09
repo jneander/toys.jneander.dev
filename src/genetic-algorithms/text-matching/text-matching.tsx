@@ -2,7 +2,7 @@ import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
 import {ChromosomeTable, ExampleControls} from '../shared'
-import {Controller} from './Controller'
+import {Controller} from './controller'
 
 export function TextMatching() {
   const controller = useMemo(() => {

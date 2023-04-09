@@ -1,1 +1,1 @@
-export {CardSplitting} from './CardSplitting'
+export * from './card-splitting'

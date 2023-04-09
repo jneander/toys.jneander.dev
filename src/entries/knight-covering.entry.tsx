@@ -1,6 +1,6 @@
 import {render, unmountComponentAtNode} from 'react-dom'
 
-import {KnightCovering} from '../../../genetic-algorithms'
+import {KnightCovering} from '../genetic-algorithms'
 
 class KnightCoveringElement extends HTMLElement {
   connectedCallback() {

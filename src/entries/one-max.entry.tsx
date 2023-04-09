@@ -1,6 +1,6 @@
 import {render, unmountComponentAtNode} from 'react-dom'
 
-import {OneMax} from '../../../genetic-algorithms'
+import {OneMax} from '../genetic-algorithms'
 
 class OneMaxElement extends HTMLElement {
   connectedCallback() {

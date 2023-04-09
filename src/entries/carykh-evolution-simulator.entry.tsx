@@ -1,6 +1,6 @@
 import {render, unmountComponentAtNode} from 'react-dom'
 
-import {CarykhEvolutionSimulator} from '../../../../simulations'
+import {CarykhEvolutionSimulator} from '../simulations'
 
 class CarykhEvolutionSimulatorElement extends HTMLElement {
   connectedCallback() {

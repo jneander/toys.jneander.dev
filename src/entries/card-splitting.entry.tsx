@@ -1,6 +1,6 @@
 import {render, unmountComponentAtNode} from 'react-dom'
 
-import {CardSplitting} from '../../../genetic-algorithms'
+import {CardSplitting} from '../genetic-algorithms'
 
 class CardSplittingElement extends HTMLElement {
   connectedCallback() {

@@ -1,1 +1,1 @@
-export {SortingNumbers} from './SortingNumbers'
+export * from './sorting-numbers'

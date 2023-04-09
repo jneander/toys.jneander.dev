@@ -7,7 +7,7 @@ import {
 } from '@jneander/genetics'
 
 import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
-import {SumProductMatch} from './SumProductMatch'
+import {SumProductMatch} from './sum-product-match'
 import {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
 const geneSet = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10']

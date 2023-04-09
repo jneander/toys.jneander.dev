@@ -1,13 +1,10 @@
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
-import {ExampleControls, Metrics} from '../shared'
-import {Cards} from './Cards'
-import {Controller} from './Controller'
+import {ChromosomeTable, ExampleControls} from '../shared'
+import {Controller} from './controller'
 
-import styles from './styles.module.scss'
-
-export function CardSplitting() {
+export function OneMax() {
   const controller = useMemo(() => {
     return new Controller()
   }, [])
@@ -41,12 +38,14 @@ export function CardSplitting() {
         recordAllIterations={state.allIterations}
       />
 
-      <Metrics iteration={state.current?.iteration ?? 0} />
-
-      <div className={styles.Dunno}>
-        {state.current && <Cards label="Current" record={state.current} />}
-
-        {state.best && <Cards label="Best" record={state.best} />}
+      <div>
+        <ChromosomeTable
+          best={state.best}
+          current={state.current}
+          first={state.first}
+          formatGenes={genes => genes.join('')}
+          target={state.target}
+        />
       </div>
     </div>
   )

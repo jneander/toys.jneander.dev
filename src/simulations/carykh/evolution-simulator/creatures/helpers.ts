@@ -5,9 +5,9 @@ import {
   HISTOGRAM_BARS_PER_METER,
 } from '../constants'
 import {dist2d} from '../math'
-import type {Creature} from './Creature'
-import type {Muscle} from './Muscle'
-import type {Node} from './Node'
+import type {Creature} from './creature'
+import type {Muscle} from './muscle'
+import type {Node} from './node'
 
 export function positionNodesForStartOfSimulation(nodes: Node[]): void {
   let averageX = 0

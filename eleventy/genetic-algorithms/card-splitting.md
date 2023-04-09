@@ -2,9 +2,6 @@
 layout: content-page
 entrypoint: card-splitting
 title: Card Splitting
-breadcrumb:
-  - title: Genetic Algorithms
-    href: /genetic-algorithms
 ---
 
 This algorithm splits a group of playing cards, faces of ace through ten (values 1 through 10), into

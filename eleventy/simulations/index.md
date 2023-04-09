@@ -3,4 +3,4 @@ layout: content-index
 title: Simulations
 ---
 
-- [carykh](/simulations/carykh)
+- [Carykh's Evolution Simulator](/simulations/carykh-evolution-simulator)

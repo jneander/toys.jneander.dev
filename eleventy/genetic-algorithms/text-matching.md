@@ -2,9 +2,6 @@
 layout: content-page
 entrypoint: text-matching
 title: Text Matching
-breadcrumb:
-  - title: Genetic Algorithms
-    href: /genetic-algorithms
 ---
 
 This exercise demonstrates an algorithm mutating a string of characters until it matches a target

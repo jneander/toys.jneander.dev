@@ -2,11 +2,6 @@
 layout: content-page
 entrypoint: carykh-evolution-simulator
 title: Carykh's Evolution Simulator
-breadcrumb:
-  - title: Simulations
-    href: /simulations
-  - title: carykh
-    href: /simulations/carykh
 ---
 
 In 2015, Cary Huang published some videos to YouTube showing an evolution simulator he was working

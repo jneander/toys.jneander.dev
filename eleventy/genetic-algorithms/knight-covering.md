@@ -2,9 +2,6 @@
 layout: content-page
 entrypoint: knight-covering
 title: Knight Covering
-breadcrumb:
-  - title: Genetic Algorithms
-    href: /genetic-algorithms
 ---
 
 This exercise uses a genetic algorithm to place a minimum number of knight pieces on a chess board

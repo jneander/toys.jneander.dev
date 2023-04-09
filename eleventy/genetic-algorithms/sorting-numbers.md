@@ -2,9 +2,6 @@
 layout: content-page
 entrypoint: sorting-numbers
 title: Sorting Numbers
-breadcrumb:
-  - title: Genetic Algorithms
-    href: /genetic-algorithms
 ---
 
 This algorithm receives an array of unique numbers and iteratively sorts it in descending order.

@@ -1,7 +1,6 @@
 ---
 layout: content-index
 title: Learning Some CS Topics
-showBreadcrumb: false
 ---
 
 I've long been fascinated by the idea of replicating the mechanics of life in a simulated

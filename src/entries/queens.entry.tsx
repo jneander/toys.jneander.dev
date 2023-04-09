@@ -1,6 +1,6 @@
 import {render, unmountComponentAtNode} from 'react-dom'
 
-import {Queens} from '../../../genetic-algorithms'
+import {Queens} from '../genetic-algorithms'
 
 class QueensElement extends HTMLElement {
   connectedCallback() {

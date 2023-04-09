@@ -1,6 +1,6 @@
 import {render, unmountComponentAtNode} from 'react-dom'
 
-import {TextMatching} from '../../../genetic-algorithms'
+import {TextMatching} from '../genetic-algorithms'
 
 class TextMatchingElement extends HTMLElement {
   connectedCallback() {

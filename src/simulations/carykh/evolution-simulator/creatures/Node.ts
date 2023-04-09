@@ -1,7 +1,7 @@
 import {MAX_MUSCLE_LENGTH_INCLUSIVE, MIN_MUSCLE_LENGTH_INCLUSIVE} from '../constants'
 import {NodeOperationId} from './node-operations'
 
-export default class Node {
+export class Node {
   // FLOAT
   positionX: number
   positionY: number

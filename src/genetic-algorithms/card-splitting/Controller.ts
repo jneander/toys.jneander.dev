@@ -7,7 +7,7 @@ import {
 } from '@jneander/genetics'
 
 import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
-import SumProductMatch from './SumProductMatch'
+import {SumProductMatch} from './SumProductMatch'
 import {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
 const geneSet = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10']
@@ -20,7 +20,7 @@ function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
   return replaceOneGene(parent, geneSet)
 }
 
-export default class Controller extends BaseController<string, CardSplittingFitnessValue> {
+export class Controller extends BaseController<string, CardSplittingFitnessValue> {
   private _fitnessMethod: SumProductMatch | undefined
 
   protected geneSet(): string[] {

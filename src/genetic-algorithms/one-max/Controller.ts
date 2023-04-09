@@ -1,12 +1,12 @@
 import {ArrayMatch, Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 
 import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
-import TextArray from './TextArray'
+import {TextArray} from './TextArray'
 
 const defaultLength = 150
 const geneSet = ['0', '1']
 
-export default class Controller extends BaseController<string, number> {
+export class Controller extends BaseController<string, number> {
   private _fitnessMethod: ArrayMatch<string> | undefined
 
   protected geneSet(): string[] {

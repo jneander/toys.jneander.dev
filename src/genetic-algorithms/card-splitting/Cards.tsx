@@ -21,7 +21,7 @@ interface CardsProps {
   record: PropagationRecord<string, CardSplittingFitnessValue>
 }
 
-export default function Cards(props: CardsProps) {
+export function Cards(props: CardsProps) {
   const sumGenes = props.record.chromosome.genes.slice(0, 5)
   const productGenes = props.record.chromosome.genes.slice(5, 10)
 

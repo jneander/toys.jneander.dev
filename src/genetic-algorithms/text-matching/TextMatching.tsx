@@ -2,9 +2,9 @@ import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
 import {ChromosomeTable, ExampleControls} from '../shared'
-import Controller from './Controller'
+import {Controller} from './Controller'
 
-export default function TextMatching() {
+export function TextMatching() {
   const controller = useMemo(() => {
     return new Controller()
   }, [])

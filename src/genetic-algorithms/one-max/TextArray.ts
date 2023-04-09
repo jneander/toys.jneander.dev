@@ -10,7 +10,7 @@ function createPhraseArray(length: number, geneSet: string[]): string[] {
   return phrase
 }
 
-export default class TextArray {
+export class TextArray {
   protected geneSet: string[]
   protected fitnessMethod: ArrayMatch<string>
 

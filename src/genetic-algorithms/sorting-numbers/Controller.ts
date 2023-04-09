@@ -15,7 +15,7 @@ const defaultLength = 50
 const maxLength = 100
 const geneSet = range(0, maxLength)
 
-export default class Controller extends BaseController<number, ArrayOrderFitnessValue> {
+export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
   private _fitnessMethod: ArrayOrder | undefined
 
   protected geneSet(): number[] {

@@ -1,1 +1,1 @@
-export {default as TextMatching} from './TextMatching'
+export {TextMatching} from './TextMatching'

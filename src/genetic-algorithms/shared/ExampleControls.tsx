@@ -21,7 +21,7 @@ interface ExampleControlsProps {
   recordAllIterations: boolean
 }
 
-export default function ExampleControls(props: ExampleControlsProps) {
+export function ExampleControls(props: ExampleControlsProps) {
   function handleRangeChange(event: ChangeEvent<HTMLInputElement>) {
     props.onPositionChange(Number.parseInt(event.target.value, 10))
   }

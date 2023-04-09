@@ -1,1 +1,1 @@
-export {default as SortingNumbers} from './SortingNumbers'
+export {SortingNumbers} from './SortingNumbers'

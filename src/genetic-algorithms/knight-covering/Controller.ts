@@ -13,10 +13,7 @@ import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
 import {listAttacks, positionFromHash, positionHash, randomPosition} from './helpers'
 import {KnightCoveringFitnessValueType, KnightCoveringGene, KnightCoveringState} from './types'
 
-export default class Controller extends BaseController<
-  KnightCoveringGene,
-  KnightCoveringFitnessValueType
-> {
+export class Controller extends BaseController<KnightCoveringGene, KnightCoveringFitnessValueType> {
   private _boardSize: number | undefined
   private _allBoardPositions: KnightCoveringGene[]
   private _fitnessMethod: FewestAttacks | undefined

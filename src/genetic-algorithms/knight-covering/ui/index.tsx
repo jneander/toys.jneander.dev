@@ -2,8 +2,8 @@ import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../../shared/state'
 import {ChessBoard, ExampleControls, Metrics} from '../../shared'
-import Controller from '../Controller'
-import Configuration from './Configuration'
+import {Controller} from '../Controller'
+import {Configuration} from './Configuration'
 
 export function KnightCovering() {
   const controller = useMemo(() => {

@@ -69,7 +69,7 @@ export class SortingCreaturesP5View {
 
     const scale = 10
 
-    canvas.clear()
+    canvas.clear(0, 0, 0, 0)
     canvas.push()
     canvas.scale(scale)
 
@@ -127,7 +127,7 @@ export class SortingCreaturesP5View {
       return image
     }
 
-    this.creatureGraphics.clear()
+    this.creatureGraphics.clear(0, 0, 0, 0)
 
     this.creatureGraphics.push()
 

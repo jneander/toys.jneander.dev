@@ -24,6 +24,14 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
   }
 
+  get boardSize(): number {
+    if (this._boardSize == null) {
+      this._boardSize = DEFAULT_BOARD_SIZE
+    }
+
+    return this._boardSize
+  }
+
   setBoardSize(size: number): void {
     this._boardSize = size
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
@@ -144,14 +152,6 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
     }
 
     return new Chromosome<KnightCoveringGene>(genes)
-  }
-
-  protected get boardSize(): number {
-    if (this._boardSize == null) {
-      this._boardSize = DEFAULT_BOARD_SIZE
-    }
-
-    return this._boardSize
   }
 
   protected get knightCount(): number {

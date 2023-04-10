@@ -71,7 +71,7 @@ export class CreatureGridP5View {
 
     const {gridGraphics, hoverGraphics, graphics} = this
 
-    graphics.clear()
+    graphics.clear(0, 0, 0, 0)
 
     graphics.image(gridGraphics, 0, 0)
     graphics.image(hoverGraphics, 0, 0)
@@ -109,7 +109,7 @@ export class CreatureGridP5View {
 
     const scale = 10
 
-    gridGraphics.clear()
+    gridGraphics.clear(0, 0, 0, 0)
     gridGraphics.push()
     gridGraphics.scale(scale)
 
@@ -158,7 +158,7 @@ export class CreatureGridP5View {
       return image
     }
 
-    this.creatureGraphics.clear()
+    this.creatureGraphics.clear(0, 0, 0, 0)
 
     this.creatureGraphics.push()
 
@@ -190,7 +190,7 @@ export class CreatureGridP5View {
     const {config, hoverGraphics} = this
     const {canvas} = config.p5Wrapper
 
-    hoverGraphics.clear()
+    hoverGraphics.clear(0, 0, 0, 0)
 
     const gridIndex = this.getGridIndexUnderCursor()
 

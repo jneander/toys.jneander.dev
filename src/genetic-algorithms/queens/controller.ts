@@ -15,6 +15,14 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
   private _boardSize: number | undefined
   private _fitnessMethod: FewestAttacks | undefined
 
+  get boardSize(): number {
+    if (this._boardSize == null) {
+      this._boardSize = DEFAULT_BOARD_SIZE
+    }
+
+    return this._boardSize
+  }
+
   setBoardSize(size: number): void {
     this._boardSize = size
     this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
@@ -49,14 +57,6 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
 
   protected getFitness(chromosome: Chromosome<QueensGene>): Fitness<QueensFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
-  }
-
-  protected get boardSize(): number {
-    if (this._boardSize == null) {
-      this._boardSize = DEFAULT_BOARD_SIZE
-    }
-
-    return this._boardSize
   }
 
   protected get fitnessMethod(): FewestAttacks {

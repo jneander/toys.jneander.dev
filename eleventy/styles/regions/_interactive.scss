@@ -5,4 +5,10 @@
   border: 1px solid properties.get-value('base', 'color', 'grey', 850);
   background-color: properties.get-value('base', 'color', 'grey', 100);
   padding: properties.get-value('base', 'spacing', 'm', 'px');
+
+  .full-bleed > & {
+    display: block;
+    margin: auto;
+    width: max-content;
+  }
 }

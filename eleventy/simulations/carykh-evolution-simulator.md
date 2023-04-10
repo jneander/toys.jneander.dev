@@ -22,8 +22,10 @@ He also open-sourced the simulator on [OpenProcessing](https://openprocessing.or
 [Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)](https://creativecommons.org/licenses/by-sa/3.0/)
 license, I ported and refactored his implementation into that which is presented here.
 
-<div class="interactive-region">
-  <carykh-evolution-simulator>Loading...</carykh-evolution-simulator>
+<div class="full-bleed">
+  <div class="interactive-region">
+    <carykh-evolution-simulator>Loading...</carykh-evolution-simulator>
+  </div>
 </div>
 
 You can learn more about Cary through his

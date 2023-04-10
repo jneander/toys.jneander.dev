@@ -23,7 +23,7 @@ He also open-sourced the simulator on [OpenProcessing](https://openprocessing.or
 license, I ported and refactored his implementation into that which is presented here.
 
 <div class="interactive-region">
-  <carykh-evolution-simulator></carykh-evolution-simulator>
+  <carykh-evolution-simulator>Loading...</carykh-evolution-simulator>
 </div>
 
 You can learn more about Cary through his

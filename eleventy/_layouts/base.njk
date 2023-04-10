@@ -23,15 +23,13 @@
   </head>
 
   <body class="no-transition">
+    {% include 'header.njk' %}
+
     <div>
       {{ content | safe }}
     </div>
 
-    <footer>
-      <a href="https://github.com/jneander/cs.jneander.dev">
-        View this site on Github
-      </a>
-    </footer>
+    {% include 'footer.njk' %}
 
     <script>
       document.body.classList.remove("no-transition");

@@ -32,7 +32,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       playbackPosition: 1,
       propagationSpeed: 1,
       target: this.randomTarget(),
-      ...this.state(),
     })
 
     this.listener = new PropagationListener(this.updateView.bind(this))
@@ -46,7 +45,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.setPropagationSpeed = this.setPropagationSpeed.bind(this)
     this.setPlaybackPosition = this.setPlaybackPosition.bind(this)
     this.setRecordAllIterations = this.setRecordAllIterations.bind(this)
-    this.state = this.state.bind(this)
     this.start = this.start.bind(this)
     this.stop = this.stop.bind(this)
   }
@@ -128,10 +126,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     return this.store.getState().target
   }
 
-  protected state() {
-    return {}
-  }
-
   protected abstract geneSet(): GeneType[]
   protected abstract generateParent(): Chromosome<GeneType>
   protected abstract getFitness(chromosome: Chromosome<GeneType>): Fitness<FitnessValueType>
@@ -174,7 +168,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       iterationCount: this.propagation?.iterationCount ?? 0,
       playbackPosition: this.recording.playbackPosition(),
       target: this.target(),
-      ...this.state(),
     })
   }
 

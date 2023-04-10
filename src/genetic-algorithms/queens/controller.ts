@@ -9,7 +9,7 @@ import {
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'
-import {QueensChromosome, QueensFitnessValueType, QueensGene, QueensState} from './types'
+import {QueensChromosome, QueensFitnessValueType, QueensGene} from './types'
 
 export class Controller extends BaseController<QueensGene, QueensFitnessValueType> {
   private _boardSize: number | undefined
@@ -27,12 +27,6 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
     this._boardSize = size
     this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
-  }
-
-  protected state(): QueensState {
-    return {
-      boardSize: this.boardSize,
-    }
   }
 
   protected geneSet(): QueensGene[] {

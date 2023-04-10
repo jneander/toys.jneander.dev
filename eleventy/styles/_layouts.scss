@@ -13,6 +13,7 @@ body > header {
   font-family: base.get-value('fontFamily', 'secondary');
 
   padding-block: base.get-value('spacing', 'm', 'px');
+  margin-block-end: base.get-value('spacing', 'xxxl', 'px');
 
   & > .wrapper {
     display: flex;
@@ -49,11 +50,18 @@ body > :not(header):not(footer) {
 
 body > footer {
   grid-row: 3;
+
   background-color: base.get-value('color', 'grey', 100);
 
   font-size: base.get-value('fontSize', 'small');
-  text-align: center;
 
   margin-block-start: base.get-value('spacing', 'xxxl', 'px');
-  padding: base.get-value('spacing', 'm', 'px');
+  padding-block: base.get-value('spacing', 'm', 'px');
+
+  & > .wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: base.get-value('spacing', 'm', 'em');
+    justify-content: space-between;
+  }
 }

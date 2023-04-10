@@ -63,13 +63,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     }
   }
 
-  onRunStateChange(runState: RunState): void {
-    if (runState !== PROPAGATION_RUNNING) {
-      this.listener.stop()
-      this.updateView()
-    }
-  }
-
   randomizeTarget(): void {
     this.setTarget(this.randomTarget())
     this.propagation = this.buildPropagation()
@@ -131,22 +124,8 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.updateView()
   }
 
-  target(): PropagationTarget<GeneType, FitnessValueType> {
+  protected target(): PropagationTarget<GeneType, FitnessValueType> {
     return this.store.getState().target
-  }
-
-  updateView(): void {
-    this.store.setState({
-      allIterations: this.recording.isRecordingAllIterations(),
-      best: this.recording.best(),
-      current: this.recording.current(),
-      first: this.recording.first(),
-      isRunning: this.propagation?.runState === PROPAGATION_RUNNING,
-      iterationCount: this.propagation?.iterationCount ?? 0,
-      playbackPosition: this.recording.playbackPosition(),
-      target: this.target(),
-      ...this.state(),
-    })
   }
 
   protected state() {
@@ -175,6 +154,27 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       optimalFitness: this.target().fitness,
       speed: this.propagationSpeed,
       ...this.propogationOptions(),
+    })
+  }
+
+  private onRunStateChange(runState: RunState): void {
+    if (runState !== PROPAGATION_RUNNING) {
+      this.listener.stop()
+      this.updateView()
+    }
+  }
+
+  private updateView(): void {
+    this.store.setState({
+      allIterations: this.recording.isRecordingAllIterations(),
+      best: this.recording.best(),
+      current: this.recording.current(),
+      first: this.recording.first(),
+      isRunning: this.propagation?.runState === PROPAGATION_RUNNING,
+      iterationCount: this.propagation?.iterationCount ?? 0,
+      playbackPosition: this.recording.playbackPosition(),
+      target: this.target(),
+      ...this.state(),
     })
   }
 

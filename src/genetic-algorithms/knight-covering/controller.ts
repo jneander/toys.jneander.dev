@@ -11,7 +11,7 @@ import {
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
 import {listAttacks, positionFromHash, positionHash, randomPosition} from './helpers'
-import {KnightCoveringFitnessValueType, KnightCoveringGene, KnightCoveringState} from './types'
+import {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
 
 export class Controller extends BaseController<KnightCoveringGene, KnightCoveringFitnessValueType> {
   private _boardSize: number | undefined
@@ -37,12 +37,6 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
     this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
-  }
-
-  protected state(): KnightCoveringState {
-    return {
-      boardSize: this.boardSize,
-    }
   }
 
   protected geneSet(): KnightCoveringGene[] {

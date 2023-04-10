@@ -5,8 +5,8 @@ import type {ChartConfiguration, ChartData} from 'chart.js'
 import {HISTOGRAM_BAR_MAX, HISTOGRAM_BAR_MIN, HISTOGRAM_BARS_PER_METER} from '../../constants'
 import {histogramBarIndexToApproximateFitness} from '../../creatures'
 
-function createInitialData(): ChartData<'bar', {x: number; y: number}> {
-  const data: ChartData<'bar', {x: number; y: number}> = {
+function createInitialData(): ChartData<'bar', {x: number; y: number}[]> {
+  const data: ChartData<'bar', {x: number; y: number}[]> = {
     datasets: [],
     labels: [],
   }
@@ -18,7 +18,7 @@ function createInitialData(): ChartData<'bar', {x: number; y: number}> {
   return data
 }
 
-export function createConfiguration(): ChartConfiguration<'bar', {x: number; y: number}> {
+export function createConfiguration(): ChartConfiguration<'bar', {x: number; y: number}[]> {
   return {
     data: createInitialData(),
 

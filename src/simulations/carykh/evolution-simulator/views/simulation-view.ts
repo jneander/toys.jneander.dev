@@ -234,7 +234,7 @@ export class SimulationView {
     const x = width - 5
     const y = 0
 
-    statsGraphics.clear()
+    statsGraphics.clear(0, 0, 0, 0)
 
     statsGraphics.textAlign(statsGraphics.RIGHT)
     statsGraphics.textFont(statsFont, 32)

@@ -53,7 +53,7 @@ export class CreatureGridP5Ui {
     const {canvas} = this.p5Wrapper
     const {creatureGridView} = this
 
-    canvas.clear()
+    canvas.clear(0, 0, 0, 0)
 
     creatureGridView.draw()
     canvas.image(creatureGridView.graphics, 0, 0)

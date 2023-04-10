@@ -108,6 +108,8 @@ p,
 small,
 strong,
 dl,
-dd {
+dd,
+ol:not([class]),
+ul:not([class]) {
   max-inline-size: properties.get-value('element', 'text', 'maxInlineSize');
 }

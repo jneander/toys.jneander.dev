@@ -107,6 +107,10 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
     return this.fitnessMethod.getFitness(chromosome)
   }
 
+  private target(): PropagationTarget<KnightCoveringGene, KnightCoveringFitnessValueType> {
+    return this.store.getState().target
+  }
+
   private mutate(chromosome: Chromosome<KnightCoveringGene>): Chromosome<KnightCoveringGene> {
     let count = rng.nextInt32(0, 10) === 0 ? 2 : 1
     const genes = [...chromosome.genes]

@@ -89,4 +89,8 @@ export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
   protected getFitness(chromosome: Chromosome<number>): Fitness<ArrayOrderFitnessValue> {
     return this.fitnessMethod.getFitness(chromosome)
   }
+
+  private target(): PropagationTarget<number, ArrayOrderFitnessValue> {
+    return this.store.getState().target
+  }
 }

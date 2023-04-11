@@ -88,4 +88,8 @@ export class Controller extends BaseController<string, CardSplittingFitnessValue
   protected getFitness(chromosome: CardSplittingChromosome): Fitness<CardSplittingFitnessValue> {
     return this.fitnessMethod.getFitness(chromosome)
   }
+
+  private target(): PropagationTarget<string, CardSplittingFitnessValue> {
+    return this.store.getState().target
+  }
 }

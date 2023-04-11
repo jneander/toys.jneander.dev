@@ -110,10 +110,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.updateView()
   }
 
-  protected target(): PropagationTarget<GeneType, FitnessValueType> {
-    return this.store.getState().target
-  }
-
   protected abstract geneSet(): GeneType[]
   protected abstract generateParent(): Chromosome<GeneType>
   protected abstract getFitness(chromosome: Chromosome<GeneType>): Fitness<FitnessValueType>
@@ -154,7 +150,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       isRunning: this.propagation?.runState === PROPAGATION_RUNNING,
       iterationCount: this.propagation?.iterationCount ?? 0,
       playbackPosition: this.recording.playbackPosition(),
-      target: this.target(),
     })
   }
 

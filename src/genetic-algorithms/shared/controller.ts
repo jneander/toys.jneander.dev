@@ -29,7 +29,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
     this.getFitness = this.getFitness.bind(this)
     this.iterate = this.iterate.bind(this)
-    this.randomizeTarget = this.randomizeTarget.bind(this)
     this.setMaxPropagationSpeed = this.setMaxPropagationSpeed.bind(this)
     this.setPropagationSpeed = this.setPropagationSpeed.bind(this)
     this.setPlaybackPosition = this.setPlaybackPosition.bind(this)
@@ -48,13 +47,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       this.propagation.iterate()
       this.updateView()
     }
-  }
-
-  randomizeTarget(): void {
-    this.setTarget(this.randomTarget())
-    this.propagation = this.buildPropagation()
-    this.propagation.iterate()
-    this.updateView()
   }
 
   setPlaybackPosition(playbackPosition: number): void {
@@ -111,6 +103,13 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.updateView()
   }
 
+  protected reset() {
+    this.recording.reset()
+    this.propagation = this.buildPropagation()
+    this.propagation.iterate()
+    this.updateView()
+  }
+
   protected target(): PropagationTarget<GeneType, FitnessValueType> {
     return this.store.getState().target
   }
@@ -121,7 +120,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
   protected abstract propogationOptions(): {
     mutate: ControlledPropagationConfig<GeneType, FitnessValueType>['mutate']
   }
-  protected abstract randomTarget(): PropagationTarget<GeneType, FitnessValueType>
 
   private buildPropagation(): ControlledPropagation<GeneType, FitnessValueType> {
     return new ControlledPropagation<GeneType, FitnessValueType>({

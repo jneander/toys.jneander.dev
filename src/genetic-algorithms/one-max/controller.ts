@@ -39,6 +39,13 @@ export class Controller extends BaseController<string, number> {
     super(store)
 
     this.fitnessMethod = optimalFitness
+
+    this.randomizeTarget = this.randomizeTarget.bind(this)
+  }
+
+  randomizeTarget(): void {
+    this.setTarget(this.randomTarget())
+    this.reset()
   }
 
   protected geneSet(): string[] {

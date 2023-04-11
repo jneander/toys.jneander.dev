@@ -1,4 +1,6 @@
-import {Chromosome, Fitness, randomEntry, randomInt, range} from '@jneander/genetics'
+import {Chromosome, Fitness} from '@jneander/genetics'
+import {rangeInts} from '@jneander/utils-arrays'
+import {MathRandomNumberGenerator, randomArrayValue} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
 import {
@@ -14,6 +16,8 @@ import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
 import {listAttacks, positionFromHash, positionHash, randomPosition} from './helpers'
 import {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
+
+const rng = new MathRandomNumberGenerator()
 
 export class Controller extends BaseController<KnightCoveringGene, KnightCoveringFitnessValueType> {
   private _boardSize: number
@@ -104,7 +108,7 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
   }
 
   private mutate(chromosome: Chromosome<KnightCoveringGene>): Chromosome<KnightCoveringGene> {
-    let count = randomInt(0, 10) === 0 ? 2 : 1
+    let count = rng.nextInt32(0, 10) === 0 ? 2 : 1
     const genes = [...chromosome.genes]
 
     while (count > 0) {
@@ -125,7 +129,7 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
         }
       }
 
-      const knightIndexes = new Set(range(0, genes.length))
+      const knightIndexes = new Set(rangeInts(0, genes.length))
       const unattacked: ChessBoardPosition[] = []
 
       const positionToKnightIndexArray = Array.from(positionToKnightIndexes)
@@ -162,12 +166,12 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
 
       let indexOfGeneToReplace
       if (knightIndexes.size) {
-        indexOfGeneToReplace = randomEntry(Array.from(knightIndexes))
+        indexOfGeneToReplace = randomArrayValue(Array.from(knightIndexes))
       } else {
-        indexOfGeneToReplace = randomInt(0, genes.length)
+        indexOfGeneToReplace = rng.nextInt32(0, genes.length)
       }
 
-      genes[indexOfGeneToReplace] = randomEntry(potentialKnightPositions)
+      genes[indexOfGeneToReplace] = randomArrayValue(potentialKnightPositions)
     }
 
     return new Chromosome<KnightCoveringGene>(genes)

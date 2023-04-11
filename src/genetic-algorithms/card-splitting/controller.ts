@@ -1,10 +1,5 @@
-import {
-  Fitness,
-  randomChromosome,
-  randomInt,
-  replaceOneGene,
-  swapTwoGenes,
-} from '@jneander/genetics'
+import {Fitness, randomChromosome, replaceOneGene, swapTwoGenes} from '@jneander/genetics'
+import {MathRandomNumberGenerator} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
 import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
@@ -13,9 +8,24 @@ import type {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
 const geneSet = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
+const rng = new MathRandomNumberGenerator()
+const randomUint32Fn = rng.nextInt32.bind(rng)
+
 function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
   if (parent.genes.length === new Set(parent.genes).size) {
-    return swapTwoGenes(parent, randomInt(1, 4))
+    /*
+     * This algorithm appears to depend on multiple swaps happening between
+     * fitness calculations. Otherwise, it evidently will not achieve optimal
+     * fitness.
+     */
+    const swapCount = randomUint32Fn(1, 3)
+    let result = parent
+
+    for (let i = 0; i < swapCount; i++) {
+      result = swapTwoGenes(result, {randomUint32Fn})
+    }
+
+    return result
   }
 
   return replaceOneGene(parent, geneSet)

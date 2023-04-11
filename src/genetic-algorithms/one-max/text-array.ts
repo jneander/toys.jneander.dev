@@ -1,10 +1,11 @@
-import {ArrayMatch, Chromosome, randomEntry} from '@jneander/genetics'
+import {ArrayMatch, Chromosome} from '@jneander/genetics'
+import {randomArrayValue} from '@jneander/utils-random'
 
 function createPhraseArray(length: number, geneSet: string[]): string[] {
   const phrase = []
 
   for (let i = 0; i < length; i++) {
-    phrase.push(randomEntry(geneSet))
+    phrase.push(randomArrayValue(geneSet))
   }
 
   return phrase

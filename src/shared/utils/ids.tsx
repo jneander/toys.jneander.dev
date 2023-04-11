@@ -1,4 +1,4 @@
-import {randomInt} from '@jneander/genetics'
+import {randomStringValue} from '@jneander/utils-random'
 import {useMemo} from 'react'
 
 const idValues = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -6,7 +6,7 @@ const idValues = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
 export function randomId() {
   return Array(8)
     .fill(0)
-    .map(_ => idValues[randomInt(0, idValues.length)])
+    .map(_ => randomStringValue(idValues))
     .join('')
 }
 

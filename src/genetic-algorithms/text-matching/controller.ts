@@ -6,14 +6,47 @@ import {
   replaceOneGene,
   sampleArray,
 } from '@jneander/genetics'
+import {Store} from '@jneander/utils-state'
 
-import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
 
 const defaultLength = 50
 const geneSet = '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.'.split('')
 
+function randomTarget(fitnessMethod: ArrayMatch<string>): PropagationTarget<string, number> {
+  const genes = sampleArray(geneSet, defaultLength)
+
+  const chromosome = new Chromosome<string>(genes)
+
+  return {
+    chromosome,
+    fitness: fitnessMethod.getTargetFitness(chromosome),
+  }
+}
+
 export class Controller extends BaseController<string, number> {
-  private _fitnessMethod: ArrayMatch<string> | undefined
+  private fitnessMethod: ArrayMatch<string>
+
+  constructor() {
+    const optimalFitness = new ArrayMatch<string>()
+
+    const store = new Store<State<string, number>>({
+      allIterations: false,
+      best: null,
+      current: null,
+      first: null,
+      isRunning: false,
+      iterationCount: 0,
+      maxPropagationSpeed: true,
+      playbackPosition: 1,
+      propagationSpeed: 1,
+      target: randomTarget(optimalFitness),
+    })
+
+    super(store)
+
+    this.fitnessMethod = optimalFitness
+  }
 
   protected geneSet(): string[] {
     return geneSet
@@ -54,13 +87,5 @@ export class Controller extends BaseController<string, number> {
     }
 
     return this.fitnessMethod.getFitness(chromosome, targetChromosome)
-  }
-
-  protected get fitnessMethod() {
-    if (this._fitnessMethod == null) {
-      this._fitnessMethod = new ArrayMatch()
-    }
-
-    return this._fitnessMethod
   }
 }

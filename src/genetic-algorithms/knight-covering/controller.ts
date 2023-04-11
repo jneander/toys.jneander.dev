@@ -1,4 +1,5 @@
 import {Chromosome, Fitness, randomEntry, randomInt, range} from '@jneander/genetics'
+import {Store} from '@jneander/utils-state'
 
 import {
   allPositionsForBoard,
@@ -7,6 +8,7 @@ import {
   KNIGHT_UNICODE,
   PropagationOptions,
   PropagationTarget,
+  State,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
@@ -14,28 +16,44 @@ import {listAttacks, positionFromHash, positionHash, randomPosition} from './hel
 import {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
 
 export class Controller extends BaseController<KnightCoveringGene, KnightCoveringFitnessValueType> {
-  private _boardSize: number | undefined
+  private _boardSize: number
   private _allBoardPositions: KnightCoveringGene[]
-  private _fitnessMethod: FewestAttacks | undefined
+  private fitnessMethod: FewestAttacks
 
   constructor() {
-    super()
+    const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
 
+    const store = new Store<State<KnightCoveringGene, KnightCoveringFitnessValueType>>({
+      allIterations: false,
+      best: null,
+      current: null,
+      first: null,
+      isRunning: false,
+      iterationCount: 0,
+      maxPropagationSpeed: true,
+      playbackPosition: 1,
+      propagationSpeed: 1,
+      target: {
+        fitness: optimalFitness.getTargetFitness(),
+      },
+    })
+
+    super(store)
+
+    this.fitnessMethod = optimalFitness
+
+    this._boardSize = DEFAULT_BOARD_SIZE
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
   }
 
   get boardSize(): number {
-    if (this._boardSize == null) {
-      this._boardSize = DEFAULT_BOARD_SIZE
-    }
-
     return this._boardSize
   }
 
   setBoardSize(size: number): void {
     this._boardSize = size
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
-    this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
+    this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
   }
 
@@ -158,13 +176,5 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
     }
 
     return this._allBoardPositions
-  }
-
-  protected get fitnessMethod() {
-    if (this._fitnessMethod == null) {
-      this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
-    }
-
-    return this._fitnessMethod
   }
 }

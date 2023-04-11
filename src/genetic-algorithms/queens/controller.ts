@@ -1,4 +1,5 @@
 import {Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
+import {Store} from '@jneander/utils-state'
 
 import {
   allPositionsForBoard,
@@ -6,26 +7,48 @@ import {
   PropagationOptions,
   PropagationTarget,
   QUEEN_UNICODE,
+  State,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'
 import {QueensChromosome, QueensFitnessValueType, QueensGene} from './types'
 
 export class Controller extends BaseController<QueensGene, QueensFitnessValueType> {
-  private _boardSize: number | undefined
-  private _fitnessMethod: FewestAttacks | undefined
+  private _boardSize: number
+  private fitnessMethod: FewestAttacks
+
+  constructor() {
+    const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
+
+    const store = new Store<State<QueensGene, QueensFitnessValueType>>({
+      allIterations: false,
+      best: null,
+      current: null,
+      first: null,
+      isRunning: false,
+      iterationCount: 0,
+      maxPropagationSpeed: true,
+      playbackPosition: 1,
+      propagationSpeed: 1,
+      target: {
+        fitness: optimalFitness.getTargetFitness(),
+      },
+    })
+
+    super(store)
+
+    this.fitnessMethod = optimalFitness
+
+    this._boardSize = DEFAULT_BOARD_SIZE
+  }
 
   get boardSize(): number {
-    if (this._boardSize == null) {
-      this._boardSize = DEFAULT_BOARD_SIZE
-    }
-
     return this._boardSize
   }
 
   setBoardSize(size: number): void {
     this._boardSize = size
-    this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
+    this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
   }
 
@@ -51,13 +74,5 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
 
   protected getFitness(chromosome: Chromosome<QueensGene>): Fitness<QueensFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
-  }
-
-  protected get fitnessMethod(): FewestAttacks {
-    if (this._fitnessMethod == null) {
-      this._fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
-    }
-
-    return this._fitnessMethod
   }
 }

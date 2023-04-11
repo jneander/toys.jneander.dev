@@ -8,14 +8,13 @@ import {
   BaseController,
   ChessBoardPosition,
   KNIGHT_UNICODE,
-  PropagationOptions,
   PropagationTarget,
   State,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
 import {listAttacks, positionFromHash, positionHash, randomPosition} from './helpers'
-import {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
+import type {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
 
 const rng = new MathRandomNumberGenerator()
 
@@ -89,9 +88,10 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
     return new Chromosome<KnightCoveringGene>(genes)
   }
 
-  protected propogationOptions(): PropagationOptions<KnightCoveringGene> {
+  protected propogationOptions() {
     return {
       mutate: this.mutate.bind(this),
+      optimalFitness: this.target().fitness,
     }
   }
 

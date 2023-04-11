@@ -119,6 +119,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
   protected abstract getFitness(chromosome: Chromosome<GeneType>): Fitness<FitnessValueType>
   protected abstract propogationOptions(): {
     mutate: ControlledPropagationConfig<GeneType, FitnessValueType>['mutate']
+    optimalFitness?: Fitness<FitnessValueType>
   }
 
   private buildPropagation(): ControlledPropagation<GeneType, FitnessValueType> {
@@ -132,7 +133,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
         this.recording.addIteration(chromosome)
       },
       onRunStateChange: this.onRunStateChange.bind(this),
-      optimalFitness: this.target().fitness,
       speed: this.propagationSpeed,
       ...this.propogationOptions(),
     })

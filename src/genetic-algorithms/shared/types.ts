@@ -1,9 +1,5 @@
 import {Chromosome, Fitness, PropagationRecord} from '@jneander/genetics'
 
-export type PropagationOptions<GeneType> = {
-  mutate: (chromosome: Chromosome<GeneType>) => Chromosome<GeneType>
-}
-
 export type PropagationTarget<GeneType, FitnessValueType> = {
   chromosome?: Chromosome<GeneType>
   fitness: Fitness<FitnessValueType>

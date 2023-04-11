@@ -1,6 +1,7 @@
-import {Chromosome, product, PropagationRecord, sum} from '@jneander/genetics'
+import {Chromosome, PropagationRecord} from '@jneander/genetics'
 
-import {CardSplittingFitnessValue} from './types'
+import {product, sum} from '../../shared/utils'
+import type {CardSplittingFitnessValue} from './types'
 
 import styles from './styles.module.scss'
 

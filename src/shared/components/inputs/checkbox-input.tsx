@@ -1,6 +1,6 @@
 import {HTMLProps} from 'react'
 
-import {useId} from '../utils'
+import {useId} from '../../utils'
 
 import styles from './styles.module.scss'
 

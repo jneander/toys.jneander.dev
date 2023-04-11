@@ -3,23 +3,22 @@ import {
   ArrayOrderFitnessValue,
   Chromosome,
   Fitness,
-  range,
-  sampleArray,
-  shuffleArray,
   swapTwoGenes,
 } from '@jneander/genetics'
+import {rangeInts} from '@jneander/utils-arrays'
+import {sampleArrayValues, shuffleArray} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
 import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
 
 const defaultLength = 50
 const maxLength = 100
-const geneSet = range(0, maxLength)
+const geneSet = rangeInts(0, maxLength)
 
 function randomTarget(
   fitnessMethod: ArrayOrder,
 ): PropagationTarget<number, ArrayOrderFitnessValue> {
-  const genes = sampleArray(geneSet, defaultLength).sort((a, b) => a - b)
+  const genes = sampleArrayValues(geneSet, {count: defaultLength}).sort((a, b) => a - b)
 
   const chromosome = new Chromosome<number>(genes)
 
@@ -76,7 +75,7 @@ export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
   }
 
   protected randomTarget(): PropagationTarget<number, ArrayOrderFitnessValue> {
-    const genes = sampleArray(this.geneSet(), defaultLength).sort((a, b) => a - b)
+    const genes = sampleArrayValues(this.geneSet(), {count: defaultLength}).sort((a, b) => a - b)
 
     const chromosome = new Chromosome<number>(genes)
 

@@ -1,6 +1,7 @@
-import {Chromosome, Fitness, product, sum} from '@jneander/genetics'
+import {Chromosome, Fitness} from '@jneander/genetics'
 
-import {CardSplittingFitnessValue} from './types'
+import {product, sum} from '../../shared/utils'
+import type {CardSplittingFitnessValue} from './types'
 
 function convertGene(gene: string): number {
   return gene === 'A' ? 1 : parseInt(gene, 10)

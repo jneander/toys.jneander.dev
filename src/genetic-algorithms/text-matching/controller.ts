@@ -1,11 +1,5 @@
-import {
-  ArrayMatch,
-  Chromosome,
-  Fitness,
-  randomChromosome,
-  replaceOneGene,
-  sampleArray,
-} from '@jneander/genetics'
+import {ArrayMatch, Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
+import {sampleArrayValues} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
 import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
@@ -14,7 +8,7 @@ const defaultLength = 50
 const geneSet = '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.'.split('')
 
 function randomTarget(fitnessMethod: ArrayMatch<string>): PropagationTarget<string, number> {
-  const genes = sampleArray(geneSet, defaultLength)
+  const genes = sampleArrayValues(geneSet, {count: defaultLength})
 
   const chromosome = new Chromosome<string>(genes)
 
@@ -76,7 +70,7 @@ export class Controller extends BaseController<string, number> {
   }
 
   protected randomTarget(): PropagationTarget<string, number> {
-    const genes = sampleArray(this.geneSet(), defaultLength)
+    const genes = sampleArrayValues(this.geneSet(), {count: defaultLength})
 
     const chromosome = new Chromosome<string>(genes)
 

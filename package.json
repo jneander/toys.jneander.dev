@@ -21,7 +21,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@jneander/genetics": "^0.7.0",
+    "@jneander/genetics": "^0.8.0",
+    "@jneander/utils-arrays": "^1.0.0",
     "@jneander/utils-async": "^2.1.1",
     "@jneander/utils-random": "^1.0.0",
     "@jneander/utils-state": "^2.0.2",

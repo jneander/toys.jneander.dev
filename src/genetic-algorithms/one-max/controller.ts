@@ -44,7 +44,10 @@ export class Controller extends BaseController<string, number> {
   }
 
   randomizeTarget(): void {
-    this.setTarget(this.randomTarget())
+    this.store.setState({
+      target: this.randomTarget(),
+    })
+
     this.reset()
   }
 

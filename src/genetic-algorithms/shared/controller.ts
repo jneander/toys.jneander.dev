@@ -11,7 +11,7 @@ import {
   PropagationRecording,
   RunState,
 } from './propagation'
-import {PropagationTarget, State} from './types'
+import {State} from './types'
 
 export abstract class BaseController<GeneType, FitnessValueType> {
   public store: Store<State<GeneType, FitnessValueType>>
@@ -51,16 +51,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
   setPlaybackPosition(playbackPosition: number): void {
     this.recording.setPlaybackPosition(playbackPosition)
-    this.updateView()
-  }
-
-  setTarget(chromosome: PropagationTarget<GeneType, FitnessValueType>): void {
-    this.store.setState({
-      target: chromosome,
-    })
-
-    this.propagation = this.buildPropagation()
-    this.recording.reset()
     this.updateView()
   }
 

@@ -48,7 +48,10 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
   }
 
   randomizeTarget(): void {
-    this.setTarget(this.randomTarget())
+    this.store.setState({
+      target: this.randomTarget(),
+    })
+
     this.reset()
   }
 

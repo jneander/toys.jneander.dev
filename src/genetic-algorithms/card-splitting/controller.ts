@@ -60,7 +60,10 @@ export class Controller extends BaseController<string, CardSplittingFitnessValue
   }
 
   randomizeTarget(): void {
-    this.setTarget(this.randomTarget())
+    this.store.setState({
+      target: this.randomTarget(),
+    })
+
     this.reset()
   }
 

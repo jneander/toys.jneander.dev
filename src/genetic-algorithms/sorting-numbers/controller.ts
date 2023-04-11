@@ -55,7 +55,10 @@ export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
   }
 
   randomizeTarget(): void {
-    this.setTarget(this.randomTarget())
+    this.store.setState({
+      target: this.randomTarget(),
+    })
+
     this.reset()
   }
 

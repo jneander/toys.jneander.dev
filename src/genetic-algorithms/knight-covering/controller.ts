@@ -56,7 +56,10 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
   }
 
   randomizeTarget(): void {
-    this.setTarget(this.randomTarget())
+    this.store.setState({
+      target: this.randomTarget(),
+    })
+
     this.reset()
   }
 

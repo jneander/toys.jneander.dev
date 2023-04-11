@@ -44,10 +44,17 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
 
     this._boardSize = DEFAULT_BOARD_SIZE
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
+
+    this.randomizeTarget = this.randomizeTarget.bind(this)
   }
 
   get boardSize(): number {
     return this._boardSize
+  }
+
+  randomizeTarget(): void {
+    this.setTarget(this.randomTarget())
+    this.reset()
   }
 
   setBoardSize(size: number): void {

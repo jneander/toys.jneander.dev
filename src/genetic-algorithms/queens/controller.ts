@@ -40,10 +40,17 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
     this.fitnessMethod = optimalFitness
 
     this._boardSize = DEFAULT_BOARD_SIZE
+
+    this.randomizeTarget = this.randomizeTarget.bind(this)
   }
 
   get boardSize(): number {
     return this._boardSize
+  }
+
+  randomizeTarget(): void {
+    this.setTarget(this.randomTarget())
+    this.reset()
   }
 
   setBoardSize(size: number): void {

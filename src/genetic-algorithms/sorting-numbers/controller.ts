@@ -9,7 +9,7 @@ import {rangeInts} from '@jneander/utils-arrays'
 import {sampleArrayValues, shuffleArray} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
-import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
+import {BaseController, PropagationTarget, State} from '../shared'
 
 const defaultLength = 50
 const maxLength = 100
@@ -68,9 +68,10 @@ export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
     return new Chromosome<number>(genes)
   }
 
-  protected propogationOptions(): PropagationOptions<number> {
+  protected propogationOptions() {
     return {
-      mutate: parent => swapTwoGenes(parent),
+      mutate: (parent: Chromosome<number>) => swapTwoGenes(parent),
+      optimalFitness: this.target().fitness,
     }
   }
 

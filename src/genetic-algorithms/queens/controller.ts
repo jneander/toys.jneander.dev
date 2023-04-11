@@ -4,14 +4,13 @@ import {Store} from '@jneander/utils-state'
 import {
   allPositionsForBoard,
   BaseController,
-  PropagationOptions,
   PropagationTarget,
   QUEEN_UNICODE,
   State,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'
-import {QueensChromosome, QueensFitnessValueType, QueensGene} from './types'
+import type {QueensChromosome, QueensFitnessValueType, QueensGene} from './types'
 
 export class Controller extends BaseController<QueensGene, QueensFitnessValueType> {
   private _boardSize: number
@@ -67,9 +66,10 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
     return randomChromosome(this.boardSize, this.geneSet())
   }
 
-  protected propogationOptions(): PropagationOptions<QueensGene> {
+  protected propogationOptions() {
     return {
-      mutate: parent => replaceOneGene(parent, this.geneSet()),
+      mutate: (parent: QueensChromosome) => replaceOneGene(parent, this.geneSet()),
+      optimalFitness: this.target().fitness,
     }
   }
 

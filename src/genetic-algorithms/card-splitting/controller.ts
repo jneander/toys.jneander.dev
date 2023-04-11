@@ -2,7 +2,7 @@ import {Fitness, randomChromosome, replaceOneGene, swapTwoGenes} from '@jneander
 import {MathRandomNumberGenerator} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
-import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
+import {BaseController, PropagationTarget, State} from '../shared'
 import {SumProductMatch} from './sum-product-match'
 import type {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
@@ -72,9 +72,10 @@ export class Controller extends BaseController<string, CardSplittingFitnessValue
     return randomChromosome(10, geneSet)
   }
 
-  protected propogationOptions(): PropagationOptions<string> {
+  protected propogationOptions() {
     return {
       mutate: (parent: CardSplittingChromosome) => mutate(parent, this.geneSet()),
+      optimalFitness: this.target().fitness,
     }
   }
 

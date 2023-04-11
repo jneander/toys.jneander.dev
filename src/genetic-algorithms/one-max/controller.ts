@@ -1,7 +1,7 @@
 import {ArrayMatch, Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 import {Store} from '@jneander/utils-state'
 
-import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
+import {BaseController, PropagationTarget, State} from '../shared'
 import {TextArray} from './text-array'
 
 const defaultLength = 150
@@ -62,9 +62,10 @@ export class Controller extends BaseController<string, number> {
     return randomChromosome<string>(chromosome.genes.length, geneSet)
   }
 
-  protected propogationOptions(): PropagationOptions<string> {
+  protected propogationOptions() {
     return {
       mutate: (parent: Chromosome<string>) => replaceOneGene(parent, this.geneSet()),
+      optimalFitness: this.target().fitness,
     }
   }
 

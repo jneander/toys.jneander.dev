@@ -88,4 +88,8 @@ export class Controller extends BaseController<string, number> {
 
     return this.fitnessMethod.getFitness(chromosome, targetChromosome)
   }
+
+  private target(): PropagationTarget<string, number> {
+    return this.store.getState().target
+  }
 }

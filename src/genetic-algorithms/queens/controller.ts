@@ -82,4 +82,8 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
   protected getFitness(chromosome: Chromosome<QueensGene>): Fitness<QueensFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
   }
+
+  private target(): PropagationTarget<QueensGene, QueensFitnessValueType> {
+    return this.store.getState().target
+  }
 }

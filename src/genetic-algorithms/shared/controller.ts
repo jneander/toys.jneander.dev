@@ -1,5 +1,5 @@
-import {Chromosome, Fitness} from '@jneander/genetics'
-import {Store} from '@jneander/utils-state'
+import type {Chromosome, Fitness} from '@jneander/genetics'
+import type {Store} from '@jneander/utils-state'
 
 import {
   ControlledPropagation,
@@ -20,19 +20,8 @@ export abstract class BaseController<GeneType, FitnessValueType> {
   private recording: PropagationRecording<GeneType, FitnessValueType>
   private propagation: ControlledPropagation<GeneType, FitnessValueType>
 
-  constructor() {
-    this.store = new Store<State<GeneType, FitnessValueType>>({
-      allIterations: false,
-      best: null,
-      current: null,
-      first: null,
-      isRunning: false,
-      iterationCount: 0,
-      maxPropagationSpeed: true,
-      playbackPosition: 1,
-      propagationSpeed: 1,
-      target: this.randomTarget(),
-    })
+  constructor(store: Store<State<GeneType, FitnessValueType>>) {
+    this.store = store
 
     this.listener = new PropagationListener(this.updateView.bind(this))
     this.recording = new PropagationRecording()

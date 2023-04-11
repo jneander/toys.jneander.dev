@@ -5,10 +5,11 @@ import {
   replaceOneGene,
   swapTwoGenes,
 } from '@jneander/genetics'
+import {Store} from '@jneander/utils-state'
 
-import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
 import {SumProductMatch} from './sum-product-match'
-import {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
+import type {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
 const geneSet = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
@@ -21,7 +22,30 @@ function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
 }
 
 export class Controller extends BaseController<string, CardSplittingFitnessValue> {
-  private _fitnessMethod: SumProductMatch | undefined
+  private fitnessMethod: SumProductMatch
+
+  constructor() {
+    const optimalFitness = new SumProductMatch()
+
+    const store = new Store<State<string, CardSplittingFitnessValue>>({
+      allIterations: false,
+      best: null,
+      current: null,
+      first: null,
+      isRunning: false,
+      iterationCount: 0,
+      maxPropagationSpeed: true,
+      playbackPosition: 1,
+      propagationSpeed: 1,
+      target: {
+        fitness: optimalFitness.getTargetFitness(),
+      },
+    })
+
+    super(store)
+
+    this.fitnessMethod = optimalFitness
+  }
 
   protected geneSet(): string[] {
     return geneSet
@@ -45,13 +69,5 @@ export class Controller extends BaseController<string, CardSplittingFitnessValue
 
   protected getFitness(chromosome: CardSplittingChromosome): Fitness<CardSplittingFitnessValue> {
     return this.fitnessMethod.getFitness(chromosome)
-  }
-
-  protected get fitnessMethod() {
-    if (this._fitnessMethod == null) {
-      this._fitnessMethod = new SumProductMatch()
-    }
-
-    return this._fitnessMethod
   }
 }

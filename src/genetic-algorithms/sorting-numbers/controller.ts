@@ -8,15 +8,50 @@ import {
   shuffleArray,
   swapTwoGenes,
 } from '@jneander/genetics'
+import {Store} from '@jneander/utils-state'
 
-import {BaseController, PropagationOptions, PropagationTarget} from '../shared'
+import {BaseController, PropagationOptions, PropagationTarget, State} from '../shared'
 
 const defaultLength = 50
 const maxLength = 100
 const geneSet = range(0, maxLength)
 
+function randomTarget(
+  fitnessMethod: ArrayOrder,
+): PropagationTarget<number, ArrayOrderFitnessValue> {
+  const genes = sampleArray(geneSet, defaultLength).sort((a, b) => a - b)
+
+  const chromosome = new Chromosome<number>(genes)
+
+  return {
+    chromosome,
+    fitness: fitnessMethod.getTargetFitness(chromosome),
+  }
+}
+
 export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
-  private _fitnessMethod: ArrayOrder | undefined
+  private fitnessMethod: ArrayOrder
+
+  constructor() {
+    const optimalFitness = new ArrayOrder()
+
+    const store = new Store<State<number, ArrayOrderFitnessValue>>({
+      allIterations: false,
+      best: null,
+      current: null,
+      first: null,
+      isRunning: false,
+      iterationCount: 0,
+      maxPropagationSpeed: true,
+      playbackPosition: 1,
+      propagationSpeed: 1,
+      target: randomTarget(optimalFitness),
+    })
+
+    super(store)
+
+    this.fitnessMethod = optimalFitness
+  }
 
   protected geneSet(): number[] {
     return geneSet
@@ -46,13 +81,5 @@ export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
 
   protected getFitness(chromosome: Chromosome<number>): Fitness<ArrayOrderFitnessValue> {
     return this.fitnessMethod.getFitness(chromosome)
-  }
-
-  protected get fitnessMethod() {
-    if (this._fitnessMethod == null) {
-      this._fitnessMethod = new ArrayOrder()
-    }
-
-    return this._fitnessMethod
   }
 }

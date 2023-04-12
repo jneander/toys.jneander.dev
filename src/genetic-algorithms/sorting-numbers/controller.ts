@@ -1,3 +1,4 @@
+import type {IEventBus} from '@jneander/event-bus'
 import {
   ArrayOrder,
   ArrayOrderFitnessValue,
@@ -31,7 +32,7 @@ function randomTarget(
 export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
   private fitnessMethod: ArrayOrder
 
-  constructor() {
+  constructor(eventBus: IEventBus) {
     const optimalFitness = new ArrayOrder()
 
     const store = new Store<State<number, ArrayOrderFitnessValue>>({
@@ -47,7 +48,7 @@ export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
       target: randomTarget(optimalFitness),
     })
 
-    super(store)
+    super(store, eventBus)
 
     this.fitnessMethod = optimalFitness
 

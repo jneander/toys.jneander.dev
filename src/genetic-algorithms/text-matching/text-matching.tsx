@@ -1,3 +1,4 @@
+import {EventBus} from '@jneander/event-bus'
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
@@ -5,9 +6,13 @@ import {ChromosomeTable, ExampleControls} from '../shared'
 import {Controller} from './controller'
 
 export function TextMatching() {
-  const controller = useMemo(() => {
-    return new Controller()
+  const eventBus = useMemo(() => {
+    return new EventBus()
   }, [])
+
+  const controller = useMemo(() => {
+    return new Controller(eventBus)
+  }, [eventBus])
 
   const state = useStore(controller.store)
 

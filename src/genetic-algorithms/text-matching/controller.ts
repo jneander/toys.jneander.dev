@@ -1,3 +1,4 @@
+import type {IEventBus} from '@jneander/event-bus'
 import {ArrayMatch, Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 import {sampleArrayValues} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
@@ -21,7 +22,7 @@ function randomTarget(fitnessMethod: ArrayMatch<string>): PropagationTarget<stri
 export class Controller extends BaseController<string, number> {
   private fitnessMethod: ArrayMatch<string>
 
-  constructor() {
+  constructor(eventBus: IEventBus) {
     const optimalFitness = new ArrayMatch<string>()
 
     const store = new Store<State<string, number>>({
@@ -37,7 +38,7 @@ export class Controller extends BaseController<string, number> {
       target: randomTarget(optimalFitness),
     })
 
-    super(store)
+    super(store, eventBus)
 
     this.fitnessMethod = optimalFitness
 

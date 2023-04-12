@@ -1,3 +1,4 @@
+import type {IEventBus} from '@jneander/event-bus'
 import {Chromosome, Fitness} from '@jneander/genetics'
 import {rangeInts} from '@jneander/utils-arrays'
 import {MathRandomNumberGenerator, randomArrayValue} from '@jneander/utils-random'
@@ -23,7 +24,7 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
   private _allBoardPositions: KnightCoveringGene[]
   private fitnessMethod: FewestAttacks
 
-  constructor() {
+  constructor(eventBus: IEventBus) {
     const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
 
     const store = new Store<State<KnightCoveringGene, KnightCoveringFitnessValueType>>({
@@ -41,7 +42,7 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
       },
     })
 
-    super(store)
+    super(store, eventBus)
 
     this.fitnessMethod = optimalFitness
 

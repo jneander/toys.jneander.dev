@@ -1,3 +1,4 @@
+import type {IEventBus} from '@jneander/event-bus'
 import {Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 import {Store} from '@jneander/utils-state'
 
@@ -16,7 +17,7 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
   private _boardSize: number
   private fitnessMethod: FewestAttacks
 
-  constructor() {
+  constructor(eventBus: IEventBus) {
     const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
 
     const store = new Store<State<QueensGene, QueensFitnessValueType>>({
@@ -34,7 +35,7 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
       },
     })
 
-    super(store)
+    super(store, eventBus)
 
     this.fitnessMethod = optimalFitness
 

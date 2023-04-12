@@ -1,3 +1,4 @@
+import type {IEventBus} from '@jneander/event-bus'
 import type {Chromosome, Fitness} from '@jneander/genetics'
 import type {Store} from '@jneander/utils-state'
 
@@ -16,11 +17,14 @@ import {State} from './types'
 export abstract class BaseController<GeneType, FitnessValueType> {
   public store: Store<State<GeneType, FitnessValueType>>
 
+  protected eventBus: IEventBus
+
   private listener: PropagationListener
   private recording: PropagationRecording<GeneType, FitnessValueType>
   private propagation: ControlledPropagation<GeneType, FitnessValueType>
 
-  constructor(store: Store<State<GeneType, FitnessValueType>>) {
+  constructor(store: Store<State<GeneType, FitnessValueType>>, eventBus: IEventBus) {
+    this.eventBus = eventBus
     this.store = store
 
     this.listener = new PropagationListener(this.updateView.bind(this))

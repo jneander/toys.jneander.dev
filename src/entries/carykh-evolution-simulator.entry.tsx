@@ -1,14 +1,17 @@
-import {render, unmountComponentAtNode} from 'react-dom'
+import {createRoot, Root} from 'react-dom/client'
 
 import {CarykhEvolutionSimulator} from '../simulations'
 
 class CarykhEvolutionSimulatorElement extends HTMLElement {
+  private root: Root | undefined
+
   connectedCallback() {
-    render(<CarykhEvolutionSimulator />, this)
+    this.root = createRoot(this)
+    this.root.render(<CarykhEvolutionSimulator />)
   }
 
   disconnectedCallback() {
-    unmountComponentAtNode(this)
+    this.root?.unmount()
   }
 }
 

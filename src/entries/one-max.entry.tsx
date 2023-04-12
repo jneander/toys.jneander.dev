@@ -1,14 +1,17 @@
-import {render, unmountComponentAtNode} from 'react-dom'
+import {createRoot, Root} from 'react-dom/client'
 
 import {OneMax} from '../genetic-algorithms'
 
 class OneMaxElement extends HTMLElement {
+  private root: Root | undefined
+
   connectedCallback() {
-    render(<OneMax />, this)
+    this.root = createRoot(this)
+    this.root.render(<OneMax />)
   }
 
   disconnectedCallback() {
-    unmountComponentAtNode(this)
+    this.root?.unmount()
   }
 }
 

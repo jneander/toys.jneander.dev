@@ -1,14 +1,17 @@
-import {render, unmountComponentAtNode} from 'react-dom'
+import {createRoot, Root} from 'react-dom/client'
 
 import {TextMatching} from '../genetic-algorithms'
 
 class TextMatchingElement extends HTMLElement {
+  private root: Root | undefined
+
   connectedCallback() {
-    render(<TextMatching />, this)
+    this.root = createRoot(this)
+    this.root.render(<TextMatching />)
   }
 
   disconnectedCallback() {
-    unmountComponentAtNode(this)
+    this.root?.unmount()
   }
 }
 

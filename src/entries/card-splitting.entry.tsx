@@ -1,14 +1,17 @@
-import {render, unmountComponentAtNode} from 'react-dom'
+import {createRoot, Root} from 'react-dom/client'
 
 import {CardSplitting} from '../genetic-algorithms'
 
 class CardSplittingElement extends HTMLElement {
+  private root: Root | undefined
+
   connectedCallback() {
-    render(<CardSplitting />, this)
+    this.root = createRoot(this)
+    this.root.render(<CardSplitting />)
   }
 
   disconnectedCallback() {
-    unmountComponentAtNode(this)
+    this.root?.unmount()
   }
 }
 

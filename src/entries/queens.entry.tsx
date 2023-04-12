@@ -1,14 +1,17 @@
-import {render, unmountComponentAtNode} from 'react-dom'
+import {createRoot, Root} from 'react-dom/client'
 
 import {Queens} from '../genetic-algorithms'
 
 class QueensElement extends HTMLElement {
+  private root: Root | undefined
+
   connectedCallback() {
-    render(<Queens />, this)
+    this.root = createRoot(this)
+    this.root.render(<Queens />)
   }
 
   disconnectedCallback() {
-    unmountComponentAtNode(this)
+    this.root?.unmount()
   }
 }
 

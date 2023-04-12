@@ -1,14 +1,17 @@
-import {render, unmountComponentAtNode} from 'react-dom'
+import {createRoot, Root} from 'react-dom/client'
 
 import {SortingNumbers} from '../genetic-algorithms'
 
 class SortingNumbersElement extends HTMLElement {
+  private root: Root | undefined
+
   connectedCallback() {
-    render(<SortingNumbers />, this)
+    this.root = createRoot(this)
+    this.root.render(<SortingNumbers />)
   }
 
   disconnectedCallback() {
-    unmountComponentAtNode(this)
+    this.root?.unmount()
   }
 }
 

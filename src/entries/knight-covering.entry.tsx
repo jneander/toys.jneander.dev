@@ -1,14 +1,17 @@
-import {render, unmountComponentAtNode} from 'react-dom'
+import {createRoot, Root} from 'react-dom/client'
 
 import {KnightCovering} from '../genetic-algorithms'
 
 class KnightCoveringElement extends HTMLElement {
+  private root: Root | undefined
+
   connectedCallback() {
-    render(<KnightCovering />, this)
+    this.root = createRoot(this)
+    this.root.render(<KnightCovering />)
   }
 
   disconnectedCallback() {
-    unmountComponentAtNode(this)
+    this.root?.unmount()
   }
 }
 

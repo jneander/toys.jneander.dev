@@ -1,8 +1,8 @@
 import {ChangeEvent} from 'react'
 
-import {CheckboxInputField, NumberInputField, RangeInputField} from '../../shared/components'
+import {CheckboxInputField, NumberInputField, RangeInputField} from '../../../shared/components'
 
-import styles from './styles.module.scss'
+import styles from '../styles.module.scss'
 
 interface ExampleControlsProps {
   maxPropagationSpeed: boolean

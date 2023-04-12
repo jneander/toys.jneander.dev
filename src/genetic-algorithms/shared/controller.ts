@@ -100,7 +100,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.updateView()
   }
 
-  protected abstract geneSet(): GeneType[]
   protected abstract generateParent(): Chromosome<GeneType>
   protected abstract getFitness(chromosome: Chromosome<GeneType>): Fitness<FitnessValueType>
   protected abstract propogationOptions(): {

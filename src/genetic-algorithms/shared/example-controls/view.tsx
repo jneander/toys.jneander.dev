@@ -11,7 +11,6 @@ interface ExampleControlsProps {
   maxPropagationSpeed: boolean
   onPause: () => void
   onRefresh: () => void
-  onStart: () => void
   playing: boolean
   propagationSpeed: number
   rangePosition: number
@@ -56,6 +55,10 @@ export function ExampleControls(props: ExampleControlsProps) {
     [eventBus],
   )
 
+  const handleStart = useCallback(() => {
+    eventBus.publish(ControlsEvent.START)
+  }, [eventBus])
+
   return (
     <div className={styles.ExampleControlsContainer}>
       <div className={styles.ExampleControlsRow}>
@@ -64,7 +67,7 @@ export function ExampleControls(props: ExampleControlsProps) {
         {props.playing ? (
           <button onClick={props.onPause}>Pause</button>
         ) : (
-          <button onClick={props.onStart}>Start</button>
+          <button onClick={handleStart}>Start</button>
         )}
 
         <button disabled={props.playing} onClick={handleIterate}>

@@ -35,7 +35,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.propagation = this.buildPropagation()
 
     this.getFitness = this.getFitness.bind(this)
-    this.start = this.start.bind(this)
     this.stop = this.stop.bind(this)
   }
 
@@ -73,6 +72,21 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       this.updateView()
     })
 
+    this.subscribeEvent(ControlsEvent.START, () => {
+      if (this.propagation.runState === PROPAGATION_RUNNING) {
+        return
+      }
+
+      if (this.propagation.runState === PROPAGATION_FINISHED) {
+        this.propagation = this.buildPropagation()
+        this.recording.reset()
+        this.updateView()
+      }
+
+      this.listener.start()
+      this.propagation?.start()
+    })
+
     this.propagation.iterate()
     this.updateView()
   }
@@ -83,21 +97,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     })
 
     this.eventBusUnsubscribeFns.length = 0
-  }
-
-  start(): void {
-    if (this.propagation.runState === PROPAGATION_RUNNING) {
-      return
-    }
-
-    if (this.propagation.runState === PROPAGATION_FINISHED) {
-      this.propagation = this.buildPropagation()
-      this.recording.reset()
-      this.updateView()
-    }
-
-    this.listener.start()
-    this.propagation?.start()
   }
 
   stop(): void {

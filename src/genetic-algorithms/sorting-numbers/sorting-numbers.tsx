@@ -18,19 +18,16 @@ export function SortingNumbers() {
 
   useEffect(() => {
     controller.initialize()
+    return controller.deinitialize.bind(controller)
   }, [controller])
-
-  function handlePositionChange(position: number) {
-    controller.setPlaybackPosition(position)
-  }
 
   return (
     <div className="flow">
       <ExampleControls
+        eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
         onIterate={controller.iterate}
         onPause={controller.stop}
-        onPositionChange={handlePositionChange}
         onRefresh={controller.randomizeTarget}
         onSetMaxPropagationSpeed={controller.setMaxPropagationSpeed}
         onSetPropagationSpeed={controller.setPropagationSpeed}

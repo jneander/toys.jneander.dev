@@ -1,14 +1,16 @@
-import {ChangeEvent} from 'react'
+import type {IEventBus} from '@jneander/event-bus'
+import {ChangeEvent, useCallback} from 'react'
 
 import {CheckboxInputField, NumberInputField, RangeInputField} from '../../../shared/components'
+import {ControlsEvent} from './constants'
 
 import styles from '../styles.module.scss'
 
 interface ExampleControlsProps {
+  eventBus: IEventBus
   maxPropagationSpeed: boolean
   onIterate: () => void
   onPause: () => void
-  onPositionChange: (position: number) => void
   onRefresh: () => void
   onSetMaxPropagationSpeed: (maxPropagationSpeed: boolean) => void
   onSetPropagationSpeed: (propagationSpeed: number) => void
@@ -22,9 +24,15 @@ interface ExampleControlsProps {
 }
 
 export function ExampleControls(props: ExampleControlsProps) {
-  function handleRangeChange(event: ChangeEvent<HTMLInputElement>) {
-    props.onPositionChange(Number.parseInt(event.target.value, 10))
-  }
+  const {eventBus} = props
+
+  const handleRangeChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const position = Number.parseInt(event.target.value, 10)
+      eventBus.publish(ControlsEvent.SET_PLAYBACK_POSITION, position)
+    },
+    [eventBus],
+  )
 
   function handleToggleMaxPropagationSpeed(event: ChangeEvent<HTMLInputElement>) {
     props.onSetMaxPropagationSpeed(event.target.checked)

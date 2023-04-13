@@ -50,8 +50,14 @@ export class Controller extends GeneticAlgorithmController<string, number> {
 
   initialize(): void {
     this.subscribeEvent(ControlsEvent.RANDOMIZE, () => {
+      const genes = sampleArrayValues(geneSet, {count: defaultLength})
+      const chromosome = new Chromosome<string>(genes)
+
       this.store.setState({
-        target: this.randomTarget(),
+        target: {
+          chromosome,
+          fitness: this.fitnessMethod.getTargetFitness(chromosome),
+        },
       })
 
       this.reset()
@@ -60,11 +66,16 @@ export class Controller extends GeneticAlgorithmController<string, number> {
     super.initialize()
   }
 
-  protected geneSet(): string[] {
-    return geneSet
+  protected propogationOptions() {
+    return {
+      calculateFitness: this.getFitness.bind(this),
+      generateParent: this.generateParent.bind(this),
+      mutate: (parent: Chromosome<string>) => replaceOneGene(parent, geneSet),
+      optimalFitness: this.target().fitness,
+    }
   }
 
-  protected generateParent(): Chromosome<string> {
+  private generateParent(): Chromosome<string> {
     const {chromosome} = this.target()
 
     if (chromosome == null) {
@@ -74,25 +85,7 @@ export class Controller extends GeneticAlgorithmController<string, number> {
     return randomChromosome(chromosome.genes.length, geneSet)
   }
 
-  protected propogationOptions() {
-    return {
-      mutate: (parent: Chromosome<string>) => replaceOneGene(parent, this.geneSet()),
-      optimalFitness: this.target().fitness,
-    }
-  }
-
-  protected randomTarget(): PropagationTarget<string, number> {
-    const genes = sampleArrayValues(this.geneSet(), {count: defaultLength})
-
-    const chromosome = new Chromosome<string>(genes)
-
-    return {
-      chromosome,
-      fitness: this.fitnessMethod.getTargetFitness(chromosome),
-    }
-  }
-
-  protected getFitness(chromosome: Chromosome<string>): Fitness<number> {
+  private getFitness(chromosome: Chromosome<string>): Fitness<number> {
     const {chromosome: targetChromosome} = this.target()
 
     if (targetChromosome == null) {

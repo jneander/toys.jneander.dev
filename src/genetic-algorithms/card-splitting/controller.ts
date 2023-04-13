@@ -75,29 +75,27 @@ export class Controller extends GeneticAlgorithmController<string, CardSplitting
     super.initialize()
   }
 
-  protected geneSet(): string[] {
-    return geneSet
-  }
-
-  protected generateParent(): CardSplittingChromosome {
-    return randomChromosome(10, geneSet)
-  }
-
   protected propogationOptions() {
     return {
-      mutate: (parent: CardSplittingChromosome) => mutate(parent, this.geneSet()),
+      calculateFitness: this.getFitness.bind(this),
+      generateParent: this.generateParent.bind(this),
+      mutate: (parent: CardSplittingChromosome) => mutate(parent, geneSet),
       optimalFitness: this.target().fitness,
     }
   }
 
-  protected randomTarget(): PropagationTarget<string, CardSplittingFitnessValue> {
+  private generateParent(): CardSplittingChromosome {
+    return randomChromosome(10, geneSet)
+  }
+
+  private getFitness(chromosome: CardSplittingChromosome): Fitness<CardSplittingFitnessValue> {
+    return this.fitnessMethod.getFitness(chromosome)
+  }
+
+  private randomTarget(): PropagationTarget<string, CardSplittingFitnessValue> {
     return {
       fitness: this.fitnessMethod.getTargetFitness(),
     }
-  }
-
-  protected getFitness(chromosome: CardSplittingChromosome): Fitness<CardSplittingFitnessValue> {
-    return this.fitnessMethod.getFitness(chromosome)
   }
 
   private target(): PropagationTarget<string, CardSplittingFitnessValue> {

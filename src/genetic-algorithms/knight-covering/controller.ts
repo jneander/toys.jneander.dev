@@ -73,11 +73,28 @@ export class Controller extends GeneticAlgorithmController<
     this.randomizeTarget()
   }
 
-  protected geneSet(): KnightCoveringGene[] {
+  protected propogationOptions() {
+    return {
+      calculateFitness: this.getFitness.bind(this),
+      generateParent: this.generateParent.bind(this),
+      mutate: this.mutate.bind(this),
+      optimalFitness: this.target().fitness,
+    }
+  }
+
+  private get knightCount(): number {
+    return minimumKnightsByBoardSize[this.boardSize]
+  }
+
+  private get allBoardPositions(): KnightCoveringGene[] {
+    if (this._allBoardPositions == null) {
+      this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
+    }
+
     return this._allBoardPositions
   }
 
-  protected generateParent(): Chromosome<KnightCoveringGene> {
+  private generateParent(): Chromosome<KnightCoveringGene> {
     const genes: KnightCoveringGene[] = []
     const usedPositionMap: {[key: string]: boolean} = {}
 
@@ -94,35 +111,10 @@ export class Controller extends GeneticAlgorithmController<
     return new Chromosome<KnightCoveringGene>(genes)
   }
 
-  protected propogationOptions() {
-    return {
-      mutate: this.mutate.bind(this),
-      optimalFitness: this.target().fitness,
-    }
-  }
-
-  protected randomTarget(): PropagationTarget<KnightCoveringGene, KnightCoveringFitnessValueType> {
-    return {
-      fitness: this.fitnessMethod.getTargetFitness(),
-    }
-  }
-
-  protected getFitness(
+  private getFitness(
     chromosome: Chromosome<KnightCoveringGene>,
   ): Fitness<KnightCoveringFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
-  }
-
-  private randomizeTarget(): void {
-    this.store.setState({
-      target: this.randomTarget(),
-    })
-
-    this.reset()
-  }
-
-  private target(): PropagationTarget<KnightCoveringGene, KnightCoveringFitnessValueType> {
-    return this.store.getState().target
   }
 
   private mutate(chromosome: Chromosome<KnightCoveringGene>): Chromosome<KnightCoveringGene> {
@@ -195,15 +187,17 @@ export class Controller extends GeneticAlgorithmController<
     return new Chromosome<KnightCoveringGene>(genes)
   }
 
-  protected get knightCount(): number {
-    return minimumKnightsByBoardSize[this.boardSize]
+  private randomizeTarget(): void {
+    this.store.setState({
+      target: {
+        fitness: this.fitnessMethod.getTargetFitness(),
+      },
+    })
+
+    this.reset()
   }
 
-  protected get allBoardPositions(): KnightCoveringGene[] {
-    if (this._allBoardPositions == null) {
-      this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
-    }
-
-    return this._allBoardPositions
+  private target(): PropagationTarget<KnightCoveringGene, KnightCoveringFitnessValueType> {
+    return this.store.getState().target
   }
 }

@@ -60,8 +60,14 @@ export class Controller extends GeneticAlgorithmController<number, ArrayOrderFit
 
   initialize(): void {
     this.subscribeEvent(ControlsEvent.RANDOMIZE, () => {
+      const genes = sampleArrayValues(geneSet, {count: defaultLength}).sort((a, b) => a - b)
+      const chromosome = new Chromosome<number>(genes)
+
       this.store.setState({
-        target: this.randomTarget(),
+        target: {
+          chromosome,
+          fitness: this.fitnessMethod.getTargetFitness(chromosome),
+        },
       })
 
       this.reset()
@@ -70,34 +76,21 @@ export class Controller extends GeneticAlgorithmController<number, ArrayOrderFit
     super.initialize()
   }
 
-  protected geneSet(): number[] {
-    return geneSet
-  }
-
-  protected generateParent(): Chromosome<number> {
-    const genes = shuffleArray(this.target().chromosome?.genes ?? [])
-    return new Chromosome<number>(genes)
-  }
-
   protected propogationOptions() {
     return {
+      calculateFitness: this.getFitness.bind(this),
+      generateParent: this.generateParent.bind(this),
       mutate: (parent: Chromosome<number>) => swapTwoGenes(parent),
       optimalFitness: this.target().fitness,
     }
   }
 
-  protected randomTarget(): PropagationTarget<number, ArrayOrderFitnessValue> {
-    const genes = sampleArrayValues(this.geneSet(), {count: defaultLength}).sort((a, b) => a - b)
-
-    const chromosome = new Chromosome<number>(genes)
-
-    return {
-      chromosome,
-      fitness: this.fitnessMethod.getTargetFitness(chromosome),
-    }
+  private generateParent(): Chromosome<number> {
+    const genes = shuffleArray(this.target().chromosome?.genes ?? [])
+    return new Chromosome<number>(genes)
   }
 
-  protected getFitness(chromosome: Chromosome<number>): Fitness<ArrayOrderFitnessValue> {
+  private getFitness(chromosome: Chromosome<number>): Fitness<ArrayOrderFitnessValue> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 

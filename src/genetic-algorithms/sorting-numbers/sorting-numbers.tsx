@@ -15,7 +15,7 @@ export function SortingNumbers(props: SortingNumbersProps) {
   const state = useStore(controller.store)
 
   return (
-    <div className="flow">
+    <>
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
@@ -36,6 +36,6 @@ export function SortingNumbers(props: SortingNumbersProps) {
           target={state.target}
         />
       </div>
-    </div>
+    </>
   )
 }

@@ -20,7 +20,7 @@ export function Queens(props: QueensProps) {
   }
 
   return (
-    <div className="flow">
+    <>
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
@@ -42,6 +42,6 @@ export function Queens(props: QueensProps) {
       <div>
         <ChessBoard positions={state.current?.chromosome?.genes} size={controller.boardSize} />
       </div>
-    </div>
+    </>
   )
 }

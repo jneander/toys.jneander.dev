@@ -15,7 +15,7 @@ export function TextMatching(props: TextMatchingProps) {
   const state = useStore(controller.store)
 
   return (
-    <div className="flow">
+    <>
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
@@ -35,6 +35,6 @@ export function TextMatching(props: TextMatchingProps) {
           target={state.target}
         />
       </div>
-    </div>
+    </>
   )
 }

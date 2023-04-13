@@ -20,6 +20,10 @@ import type {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
 
 const rng = new MathRandomNumberGenerator()
 
+interface ControllerDependencies {
+  eventBus: IEventBus
+}
+
 export class Controller extends GeneticAlgorithmController<
   KnightCoveringGene,
   KnightCoveringFitnessValueType
@@ -28,7 +32,7 @@ export class Controller extends GeneticAlgorithmController<
   private _allBoardPositions: KnightCoveringGene[]
   private fitnessMethod: FewestAttacks
 
-  constructor(eventBus: IEventBus) {
+  constructor(dependencies: ControllerDependencies) {
     const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
 
     const store = new Store<State<KnightCoveringGene, KnightCoveringFitnessValueType>>({
@@ -46,7 +50,7 @@ export class Controller extends GeneticAlgorithmController<
       },
     })
 
-    super({eventBus, store})
+    super({...dependencies, store})
 
     this.fitnessMethod = optimalFitness
 

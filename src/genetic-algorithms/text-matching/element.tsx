@@ -16,7 +16,7 @@ export class TextMatchingElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.controller = new Controller(this.eventBus)
+    this.controller = new Controller({eventBus: this.eventBus})
 
     const container = document.createElement('div')
     container.classList.add('flow')

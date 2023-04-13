@@ -32,10 +32,14 @@ function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
   return replaceOneGene(parent, geneSet)
 }
 
+interface ControllerDependencies {
+  eventBus: IEventBus
+}
+
 export class Controller extends GeneticAlgorithmController<string, CardSplittingFitnessValue> {
   private fitnessMethod: SumProductMatch
 
-  constructor(eventBus: IEventBus) {
+  constructor(dependencies: ControllerDependencies) {
     const optimalFitness = new SumProductMatch()
 
     const store = new Store<State<string, CardSplittingFitnessValue>>({
@@ -53,7 +57,7 @@ export class Controller extends GeneticAlgorithmController<string, CardSplitting
       },
     })
 
-    super({eventBus, store})
+    super({...dependencies, store})
 
     this.fitnessMethod = optimalFitness
   }

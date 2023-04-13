@@ -9,7 +9,6 @@ import styles from '../styles.module.scss'
 interface ExampleControlsProps {
   eventBus: IEventBus
   maxPropagationSpeed: boolean
-  onPause: () => void
   onRefresh: () => void
   playing: boolean
   propagationSpeed: number
@@ -59,13 +58,17 @@ export function ExampleControls(props: ExampleControlsProps) {
     eventBus.publish(ControlsEvent.START)
   }, [eventBus])
 
+  const handleStop = useCallback(() => {
+    eventBus.publish(ControlsEvent.STOP)
+  }, [eventBus])
+
   return (
     <div className={styles.ExampleControlsContainer}>
       <div className={styles.ExampleControlsRow}>
         <button onClick={props.onRefresh}>Refresh</button>
 
         {props.playing ? (
-          <button onClick={props.onPause}>Pause</button>
+          <button onClick={handleStop}>Pause</button>
         ) : (
           <button onClick={handleStart}>Start</button>
         )}

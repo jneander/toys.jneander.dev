@@ -5,4 +5,5 @@ export enum ControlsEvent {
   SET_PROPAGATION_SPEED = 'controls:set-propagation-speed',
   SET_RECORD_ALL_ITERATIONS = 'controls:set-record-all-iterations',
   START = 'controls:start',
+  STOP = 'controls:stop',
 }

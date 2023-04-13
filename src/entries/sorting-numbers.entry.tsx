@@ -3,15 +3,20 @@ import {createRoot, Root} from 'react-dom/client'
 import {SortingNumbers} from '../genetic-algorithms'
 
 class SortingNumbersElement extends HTMLElement {
-  private root: Root | undefined
+  private root: Root
+
+  constructor() {
+    super()
+
+    this.root = createRoot(this)
+  }
 
   connectedCallback() {
-    this.root = createRoot(this)
     this.root.render(<SortingNumbers />)
   }
 
   disconnectedCallback() {
-    this.root?.unmount()
+    this.root.unmount()
   }
 }
 

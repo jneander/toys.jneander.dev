@@ -3,15 +3,20 @@ import {createRoot, Root} from 'react-dom/client'
 import {Queens} from '../genetic-algorithms'
 
 class QueensElement extends HTMLElement {
-  private root: Root | undefined
+  private root: Root
+
+  constructor() {
+    super()
+
+    this.root = createRoot(this)
+  }
 
   connectedCallback() {
-    this.root = createRoot(this)
     this.root.render(<Queens />)
   }
 
   disconnectedCallback() {
-    this.root?.unmount()
+    this.root.unmount()
   }
 }
 

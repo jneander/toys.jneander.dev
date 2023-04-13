@@ -63,8 +63,13 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
   start(): void {
     if (this.runState === PROPAGATION_STOPPED) {
       this.ensureIterator()
-      this.iterator?.start()
+      /*
+       * Update running state before iterating, as the iterator can potentially
+       * complete within one loop. That would result in a mismatch between
+       * running state and reality.
+       */
       this.updateState(PROPAGATION_RUNNING)
+      this.iterator?.start()
     }
   }
 

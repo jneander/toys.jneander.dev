@@ -29,7 +29,6 @@ export function SortingNumbers() {
         onIterate={controller.iterate}
         onPause={controller.stop}
         onRefresh={controller.randomizeTarget}
-        onSetMaxPropagationSpeed={controller.setMaxPropagationSpeed}
         onSetPropagationSpeed={controller.setPropagationSpeed}
         onSetRecordAllIterations={controller.setRecordAllIterations}
         onStart={controller.start}

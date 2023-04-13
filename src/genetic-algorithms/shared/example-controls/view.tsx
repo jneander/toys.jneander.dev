@@ -12,7 +12,6 @@ interface ExampleControlsProps {
   onIterate: () => void
   onPause: () => void
   onRefresh: () => void
-  onSetMaxPropagationSpeed: (maxPropagationSpeed: boolean) => void
   onSetPropagationSpeed: (propagationSpeed: number) => void
   onSetRecordAllIterations: (record: boolean) => void
   onStart: () => void
@@ -34,9 +33,12 @@ export function ExampleControls(props: ExampleControlsProps) {
     [eventBus],
   )
 
-  function handleToggleMaxPropagationSpeed(event: ChangeEvent<HTMLInputElement>) {
-    props.onSetMaxPropagationSpeed(event.target.checked)
-  }
+  const handleToggleMaxPropagationSpeed = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      eventBus.publish(ControlsEvent.SET_MAX_PROPAGATION_SPEED_ENABLED, event.target.checked)
+    },
+    [eventBus],
+  )
 
   function handleChangePropagationSpeed(event: ChangeEvent<HTMLInputElement>) {
     props.onSetPropagationSpeed(Number.parseInt(event.target.value, 10))

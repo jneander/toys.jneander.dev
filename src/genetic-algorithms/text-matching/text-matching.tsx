@@ -1,27 +1,18 @@
 import type {EventBus} from '@jneander/event-bus'
-import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
 import {ChromosomeTable, ExampleControls} from '../shared'
-import {Controller} from './controller'
+import type {Controller} from './controller'
 
 interface TextMatchingProps {
+  controller: Controller
   eventBus: EventBus
 }
 
 export function TextMatching(props: TextMatchingProps) {
-  const {eventBus} = props
-
-  const controller = useMemo(() => {
-    return new Controller(eventBus)
-  }, [eventBus])
+  const {controller, eventBus} = props
 
   const state = useStore(controller.store)
-
-  useEffect(() => {
-    controller.initialize()
-    return controller.deinitialize.bind(controller)
-  }, [controller])
 
   return (
     <div className="flow">

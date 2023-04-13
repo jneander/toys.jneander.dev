@@ -36,7 +36,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
     this.getFitness = this.getFitness.bind(this)
     this.iterate = this.iterate.bind(this)
-    this.setPropagationSpeed = this.setPropagationSpeed.bind(this)
     this.setRecordAllIterations = this.setRecordAllIterations.bind(this)
     this.start = this.start.bind(this)
     this.stop = this.stop.bind(this)
@@ -56,6 +55,11 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       this.updateView()
     })
 
+    this.subscribeEvent(ControlsEvent.SET_PROPAGATION_SPEED, (propagationSpeed: number) => {
+      this.store.setState({propagationSpeed})
+      this.propagation.setSpeed(this.propagationSpeed)
+    })
+
     this.propagation.iterate()
     this.updateView()
   }
@@ -73,11 +77,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       this.propagation.iterate()
       this.updateView()
     }
-  }
-
-  setPropagationSpeed(propagationSpeed: number): void {
-    this.store.setState({propagationSpeed})
-    this.propagation.setSpeed(this.propagationSpeed)
   }
 
   setRecordAllIterations(allIterations: boolean): void {

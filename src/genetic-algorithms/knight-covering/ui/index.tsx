@@ -1,4 +1,4 @@
-import {EventBus} from '@jneander/event-bus'
+import type {EventBus} from '@jneander/event-bus'
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../../shared/state'
@@ -6,10 +6,12 @@ import {ChessBoard, ExampleControls, Metrics} from '../../shared'
 import {Controller} from '../controller'
 import {Configuration} from './configuration'
 
-export function KnightCovering() {
-  const eventBus = useMemo(() => {
-    return new EventBus()
-  }, [])
+interface KnightCoveringProps {
+  eventBus: EventBus
+}
+
+export function KnightCovering(props: KnightCoveringProps) {
+  const {eventBus} = props
 
   const controller = useMemo(() => {
     return new Controller(eventBus)

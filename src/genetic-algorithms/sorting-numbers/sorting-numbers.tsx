@@ -1,14 +1,16 @@
-import {EventBus} from '@jneander/event-bus'
+import type {EventBus} from '@jneander/event-bus'
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
 import {ChromosomeTable, ExampleControls} from '../shared'
 import {Controller} from './controller'
 
-export function SortingNumbers() {
-  const eventBus = useMemo(() => {
-    return new EventBus()
-  }, [])
+interface SortingNumbersProps {
+  eventBus: EventBus
+}
+
+export function SortingNumbers(props: SortingNumbersProps) {
+  const {eventBus} = props
 
   const controller = useMemo(() => {
     return new Controller(eventBus)

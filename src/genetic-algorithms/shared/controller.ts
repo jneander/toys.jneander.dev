@@ -1,7 +1,8 @@
-import type {IEventBus} from '@jneander/event-bus'
+import type {EventHandler, EventUnsubscribeFn, IEventBus} from '@jneander/event-bus'
 import type {Chromosome, Fitness} from '@jneander/genetics'
 import type {Store} from '@jneander/utils-state'
 
+import {ControlsEvent} from './example-controls'
 import {
   ControlledPropagation,
   ControlledPropagationConfig,
@@ -19,6 +20,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
   protected eventBus: IEventBus
 
+  private eventBusUnsubscribeFns: EventUnsubscribeFn[]
   private listener: PropagationListener
   private recording: PropagationRecording<GeneType, FitnessValueType>
   private propagation: ControlledPropagation<GeneType, FitnessValueType>
@@ -27,6 +29,7 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.eventBus = eventBus
     this.store = store
 
+    this.eventBusUnsubscribeFns = []
     this.listener = new PropagationListener(this.updateView.bind(this))
     this.recording = new PropagationRecording()
     this.propagation = this.buildPropagation()
@@ -35,15 +38,27 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.iterate = this.iterate.bind(this)
     this.setMaxPropagationSpeed = this.setMaxPropagationSpeed.bind(this)
     this.setPropagationSpeed = this.setPropagationSpeed.bind(this)
-    this.setPlaybackPosition = this.setPlaybackPosition.bind(this)
     this.setRecordAllIterations = this.setRecordAllIterations.bind(this)
     this.start = this.start.bind(this)
     this.stop = this.stop.bind(this)
   }
 
   initialize(): void {
+    this.subscribeEvent(ControlsEvent.SET_PLAYBACK_POSITION, (playbackPosition: number) => {
+      this.recording.setPlaybackPosition(playbackPosition)
+      this.updateView()
+    })
+
     this.propagation.iterate()
     this.updateView()
+  }
+
+  deinitialize(): void {
+    this.eventBusUnsubscribeFns.forEach(fn => {
+      fn()
+    })
+
+    this.eventBusUnsubscribeFns.length = 0
   }
 
   iterate(): void {
@@ -51,11 +66,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       this.propagation.iterate()
       this.updateView()
     }
-  }
-
-  setPlaybackPosition(playbackPosition: number): void {
-    this.recording.setPlaybackPosition(playbackPosition)
-    this.updateView()
   }
 
   setPropagationSpeed(propagationSpeed: number): void {
@@ -144,6 +154,10 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       iterationCount: this.propagation?.iterationCount ?? 0,
       playbackPosition: this.recording.playbackPosition(),
     })
+  }
+
+  private subscribeEvent(eventName: string, handler: EventHandler): void {
+    this.eventBusUnsubscribeFns.push(this.eventBus.subscribe(eventName, handler))
   }
 
   private get propagationSpeed(): number {

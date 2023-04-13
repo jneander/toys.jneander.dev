@@ -3,15 +3,20 @@ import {createRoot, Root} from 'react-dom/client'
 import {CarykhEvolutionSimulator} from '../simulations'
 
 class CarykhEvolutionSimulatorElement extends HTMLElement {
-  private root: Root | undefined
+  private root: Root
+
+  constructor() {
+    super()
+
+    this.root = createRoot(this)
+  }
 
   connectedCallback() {
-    this.root = createRoot(this)
     this.root.render(<CarykhEvolutionSimulator />)
   }
 
   disconnectedCallback() {
-    this.root?.unmount()
+    this.root.unmount()
   }
 }
 

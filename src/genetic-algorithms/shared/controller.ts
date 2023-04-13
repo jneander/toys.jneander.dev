@@ -35,7 +35,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.propagation = this.buildPropagation()
 
     this.getFitness = this.getFitness.bind(this)
-    this.stop = this.stop.bind(this)
   }
 
   initialize(): void {
@@ -87,6 +86,12 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       this.propagation?.start()
     })
 
+    this.subscribeEvent(ControlsEvent.STOP, () => {
+      this.propagation?.stop()
+      this.listener.stop()
+      this.updateView()
+    })
+
     this.propagation.iterate()
     this.updateView()
   }
@@ -97,12 +102,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     })
 
     this.eventBusUnsubscribeFns.length = 0
-  }
-
-  stop(): void {
-    this.propagation?.stop()
-    this.listener.stop()
-    this.updateView()
   }
 
   protected reset() {

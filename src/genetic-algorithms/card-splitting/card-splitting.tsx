@@ -29,7 +29,6 @@ export function CardSplitting() {
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
-        onPause={controller.stop}
         onRefresh={controller.randomizeTarget}
         playing={state.isRunning}
         propagationSpeed={state.propagationSpeed}

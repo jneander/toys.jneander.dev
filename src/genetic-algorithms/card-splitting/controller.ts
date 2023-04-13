@@ -53,7 +53,7 @@ export class Controller extends GeneticAlgorithmController<string, CardSplitting
       },
     })
 
-    super(store, eventBus)
+    super({eventBus, store})
 
     this.fitnessMethod = optimalFitness
   }

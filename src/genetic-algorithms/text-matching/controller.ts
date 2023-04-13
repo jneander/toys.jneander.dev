@@ -38,7 +38,7 @@ export class Controller extends GeneticAlgorithmController<string, number> {
       target: randomTarget(optimalFitness),
     })
 
-    super(store, eventBus)
+    super({eventBus, store})
 
     this.fitnessMethod = optimalFitness
   }

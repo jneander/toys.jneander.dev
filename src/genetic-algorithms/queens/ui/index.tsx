@@ -31,7 +31,6 @@ export function Queens() {
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
-        onIterate={controller.iterate}
         onPause={controller.stop}
         onRefresh={controller.randomizeTarget}
         onSetRecordAllIterations={controller.setRecordAllIterations}

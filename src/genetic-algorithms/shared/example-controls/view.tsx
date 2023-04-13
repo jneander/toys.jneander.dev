@@ -11,7 +11,6 @@ interface ExampleControlsProps {
   maxPropagationSpeed: boolean
   onPause: () => void
   onRefresh: () => void
-  onSetRecordAllIterations: (record: boolean) => void
   onStart: () => void
   playing: boolean
   propagationSpeed: number
@@ -50,9 +49,12 @@ export function ExampleControls(props: ExampleControlsProps) {
     [eventBus],
   )
 
-  function handleToggleRecordAllIterations(event: ChangeEvent<HTMLInputElement>) {
-    props.onSetRecordAllIterations(event.target.checked)
-  }
+  const handleToggleRecordAllIterations = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      eventBus.publish(ControlsEvent.SET_RECORD_ALL_ITERATIONS, event.target.checked)
+    },
+    [eventBus],
+  )
 
   return (
     <div className={styles.ExampleControlsContainer}>

@@ -1,4 +1,4 @@
-import {EventBus} from '@jneander/event-bus'
+import type {EventBus} from '@jneander/event-bus'
 import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
@@ -8,10 +8,12 @@ import {Controller} from './controller'
 
 import styles from './styles.module.scss'
 
-export function CardSplitting() {
-  const eventBus = useMemo(() => {
-    return new EventBus()
-  }, [])
+interface CardSplittingProps {
+  eventBus: EventBus
+}
+
+export function CardSplitting(props: CardSplittingProps) {
+  const {eventBus} = props
 
   const controller = useMemo(() => {
     return new Controller(eventBus)

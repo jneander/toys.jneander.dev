@@ -36,7 +36,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
     this.getFitness = this.getFitness.bind(this)
     this.iterate = this.iterate.bind(this)
-    this.setMaxPropagationSpeed = this.setMaxPropagationSpeed.bind(this)
     this.setPropagationSpeed = this.setPropagationSpeed.bind(this)
     this.setRecordAllIterations = this.setRecordAllIterations.bind(this)
     this.start = this.start.bind(this)
@@ -44,6 +43,14 @@ export abstract class BaseController<GeneType, FitnessValueType> {
   }
 
   initialize(): void {
+    this.subscribeEvent(
+      ControlsEvent.SET_MAX_PROPAGATION_SPEED_ENABLED,
+      (maxPropagationSpeed: boolean) => {
+        this.store.setState({maxPropagationSpeed})
+        this.propagation.setSpeed(this.propagationSpeed)
+      },
+    )
+
     this.subscribeEvent(ControlsEvent.SET_PLAYBACK_POSITION, (playbackPosition: number) => {
       this.recording.setPlaybackPosition(playbackPosition)
       this.updateView()
@@ -70,11 +77,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
 
   setPropagationSpeed(propagationSpeed: number): void {
     this.store.setState({propagationSpeed})
-    this.propagation.setSpeed(this.propagationSpeed)
-  }
-
-  setMaxPropagationSpeed(maxPropagationSpeed: boolean): void {
-    this.store.setState({maxPropagationSpeed})
     this.propagation.setSpeed(this.propagationSpeed)
   }
 

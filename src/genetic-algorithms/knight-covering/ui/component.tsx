@@ -20,7 +20,7 @@ export function KnightCovering(props: KnightCoveringProps) {
   }
 
   return (
-    <div className="flow">
+    <>
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
@@ -42,6 +42,6 @@ export function KnightCovering(props: KnightCoveringProps) {
       <div>
         <ChessBoard positions={state.current?.chromosome?.genes} size={controller.boardSize} />
       </div>
-    </div>
+    </>
   )
 }

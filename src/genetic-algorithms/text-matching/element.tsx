@@ -18,7 +18,11 @@ export class TextMatchingElement extends HTMLElement {
   connectedCallback() {
     this.controller = new Controller(this.eventBus)
 
-    this.root = createRoot(this)
+    const container = document.createElement('div')
+    container.classList.add('flow')
+    this.appendChild(container)
+
+    this.root = createRoot(container)
     this.root.render(<TextMatching controller={this.controller} eventBus={this.eventBus} />)
 
     this.controller.initialize()

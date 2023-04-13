@@ -18,7 +18,7 @@ export function CardSplitting(props: CardSplittingProps) {
   const state = useStore(controller.store)
 
   return (
-    <div className="flow">
+    <>
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
@@ -36,6 +36,6 @@ export function CardSplitting(props: CardSplittingProps) {
 
         {state.best && <Cards label="Best" record={state.best} />}
       </div>
-    </div>
+    </>
   )
 }

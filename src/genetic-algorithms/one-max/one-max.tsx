@@ -15,7 +15,7 @@ export function OneMax(props: OneMaxProps) {
   const state = useStore(controller.store)
 
   return (
-    <div className="flow">
+    <>
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
@@ -35,6 +35,6 @@ export function OneMax(props: OneMaxProps) {
           target={state.target}
         />
       </div>
-    </div>
+    </>
   )
 }

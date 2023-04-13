@@ -28,7 +28,6 @@ export function OneMax() {
         maxPropagationSpeed={state.maxPropagationSpeed}
         onPause={controller.stop}
         onRefresh={controller.randomizeTarget}
-        onStart={controller.start}
         playing={state.isRunning}
         propagationSpeed={state.propagationSpeed}
         rangePosition={state.playbackPosition}

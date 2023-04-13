@@ -34,7 +34,6 @@ export function KnightCovering() {
         onIterate={controller.iterate}
         onPause={controller.stop}
         onRefresh={controller.randomizeTarget}
-        onSetPropagationSpeed={controller.setPropagationSpeed}
         onSetRecordAllIterations={controller.setRecordAllIterations}
         onStart={controller.start}
         playing={state.isRunning}

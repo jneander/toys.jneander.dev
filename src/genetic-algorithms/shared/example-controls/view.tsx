@@ -12,7 +12,6 @@ interface ExampleControlsProps {
   onIterate: () => void
   onPause: () => void
   onRefresh: () => void
-  onSetPropagationSpeed: (propagationSpeed: number) => void
   onSetRecordAllIterations: (record: boolean) => void
   onStart: () => void
   playing: boolean
@@ -40,9 +39,13 @@ export function ExampleControls(props: ExampleControlsProps) {
     [eventBus],
   )
 
-  function handleChangePropagationSpeed(event: ChangeEvent<HTMLInputElement>) {
-    props.onSetPropagationSpeed(Number.parseInt(event.target.value, 10))
-  }
+  const handleChangePropagationSpeed = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const speed = Number.parseInt(event.target.value, 10)
+      eventBus.publish(ControlsEvent.SET_PROPAGATION_SPEED, speed)
+    },
+    [eventBus],
+  )
 
   function handleToggleRecordAllIterations(event: ChangeEvent<HTMLInputElement>) {
     props.onSetRecordAllIterations(event.target.checked)

@@ -10,7 +10,7 @@ import {rangeInts} from '@jneander/utils-arrays'
 import {sampleArrayValues, shuffleArray} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
-import {BaseController, PropagationTarget, State} from '../shared'
+import {BaseController, ControlsEvent, PropagationTarget, State} from '../shared'
 
 const defaultLength = 50
 const maxLength = 100
@@ -51,16 +51,18 @@ export class Controller extends BaseController<number, ArrayOrderFitnessValue> {
     super(store, eventBus)
 
     this.fitnessMethod = optimalFitness
-
-    this.randomizeTarget = this.randomizeTarget.bind(this)
   }
 
-  randomizeTarget(): void {
-    this.store.setState({
-      target: this.randomTarget(),
+  initialize(): void {
+    this.subscribeEvent(ControlsEvent.RANDOMIZE, () => {
+      this.store.setState({
+        target: this.randomTarget(),
+      })
+
+      this.reset()
     })
 
-    this.reset()
+    super.initialize()
   }
 
   protected geneSet(): number[] {

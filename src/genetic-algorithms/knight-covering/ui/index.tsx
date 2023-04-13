@@ -31,7 +31,6 @@ export function KnightCovering() {
       <ExampleControls
         eventBus={eventBus}
         maxPropagationSpeed={state.maxPropagationSpeed}
-        onRefresh={controller.randomizeTarget}
         playing={state.isRunning}
         propagationSpeed={state.propagationSpeed}
         rangePosition={state.playbackPosition}

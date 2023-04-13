@@ -111,6 +111,10 @@ export abstract class BaseController<GeneType, FitnessValueType> {
     this.updateView()
   }
 
+  protected subscribeEvent(eventName: string, handler: EventHandler): void {
+    this.eventBusUnsubscribeFns.push(this.eventBus.subscribe(eventName, handler))
+  }
+
   protected abstract generateParent(): Chromosome<GeneType>
   protected abstract getFitness(chromosome: Chromosome<GeneType>): Fitness<FitnessValueType>
   protected abstract propogationOptions(): {
@@ -151,10 +155,6 @@ export abstract class BaseController<GeneType, FitnessValueType> {
       iterationCount: this.propagation?.iterationCount ?? 0,
       playbackPosition: this.recording.playbackPosition(),
     })
-  }
-
-  private subscribeEvent(eventName: string, handler: EventHandler): void {
-    this.eventBusUnsubscribeFns.push(this.eventBus.subscribe(eventName, handler))
   }
 
   private get propagationSpeed(): number {

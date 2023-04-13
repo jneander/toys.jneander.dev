@@ -3,7 +3,7 @@ import {ArrayMatch, Chromosome, Fitness, randomChromosome, replaceOneGene} from 
 import {sampleArrayValues} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
-import {BaseController, ControlsEvent, PropagationTarget, State} from '../shared'
+import {ControlsEvent, GeneticAlgorithmController, PropagationTarget, State} from '../shared'
 
 const defaultLength = 50
 const geneSet = '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.'.split('')
@@ -19,7 +19,7 @@ function randomTarget(fitnessMethod: ArrayMatch<string>): PropagationTarget<stri
   }
 }
 
-export class Controller extends BaseController<string, number> {
+export class Controller extends GeneticAlgorithmController<string, number> {
   private fitnessMethod: ArrayMatch<string>
 
   constructor(eventBus: IEventBus) {

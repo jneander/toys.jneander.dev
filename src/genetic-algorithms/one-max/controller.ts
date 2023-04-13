@@ -2,7 +2,7 @@ import type {IEventBus} from '@jneander/event-bus'
 import {ArrayMatch, Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 import {Store} from '@jneander/utils-state'
 
-import {BaseController, ControlsEvent, PropagationTarget, State} from '../shared'
+import {ControlsEvent, GeneticAlgorithmController, PropagationTarget, State} from '../shared'
 import {TextArray} from './text-array'
 
 const defaultLength = 150
@@ -18,7 +18,7 @@ function randomTarget(fitnessMethod: ArrayMatch<string>): PropagationTarget<stri
   }
 }
 
-export class Controller extends BaseController<string, number> {
+export class Controller extends GeneticAlgorithmController<string, number> {
   private fitnessMethod: ArrayMatch<string>
 
   constructor(eventBus: IEventBus) {

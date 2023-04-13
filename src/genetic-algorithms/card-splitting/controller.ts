@@ -3,7 +3,7 @@ import {Fitness, randomChromosome, replaceOneGene, swapTwoGenes} from '@jneander
 import {MathRandomNumberGenerator} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
-import {BaseController, ControlsEvent, PropagationTarget, State} from '../shared'
+import {ControlsEvent, GeneticAlgorithmController, PropagationTarget, State} from '../shared'
 import {SumProductMatch} from './sum-product-match'
 import type {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
@@ -32,7 +32,7 @@ function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
   return replaceOneGene(parent, geneSet)
 }
 
-export class Controller extends BaseController<string, CardSplittingFitnessValue> {
+export class Controller extends GeneticAlgorithmController<string, CardSplittingFitnessValue> {
   private fitnessMethod: SumProductMatch
 
   constructor(eventBus: IEventBus) {

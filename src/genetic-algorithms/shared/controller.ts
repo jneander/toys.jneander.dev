@@ -15,7 +15,7 @@ import {
 } from './propagation'
 import {State} from './types'
 
-export abstract class BaseController<GeneType, FitnessValueType> {
+export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
   public store: Store<State<GeneType, FitnessValueType>>
 
   protected eventBus: IEventBus

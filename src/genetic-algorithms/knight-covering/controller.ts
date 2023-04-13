@@ -6,9 +6,9 @@ import {Store} from '@jneander/utils-state'
 
 import {
   allPositionsForBoard,
-  BaseController,
   ChessBoardPosition,
   ControlsEvent,
+  GeneticAlgorithmController,
   KNIGHT_UNICODE,
   PropagationTarget,
   State,
@@ -20,7 +20,10 @@ import type {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
 
 const rng = new MathRandomNumberGenerator()
 
-export class Controller extends BaseController<KnightCoveringGene, KnightCoveringFitnessValueType> {
+export class Controller extends GeneticAlgorithmController<
+  KnightCoveringGene,
+  KnightCoveringFitnessValueType
+> {
   private _boardSize: number
   private _allBoardPositions: KnightCoveringGene[]
   private fitnessMethod: FewestAttacks

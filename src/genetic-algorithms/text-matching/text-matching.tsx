@@ -28,7 +28,6 @@ export function TextMatching() {
         maxPropagationSpeed={state.maxPropagationSpeed}
         onPause={controller.stop}
         onRefresh={controller.randomizeTarget}
-        onSetRecordAllIterations={controller.setRecordAllIterations}
         onStart={controller.start}
         playing={state.isRunning}
         propagationSpeed={state.propagationSpeed}

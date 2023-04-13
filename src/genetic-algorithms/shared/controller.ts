@@ -41,8 +41,6 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
     this.listener = new PropagationListener(this.updateView.bind(this))
     this.recording = new PropagationRecording()
     this.propagation = this.buildPropagation()
-
-    this.getFitness = this.getFitness.bind(this)
   }
 
   initialize(): void {
@@ -72,6 +70,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
     })
 
     this.subscribeEvent(ControlsEvent.SET_RECORD_ALL_ITERATIONS, (allIterations: boolean) => {
+      this.controlsStore.setState({allIterations})
       this.propagation = this.buildPropagation()
       this.recording.configure({allIterations})
       this.recording.reset()
@@ -123,17 +122,15 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
     this.eventBusUnsubscribeFns.push(this.eventBus.subscribe(eventName, handler))
   }
 
-  protected abstract generateParent(): Chromosome<GeneType>
-  protected abstract getFitness(chromosome: Chromosome<GeneType>): Fitness<FitnessValueType>
   protected abstract propogationOptions(): {
+    calculateFitness(chromosome: Chromosome<GeneType>): Fitness<FitnessValueType>
+    generateParent(): Chromosome<GeneType>
     mutate: ControlledPropagationConfig<GeneType, FitnessValueType>['mutate']
     optimalFitness?: Fitness<FitnessValueType>
   }
 
   private buildPropagation(): ControlledPropagation<GeneType, FitnessValueType> {
     return new ControlledPropagation<GeneType, FitnessValueType>({
-      calculateFitness: this.getFitness.bind(this),
-      generateParent: this.generateParent.bind(this),
       onImprovement: chromosome => {
         this.recording.addImprovement(chromosome)
       },
@@ -155,7 +152,6 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
 
   private updateView(): void {
     this.controlsStore.setState({
-      allIterations: this.recording.isRecordingAllIterations(),
       isRunning: this.propagation?.runState === PROPAGATION_RUNNING,
       iterationCount: this.propagation?.iterationCount ?? 0,
       playbackPosition: this.recording.playbackPosition(),

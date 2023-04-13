@@ -59,11 +59,16 @@ export class Controller extends GeneticAlgorithmController<string, number> {
     super.initialize()
   }
 
-  protected geneSet(): string[] {
-    return geneSet
+  protected propogationOptions() {
+    return {
+      calculateFitness: this.getFitness.bind(this),
+      generateParent: this.generateParent.bind(this),
+      mutate: (parent: Chromosome<string>) => replaceOneGene(parent, geneSet),
+      optimalFitness: this.target().fitness,
+    }
   }
 
-  protected generateParent(): Chromosome<string> {
+  private generateParent(): Chromosome<string> {
     const {chromosome} = this.target()
 
     if (chromosome == null) {
@@ -73,24 +78,7 @@ export class Controller extends GeneticAlgorithmController<string, number> {
     return randomChromosome<string>(chromosome.genes.length, geneSet)
   }
 
-  protected propogationOptions() {
-    return {
-      mutate: (parent: Chromosome<string>) => replaceOneGene(parent, this.geneSet()),
-      optimalFitness: this.target().fitness,
-    }
-  }
-
-  protected randomTarget(): PropagationTarget<string, number> {
-    const generator = new TextArray(geneSet)
-    const chromosome = generator.generateTargetWithLength(defaultLength)
-
-    return {
-      chromosome,
-      fitness: this.fitnessMethod.getTargetFitness(chromosome),
-    }
-  }
-
-  protected getFitness(chromosome: Chromosome<string>): Fitness<number> {
+  private getFitness(chromosome: Chromosome<string>): Fitness<number> {
     const {chromosome: targetChromosome} = this.target()
 
     if (targetChromosome == null) {
@@ -98,6 +86,16 @@ export class Controller extends GeneticAlgorithmController<string, number> {
     }
 
     return this.fitnessMethod.getFitness(chromosome, targetChromosome)
+  }
+
+  private randomTarget(): PropagationTarget<string, number> {
+    const generator = new TextArray(geneSet)
+    const chromosome = generator.generateTargetWithLength(defaultLength)
+
+    return {
+      chromosome,
+      fitness: this.fitnessMethod.getTargetFitness(chromosome),
+    }
   }
 
   private target(): PropagationTarget<string, number> {

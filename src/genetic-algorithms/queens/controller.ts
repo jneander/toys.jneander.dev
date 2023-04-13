@@ -65,30 +65,28 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
     return allPositionsForBoard(this.boardSize, QUEEN_UNICODE)
   }
 
-  protected generateParent(): QueensChromosome {
-    return randomChromosome(this.boardSize, this.geneSet())
-  }
-
   protected propogationOptions() {
     return {
+      calculateFitness: this.getFitness.bind(this),
+      generateParent: this.generateParent.bind(this),
       mutate: (parent: QueensChromosome) => replaceOneGene(parent, this.geneSet()),
       optimalFitness: this.target().fitness,
     }
   }
 
-  protected randomTarget(): PropagationTarget<QueensGene, QueensFitnessValueType> {
-    return {
-      fitness: this.fitnessMethod.getTargetFitness(),
-    }
+  private generateParent(): QueensChromosome {
+    return randomChromosome(this.boardSize, this.geneSet())
   }
 
-  protected getFitness(chromosome: Chromosome<QueensGene>): Fitness<QueensFitnessValueType> {
+  private getFitness(chromosome: Chromosome<QueensGene>): Fitness<QueensFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
   }
 
   private randomizeTarget(): void {
     this.store.setState({
-      target: this.randomTarget(),
+      target: {
+        fitness: this.fitnessMethod.getTargetFitness(),
+      },
     })
 
     this.reset()

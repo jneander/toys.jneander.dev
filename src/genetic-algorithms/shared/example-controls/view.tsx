@@ -9,7 +9,6 @@ import styles from '../styles.module.scss'
 interface ExampleControlsProps {
   eventBus: IEventBus
   maxPropagationSpeed: boolean
-  onIterate: () => void
   onPause: () => void
   onRefresh: () => void
   onSetRecordAllIterations: (record: boolean) => void
@@ -23,6 +22,10 @@ interface ExampleControlsProps {
 
 export function ExampleControls(props: ExampleControlsProps) {
   const {eventBus} = props
+
+  const handleIterate = useCallback(() => {
+    eventBus.publish(ControlsEvent.ITERATE)
+  }, [eventBus])
 
   const handleRangeChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +65,7 @@ export function ExampleControls(props: ExampleControlsProps) {
           <button onClick={props.onStart}>Start</button>
         )}
 
-        <button disabled={props.playing} onClick={props.onIterate}>
+        <button disabled={props.playing} onClick={handleIterate}>
           Iterate
         </button>
 

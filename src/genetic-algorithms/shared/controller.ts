@@ -15,6 +15,11 @@ import {
 } from './propagation'
 import {State} from './types'
 
+interface GeneticAlgorithmControllerDependencies<GeneType, FitnessValueType> {
+  eventBus: IEventBus
+  store: Store<State<GeneType, FitnessValueType>>
+}
+
 export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
   public store: Store<State<GeneType, FitnessValueType>>
 
@@ -25,9 +30,9 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
   private recording: PropagationRecording<GeneType, FitnessValueType>
   private propagation: ControlledPropagation<GeneType, FitnessValueType>
 
-  constructor(store: Store<State<GeneType, FitnessValueType>>, eventBus: IEventBus) {
-    this.eventBus = eventBus
-    this.store = store
+  constructor(dependencies: GeneticAlgorithmControllerDependencies<GeneType, FitnessValueType>) {
+    this.eventBus = dependencies.eventBus
+    this.store = dependencies.store
 
     this.eventBusUnsubscribeFns = []
     this.listener = new PropagationListener(this.updateView.bind(this))

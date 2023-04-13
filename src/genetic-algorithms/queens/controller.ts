@@ -36,7 +36,7 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
       },
     })
 
-    super(store, eventBus)
+    super({eventBus, store})
 
     this.fitnessMethod = optimalFitness
 

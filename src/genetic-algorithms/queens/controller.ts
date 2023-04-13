@@ -4,8 +4,8 @@ import {Store} from '@jneander/utils-state'
 
 import {
   allPositionsForBoard,
-  BaseController,
   ControlsEvent,
+  GeneticAlgorithmController,
   PropagationTarget,
   QUEEN_UNICODE,
   State,
@@ -14,7 +14,7 @@ import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'
 import type {QueensChromosome, QueensFitnessValueType, QueensGene} from './types'
 
-export class Controller extends BaseController<QueensGene, QueensFitnessValueType> {
+export class Controller extends GeneticAlgorithmController<QueensGene, QueensFitnessValueType> {
   private _boardSize: number
   private fitnessMethod: FewestAttacks
 

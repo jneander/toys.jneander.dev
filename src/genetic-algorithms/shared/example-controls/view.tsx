@@ -9,7 +9,6 @@ import styles from '../styles.module.scss'
 interface ExampleControlsProps {
   eventBus: IEventBus
   maxPropagationSpeed: boolean
-  onRefresh: () => void
   playing: boolean
   propagationSpeed: number
   rangePosition: number
@@ -54,6 +53,10 @@ export function ExampleControls(props: ExampleControlsProps) {
     [eventBus],
   )
 
+  const handleRandomize = useCallback(() => {
+    eventBus.publish(ControlsEvent.RANDOMIZE)
+  }, [eventBus])
+
   const handleStart = useCallback(() => {
     eventBus.publish(ControlsEvent.START)
   }, [eventBus])
@@ -65,7 +68,7 @@ export function ExampleControls(props: ExampleControlsProps) {
   return (
     <div className={styles.ExampleControlsContainer}>
       <div className={styles.ExampleControlsRow}>
-        <button onClick={props.onRefresh}>Refresh</button>
+        <button onClick={handleRandomize}>Refresh</button>
 
         {props.playing ? (
           <button onClick={handleStop}>Pause</button>

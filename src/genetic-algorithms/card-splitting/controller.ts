@@ -3,7 +3,7 @@ import {Fitness, randomChromosome, replaceOneGene, swapTwoGenes} from '@jneander
 import {MathRandomNumberGenerator} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
-import {BaseController, PropagationTarget, State} from '../shared'
+import {BaseController, ControlsEvent, PropagationTarget, State} from '../shared'
 import {SumProductMatch} from './sum-product-match'
 import type {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
@@ -56,16 +56,18 @@ export class Controller extends BaseController<string, CardSplittingFitnessValue
     super(store, eventBus)
 
     this.fitnessMethod = optimalFitness
-
-    this.randomizeTarget = this.randomizeTarget.bind(this)
   }
 
-  randomizeTarget(): void {
-    this.store.setState({
-      target: this.randomTarget(),
+  initialize(): void {
+    this.subscribeEvent(ControlsEvent.RANDOMIZE, () => {
+      this.store.setState({
+        target: this.randomTarget(),
+      })
+
+      this.reset()
     })
 
-    this.reset()
+    super.initialize()
   }
 
   protected geneSet(): string[] {

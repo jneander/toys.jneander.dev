@@ -5,6 +5,7 @@ import {Store} from '@jneander/utils-state'
 import {
   allPositionsForBoard,
   BaseController,
+  ControlsEvent,
   PropagationTarget,
   QUEEN_UNICODE,
   State,
@@ -40,20 +41,18 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
     this.fitnessMethod = optimalFitness
 
     this._boardSize = DEFAULT_BOARD_SIZE
-
-    this.randomizeTarget = this.randomizeTarget.bind(this)
   }
 
   get boardSize(): number {
     return this._boardSize
   }
 
-  randomizeTarget(): void {
-    this.store.setState({
-      target: this.randomTarget(),
+  initialize(): void {
+    this.subscribeEvent(ControlsEvent.RANDOMIZE, () => {
+      this.randomizeTarget()
     })
 
-    this.reset()
+    super.initialize()
   }
 
   setBoardSize(size: number): void {
@@ -85,6 +84,14 @@ export class Controller extends BaseController<QueensGene, QueensFitnessValueTyp
 
   protected getFitness(chromosome: Chromosome<QueensGene>): Fitness<QueensFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
+  }
+
+  private randomizeTarget(): void {
+    this.store.setState({
+      target: this.randomTarget(),
+    })
+
+    this.reset()
   }
 
   private target(): PropagationTarget<QueensGene, QueensFitnessValueType> {

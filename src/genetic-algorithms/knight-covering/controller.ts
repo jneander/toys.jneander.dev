@@ -8,6 +8,7 @@ import {
   allPositionsForBoard,
   BaseController,
   ChessBoardPosition,
+  ControlsEvent,
   KNIGHT_UNICODE,
   PropagationTarget,
   State,
@@ -48,20 +49,18 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
 
     this._boardSize = DEFAULT_BOARD_SIZE
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
-
-    this.randomizeTarget = this.randomizeTarget.bind(this)
   }
 
   get boardSize(): number {
     return this._boardSize
   }
 
-  randomizeTarget(): void {
-    this.store.setState({
-      target: this.randomTarget(),
+  initialize(): void {
+    this.subscribeEvent(ControlsEvent.RANDOMIZE, () => {
+      this.randomizeTarget()
     })
 
-    this.reset()
+    super.initialize()
   }
 
   setBoardSize(size: number): void {
@@ -109,6 +108,14 @@ export class Controller extends BaseController<KnightCoveringGene, KnightCoverin
     chromosome: Chromosome<KnightCoveringGene>,
   ): Fitness<KnightCoveringFitnessValueType> {
     return this.fitnessMethod.getFitness(chromosome)
+  }
+
+  private randomizeTarget(): void {
+    this.store.setState({
+      target: this.randomTarget(),
+    })
+
+    this.reset()
   }
 
   private target(): PropagationTarget<KnightCoveringGene, KnightCoveringFitnessValueType> {

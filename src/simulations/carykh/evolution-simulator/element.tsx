@@ -9,15 +9,9 @@ import type {SimulationConfig} from './simulation'
 import type {AppState} from './types'
 
 export class CarykhEvolutionSimulatorElement extends HTMLElement {
-  private controller: AppController | undefined
-  private root: Root
-  private store: Store<AppState> | undefined
-
-  constructor() {
-    super()
-
-    this.root = createRoot(this)
-  }
+  private controller?: AppController
+  private root?: Root
+  private store?: Store<AppState>
 
   connectedCallback() {
     this.store = new Store<AppState>({
@@ -41,10 +35,11 @@ export class CarykhEvolutionSimulatorElement extends HTMLElement {
       simulationConfig,
     })
 
+    this.root = createRoot(this)
     this.root.render(<CarykhEvolutionSimulator controller={this.controller} store={this.store} />)
   }
 
   disconnectedCallback() {
-    this.root.unmount()
+    this.root?.unmount()
   }
 }

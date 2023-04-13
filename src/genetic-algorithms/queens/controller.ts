@@ -14,11 +14,15 @@ import {FewestAttacks} from './algorithms'
 import {DEFAULT_BOARD_SIZE} from './constants'
 import type {QueensChromosome, QueensFitnessValueType, QueensGene} from './types'
 
+interface ControllerDependencies {
+  eventBus: IEventBus
+}
+
 export class Controller extends GeneticAlgorithmController<QueensGene, QueensFitnessValueType> {
   private _boardSize: number
   private fitnessMethod: FewestAttacks
 
-  constructor(eventBus: IEventBus) {
+  constructor(dependencies: ControllerDependencies) {
     const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
 
     const store = new Store<State<QueensGene, QueensFitnessValueType>>({
@@ -36,7 +40,7 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
       },
     })
 
-    super({eventBus, store})
+    super({...dependencies, store})
 
     this.fitnessMethod = optimalFitness
 

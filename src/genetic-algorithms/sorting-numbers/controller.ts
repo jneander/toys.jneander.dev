@@ -29,10 +29,14 @@ function randomTarget(
   }
 }
 
+interface ControllerDependencies {
+  eventBus: IEventBus
+}
+
 export class Controller extends GeneticAlgorithmController<number, ArrayOrderFitnessValue> {
   private fitnessMethod: ArrayOrder
 
-  constructor(eventBus: IEventBus) {
+  constructor(dependencies: ControllerDependencies) {
     const optimalFitness = new ArrayOrder()
 
     const store = new Store<State<number, ArrayOrderFitnessValue>>({
@@ -48,7 +52,7 @@ export class Controller extends GeneticAlgorithmController<number, ArrayOrderFit
       target: randomTarget(optimalFitness),
     })
 
-    super({eventBus, store})
+    super({...dependencies, store})
 
     this.fitnessMethod = optimalFitness
   }

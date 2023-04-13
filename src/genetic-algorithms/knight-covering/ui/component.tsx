@@ -1,19 +1,22 @@
 import type {EventBus} from '@jneander/event-bus'
+import type {Store} from '@jneander/utils-state'
 
 import {useStore} from '../../../shared/state'
-import {ChessBoard, ExampleControls, Metrics} from '../../shared'
+import {ChessBoard, ControlsState, ExampleControls, Metrics} from '../../shared'
 import type {Controller} from '../controller'
 import {Configuration} from './configuration'
 
 interface KnightCoveringProps {
   controller: Controller
+  controlsStore: Store<ControlsState>
   eventBus: EventBus
 }
 
 export function KnightCovering(props: KnightCoveringProps) {
-  const {controller, eventBus} = props
+  const {controller, controlsStore, eventBus} = props
 
   const state = useStore(controller.store)
+  const {isRunning} = useStore(controlsStore)
 
   function handleBoardSizeChange(size: number) {
     controller.setBoardSize(size)
@@ -21,19 +24,11 @@ export function KnightCovering(props: KnightCoveringProps) {
 
   return (
     <>
-      <ExampleControls
-        eventBus={eventBus}
-        maxPropagationSpeed={state.maxPropagationSpeed}
-        playing={state.isRunning}
-        propagationSpeed={state.propagationSpeed}
-        rangePosition={state.playbackPosition}
-        rangePositionCount={state.iterationCount}
-        recordAllIterations={state.allIterations}
-      />
+      <ExampleControls eventBus={eventBus} store={controlsStore} />
 
       <Configuration
         boardSize={controller.boardSize}
-        disabled={state.isRunning}
+        disabled={isRunning}
         onBoardSizeChange={handleBoardSizeChange}
       />
 

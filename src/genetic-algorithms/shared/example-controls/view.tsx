@@ -1,23 +1,30 @@
 import type {IEventBus} from '@jneander/event-bus'
+import type {Store} from '@jneander/utils-state'
 import {ChangeEvent, useCallback} from 'react'
 
 import {CheckboxInputField, NumberInputField, RangeInputField} from '../../../shared/components'
+import {useStore} from '../../../shared/state'
 import {ControlsEvent} from './constants'
+import type {ControlsState} from './types'
 
 import styles from '../styles.module.scss'
 
 interface ExampleControlsProps {
   eventBus: IEventBus
-  maxPropagationSpeed: boolean
-  playing: boolean
-  propagationSpeed: number
-  rangePosition: number
-  rangePositionCount: number
-  recordAllIterations: boolean
+  store: Store<ControlsState>
 }
 
 export function ExampleControls(props: ExampleControlsProps) {
-  const {eventBus} = props
+  const {eventBus, store} = props
+
+  const {
+    allIterations,
+    isRunning,
+    iterationCount,
+    maxPropagationSpeed,
+    playbackPosition,
+    propagationSpeed,
+  } = useStore(store)
 
   const handleIterate = useCallback(() => {
     eventBus.publish(ControlsEvent.ITERATE)
@@ -70,30 +77,30 @@ export function ExampleControls(props: ExampleControlsProps) {
       <div className={styles.ExampleControlsRow}>
         <button onClick={handleRandomize}>Refresh</button>
 
-        {props.playing ? (
+        {isRunning ? (
           <button onClick={handleStop}>Pause</button>
         ) : (
           <button onClick={handleStart}>Start</button>
         )}
 
-        <button disabled={props.playing} onClick={handleIterate}>
+        <button disabled={isRunning} onClick={handleIterate}>
           Iterate
         </button>
 
         <span>
           <NumberInputField
             labelText="Iterations Per Second"
-            disabled={props.maxPropagationSpeed}
+            disabled={maxPropagationSpeed}
             max={1000}
             min={1}
             onChange={handleChangePropagationSpeed}
             step={1}
-            value={props.propagationSpeed}
+            value={propagationSpeed}
           />
         </span>
 
         <CheckboxInputField
-          checked={props.maxPropagationSpeed}
+          checked={maxPropagationSpeed}
           id="max-speed-checkbox"
           labelText="Max Speed"
           onChange={handleToggleMaxPropagationSpeed}
@@ -101,8 +108,8 @@ export function ExampleControls(props: ExampleControlsProps) {
 
         <span>
           <CheckboxInputField
-            checked={props.recordAllIterations}
-            disabled={props.playing}
+            checked={allIterations}
+            disabled={isRunning}
             id="all-iterations-checkbox"
             labelText="Record Iterations"
             onChange={handleToggleRecordAllIterations}
@@ -110,14 +117,14 @@ export function ExampleControls(props: ExampleControlsProps) {
         </span>
       </div>
 
-      {props.recordAllIterations && (
+      {allIterations && (
         <RangeInputField
-          disabled={props.playing}
+          disabled={isRunning}
           labelText="Iteration Range"
-          max={props.rangePositionCount}
+          max={iterationCount}
           min={1}
           onChange={handleRangeChange}
-          value={props.rangePosition}
+          value={playbackPosition}
         />
       )}
     </div>

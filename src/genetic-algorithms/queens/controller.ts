@@ -5,6 +5,7 @@ import {Store} from '@jneander/utils-state'
 import {
   allPositionsForBoard,
   ControlsEvent,
+  ControlsState,
   GeneticAlgorithmController,
   PropagationTarget,
   QUEEN_UNICODE,
@@ -15,6 +16,7 @@ import {DEFAULT_BOARD_SIZE} from './constants'
 import type {QueensChromosome, QueensFitnessValueType, QueensGene} from './types'
 
 interface ControllerDependencies {
+  controlsStore: Store<ControlsState>
   eventBus: IEventBus
 }
 
@@ -26,15 +28,9 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
     const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
 
     const store = new Store<State<QueensGene, QueensFitnessValueType>>({
-      allIterations: false,
       best: null,
       current: null,
       first: null,
-      isRunning: false,
-      iterationCount: 0,
-      maxPropagationSpeed: true,
-      playbackPosition: 1,
-      propagationSpeed: 1,
       target: {
         fitness: optimalFitness.getTargetFitness(),
       },

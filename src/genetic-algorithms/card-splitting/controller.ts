@@ -3,7 +3,13 @@ import {Fitness, randomChromosome, replaceOneGene, swapTwoGenes} from '@jneander
 import {MathRandomNumberGenerator} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
-import {ControlsEvent, GeneticAlgorithmController, PropagationTarget, State} from '../shared'
+import {
+  ControlsEvent,
+  ControlsState,
+  GeneticAlgorithmController,
+  PropagationTarget,
+  State,
+} from '../shared'
 import {SumProductMatch} from './sum-product-match'
 import type {CardSplittingChromosome, CardSplittingFitnessValue} from './types'
 
@@ -33,6 +39,7 @@ function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
 }
 
 interface ControllerDependencies {
+  controlsStore: Store<ControlsState>
   eventBus: IEventBus
 }
 
@@ -43,15 +50,9 @@ export class Controller extends GeneticAlgorithmController<string, CardSplitting
     const optimalFitness = new SumProductMatch()
 
     const store = new Store<State<string, CardSplittingFitnessValue>>({
-      allIterations: false,
       best: null,
       current: null,
       first: null,
-      isRunning: false,
-      iterationCount: 0,
-      maxPropagationSpeed: true,
-      playbackPosition: 1,
-      propagationSpeed: 1,
       target: {
         fitness: optimalFitness.getTargetFitness(),
       },

@@ -8,6 +8,7 @@ import {
   allPositionsForBoard,
   ChessBoardPosition,
   ControlsEvent,
+  ControlsState,
   GeneticAlgorithmController,
   KNIGHT_UNICODE,
   PropagationTarget,
@@ -21,6 +22,7 @@ import type {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
 const rng = new MathRandomNumberGenerator()
 
 interface ControllerDependencies {
+  controlsStore: Store<ControlsState>
   eventBus: IEventBus
 }
 
@@ -36,15 +38,9 @@ export class Controller extends GeneticAlgorithmController<
     const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
 
     const store = new Store<State<KnightCoveringGene, KnightCoveringFitnessValueType>>({
-      allIterations: false,
       best: null,
       current: null,
       first: null,
-      isRunning: false,
-      iterationCount: 0,
-      maxPropagationSpeed: true,
-      playbackPosition: 1,
-      propagationSpeed: 1,
       target: {
         fitness: optimalFitness.getTargetFitness(),
       },

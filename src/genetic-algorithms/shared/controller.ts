@@ -2,7 +2,7 @@ import type {EventHandler, EventUnsubscribeFn, IEventBus} from '@jneander/event-
 import type {Chromosome, Fitness} from '@jneander/genetics'
 import type {Store} from '@jneander/utils-state'
 
-import {ControlsEvent} from './example-controls'
+import {ControlsEvent, ControlsState} from './example-controls'
 import {
   ControlledPropagation,
   ControlledPropagationConfig,
@@ -16,6 +16,7 @@ import {
 import {State} from './types'
 
 interface GeneticAlgorithmControllerDependencies<GeneType, FitnessValueType> {
+  controlsStore: Store<ControlsState>
   eventBus: IEventBus
   store: Store<State<GeneType, FitnessValueType>>
 }
@@ -23,6 +24,7 @@ interface GeneticAlgorithmControllerDependencies<GeneType, FitnessValueType> {
 export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
   public store: Store<State<GeneType, FitnessValueType>>
 
+  protected controlsStore: Store<ControlsState>
   protected eventBus: IEventBus
 
   private eventBusUnsubscribeFns: EventUnsubscribeFn[]
@@ -31,6 +33,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
   private propagation: ControlledPropagation<GeneType, FitnessValueType>
 
   constructor(dependencies: GeneticAlgorithmControllerDependencies<GeneType, FitnessValueType>) {
+    this.controlsStore = dependencies.controlsStore
     this.eventBus = dependencies.eventBus
     this.store = dependencies.store
 
@@ -53,7 +56,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
     this.subscribeEvent(
       ControlsEvent.SET_MAX_PROPAGATION_SPEED_ENABLED,
       (maxPropagationSpeed: boolean) => {
-        this.store.setState({maxPropagationSpeed})
+        this.controlsStore.setState({maxPropagationSpeed})
         this.propagation.setSpeed(this.propagationSpeed)
       },
     )
@@ -64,7 +67,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
     })
 
     this.subscribeEvent(ControlsEvent.SET_PROPAGATION_SPEED, (propagationSpeed: number) => {
-      this.store.setState({propagationSpeed})
+      this.controlsStore.setState({propagationSpeed})
       this.propagation.setSpeed(this.propagationSpeed)
     })
 
@@ -151,19 +154,22 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
   }
 
   private updateView(): void {
-    this.store.setState({
+    this.controlsStore.setState({
       allIterations: this.recording.isRecordingAllIterations(),
-      best: this.recording.best(),
-      current: this.recording.current(),
-      first: this.recording.first(),
       isRunning: this.propagation?.runState === PROPAGATION_RUNNING,
       iterationCount: this.propagation?.iterationCount ?? 0,
       playbackPosition: this.recording.playbackPosition(),
     })
+
+    this.store.setState({
+      best: this.recording.best(),
+      current: this.recording.current(),
+      first: this.recording.first(),
+    })
   }
 
   private get propagationSpeed(): number {
-    const {maxPropagationSpeed, propagationSpeed} = this.store.getState()
+    const {maxPropagationSpeed, propagationSpeed} = this.controlsStore.getState()
     return maxPropagationSpeed ? 0 : propagationSpeed
   }
 }

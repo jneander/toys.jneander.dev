@@ -10,7 +10,13 @@ import {rangeInts} from '@jneander/utils-arrays'
 import {sampleArrayValues, shuffleArray} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
 
-import {ControlsEvent, GeneticAlgorithmController, PropagationTarget, State} from '../shared'
+import {
+  ControlsEvent,
+  ControlsState,
+  GeneticAlgorithmController,
+  PropagationTarget,
+  State,
+} from '../shared'
 
 const defaultLength = 50
 const maxLength = 100
@@ -30,6 +36,7 @@ function randomTarget(
 }
 
 interface ControllerDependencies {
+  controlsStore: Store<ControlsState>
   eventBus: IEventBus
 }
 
@@ -40,15 +47,9 @@ export class Controller extends GeneticAlgorithmController<number, ArrayOrderFit
     const optimalFitness = new ArrayOrder()
 
     const store = new Store<State<number, ArrayOrderFitnessValue>>({
-      allIterations: false,
       best: null,
       current: null,
       first: null,
-      isRunning: false,
-      iterationCount: 0,
-      maxPropagationSpeed: true,
-      playbackPosition: 1,
-      propagationSpeed: 1,
       target: randomTarget(optimalFitness),
     })
 

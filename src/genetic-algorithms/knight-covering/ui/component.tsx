@@ -1,28 +1,19 @@
 import type {EventBus} from '@jneander/event-bus'
-import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../../shared/state'
 import {ChessBoard, ExampleControls, Metrics} from '../../shared'
-import {Controller} from '../controller'
+import type {Controller} from '../controller'
 import {Configuration} from './configuration'
 
 interface KnightCoveringProps {
+  controller: Controller
   eventBus: EventBus
 }
 
 export function KnightCovering(props: KnightCoveringProps) {
-  const {eventBus} = props
-
-  const controller = useMemo(() => {
-    return new Controller(eventBus)
-  }, [eventBus])
+  const {controller, eventBus} = props
 
   const state = useStore(controller.store)
-
-  useEffect(() => {
-    controller.initialize()
-    return controller.deinitialize.bind(controller)
-  }, [controller])
 
   function handleBoardSizeChange(size: number) {
     controller.setBoardSize(size)

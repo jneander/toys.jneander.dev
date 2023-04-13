@@ -1,30 +1,21 @@
 import type {EventBus} from '@jneander/event-bus'
-import {useEffect, useMemo} from 'react'
 
 import {useStore} from '../../shared/state'
 import {ExampleControls, Metrics} from '../shared'
 import {Cards} from './cards'
-import {Controller} from './controller'
+import type {Controller} from './controller'
 
 import styles from './styles.module.scss'
 
 interface CardSplittingProps {
+  controller: Controller
   eventBus: EventBus
 }
 
 export function CardSplitting(props: CardSplittingProps) {
-  const {eventBus} = props
-
-  const controller = useMemo(() => {
-    return new Controller(eventBus)
-  }, [eventBus])
+  const {controller, eventBus} = props
 
   const state = useStore(controller.store)
-
-  useEffect(() => {
-    controller.initialize()
-    return controller.deinitialize.bind(controller)
-  }, [controller])
 
   return (
     <div className="flow">

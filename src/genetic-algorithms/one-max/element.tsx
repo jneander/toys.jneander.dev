@@ -1,9 +1,11 @@
 import {EventBus} from '@jneander/event-bus'
 import {createRoot, Root} from 'react-dom/client'
 
+import {Controller} from './controller'
 import {OneMax} from './one-max'
 
 export class OneMaxElement extends HTMLElement {
+  private controller: Controller | undefined
   private eventBus: EventBus
   private root: Root
 
@@ -15,10 +17,14 @@ export class OneMaxElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.root.render(<OneMax eventBus={this.eventBus} />)
+    this.controller = new Controller(this.eventBus)
+    this.root.render(<OneMax controller={this.controller} eventBus={this.eventBus} />)
+
+    this.controller.initialize()
   }
 
   disconnectedCallback() {
+    this.controller?.deinitialize()
     this.root.unmount()
   }
 }

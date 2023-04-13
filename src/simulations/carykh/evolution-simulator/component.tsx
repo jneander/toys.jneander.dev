@@ -1,7 +1,3 @@
-import {AleaNumberGenerator} from '@jneander/utils-random'
-import {Store} from '@jneander/utils-state'
-import {useMemo} from 'react'
-
 import {useStore} from '../../../shared/state'
 import {
   GenerateCreaturesActivity,
@@ -10,58 +6,39 @@ import {
   SimulationRunningActivity,
   StartActivity,
 } from './activities'
-import {AppController} from './app-controller'
+import type {AppController} from './app-controller'
 import {ActivityId} from './constants'
-import {SimulationConfig} from './simulation'
-import {AppState, AppStore} from './types'
+import type {AppState, AppStore} from './types'
 
 function getCurrentActivityId(appState: AppState): ActivityId | null {
   return appState.currentActivityId
 }
 
-export function CarykhEvolutionSimulator() {
-  const appStore = useMemo<AppStore>(() => {
-    return new Store<AppState>({
-      creaturesInLatestGeneration: [],
-      currentActivityId: ActivityId.Start,
-      generationCount: -1,
-      generationHistoryMap: {},
-      selectedGeneration: 0,
-    })
-  }, [])
+interface CarykhEvolutionSimulatorProps {
+  controller: AppController
+  store: AppStore
+}
 
-  const appController = useMemo<AppController>(() => {
-    const SEED = 0
-    const randomNumberGenerator = new AleaNumberGenerator({seed: SEED})
+export function CarykhEvolutionSimulator(props: CarykhEvolutionSimulatorProps) {
+  const {controller, store} = props
 
-    const simulationConfig: SimulationConfig = {
-      hazelStairs: -1,
-    }
-
-    return new AppController({
-      appStore,
-      randomNumberGenerator,
-      simulationConfig,
-    })
-  }, [appStore])
-
-  const currentActivityId = useStore(appStore, getCurrentActivityId)
+  const currentActivityId = useStore(store, getCurrentActivityId)
 
   if (currentActivityId === ActivityId.GenerateCreatures) {
-    return <GenerateCreaturesActivity appController={appController} appStore={appStore} />
+    return <GenerateCreaturesActivity appController={controller} appStore={store} />
   }
 
   if (currentActivityId === ActivityId.GenerationView) {
-    return <GenerationViewActivity appController={appController} appStore={appStore} />
+    return <GenerationViewActivity appController={controller} appStore={store} />
   }
 
   if (currentActivityId === ActivityId.SimulationRunning) {
-    return <SimulationRunningActivity appController={appController} appStore={appStore} />
+    return <SimulationRunningActivity appController={controller} appStore={store} />
   }
 
   if (currentActivityId === ActivityId.PostSimulation) {
-    return <PostSimulationActivity appController={appController} appStore={appStore} />
+    return <PostSimulationActivity appController={controller} appStore={store} />
   }
 
-  return <StartActivity appController={appController} />
+  return <StartActivity appController={controller} />
 }

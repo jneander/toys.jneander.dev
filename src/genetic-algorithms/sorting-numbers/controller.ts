@@ -44,18 +44,16 @@ export class Controller extends GeneticAlgorithmController<number, ArrayOrderFit
   private fitnessMethod: ArrayOrder
 
   constructor(dependencies: ControllerDependencies) {
-    const optimalFitness = new ArrayOrder()
-
     const store = new Store<State<number, ArrayOrderFitnessValue>>({
       best: null,
       current: null,
       first: null,
-      target: randomTarget(optimalFitness),
+      target: null,
     })
 
     super({...dependencies, store})
 
-    this.fitnessMethod = optimalFitness
+    this.fitnessMethod = new ArrayOrder()
   }
 
   initialize(): void {
@@ -71,6 +69,10 @@ export class Controller extends GeneticAlgorithmController<number, ArrayOrderFit
       })
 
       this.reset()
+    })
+
+    this.store.setState({
+      target: randomTarget(this.fitnessMethod),
     })
 
     super.initialize()
@@ -95,6 +97,12 @@ export class Controller extends GeneticAlgorithmController<number, ArrayOrderFit
   }
 
   private target(): PropagationTarget<number, ArrayOrderFitnessValue> {
-    return this.store.getState().target
+    const {target} = this.store.getState()
+
+    if (target == null) {
+      throw new Error('Controller has not been initialized')
+    }
+
+    return target
   }
 }

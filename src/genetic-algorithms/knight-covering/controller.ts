@@ -35,22 +35,17 @@ export class Controller extends GeneticAlgorithmController<
   private fitnessMethod: FewestAttacks
 
   constructor(dependencies: ControllerDependencies) {
-    const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
-
     const store = new Store<State<KnightCoveringGene, KnightCoveringFitnessValueType>>({
       best: null,
       current: null,
       first: null,
-      target: {
-        fitness: optimalFitness.getTargetFitness(),
-      },
+      target: null,
     })
 
     super({...dependencies, store})
 
-    this.fitnessMethod = optimalFitness
-
     this._boardSize = DEFAULT_BOARD_SIZE
+    this.fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
   }
 
@@ -61,6 +56,12 @@ export class Controller extends GeneticAlgorithmController<
   initialize(): void {
     this.subscribeEvent(ControlsEvent.RANDOMIZE, () => {
       this.randomizeTarget()
+    })
+
+    this.store.setState({
+      target: {
+        fitness: this.fitnessMethod.getTargetFitness(),
+      },
     })
 
     super.initialize()
@@ -198,6 +199,12 @@ export class Controller extends GeneticAlgorithmController<
   }
 
   private target(): PropagationTarget<KnightCoveringGene, KnightCoveringFitnessValueType> {
-    return this.store.getState().target
+    const {target} = this.store.getState()
+
+    if (target == null) {
+      throw new Error('Controller has not been initialized')
+    }
+
+    return target
   }
 }

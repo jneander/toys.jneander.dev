@@ -47,20 +47,16 @@ export class Controller extends GeneticAlgorithmController<string, CardSplitting
   private fitnessMethod: SumProductMatch
 
   constructor(dependencies: ControllerDependencies) {
-    const optimalFitness = new SumProductMatch()
-
     const store = new Store<State<string, CardSplittingFitnessValue>>({
       best: null,
       current: null,
       first: null,
-      target: {
-        fitness: optimalFitness.getTargetFitness(),
-      },
+      target: null,
     })
 
     super({...dependencies, store})
 
-    this.fitnessMethod = optimalFitness
+    this.fitnessMethod = new SumProductMatch()
   }
 
   initialize(): void {
@@ -70,6 +66,12 @@ export class Controller extends GeneticAlgorithmController<string, CardSplitting
       })
 
       this.reset()
+    })
+
+    this.store.setState({
+      target: {
+        fitness: this.fitnessMethod.getTargetFitness(),
+      },
     })
 
     super.initialize()
@@ -99,6 +101,12 @@ export class Controller extends GeneticAlgorithmController<string, CardSplitting
   }
 
   private target(): PropagationTarget<string, CardSplittingFitnessValue> {
-    return this.store.getState().target
+    const {target} = this.store.getState()
+
+    if (target == null) {
+      throw new Error('Controller has not been initialized')
+    }
+
+    return target
   }
 }

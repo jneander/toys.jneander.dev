@@ -22,10 +22,9 @@ interface GeneticAlgorithmControllerDependencies<GeneType, FitnessValueType> {
 }
 
 export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
-  public store: Store<State<GeneType, FitnessValueType>>
-
   protected controlsStore: Store<ControlsState>
   protected eventBus: IEventBus
+  protected store: Store<State<GeneType, FitnessValueType>>
 
   private eventBusUnsubscribeFns: EventUnsubscribeFn[]
   private listener: PropagationListener

@@ -27,7 +27,12 @@ export class QueensElement extends HTMLElement {
 
     this.root = createRoot(container)
     this.root.render(
-      <Queens controller={this.controller} controlsStore={controlsStore} eventBus={eventBus} />,
+      <Queens
+        controller={this.controller}
+        controlsStore={controlsStore}
+        eventBus={eventBus}
+        store={store}
+      />,
     )
 
     this.controller.initialize()

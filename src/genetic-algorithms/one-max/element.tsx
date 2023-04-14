@@ -26,9 +26,7 @@ export class OneMaxElement extends HTMLElement {
     this.appendChild(container)
 
     this.root = createRoot(container)
-    this.root.render(
-      <OneMax controller={this.controller} controlsStore={controlsStore} eventBus={eventBus} />,
-    )
+    this.root.render(<OneMax controlsStore={controlsStore} eventBus={eventBus} store={store} />)
 
     this.controller.initialize()
   }

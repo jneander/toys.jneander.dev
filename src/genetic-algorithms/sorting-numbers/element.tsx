@@ -27,11 +27,7 @@ export class SortingNumbersElement extends HTMLElement {
 
     this.root = createRoot(container)
     this.root.render(
-      <SortingNumbers
-        controller={this.controller}
-        controlsStore={controlsStore}
-        eventBus={eventBus}
-      />,
+      <SortingNumbers controlsStore={controlsStore} eventBus={eventBus} store={store} />,
     )
 
     this.controller.initialize()

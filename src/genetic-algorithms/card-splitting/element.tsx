@@ -27,11 +27,7 @@ export class CardSplittingElement extends HTMLElement {
 
     this.root = createRoot(container)
     this.root.render(
-      <CardSplitting
-        controller={this.controller}
-        controlsStore={controlsStore}
-        eventBus={eventBus}
-      />,
+      <CardSplitting controlsStore={controlsStore} eventBus={eventBus} store={store} />,
     )
 
     this.controller.initialize()

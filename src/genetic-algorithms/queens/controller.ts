@@ -1,6 +1,6 @@
 import type {IEventBus} from '@jneander/event-bus'
 import {Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
-import {Store} from '@jneander/utils-state'
+import type {Store} from '@jneander/utils-state'
 
 import {
   allPositionsForBoard,
@@ -18,6 +18,7 @@ import type {QueensChromosome, QueensFitnessValueType, QueensGene} from './types
 interface ControllerDependencies {
   controlsStore: Store<ControlsState>
   eventBus: IEventBus
+  store: Store<State<QueensGene, QueensFitnessValueType>>
 }
 
 export class Controller extends GeneticAlgorithmController<QueensGene, QueensFitnessValueType> {
@@ -25,14 +26,7 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
   private fitnessMethod: FewestAttacks
 
   constructor(dependencies: ControllerDependencies) {
-    const store = new Store<State<QueensGene, QueensFitnessValueType>>({
-      best: null,
-      current: null,
-      first: null,
-      target: null,
-    })
-
-    super({...dependencies, store})
+    super(dependencies)
 
     this._boardSize = DEFAULT_BOARD_SIZE
     this.fitnessMethod = new FewestAttacks({boardSize: this._boardSize})

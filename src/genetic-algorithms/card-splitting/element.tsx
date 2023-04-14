@@ -4,6 +4,7 @@ import {createRoot, Root} from 'react-dom/client'
 import {createControlsStore} from '../shared'
 import {CardSplitting} from './card-splitting'
 import {Controller} from './controller'
+import {createStore} from './state'
 
 export class CardSplittingElement extends HTMLElement {
   private controller?: Controller
@@ -12,10 +13,12 @@ export class CardSplittingElement extends HTMLElement {
   connectedCallback() {
     const controlsStore = createControlsStore()
     const eventBus = new EventBus()
+    const store = createStore()
 
     this.controller = new Controller({
       controlsStore,
       eventBus,
+      store,
     })
 
     const container = document.createElement('div')

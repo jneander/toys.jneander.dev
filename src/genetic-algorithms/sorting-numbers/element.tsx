@@ -4,6 +4,7 @@ import {createRoot, Root} from 'react-dom/client'
 import {createControlsStore} from '../shared'
 import {Controller} from './controller'
 import {SortingNumbers} from './sorting-numbers'
+import {createStore} from './state'
 
 export class SortingNumbersElement extends HTMLElement {
   private controller?: Controller
@@ -12,10 +13,12 @@ export class SortingNumbersElement extends HTMLElement {
   connectedCallback() {
     const controlsStore = createControlsStore()
     const eventBus = new EventBus()
+    const store = createStore()
 
     this.controller = new Controller({
       controlsStore,
       eventBus,
+      store,
     })
 
     const container = document.createElement('div')

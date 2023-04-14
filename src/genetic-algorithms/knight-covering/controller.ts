@@ -2,7 +2,7 @@ import type {IEventBus} from '@jneander/event-bus'
 import {Chromosome, Fitness} from '@jneander/genetics'
 import {rangeInts} from '@jneander/utils-arrays'
 import {MathRandomNumberGenerator, randomArrayValue} from '@jneander/utils-random'
-import {Store} from '@jneander/utils-state'
+import type {Store} from '@jneander/utils-state'
 
 import {
   allPositionsForBoard,
@@ -24,6 +24,7 @@ const rng = new MathRandomNumberGenerator()
 interface ControllerDependencies {
   controlsStore: Store<ControlsState>
   eventBus: IEventBus
+  store: Store<State<KnightCoveringGene, KnightCoveringFitnessValueType>>
 }
 
 export class Controller extends GeneticAlgorithmController<
@@ -35,14 +36,7 @@ export class Controller extends GeneticAlgorithmController<
   private fitnessMethod: FewestAttacks
 
   constructor(dependencies: ControllerDependencies) {
-    const store = new Store<State<KnightCoveringGene, KnightCoveringFitnessValueType>>({
-      best: null,
-      current: null,
-      first: null,
-      target: null,
-    })
-
-    super({...dependencies, store})
+    super(dependencies)
 
     this._boardSize = DEFAULT_BOARD_SIZE
     this.fitnessMethod = new FewestAttacks({boardSize: this._boardSize})

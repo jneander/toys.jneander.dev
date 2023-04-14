@@ -15,7 +15,7 @@ export function PropagateCreaturesView(props: PropagateCreaturesViewProps) {
   }
 
   return (
-    <div>
+    <>
       <p>
         These are the {CREATURE_COUNT} creatures of generation #
         {appStore.getState().generationCount + 1}.
@@ -26,6 +26,6 @@ export function PropagateCreaturesView(props: PropagateCreaturesViewProps) {
       <button onClick={handleBackClick} type="button">
         Back
       </button>
-    </div>
+    </>
   )
 }

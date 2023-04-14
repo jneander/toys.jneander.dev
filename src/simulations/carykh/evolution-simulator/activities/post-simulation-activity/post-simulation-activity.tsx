@@ -103,7 +103,7 @@ export function PostSimulationActivity(props: PostSimulationActivityProps) {
   }
 
   return (
-    <div>
+    <div className="flow">
       <CreatureCollectionView adapter={creatureCollectionAdapter} />
 
       {activityView}

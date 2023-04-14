@@ -12,7 +12,7 @@ export function StartActivity(props: StartActivityProps) {
   }
 
   return (
-    <div>
+    <div className="flow">
       <h2>Evolution!</h2>
 
       <p>

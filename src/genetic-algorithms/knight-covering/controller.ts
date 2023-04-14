@@ -12,39 +12,34 @@ import {
   GeneticAlgorithmController,
   KNIGHT_UNICODE,
   PropagationTarget,
-  State,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
-import {DEFAULT_BOARD_SIZE, minimumKnightsByBoardSize} from './constants'
+import {minimumKnightsByBoardSize} from './constants'
 import {listAttacks, positionFromHash, positionHash, randomPosition} from './helpers'
-import type {KnightCoveringFitnessValueType, KnightCoveringGene} from './types'
+import type {KnightCoveringFitnessValueType, KnightCoveringGene, KnightCoveringState} from './types'
 
 const rng = new MathRandomNumberGenerator()
 
 interface ControllerDependencies {
   controlsStore: Store<ControlsState>
   eventBus: IEventBus
-  store: Store<State<KnightCoveringGene, KnightCoveringFitnessValueType>>
+  store: Store<KnightCoveringState>
 }
 
 export class Controller extends GeneticAlgorithmController<
   KnightCoveringGene,
   KnightCoveringFitnessValueType
 > {
-  private _boardSize: number
+  protected declare store: Store<KnightCoveringState>
+
   private _allBoardPositions: KnightCoveringGene[]
   private fitnessMethod: FewestAttacks
 
   constructor(dependencies: ControllerDependencies) {
     super(dependencies)
 
-    this._boardSize = DEFAULT_BOARD_SIZE
-    this.fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
+    this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
-  }
-
-  get boardSize(): number {
-    return this._boardSize
   }
 
   initialize(): void {
@@ -61,8 +56,8 @@ export class Controller extends GeneticAlgorithmController<
     super.initialize()
   }
 
-  setBoardSize(size: number): void {
-    this._boardSize = size
+  setBoardSize(boardSize: number): void {
+    this.store.setState({boardSize})
     this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
     this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
@@ -75,6 +70,10 @@ export class Controller extends GeneticAlgorithmController<
       mutate: this.mutate.bind(this),
       optimalFitness: this.target().fitness,
     }
+  }
+
+  private get boardSize(): number {
+    return this.store.getState().boardSize
   }
 
   private get knightCount(): number {

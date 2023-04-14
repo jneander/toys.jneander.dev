@@ -2,28 +2,22 @@ import type {EventBus} from '@jneander/event-bus'
 import type {Store} from '@jneander/utils-state'
 
 import {useStore} from '../../../shared/state'
-import {
-  ChessBoard,
-  ChessBoardPosition,
-  ControlsState,
-  ExampleControls,
-  Metrics,
-  State,
-} from '../../shared'
+import {ChessBoard, ControlsState, ExampleControls, Metrics} from '../../shared'
 import type {Controller} from '../controller'
+import type {QueensState} from '../types'
 import {Configuration} from './configuration'
 
 interface QueensProps {
   controller: Controller
   controlsStore: Store<ControlsState>
   eventBus: EventBus
-  store: Store<State<ChessBoardPosition, number>>
+  store: Store<QueensState>
 }
 
 export function Queens(props: QueensProps) {
   const {controller, controlsStore, eventBus, store} = props
 
-  const state = useStore(store)
+  const {boardSize, current} = useStore(store)
   const {isRunning} = useStore(controlsStore)
 
   function handleBoardSizeChange(size: number) {
@@ -35,15 +29,15 @@ export function Queens(props: QueensProps) {
       <ExampleControls eventBus={eventBus} store={controlsStore} />
 
       <Configuration
-        boardSize={controller.boardSize}
+        boardSize={boardSize}
         disabled={isRunning}
         onBoardSizeChange={handleBoardSizeChange}
       />
 
-      <Metrics iteration={state.current ? state.current.iteration : 0} />
+      <Metrics iteration={current ? current.iteration : 0} />
 
       <div>
-        <ChessBoard positions={state.current?.chromosome?.genes} size={controller.boardSize} />
+        <ChessBoard positions={current?.chromosome?.genes} size={boardSize} />
       </div>
     </>
   )

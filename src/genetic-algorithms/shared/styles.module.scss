@@ -1,9 +1,5 @@
 @use '../../../styles/properties';
 
-.ExampleControlsContainer > *:not(:first-child) {
-  margin-block-start: properties.get-value('base', 'spacing', 'm', 'px');
-}
-
 .ExampleControlsRow {
   display: flex;
   align-items: center;

@@ -73,39 +73,28 @@ export function ExampleControls(props: ExampleControlsProps) {
   }, [eventBus])
 
   return (
-    <div className={styles.ExampleControlsContainer}>
+    <div className="flow">
+      <CheckboxInputField
+        checked={maxPropagationSpeed}
+        id="max-speed-checkbox"
+        labelText="Max Speed"
+        onChange={handleToggleMaxPropagationSpeed}
+      />
+
+      <NumberInputField
+        labelText="Iterations Per Second"
+        disabled={maxPropagationSpeed}
+        max={1000}
+        min={1}
+        onChange={handleChangePropagationSpeed}
+        step={1}
+        value={propagationSpeed}
+      />
       <div className={styles.ExampleControlsRow}>
-        <button onClick={handleRandomize}>Refresh</button>
+        <span></span>
+      </div>
 
-        {isRunning ? (
-          <button onClick={handleStop}>Pause</button>
-        ) : (
-          <button onClick={handleStart}>Start</button>
-        )}
-
-        <button disabled={isRunning} onClick={handleIterate}>
-          Iterate
-        </button>
-
-        <span>
-          <NumberInputField
-            labelText="Iterations Per Second"
-            disabled={maxPropagationSpeed}
-            max={1000}
-            min={1}
-            onChange={handleChangePropagationSpeed}
-            step={1}
-            value={propagationSpeed}
-          />
-        </span>
-
-        <CheckboxInputField
-          checked={maxPropagationSpeed}
-          id="max-speed-checkbox"
-          labelText="Max Speed"
-          onChange={handleToggleMaxPropagationSpeed}
-        />
-
+      <div>
         <span>
           <CheckboxInputField
             checked={allIterations}
@@ -117,16 +106,28 @@ export function ExampleControls(props: ExampleControlsProps) {
         </span>
       </div>
 
-      {allIterations && (
-        <RangeInputField
-          disabled={isRunning}
-          labelText="Iteration Range"
-          max={iterationCount}
-          min={1}
-          onChange={handleRangeChange}
-          value={playbackPosition}
-        />
-      )}
+      <RangeInputField
+        disabled={!allIterations || isRunning}
+        labelText="Current Iteration"
+        max={iterationCount}
+        min={1}
+        onChange={handleRangeChange}
+        value={playbackPosition}
+      />
+
+      <div className={styles.ExampleControlsRow}>
+        <button onClick={handleRandomize}>Refresh</button>
+
+        <button disabled={isRunning} onClick={handleIterate}>
+          Iterate
+        </button>
+
+        {isRunning ? (
+          <button onClick={handleStop}>Pause</button>
+        ) : (
+          <button onClick={handleStart}>Start</button>
+        )}
+      </div>
     </div>
   )
 }

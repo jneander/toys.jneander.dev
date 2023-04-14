@@ -17,8 +17,6 @@ export function OneMax(props: OneMaxProps) {
 
   return (
     <>
-      <ExampleControls eventBus={eventBus} store={controlsStore} />
-
       <div>
         <ChromosomeTable
           best={state.best}
@@ -28,6 +26,8 @@ export function OneMax(props: OneMaxProps) {
           target={state.target}
         />
       </div>
+
+      <ExampleControls eventBus={eventBus} store={controlsStore} />
     </>
   )
 }

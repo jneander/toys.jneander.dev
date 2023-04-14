@@ -27,10 +27,10 @@ export function Cards(props: CardsProps) {
   const productGenes = props.record.chromosome.genes.slice(5, 10)
 
   return (
-    <div className={styles.View}>
-      <h2 className={styles.CardsHeading}>{props.label}</h2>
+    <>
+      <h2>{props.label}</h2>
 
-      <div className={styles.CardSet__Top}>
+      <div>
         {sumGenes.map((card, index) => (
           <span key={index} className={styles.Card}>
             {card}
@@ -40,7 +40,7 @@ export function Cards(props: CardsProps) {
         <span className={styles.SetMetrics}>Sum: {geneSum(props.record.chromosome)}</span>
       </div>
 
-      <div className={styles.CardSet__Bottom}>
+      <div>
         {productGenes.map((card, index) => (
           <span key={index} className={styles.Card}>
             {card}
@@ -49,6 +49,6 @@ export function Cards(props: CardsProps) {
 
         <span className={styles.SetMetrics}>Product: {geneProduct(props.record.chromosome)}</span>
       </div>
-    </div>
+    </>
   )
 }

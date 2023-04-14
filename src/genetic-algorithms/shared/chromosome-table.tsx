@@ -75,15 +75,15 @@ export function ChromosomeTable<GeneType, FitnessValueType>(
         <RecordRow
           formatFitness={formatFitness}
           formatGenes={formatGenes}
-          record={props.first}
-          version="First"
+          record={props.target}
+          version="Target"
         />
 
         <RecordRow
           formatFitness={formatFitness}
           formatGenes={formatGenes}
-          record={props.current}
-          version="Current"
+          record={props.first}
+          version="First"
         />
 
         <RecordRow
@@ -96,8 +96,8 @@ export function ChromosomeTable<GeneType, FitnessValueType>(
         <RecordRow
           formatFitness={formatFitness}
           formatGenes={formatGenes}
-          record={props.target}
-          version="Target"
+          record={props.current}
+          version="Current"
         />
       </tbody>
     </table>

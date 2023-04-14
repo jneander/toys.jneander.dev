@@ -17,12 +17,12 @@ export function SimulationFinishedView(props: SimulationFinishedViewProps) {
   }
 
   return (
-    <div>
+    <>
       <p>{"All 1,000 creatures have been tested. Now let's sort them!"}</p>
 
       <button onClick={handleSortClick} type="button">
         Sort
       </button>
-    </div>
+    </>
   )
 }

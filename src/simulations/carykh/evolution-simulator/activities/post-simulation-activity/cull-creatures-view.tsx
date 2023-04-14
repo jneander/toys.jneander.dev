@@ -16,7 +16,7 @@ export function CullCreaturesView(props: CullCreaturesViewProps) {
   }
 
   return (
-    <div>
+    <>
       <p>
         Faster creatures are more likely to survive because they can outrun their predators. Slow
         creatures get eaten.
@@ -27,6 +27,6 @@ export function CullCreaturesView(props: CullCreaturesViewProps) {
       <button onClick={handlePropagateClick} type="button">
         Reproduce
       </button>
-    </div>
+    </>
   )
 }

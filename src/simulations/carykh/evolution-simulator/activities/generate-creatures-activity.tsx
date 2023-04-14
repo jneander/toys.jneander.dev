@@ -35,7 +35,7 @@ export function GenerateCreaturesActivity(props: GenerateCreaturesActivityProps)
   }
 
   return (
-    <div>
+    <div className="flow">
       <CreatureCollectionView adapter={creatureCollectionAdapter} />
 
       <p>Here are your {CREATURE_COUNT} randomly generated creatures!!!</p>

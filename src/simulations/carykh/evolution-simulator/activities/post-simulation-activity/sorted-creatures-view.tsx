@@ -17,12 +17,12 @@ export function SortedCreaturesView(props: SortedCreaturesViewProps) {
   }
 
   return (
-    <div>
+    <>
       <p>Fastest creatures at the top! Slowest creatures at the bottom. (Going backward = slow)</p>
 
       <button onClick={handleCullClick} type="button">
         Kill {Math.floor(CREATURE_COUNT / 2)}
       </button>
-    </div>
+    </>
   )
 }

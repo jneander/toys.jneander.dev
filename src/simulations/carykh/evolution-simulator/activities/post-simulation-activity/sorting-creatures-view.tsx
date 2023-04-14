@@ -13,10 +13,10 @@ export function SortingCreaturesView(props: SortingCreaturesViewProps) {
   }
 
   return (
-    <div>
+    <>
       <button onClick={handleSkipClick} type="button">
         Skip
       </button>
-    </div>
+    </>
   )
 }

@@ -1,20 +1,20 @@
 import type {EventBus} from '@jneander/event-bus'
+import type {ArrayOrderFitnessValue} from '@jneander/genetics'
 import type {Store} from '@jneander/utils-state'
 
 import {useStore} from '../../shared/state'
-import {ChromosomeTable, ControlsState, ExampleControls} from '../shared'
-import type {Controller} from './controller'
+import {ChromosomeTable, ControlsState, ExampleControls, State} from '../shared'
 
 interface SortingNumbersProps {
-  controller: Controller
   controlsStore: Store<ControlsState>
   eventBus: EventBus
+  store: Store<State<number, ArrayOrderFitnessValue>>
 }
 
 export function SortingNumbers(props: SortingNumbersProps) {
-  const {controller, controlsStore, eventBus} = props
+  const {controlsStore, eventBus, store} = props
 
-  const state = useStore(controller.store)
+  const state = useStore(store)
 
   return (
     <>

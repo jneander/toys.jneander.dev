@@ -27,11 +27,7 @@ export class TextMatchingElement extends HTMLElement {
 
     this.root = createRoot(container)
     this.root.render(
-      <TextMatching
-        controller={this.controller}
-        controlsStore={controlsStore}
-        eventBus={eventBus}
-      />,
+      <TextMatching controlsStore={controlsStore} eventBus={eventBus} store={store} />,
     )
 
     this.controller.initialize()

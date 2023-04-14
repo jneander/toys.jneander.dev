@@ -2,7 +2,14 @@ import type {EventBus} from '@jneander/event-bus'
 import type {Store} from '@jneander/utils-state'
 
 import {useStore} from '../../../shared/state'
-import {ChessBoard, ControlsState, ExampleControls, Metrics} from '../../shared'
+import {
+  ChessBoard,
+  ChessBoardPosition,
+  ControlsState,
+  ExampleControls,
+  Metrics,
+  State,
+} from '../../shared'
 import type {Controller} from '../controller'
 import {Configuration} from './configuration'
 
@@ -10,12 +17,13 @@ interface QueensProps {
   controller: Controller
   controlsStore: Store<ControlsState>
   eventBus: EventBus
+  store: Store<State<ChessBoardPosition, number>>
 }
 
 export function Queens(props: QueensProps) {
-  const {controller, controlsStore, eventBus} = props
+  const {controller, controlsStore, eventBus, store} = props
 
-  const state = useStore(controller.store)
+  const state = useStore(store)
   const {isRunning} = useStore(controlsStore)
 
   function handleBoardSizeChange(size: number) {

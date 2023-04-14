@@ -31,6 +31,7 @@ export class KnightCoveringElement extends HTMLElement {
         controller={this.controller}
         controlsStore={controlsStore}
         eventBus={eventBus}
+        store={store}
       />,
     )
 

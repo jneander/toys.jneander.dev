@@ -49,7 +49,7 @@ interface ChromosomeTableProps<GeneType, FitnessValueType> {
   first: PropagationRecord<GeneType, FitnessValueType> | null
   formatFitness?: (fitness: FitnessValueType) => ReactNode
   formatGenes?: (genes: GeneType[]) => ReactNode
-  target: PropagationTarget<GeneType, FitnessValueType>
+  target: PropagationTarget<GeneType, FitnessValueType> | null
 }
 
 export function ChromosomeTable<GeneType, FitnessValueType>(

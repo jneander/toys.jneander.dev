@@ -25,22 +25,17 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
   private fitnessMethod: FewestAttacks
 
   constructor(dependencies: ControllerDependencies) {
-    const optimalFitness = new FewestAttacks({boardSize: DEFAULT_BOARD_SIZE})
-
     const store = new Store<State<QueensGene, QueensFitnessValueType>>({
       best: null,
       current: null,
       first: null,
-      target: {
-        fitness: optimalFitness.getTargetFitness(),
-      },
+      target: null,
     })
 
     super({...dependencies, store})
 
-    this.fitnessMethod = optimalFitness
-
     this._boardSize = DEFAULT_BOARD_SIZE
+    this.fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
   }
 
   get boardSize(): number {
@@ -50,6 +45,12 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
   initialize(): void {
     this.subscribeEvent(ControlsEvent.RANDOMIZE, () => {
       this.randomizeTarget()
+    })
+
+    this.store.setState({
+      target: {
+        fitness: this.fitnessMethod.getTargetFitness(),
+      },
     })
 
     super.initialize()
@@ -93,6 +94,12 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
   }
 
   private target(): PropagationTarget<QueensGene, QueensFitnessValueType> {
-    return this.store.getState().target
+    const {target} = this.store.getState()
+
+    if (target == null) {
+      throw new Error('Controller has not been initialized')
+    }
+
+    return target
   }
 }

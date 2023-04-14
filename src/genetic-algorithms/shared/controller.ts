@@ -30,7 +30,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
   private eventBusUnsubscribeFns: EventUnsubscribeFn[]
   private listener: PropagationListener
   private recording: PropagationRecording<GeneType, FitnessValueType>
-  private propagation: ControlledPropagation<GeneType, FitnessValueType>
+  private propagation?: ControlledPropagation<GeneType, FitnessValueType>
 
   constructor(dependencies: GeneticAlgorithmControllerDependencies<GeneType, FitnessValueType>) {
     this.controlsStore = dependencies.controlsStore
@@ -40,12 +40,11 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
     this.eventBusUnsubscribeFns = []
     this.listener = new PropagationListener(this.updateView.bind(this))
     this.recording = new PropagationRecording()
-    this.propagation = this.buildPropagation()
   }
 
   initialize(): void {
     this.subscribeEvent(ControlsEvent.ITERATE, () => {
-      if (this.propagation.runState === PROPAGATION_STOPPED) {
+      if (this.propagation?.runState === PROPAGATION_STOPPED) {
         this.propagation.iterate()
         this.updateView()
       }
@@ -55,7 +54,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
       ControlsEvent.SET_MAX_PROPAGATION_SPEED_ENABLED,
       (maxPropagationSpeed: boolean) => {
         this.controlsStore.setState({maxPropagationSpeed})
-        this.propagation.setSpeed(this.propagationSpeed)
+        this.propagation?.setSpeed(this.propagationSpeed)
       },
     )
 
@@ -66,7 +65,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
 
     this.subscribeEvent(ControlsEvent.SET_PROPAGATION_SPEED, (propagationSpeed: number) => {
       this.controlsStore.setState({propagationSpeed})
-      this.propagation.setSpeed(this.propagationSpeed)
+      this.propagation?.setSpeed(this.propagationSpeed)
     })
 
     this.subscribeEvent(ControlsEvent.SET_RECORD_ALL_ITERATIONS, (allIterations: boolean) => {
@@ -79,11 +78,11 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
     })
 
     this.subscribeEvent(ControlsEvent.START, () => {
-      if (this.propagation.runState === PROPAGATION_RUNNING) {
+      if (this.propagation?.runState === PROPAGATION_RUNNING) {
         return
       }
 
-      if (this.propagation.runState === PROPAGATION_FINISHED) {
+      if (this.propagation?.runState === PROPAGATION_FINISHED) {
         this.propagation = this.buildPropagation()
         this.recording.reset()
         this.updateView()
@@ -99,6 +98,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
       this.updateView()
     })
 
+    this.propagation = this.buildPropagation()
     this.propagation.iterate()
     this.updateView()
   }

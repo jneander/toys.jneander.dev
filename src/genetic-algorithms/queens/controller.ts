@@ -9,31 +9,25 @@ import {
   GeneticAlgorithmController,
   PropagationTarget,
   QUEEN_UNICODE,
-  State,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
-import {DEFAULT_BOARD_SIZE} from './constants'
-import type {QueensChromosome, QueensFitnessValueType, QueensGene} from './types'
+import type {QueensChromosome, QueensFitnessValueType, QueensGene, QueensState} from './types'
 
 interface ControllerDependencies {
   controlsStore: Store<ControlsState>
   eventBus: IEventBus
-  store: Store<State<QueensGene, QueensFitnessValueType>>
+  store: Store<QueensState>
 }
 
 export class Controller extends GeneticAlgorithmController<QueensGene, QueensFitnessValueType> {
-  private _boardSize: number
+  protected declare store: Store<QueensState>
+
   private fitnessMethod: FewestAttacks
 
   constructor(dependencies: ControllerDependencies) {
     super(dependencies)
 
-    this._boardSize = DEFAULT_BOARD_SIZE
-    this.fitnessMethod = new FewestAttacks({boardSize: this._boardSize})
-  }
-
-  get boardSize(): number {
-    return this._boardSize
+    this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
   }
 
   initialize(): void {
@@ -50,9 +44,9 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
     super.initialize()
   }
 
-  setBoardSize(size: number): void {
-    this._boardSize = size
-    this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
+  setBoardSize(boardSize: number): void {
+    this.store.setState({boardSize})
+    this.fitnessMethod = new FewestAttacks({boardSize})
     this.randomizeTarget()
   }
 
@@ -67,6 +61,10 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
       mutate: (parent: QueensChromosome) => replaceOneGene(parent, this.geneSet()),
       optimalFitness: this.target().fitness,
     }
+  }
+
+  private get boardSize(): number {
+    return this.store.getState().boardSize
   }
 
   private generateParent(): QueensChromosome {

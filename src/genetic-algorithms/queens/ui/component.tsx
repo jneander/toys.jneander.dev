@@ -26,19 +26,19 @@ export function Queens(props: QueensProps) {
 
   return (
     <>
-      <ExampleControls eventBus={eventBus} store={controlsStore} />
-
       <Configuration
         boardSize={boardSize}
         disabled={isRunning}
         onBoardSizeChange={handleBoardSizeChange}
       />
 
-      <Metrics iteration={current ? current.iteration : 0} />
-
       <div>
         <ChessBoard positions={current?.chromosome?.genes} size={boardSize} />
       </div>
+
+      <Metrics iteration={current ? current.iteration : 0} />
+
+      <ExampleControls eventBus={eventBus} store={controlsStore} />
     </>
   )
 }

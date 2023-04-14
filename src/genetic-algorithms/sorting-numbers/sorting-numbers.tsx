@@ -18,8 +18,6 @@ export function SortingNumbers(props: SortingNumbersProps) {
 
   return (
     <>
-      <ExampleControls eventBus={eventBus} store={controlsStore} />
-
       <div>
         <ChromosomeTable
           best={state.best}
@@ -30,6 +28,8 @@ export function SortingNumbers(props: SortingNumbersProps) {
           target={state.target}
         />
       </div>
+
+      <ExampleControls eventBus={eventBus} store={controlsStore} />
     </>
   )
 }

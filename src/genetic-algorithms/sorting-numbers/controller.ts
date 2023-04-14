@@ -8,7 +8,7 @@ import {
 } from '@jneander/genetics'
 import {rangeInts} from '@jneander/utils-arrays'
 import {sampleArrayValues, shuffleArray} from '@jneander/utils-random'
-import {Store} from '@jneander/utils-state'
+import type {Store} from '@jneander/utils-state'
 
 import {
   ControlsEvent,
@@ -38,20 +38,14 @@ function randomTarget(
 interface ControllerDependencies {
   controlsStore: Store<ControlsState>
   eventBus: IEventBus
+  store: Store<State<number, ArrayOrderFitnessValue>>
 }
 
 export class Controller extends GeneticAlgorithmController<number, ArrayOrderFitnessValue> {
   private fitnessMethod: ArrayOrder
 
   constructor(dependencies: ControllerDependencies) {
-    const store = new Store<State<number, ArrayOrderFitnessValue>>({
-      best: null,
-      current: null,
-      first: null,
-      target: null,
-    })
-
-    super({...dependencies, store})
+    super(dependencies)
 
     this.fitnessMethod = new ArrayOrder()
   }

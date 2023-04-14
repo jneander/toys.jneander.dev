@@ -1,7 +1,7 @@
 import type {IEventBus} from '@jneander/event-bus'
 import {Fitness, randomChromosome, replaceOneGene, swapTwoGenes} from '@jneander/genetics'
 import {MathRandomNumberGenerator} from '@jneander/utils-random'
-import {Store} from '@jneander/utils-state'
+import type {Store} from '@jneander/utils-state'
 
 import {
   ControlsEvent,
@@ -41,20 +41,14 @@ function mutate(parent: CardSplittingChromosome, geneSet: string[]) {
 interface ControllerDependencies {
   controlsStore: Store<ControlsState>
   eventBus: IEventBus
+  store: Store<State<string, CardSplittingFitnessValue>>
 }
 
 export class Controller extends GeneticAlgorithmController<string, CardSplittingFitnessValue> {
   private fitnessMethod: SumProductMatch
 
   constructor(dependencies: ControllerDependencies) {
-    const store = new Store<State<string, CardSplittingFitnessValue>>({
-      best: null,
-      current: null,
-      first: null,
-      target: null,
-    })
-
-    super({...dependencies, store})
+    super(dependencies)
 
     this.fitnessMethod = new SumProductMatch()
   }

@@ -28,6 +28,7 @@
     "@jneander/utils-random": "^1.0.0",
     "@jneander/utils-state": "^2.0.2",
     "chart.js": "^3.7.0",
+    "lit": "^2.7.2",
     "p5": "^1.4.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"

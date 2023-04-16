@@ -1,13 +1,17 @@
-import {ComponentProps, createElement} from 'react'
+import '../creature-collection-view/creature-collection-view.element'
+
+import {html, LitElement} from 'lit'
 
 import type {AppController} from '../app-controller'
+import {ActivityId, CREATURE_COUNT} from '../constants'
+import {CreatureGridAdapter} from '../creature-collection-view'
 import type {AppStore} from '../types'
-import {ReactLitElement} from '../views'
-import {GenerateCreaturesActivity} from './generate-creatures-activity'
 
-export class GenerateCreaturesActivityElement extends ReactLitElement {
-  public declare controller: AppController
-  public declare store: AppStore
+export class GenerateCreaturesActivityElement extends LitElement {
+  private declare controller: AppController
+  private declare store: AppStore
+
+  private creatureCollectionAdapter?: CreatureGridAdapter
 
   static get properties() {
     return {
@@ -16,13 +20,45 @@ export class GenerateCreaturesActivityElement extends ReactLitElement {
     }
   }
 
-  protected createElement() {
-    const props: ComponentProps<typeof GenerateCreaturesActivity> = {
-      appController: this.controller,
-      appStore: this.store,
+  createRenderRoot() {
+    return this
+  }
+
+  connectedCallback(): void {
+    const getCreatureAndGridIndexFn = (index: number) => {
+      return {
+        creature: this.store.getState().creaturesInLatestGeneration[index],
+        gridIndex: index,
+      }
     }
 
-    return createElement(GenerateCreaturesActivity, props)
+    this.creatureCollectionAdapter = new CreatureGridAdapter({
+      appController: this.controller,
+      appStore: this.store,
+      getCreatureAndGridIndexFn,
+      showsPopupSimulation: () => false,
+    })
+
+    super.connectedCallback()
+  }
+
+  protected render() {
+    return html`
+      <div class="flow">
+        <creature-collection-view
+          .adapter=${this.creatureCollectionAdapter}
+        ></creature-collection-view>
+
+        <p>Here are your ${CREATURE_COUNT} randomly generated creatures!!!</p>
+
+        <button @click=${this.handleBackClick} type="button">Back</button>
+      </div>
+    `
+  }
+
+  private handleBackClick(): void {
+    this.store.setState({generationCount: 0})
+    this.controller.setActivityId(ActivityId.GenerationView)
   }
 }
 

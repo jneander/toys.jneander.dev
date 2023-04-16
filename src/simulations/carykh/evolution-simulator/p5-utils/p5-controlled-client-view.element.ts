@@ -35,6 +35,20 @@ export class P5ControlledClientViewElement extends BaseElement {
     super.connectedCallback()
   }
 
+  protected update(changedProperties: Map<PropertyKey, unknown>): void {
+    if (['height', 'scale', 'width'].some(property => changedProperties.has(property))) {
+      this.clientViewController = new P5ClientViewController({
+        height: this.height,
+        scale: this.scale,
+        width: this.width,
+      })
+    }
+
+    this.clientViewController?.setAdapter(this.clientViewAdapter)
+
+    super.update(changedProperties)
+  }
+
   protected render() {
     return html`<p5-view .sketch=${this.clientViewController?.sketch}></p5-view>`
   }

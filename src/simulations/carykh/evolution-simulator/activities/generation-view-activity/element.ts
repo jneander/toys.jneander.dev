@@ -1,5 +1,6 @@
 import {ComponentProps, createElement} from 'react'
 
+import {defineElement} from '../../../../../shared/views'
 import type {AppController} from '../../app-controller'
 import type {AppStore} from '../../types'
 import {ReactLitElement} from '../../views'
@@ -26,6 +27,4 @@ export class GenerationViewActivityElement extends ReactLitElement {
   }
 }
 
-if (!customElements.get('generation-view-activity')) {
-  window.customElements.define('generation-view-activity', GenerationViewActivityElement)
-}
+defineElement('generation-view-activity', GenerationViewActivityElement)

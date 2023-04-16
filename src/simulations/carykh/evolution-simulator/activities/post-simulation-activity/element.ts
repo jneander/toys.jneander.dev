@@ -1,5 +1,6 @@
 import {ComponentProps, createElement} from 'react'
 
+import {defineElement} from '../../../../../shared/views'
 import type {AppController} from '../../app-controller'
 import type {AppStore} from '../../types'
 import {ReactLitElement} from '../../views'
@@ -26,6 +27,4 @@ export class PostSimulationActivityElement extends ReactLitElement {
   }
 }
 
-if (!customElements.get('post-simulation-activity')) {
-  window.customElements.define('post-simulation-activity', PostSimulationActivityElement)
-}
+defineElement('post-simulation-activity', PostSimulationActivityElement)

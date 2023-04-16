@@ -1,5 +1,4 @@
 import {CardSplittingElement} from '../genetic-algorithms'
+import {defineElement} from '../shared/views'
 
-if (!customElements.get('card-splitting')) {
-  window.customElements.define('card-splitting', CardSplittingElement)
-}
+defineElement('card-splitting', CardSplittingElement)

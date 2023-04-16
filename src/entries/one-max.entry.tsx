@@ -1,5 +1,4 @@
 import {OneMaxElement} from '../genetic-algorithms'
+import {defineElement} from '../shared/views'
 
-if (!customElements.get('one-max')) {
-  window.customElements.define('one-max', OneMaxElement)
-}
+defineElement('one-max', OneMaxElement)

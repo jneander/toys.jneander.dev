@@ -1,5 +1,4 @@
 import {QueensElement} from '../genetic-algorithms'
+import {defineElement} from '../shared/views'
 
-if (!customElements.get('ga-queens')) {
-  window.customElements.define('ga-queens', QueensElement)
-}
+defineElement('ga-queens', QueensElement)

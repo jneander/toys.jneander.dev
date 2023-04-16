@@ -1,8 +1,9 @@
-import {LitElement} from 'lit'
 import type {ReactElement} from 'react'
 import {createRoot, Root} from 'react-dom/client'
 
-export abstract class ReactLitElement extends LitElement {
+import {BaseElement} from '../../../../shared/views'
+
+export abstract class ReactLitElement extends BaseElement {
   private root?: Root
 
   static get properties() {
@@ -13,10 +14,6 @@ export abstract class ReactLitElement extends LitElement {
   }
 
   protected abstract createElement(): ReactElement
-
-  createRenderRoot() {
-    return this
-  }
 
   connectedCallback(): void {
     this.root = createRoot(this)

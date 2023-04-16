@@ -1,19 +1,16 @@
-import {html, LitElement} from 'lit'
+import {html} from 'lit'
 
+import {BaseElement, defineElement} from '../../../../shared/views'
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 
-export class StartActivityElement extends LitElement {
+export class StartActivityElement extends BaseElement {
   public declare controller: AppController
 
   static get properties() {
     return {
       controller: {type: Object},
     }
-  }
-
-  createRenderRoot() {
-    return this
   }
 
   render() {
@@ -37,6 +34,4 @@ export class StartActivityElement extends LitElement {
   }
 }
 
-if (!customElements.get('start-activity')) {
-  window.customElements.define('start-activity', StartActivityElement)
-}
+defineElement('start-activity', StartActivityElement)

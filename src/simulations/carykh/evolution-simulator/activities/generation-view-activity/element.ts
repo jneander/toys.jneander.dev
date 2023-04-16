@@ -1,6 +1,8 @@
+import './creature-info/element'
+
 import {Store} from '@jneander/utils-state'
 import {html} from 'lit'
-import {ChangeEvent, ComponentProps, createElement, Fragment} from 'react'
+import {ChangeEvent, ComponentProps, createElement} from 'react'
 import {createRoot, Root} from 'react-dom/client'
 
 import {RangeInputField} from '../../../../../shared/components'
@@ -10,7 +12,6 @@ import {FitnessDistributionChart, PercentilesChart, PopulationsChart} from '../.
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {GenerationSimulationMode} from './constants'
-import {CreatureInfo} from './creature-info'
 import type {ActivityState} from './types'
 
 import styles from './styles.module.scss'
@@ -23,7 +24,6 @@ export class GenerationViewActivityElement extends BaseElement {
   private activityController?: ActivityController
 
   private generationRangeRoot?: Root
-  private creaturesRoot?: Root
   private percentilesChartRoot?: Root
   private populationsChartRoot?: Root
   private fitnessDistributionChartRoot?: Root
@@ -62,7 +62,6 @@ export class GenerationViewActivityElement extends BaseElement {
     })
     this.storeListeners.length = 0
 
-    this.creaturesRoot?.unmount()
     this.generationRangeRoot?.unmount()
 
     super.disconnectedCallback()
@@ -118,7 +117,7 @@ export class GenerationViewActivityElement extends BaseElement {
           </div>
 
           <div>
-            <div class=${styles.Creatures} id="creatures"></div>
+            <div class=${styles.Creatures}>${this.renderCreatures()}</div>
 
             <div class=${styles.ChartContainer} id="fitness-distribution-chart"></div>
           </div>
@@ -131,11 +130,6 @@ export class GenerationViewActivityElement extends BaseElement {
     const generationRangeContainer = this.querySelector('#generation-range')
     if (generationRangeContainer) {
       this.generationRangeRoot = createRoot(generationRangeContainer)
-    }
-
-    const creaturesContainer = this.querySelector('#creatures')
-    if (creaturesContainer) {
-      this.creaturesRoot = createRoot(creaturesContainer)
     }
 
     const percentilesContainer = this.querySelector('#percentiles-chart')
@@ -158,7 +152,6 @@ export class GenerationViewActivityElement extends BaseElement {
 
   protected updated(): void {
     this.renderGenerationRange()
-    this.renderCreatures()
   }
 
   private renderGenerationRange(): void {
@@ -176,46 +169,36 @@ export class GenerationViewActivityElement extends BaseElement {
     this.generationRangeRoot?.render(createElement(RangeInputField, props))
   }
 
-  private renderCreatures(): void {
+  private renderCreatures() {
     const historyEntry = this.activityController?.getSelectedGenerationHistoryEntry()
 
-    if (historyEntry != null) {
-      const simulationConfig = this.controller.getSimulationConfig()
-
-      const {bestCreature, medianCreature, worstCreature} = historyEntry
-      const children = []
-
-      children.push(
-        createElement(CreatureInfo, {
-          creature: bestCreature,
-          key: bestCreature.id,
-          rankText: 'Best',
-          simulationConfig,
-        }),
-      )
-
-      children.push(
-        createElement(CreatureInfo, {
-          creature: medianCreature,
-          key: medianCreature.id,
-          rankText: 'Median',
-          simulationConfig,
-        }),
-      )
-
-      children.push(
-        createElement(CreatureInfo, {
-          creature: worstCreature,
-          key: worstCreature.id,
-          rankText: 'Worst',
-          simulationConfig,
-        }),
-      )
-
-      this.creaturesRoot?.render(createElement(Fragment, {}, children))
-    } else {
-      this.creaturesRoot?.render(null)
+    if (historyEntry == null) {
+      return null
     }
+
+    const simulationConfig = this.controller.getSimulationConfig()
+
+    const {bestCreature, medianCreature, worstCreature} = historyEntry
+
+    return html`
+      <creature-info
+        .creature=${bestCreature}
+        rankText="Best"
+        .simulationConfig=${simulationConfig}
+      ></creature-info>
+
+      <creature-info
+        .creature=${medianCreature}
+        rankText="Median"
+        .simulationConfig=${simulationConfig}
+      ></creature-info>
+
+      <creature-info
+        .creature=${worstCreature}
+        rankText="Worst"
+        .simulationConfig=${simulationConfig}
+      ></creature-info>
+    `
   }
 
   private renderCharts(): void {

@@ -1,13 +1,14 @@
 import '../creature-collection-view/creature-collection-view.element'
 
-import {html, LitElement} from 'lit'
+import {html} from 'lit'
 
+import {BaseElement, defineElement} from '../../../../shared/views'
 import type {AppController} from '../app-controller'
 import {ActivityId, CREATURE_COUNT} from '../constants'
 import {CreatureGridAdapter} from '../creature-collection-view'
 import type {AppStore} from '../types'
 
-export class GenerateCreaturesActivityElement extends LitElement {
+export class GenerateCreaturesActivityElement extends BaseElement {
   private declare controller: AppController
   private declare store: AppStore
 
@@ -18,10 +19,6 @@ export class GenerateCreaturesActivityElement extends LitElement {
       controller: {type: Object},
       store: {type: Object},
     }
-  }
-
-  createRenderRoot() {
-    return this
   }
 
   connectedCallback(): void {
@@ -62,6 +59,4 @@ export class GenerateCreaturesActivityElement extends LitElement {
   }
 }
 
-if (!customElements.get('generate-creatures-activity')) {
-  window.customElements.define('generate-creatures-activity', GenerateCreaturesActivityElement)
-}
+defineElement('generate-creatures-activity', GenerateCreaturesActivityElement)

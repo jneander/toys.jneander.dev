@@ -1,5 +1,4 @@
 import {TextMatchingElement} from '../genetic-algorithms'
+import {defineElement} from '../shared/views'
 
-if (!customElements.get('text-matching')) {
-  window.customElements.define('text-matching', TextMatchingElement)
-}
+defineElement('text-matching', TextMatchingElement)

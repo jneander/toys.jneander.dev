@@ -1,5 +1,4 @@
 import {SortingNumbersElement} from '../genetic-algorithms'
+import {defineElement} from '../shared/views'
 
-if (!customElements.get('sorting-numbers')) {
-  window.customElements.define('sorting-numbers', SortingNumbersElement)
-}
+defineElement('sorting-numbers', SortingNumbersElement)

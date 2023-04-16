@@ -1,5 +1,4 @@
+import {defineElement} from '../shared/views'
 import {CarykhEvolutionSimulatorElement} from '../simulations'
 
-if (!customElements.get('carykh-evolution-simulator')) {
-  window.customElements.define('carykh-evolution-simulator', CarykhEvolutionSimulatorElement)
-}
+defineElement('carykh-evolution-simulator', CarykhEvolutionSimulatorElement)

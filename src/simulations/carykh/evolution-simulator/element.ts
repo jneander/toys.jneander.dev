@@ -6,14 +6,15 @@ import './activities/start-activity.element'
 
 import {AleaNumberGenerator} from '@jneander/utils-random'
 import {Store} from '@jneander/utils-state'
-import {html, LitElement} from 'lit'
+import {html} from 'lit'
 
+import {BaseElement} from '../../../shared/views'
 import {AppController} from './app-controller'
 import {ActivityId} from './constants'
 import type {SimulationConfig} from './simulation'
 import type {AppState} from './types'
 
-export class CarykhEvolutionSimulatorElement extends LitElement {
+export class CarykhEvolutionSimulatorElement extends BaseElement {
   private controller?: AppController
   private store: Store<AppState>
 
@@ -32,10 +33,6 @@ export class CarykhEvolutionSimulatorElement extends LitElement {
       generationHistoryMap: {},
       selectedGeneration: 0,
     })
-  }
-
-  createRenderRoot() {
-    return this
   }
 
   connectedCallback() {

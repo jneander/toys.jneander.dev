@@ -1,9 +1,9 @@
-import {LitElement} from 'lit'
 import p5 from 'p5'
 
+import {BaseElement, defineElement} from '../views'
 import type {P5Sketch} from './types'
 
-export class P5ViewElement extends LitElement {
+export class P5ViewElement extends BaseElement {
   private declare sketch: P5Sketch
 
   private instance?: p5
@@ -26,6 +26,4 @@ export class P5ViewElement extends LitElement {
   }
 }
 
-if (!customElements.get('p5-view')) {
-  window.customElements.define('p5-view', P5ViewElement)
-}
+defineElement('p5-view', P5ViewElement)

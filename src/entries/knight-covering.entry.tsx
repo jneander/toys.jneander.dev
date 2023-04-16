@@ -1,5 +1,4 @@
 import {KnightCoveringElement} from '../genetic-algorithms'
+import {defineElement} from '../shared/views'
 
-if (!customElements.get('knight-covering')) {
-  window.customElements.define('knight-covering', KnightCoveringElement)
-}
+defineElement('knight-covering', KnightCoveringElement)

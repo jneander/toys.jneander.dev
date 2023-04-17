@@ -4,8 +4,8 @@ import {ChartConfiguration, ChartData} from 'chart.js'
 
 import {FITNESS_PERCENTILE_CREATURE_INDICES} from '../../constants'
 
-function createInitialData(): ChartData {
-  const data: ChartData = {
+function createInitialData(): ChartData<'percentiles', number[]> {
+  const data: ChartData<'percentiles', number[]> = {
     datasets: [],
     labels: [0],
   }
@@ -28,7 +28,7 @@ function createInitialData(): ChartData {
   return data
 }
 
-export function createConfiguration(): ChartConfiguration {
+export function createConfiguration(): ChartConfiguration<'percentiles', number[]> {
   return {
     data: createInitialData(),
 

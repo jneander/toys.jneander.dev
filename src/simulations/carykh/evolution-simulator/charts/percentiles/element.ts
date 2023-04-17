@@ -1,20 +1,35 @@
 import {Chart} from 'chart.js'
-import {useEffect, useRef} from 'react'
+import {html} from 'lit'
 
-import {AppState, AppStore} from '../../types'
+import {BaseElement, defineElement} from '../../../../../shared/views'
+import type {AppState, AppStore} from '../../types'
 import {createConfiguration} from './configuration'
 
-export interface PercentilesChartProps {
-  appStore: AppStore
-}
+export class PercentilesChartElement extends BaseElement {
+  private declare store: AppStore
 
-export function PercentilesChart(props: PercentilesChartProps) {
-  const {appStore} = props
+  private unsubscribeStore?: () => void
+  private chart?: Chart<'percentiles', number[]>
 
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  static get properties() {
+    return {
+      store: {type: Object},
+    }
+  }
 
-  useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d')
+  disconnectedCallback(): void {
+    this.unsubscribeStore?.()
+    delete this.unsubscribeStore
+
+    this.chart?.destroy()
+
+    super.disconnectedCallback()
+  }
+
+  protected firstUpdated(changedProperties: Map<PropertyKey, unknown>): void {
+    const canvas: HTMLCanvasElement = this.querySelector('canvas') as HTMLCanvasElement
+
+    const ctx = canvas?.getContext('2d')
     if (!ctx) {
       return
     }
@@ -22,6 +37,7 @@ export function PercentilesChart(props: PercentilesChartProps) {
     const config = createConfiguration()
 
     const chart = new Chart(ctx, config)
+    this.chart = chart
 
     let lastGenerationCount = 0
     let lastSelectedGeneration = -1
@@ -60,15 +76,16 @@ export function PercentilesChart(props: PercentilesChartProps) {
       lastGenerationCount = generationCount
     }
 
-    updateHistoryData(appStore.getState())
+    updateHistoryData(this.store.getState())
 
-    const unsubscribe = appStore.subscribe(updateHistoryData)
+    this.unsubscribeStore = this.store.subscribe(updateHistoryData)
 
-    return () => {
-      unsubscribe()
-      chart.destroy()
-    }
-  }, [appStore])
+    super.firstUpdated(changedProperties)
+  }
 
-  return <canvas ref={canvasRef} />
+  protected render() {
+    return html`<canvas></canvas>`
+  }
 }
+
+defineElement('percentiles-chart', PercentilesChartElement)

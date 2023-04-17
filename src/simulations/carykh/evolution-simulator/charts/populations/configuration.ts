@@ -4,8 +4,8 @@ import {ChartConfiguration, ChartData} from 'chart.js'
 
 import {getSpeciesColorHslString, speciesIdFromNodesAndMuscles} from '../../creatures'
 
-function createInitialData(): ChartData {
-  const data: ChartData = {
+function createInitialData(): ChartData<'populations', number[]> {
+  const data: ChartData<'populations', number[]> = {
     datasets: [],
     labels: [0],
   }
@@ -32,7 +32,7 @@ function createInitialData(): ChartData {
   return data
 }
 
-export function createConfiguration(): ChartConfiguration {
+export function createConfiguration(): ChartConfiguration<'populations', number[]> {
   return {
     data: createInitialData(),
 

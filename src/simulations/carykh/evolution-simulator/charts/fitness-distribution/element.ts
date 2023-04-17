@@ -1,22 +1,37 @@
 import {Chart, ChartType, ChartTypeRegistry, ScaleOptionsByType} from 'chart.js'
-import {useEffect, useRef} from 'react'
+import {html} from 'lit'
 
+import {BaseElement, defineElement} from '../../../../../shared/views'
 import {FITNESS_PERCENTILE_MEDIAN_INDEX} from '../../constants'
 import {fitnessToHistogramBarIndex, histogramBarIndexToApproximateFitness} from '../../creatures'
-import {AppState, AppStore} from '../../types'
+import type {AppState, AppStore} from '../../types'
 import {createConfiguration} from './configuration'
 
-export interface FitnessDistributionChartProps {
-  appStore: AppStore
-}
+export class FitnessDistributionChartElement extends BaseElement {
+  private declare store: AppStore
 
-export function FitnessDistributionChart(props: FitnessDistributionChartProps) {
-  const {appStore} = props
+  private unsubscribeStore?: () => void
+  private chart?: Chart<'bar', {x: number; y: number}[], unknown>
 
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  static get properties() {
+    return {
+      store: {type: Object},
+    }
+  }
 
-  useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d')
+  disconnectedCallback(): void {
+    this.unsubscribeStore?.()
+    delete this.unsubscribeStore
+
+    this.chart?.destroy()
+
+    super.disconnectedCallback()
+  }
+
+  protected firstUpdated(changedProperties: Map<PropertyKey, unknown>): void {
+    const canvas: HTMLCanvasElement = this.querySelector('canvas') as HTMLCanvasElement
+
+    const ctx = canvas?.getContext('2d')
     if (!ctx) {
       return
     }
@@ -24,6 +39,7 @@ export function FitnessDistributionChart(props: FitnessDistributionChartProps) {
     const config = createConfiguration()
 
     const chart = new Chart<'bar', {x: number; y: number}[]>(ctx, config)
+    this.chart = chart
 
     let lastSelectedGeneration = -1
 
@@ -100,15 +116,16 @@ export function FitnessDistributionChart(props: FitnessDistributionChartProps) {
       lastSelectedGeneration = selectedGeneration
     }
 
-    updateHistoryData(appStore.getState())
+    updateHistoryData(this.store.getState())
 
-    const unsubscribe = appStore.subscribe(updateHistoryData)
+    this.unsubscribeStore = this.store.subscribe(updateHistoryData)
 
-    return () => {
-      unsubscribe()
-      chart.destroy()
-    }
-  }, [appStore])
+    super.firstUpdated(changedProperties)
+  }
 
-  return <canvas ref={canvasRef} />
+  protected render() {
+    return html`<canvas></canvas>`
+  }
 }
+
+defineElement('fitness-distribution-chart', FitnessDistributionChartElement)

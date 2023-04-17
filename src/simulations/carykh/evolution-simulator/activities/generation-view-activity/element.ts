@@ -1,3 +1,6 @@
+import '../../charts/fitness-distribution/element'
+import '../../charts/percentiles/element'
+import '../../charts/populations/element'
 import './creature-info/element'
 
 import {Store} from '@jneander/utils-state'
@@ -8,7 +11,6 @@ import {createRoot, Root} from 'react-dom/client'
 import {RangeInputField} from '../../../../../shared/components'
 import {BaseElement, defineElement} from '../../../../../shared/views'
 import type {AppController} from '../../app-controller'
-import {FitnessDistributionChart, PercentilesChart, PopulationsChart} from '../../charts'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {GenerationSimulationMode} from './constants'
@@ -24,9 +26,6 @@ export class GenerationViewActivityElement extends BaseElement {
   private activityController?: ActivityController
 
   private generationRangeRoot?: Root
-  private percentilesChartRoot?: Root
-  private populationsChartRoot?: Root
-  private fitnessDistributionChartRoot?: Root
 
   private storeListeners: (() => void)[] = []
 
@@ -111,15 +110,21 @@ export class GenerationViewActivityElement extends BaseElement {
 
         <div class=${styles.Charts}>
           <div>
-            <div class=${styles.ChartContainer} id="percentiles-chart"></div>
+            <div class=${styles.ChartContainer}>
+              <percentiles-chart .store=${this.store}></percentiles-chart>
+            </div>
 
-            <div class=${styles.PopulationsChartContainer} id="populations-chart"></div>
+            <div class=${styles.PopulationsChartContainer}>
+              <populations-chart .store=${this.store}></populations-chart>
+            </div>
           </div>
 
           <div>
             <div class=${styles.Creatures}>${this.renderCreatures()}</div>
 
-            <div class=${styles.ChartContainer} id="fitness-distribution-chart"></div>
+            <div class=${styles.ChartContainer}>
+              <fitness-distribution-chart .store=${this.store}></fitness-distribution-chart>
+            </div>
           </div>
         </div>
       </div>
@@ -131,23 +136,6 @@ export class GenerationViewActivityElement extends BaseElement {
     if (generationRangeContainer) {
       this.generationRangeRoot = createRoot(generationRangeContainer)
     }
-
-    const percentilesContainer = this.querySelector('#percentiles-chart')
-    if (percentilesContainer) {
-      this.percentilesChartRoot = createRoot(percentilesContainer)
-    }
-
-    const populationsContainer = this.querySelector('#populations-chart')
-    if (populationsContainer) {
-      this.populationsChartRoot = createRoot(populationsContainer)
-    }
-
-    const fitnessDistributionContainer = this.querySelector('#fitness-distribution-chart')
-    if (fitnessDistributionContainer) {
-      this.fitnessDistributionChartRoot = createRoot(fitnessDistributionContainer)
-    }
-
-    this.renderCharts()
   }
 
   protected updated(): void {
@@ -199,14 +187,6 @@ export class GenerationViewActivityElement extends BaseElement {
         .simulationConfig=${simulationConfig}
       ></creature-info>
     `
-  }
-
-  private renderCharts(): void {
-    this.percentilesChartRoot?.render(createElement(PercentilesChart, {appStore: this.store}))
-    this.populationsChartRoot?.render(createElement(PopulationsChart, {appStore: this.store}))
-    this.fitnessDistributionChartRoot?.render(
-      createElement(FitnessDistributionChart, {appStore: this.store}),
-    )
   }
 
   private handleStepByStepClick(): void {

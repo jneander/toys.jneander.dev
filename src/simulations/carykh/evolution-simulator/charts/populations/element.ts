@@ -1,27 +1,43 @@
 import {ActiveDataPoint, Chart} from 'chart.js'
-import {useEffect, useRef} from 'react'
+import {html} from 'lit'
 
-import {AppState, AppStore} from '../../types'
+import {BaseElement, defineElement} from '../../../../../shared/views'
+import type {AppState, AppStore} from '../../types'
 import {createConfiguration} from './configuration'
 
-export interface PopulationsChartProps {
-  appStore: AppStore
-}
+export class PopulationsChartElement extends BaseElement {
+  private declare store: AppStore
 
-export function PopulationsChart(props: PopulationsChartProps) {
-  const {appStore} = props
+  private unsubscribeStore?: () => void
+  private chart?: Chart<'populations', number[]>
 
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  static get properties() {
+    return {
+      store: {type: Object},
+    }
+  }
 
-  useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d')
+  disconnectedCallback(): void {
+    this.unsubscribeStore?.()
+    delete this.unsubscribeStore
+
+    this.chart?.destroy()
+
+    super.disconnectedCallback()
+  }
+
+  protected firstUpdated(changedProperties: Map<PropertyKey, unknown>): void {
+    const canvas = this.querySelector('canvas') as HTMLCanvasElement
+
+    const ctx = canvas?.getContext('2d')
     if (!ctx) {
       return
     }
 
     const config = createConfiguration()
 
-    const chart = new Chart(ctx, config)
+    const chart = new Chart<'populations', number[]>(ctx, config)
+    this.chart = chart
 
     let lastGenerationCount = 0
     let lastSelectedGeneration = -1
@@ -89,15 +105,16 @@ export function PopulationsChart(props: PopulationsChartProps) {
       lastGenerationCount = generationCount
     }
 
-    updateHistoryData(appStore.getState())
+    updateHistoryData(this.store.getState())
 
-    const unsubscribe = appStore.subscribe(updateHistoryData)
+    this.unsubscribeStore = this.store.subscribe(updateHistoryData)
 
-    return () => {
-      unsubscribe()
-      chart.destroy()
-    }
-  }, [appStore])
+    super.firstUpdated(changedProperties)
+  }
 
-  return <canvas ref={canvasRef} />
+  protected render() {
+    return html`<canvas></canvas>`
+  }
 }
+
+defineElement('populations-chart', PopulationsChartElement)

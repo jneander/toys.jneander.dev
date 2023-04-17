@@ -1,3 +1,4 @@
+import '../../../../../shared/components/inputs/range-input.element'
 import '../../charts/fitness-distribution/element'
 import '../../charts/percentiles/element'
 import '../../charts/populations/element'
@@ -5,10 +6,7 @@ import './creature-info/element'
 
 import {Store} from '@jneander/utils-state'
 import {html} from 'lit'
-import {ChangeEvent, ComponentProps, createElement} from 'react'
-import {createRoot, Root} from 'react-dom/client'
 
-import {RangeInputField} from '../../../../../shared/components'
 import {BaseElement, defineElement} from '../../../../../shared/views'
 import type {AppController} from '../../app-controller'
 import type {AppStore} from '../../types'
@@ -24,8 +22,6 @@ export class GenerationViewActivityElement extends BaseElement {
 
   private activityStore?: Store<ActivityState>
   private activityController?: ActivityController
-
-  private generationRangeRoot?: Root
 
   private storeListeners: (() => void)[] = []
 
@@ -60,8 +56,6 @@ export class GenerationViewActivityElement extends BaseElement {
       fn()
     })
     this.storeListeners.length = 0
-
-    this.generationRangeRoot?.unmount()
 
     super.disconnectedCallback()
   }
@@ -100,7 +94,7 @@ export class GenerationViewActivityElement extends BaseElement {
           <button @click=${this.handleEndAlapClick} type="button">End ALAP</button>
         </div>
 
-        <div class=${styles.GenerationRange} id="generation-range"></div>
+        <div class=${styles.GenerationRange}>${this.renderGenerationRange()}</div>
 
         <p>
           <span>Generation ${selectedGeneration}</span>
@@ -131,30 +125,19 @@ export class GenerationViewActivityElement extends BaseElement {
     `
   }
 
-  protected firstUpdated(): void {
-    const generationRangeContainer = this.querySelector('#generation-range')
-    if (generationRangeContainer) {
-      this.generationRangeRoot = createRoot(generationRangeContainer)
-    }
-  }
-
-  protected updated(): void {
-    this.renderGenerationRange()
-  }
-
-  private renderGenerationRange(): void {
+  private renderGenerationRange() {
     const {generationCount, selectedGeneration} = this.store.getState()
 
-    const props: ComponentProps<typeof RangeInputField> = {
-      labelText: 'Displayed Generation',
-      disabled: generationCount === 0,
-      max: generationCount,
-      min: Math.min(1, generationCount - 1),
-      onChange: this.handleSelectedGenerationChange.bind(this),
-      value: selectedGeneration,
-    }
-
-    this.generationRangeRoot?.render(createElement(RangeInputField, props))
+    return html`
+      <range-input-field
+        @input=${this.handleSelectedGenerationChange}
+        ?disabled=${generationCount === 0}
+        labelText="Displayed Generation"
+        .max=${generationCount}
+        .min=${Math.min(1, generationCount - 1)}
+        .value=${selectedGeneration}
+      ></range-input-field>
+    `
   }
 
   private renderCreatures() {
@@ -209,9 +192,9 @@ export class GenerationViewActivityElement extends BaseElement {
     this.activityController?.endAlapGenerationSimulation()
   }
 
-  private handleSelectedGenerationChange(event: ChangeEvent<HTMLInputElement>): void {
+  private handleSelectedGenerationChange(event: Event): void {
     const {selectedGeneration} = this.store.getState()
-    const value = Number.parseInt(event.target.value, 10)
+    const value = Number.parseInt((event.target as HTMLInputElement).value)
 
     if (value !== selectedGeneration) {
       this.store.setState({selectedGeneration: value})

@@ -1,27 +1,20 @@
 import {Store} from '@jneander/utils-state'
 import {html} from 'lit'
-import {createElement} from 'react'
-import {createRoot, Root} from 'react-dom/client'
 
 import {BaseElement, defineElement} from '../../../../../shared/views'
 import type {AppController} from '../../app-controller'
+import {CREATURE_COUNT} from '../../constants'
 import {CreatureGridAdapter, SortingCreaturesAdapter} from '../../creature-collection-view'
 import {P5ClientViewAdapter} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {ActivityStep} from './constants'
-import {CullCreaturesView} from './cull-creatures-view'
-import {PropagateCreaturesView} from './propagate-creatures-view'
-import {SimulationFinishedView} from './simulation-finished-view'
-import {SortedCreaturesView} from './sorted-creatures-view'
-import {SortingCreaturesView} from './sorting-creatures-view'
 import type {ActivityState} from './types'
 
 export class PostSimulationActivityElement extends BaseElement {
   public declare controller: AppController
   public declare store: AppStore
 
-  private activityViewRoot?: Root
   private activityStore?: Store<ActivityState>
   private activityController?: ActivityController
   private creatureCollectionAdapter?: P5ClientViewAdapter
@@ -61,8 +54,6 @@ export class PostSimulationActivityElement extends BaseElement {
     })
     this.storeListeners.length = 0
 
-    this.activityViewRoot?.unmount()
-
     super.disconnectedCallback()
   }
 
@@ -101,67 +92,92 @@ export class PostSimulationActivityElement extends BaseElement {
     super.update(changedProperties)
   }
 
-  protected firstUpdated(): void {
-    const activityViewContainer = this.querySelector('#activity-view')
-    if (activityViewContainer) {
-      this.activityViewRoot = createRoot(activityViewContainer)
-    }
-  }
-
-  protected updated(): void {
+  protected render() {
     const {currentActivityStep} = this.activityStore?.getState() ?? {}
 
-    if (!(this.activityController && this.controller && this.store)) {
-      return
+    let activityContent
+
+    if (currentActivityStep === ActivityStep.SimulationFinished) {
+      const handleSortClick = () => {
+        this.controller.sortCreatures()
+        this.controller.updateHistory()
+        this.activityController?.setCurrentActivityStep(ActivityStep.SortingCreatures)
+      }
+
+      activityContent = html`
+        <p>All 1,000 creatures have been tested. Now let's sort them!</p>
+
+        <button @click=${handleSortClick} type="button">Sort</button>
+      `
     }
 
-    let element
-
     if (currentActivityStep === ActivityStep.SortingCreatures) {
-      element = createElement(SortingCreaturesView, {
-        activityController: this.activityController,
-      })
+      const handleSkipClick = () => {
+        this.activityController?.setCurrentActivityStep(ActivityStep.SortedCreatures)
+      }
+
+      activityContent = html`<button @click=${handleSkipClick} type="button">Skip</button>`
     }
 
     if (currentActivityStep === ActivityStep.SortedCreatures) {
-      element = createElement(SortedCreaturesView, {
-        activityController: this.activityController,
-        appController: this.controller,
-      })
+      const handleCullClick = () => {
+        this.controller.cullCreatures()
+        this.activityController?.setCurrentActivityStep(ActivityStep.CullCreatures)
+      }
+
+      activityContent = html`
+        <p>
+          Fastest creatures at the top! Slowest creatures at the bottom. (Going backward = slow)
+        </p>
+
+        <button @click=${handleCullClick} type="button">
+          Kill ${Math.floor(CREATURE_COUNT / 2)}
+        </button>
+      `
     }
 
     if (currentActivityStep === ActivityStep.CullCreatures) {
-      element = createElement(CullCreaturesView, {
-        activityController: this.activityController,
-        appController: this.controller,
-      })
+      const handlePropagateClick = () => {
+        this.controller.propagateCreatures()
+        this.activityController?.setCurrentActivityStep(ActivityStep.PropagateCreatures)
+      }
+
+      activityContent = html`
+        <p>
+          Faster creatures are more likely to survive because they can outrun their predators. Slow
+          creatures get eaten.
+        </p>
+
+        <p>Because of random chance, a few fast ones get eaten, while a few slow ones survive.</p>
+
+        <button @click=${handlePropagateClick} type="button">Reproduce</button>
+      `
     }
 
     if (currentActivityStep === ActivityStep.PropagateCreatures) {
-      element = createElement(PropagateCreaturesView, {
-        activityController: this.activityController,
-        appStore: this.store,
-      })
+      const handleBackClick = () => {
+        this.activityController?.finishPostSimulation()
+      }
+
+      activityContent = html`
+        <p>
+          These are the ${CREATURE_COUNT} creatures of generation
+          #${this.store.getState().generationCount + 1}.
+        </p>
+
+        <p>What perils will they face? Find out next time!</p>
+
+        <button @click=${handleBackClick} type="button">Back</button>
+      `
     }
 
-    if (currentActivityStep === ActivityStep.SimulationFinished) {
-      element = createElement(SimulationFinishedView, {
-        activityController: this.activityController,
-        appController: this.controller,
-      })
-    }
-
-    this.activityViewRoot?.render(element)
-  }
-
-  protected render() {
     return html`
       <div class="flow">
         <creature-collection-view
           .adapter=${this.creatureCollectionAdapter}
         ></creature-collection-view>
 
-        <div id="activity-view"></div>
+        ${activityContent}
       </div>
     `
   }

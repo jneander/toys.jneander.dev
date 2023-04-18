@@ -1,4 +1,4 @@
-import type {P5ClientViewAdapter, P5Wrapper} from '../p5-utils'
+import type {P5ViewAdapter, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {SortingCreaturesP5View} from './sorting-creatures-p5-view'
 
@@ -7,7 +7,7 @@ export interface SortingCreaturesAdapterConfig {
   onAnimationFinished: () => void
 }
 
-export class SortingCreaturesAdapter implements P5ClientViewAdapter {
+export class SortingCreaturesAdapter implements P5ViewAdapter {
   private config: SortingCreaturesAdapterConfig
 
   private sortingCreaturesP5Ui: SortingCreaturesP5View | null

@@ -5,7 +5,7 @@ import {BaseElement, defineElement} from '../../../../../shared/views'
 import type {AppController} from '../../app-controller'
 import {CREATURE_COUNT} from '../../constants'
 import {CreatureGridAdapter, SortingCreaturesAdapter} from '../../creature-collection-view'
-import {P5ClientViewAdapter} from '../../p5-utils'
+import type {P5ViewAdapter} from '../../p5-utils'
 import type {AppStore} from '../../types'
 import {ActivityController} from './activity-controller'
 import {ActivityStep} from './constants'
@@ -17,7 +17,7 @@ export class PostSimulationActivityElement extends BaseElement {
 
   private activityStore?: Store<ActivityState>
   private activityController?: ActivityController
-  private creatureCollectionAdapter?: P5ClientViewAdapter
+  private creatureCollectionAdapter?: P5ViewAdapter
 
   private storeListeners: (() => void)[] = []
 

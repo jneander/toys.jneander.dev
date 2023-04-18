@@ -1,5 +1,5 @@
 import type {AppController} from '../app-controller'
-import type {P5ClientViewAdapter, P5Wrapper} from '../p5-utils'
+import type {P5ViewAdapter, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {CreatureGridP5Ui} from './creature-grid-p5-ui'
 import type {CreatureAndGridIndex} from './types'
@@ -11,7 +11,7 @@ export interface CreatureGridAdapterConfig {
   showsPopupSimulation: () => boolean
 }
 
-export class CreatureGridAdapter implements P5ClientViewAdapter {
+export class CreatureGridAdapter implements P5ViewAdapter {
   private config: CreatureGridAdapterConfig
 
   private creatureGridP5Ui: CreatureGridP5Ui | null

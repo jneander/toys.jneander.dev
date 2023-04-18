@@ -1,5 +1,5 @@
 import type {AppController} from '../../app-controller'
-import type {P5ClientViewAdapter, P5Wrapper} from '../../p5-utils'
+import type {P5ViewAdapter, P5Wrapper} from '../../p5-utils'
 import type {ActivityController} from './activity-controller'
 import {SimulationRunningP5Ui} from './simulation-running-p5-ui'
 
@@ -8,7 +8,7 @@ export interface SimulationRunningAdapterConfig {
   appController: AppController
 }
 
-export class SimulationRunningAdapter implements P5ClientViewAdapter {
+export class SimulationRunningAdapter implements P5ViewAdapter {
   private config: SimulationRunningAdapterConfig
 
   private simulationRunningP5Ui: SimulationRunningP5Ui | null

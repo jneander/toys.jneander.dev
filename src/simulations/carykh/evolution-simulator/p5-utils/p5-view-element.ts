@@ -2,10 +2,10 @@ import p5 from 'p5'
 
 import {BaseElement, defineElement} from '../../../../shared/views'
 import {P5ClientViewController} from './p5-client-view-controller'
-import type {P5ClientViewAdapter} from './types'
+import type {P5ViewAdapter} from './types'
 
 export class P5ViewElement extends BaseElement {
-  private declare clientViewAdapter: P5ClientViewAdapter
+  private declare clientViewAdapter: P5ViewAdapter
   private declare height?: number
   private declare scale?: number
   private declare width?: number

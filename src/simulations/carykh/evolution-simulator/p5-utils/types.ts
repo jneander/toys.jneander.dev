@@ -1,6 +1,6 @@
 import {P5Wrapper} from './p5-wrapper'
 
-export interface P5ClientViewAdapter {
+export interface P5ViewAdapter {
   initialize(p5Wrapper: P5Wrapper): void
   deinitialize(): void
 

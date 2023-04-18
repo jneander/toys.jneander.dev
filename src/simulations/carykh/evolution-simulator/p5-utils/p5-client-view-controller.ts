@@ -2,7 +2,7 @@ import type p5 from 'p5'
 import type {Font} from 'p5'
 
 import {P5Wrapper} from './p5-wrapper'
-import type {P5ClientViewAdapter} from './types'
+import type {P5ViewAdapter} from './types'
 
 let font: Font
 
@@ -14,7 +14,7 @@ export interface P5ClientViewControllerConfig {
 
 export class P5ClientViewController {
   private config: P5ClientViewControllerConfig
-  private adapter: P5ClientViewAdapter | null
+  private adapter: P5ViewAdapter | null
 
   constructor(config: Partial<P5ClientViewControllerConfig> = {}) {
     const {height = 720, scale = 0.8, width = 1280} = config
@@ -25,7 +25,7 @@ export class P5ClientViewController {
     this.sketch = this.sketch.bind(this)
   }
 
-  setAdapter(adapter: P5ClientViewAdapter | null): void {
+  setAdapter(adapter: P5ViewAdapter | null): void {
     this.adapter?.deinitialize()
     this.adapter = adapter
   }
@@ -33,7 +33,7 @@ export class P5ClientViewController {
   sketch(p5: p5): void {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentAdapter: P5ClientViewAdapter | null
+    let currentAdapter: P5ViewAdapter | null
     let p5Wrapper: P5Wrapper
 
     p5.mousePressed = () => {

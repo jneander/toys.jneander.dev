@@ -21,7 +21,7 @@ export class CreatureCollectionViewElement extends BaseElement {
     return html`
       <div class="${styles.Container}">
         <p5-view
-          .clientViewAdapter=${this.adapter}
+          .adapter=${this.adapter}
           height="${CREATURE_COLLECTION_VIEW_HEIGHT}"
           scale="1"
           width="${CREATURE_COLLECTION_VIEW_WIDTH}"

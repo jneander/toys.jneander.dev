@@ -1,6 +1,4 @@
-import '../../../../shared/p5/p5-view.element'
-
-import {html} from 'lit'
+import p5 from 'p5'
 
 import {BaseElement, defineElement} from '../../../../shared/views'
 import {P5ClientViewController} from './p5-client-view-controller'
@@ -13,6 +11,8 @@ export class P5ControlledClientViewElement extends BaseElement {
   private declare width?: number
 
   private clientViewController?: P5ClientViewController
+  private container: HTMLDivElement
+  private instance?: p5
 
   static get properties() {
     return {
@@ -23,16 +23,33 @@ export class P5ControlledClientViewElement extends BaseElement {
     }
   }
 
+  constructor() {
+    super()
+
+    this.container = document.createElement('div')
+  }
+
   connectedCallback(): void {
+    this.appendChild(this.container)
+
     this.clientViewController = new P5ClientViewController({
       height: this.height,
       scale: this.scale,
       width: this.width,
     })
 
+    this.instance = new p5(this.clientViewController.sketch, this.container)
+
     this.clientViewController.setAdapter(this.clientViewAdapter)
 
     super.connectedCallback()
+  }
+
+  disconnectedCallback(): void {
+    this.instance?.remove()
+    delete this.instance
+
+    super.disconnectedCallback()
   }
 
   protected update(changedProperties: Map<PropertyKey, unknown>): void {
@@ -42,15 +59,14 @@ export class P5ControlledClientViewElement extends BaseElement {
         scale: this.scale,
         width: this.width,
       })
+
+      this.instance?.remove()
+      this.instance = new p5(this.clientViewController.sketch, this.container)
     }
 
     this.clientViewController?.setAdapter(this.clientViewAdapter)
 
     super.update(changedProperties)
-  }
-
-  protected render() {
-    return html`<p5-view .sketch=${this.clientViewController?.sketch}></p5-view>`
   }
 }
 

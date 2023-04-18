@@ -1,6 +1,8 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
+import type {Optional} from '../../../../shared/utils'
+
 export interface P5WrapperConfig {
   font: Font
   height: number
@@ -17,9 +19,9 @@ export class P5Wrapper {
   canvas: p5
   font: Font
 
-  constructor(config: P5WrapperConfig) {
+  constructor(config: Optional<P5WrapperConfig, 'scale'>) {
     this.height = config.height
-    this.scale = config.scale
+    this.scale = config.scale ?? 1
     this.width = config.width
 
     this.font = config.font

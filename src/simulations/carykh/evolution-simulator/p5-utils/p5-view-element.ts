@@ -7,7 +7,6 @@ import type {P5ViewAdapter} from './types'
 export class P5ViewElement extends BaseElement {
   private declare adapter: P5ViewAdapter
   private declare height?: number
-  private declare scale?: number
   private declare width?: number
 
   private controller?: P5ViewController
@@ -18,7 +17,6 @@ export class P5ViewElement extends BaseElement {
     return {
       adapter: {type: Object},
       height: {type: Number},
-      scale: {type: Number},
       width: {type: Number},
     }
   }
@@ -34,7 +32,6 @@ export class P5ViewElement extends BaseElement {
 
     this.controller = new P5ViewController({
       height: this.height,
-      scale: this.scale,
       width: this.width,
     })
 
@@ -53,10 +50,9 @@ export class P5ViewElement extends BaseElement {
   }
 
   protected update(changedProperties: Map<PropertyKey, unknown>): void {
-    if (['height', 'scale', 'width'].some(property => changedProperties.has(property))) {
+    if (['height', 'width'].some(property => changedProperties.has(property))) {
       this.controller = new P5ViewController({
         height: this.height,
-        scale: this.scale,
         width: this.width,
       })
 

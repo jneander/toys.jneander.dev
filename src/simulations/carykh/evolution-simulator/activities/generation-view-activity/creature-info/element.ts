@@ -1,4 +1,4 @@
-import '../../../p5-utils/p5-controlled-client-view.element'
+import '../../../p5-utils/p5-view-element'
 
 import {Store} from '@jneander/utils-state'
 import {html} from 'lit'
@@ -56,7 +56,7 @@ export class CreatureInfoElement extends BaseElement {
     return html`
       <div class=${styles.Container}>
         <div class=${styles.CanvasContainer}>
-          <p5-controlled-client-view
+          <p5-view
             .clientViewAdapter=${this.clientViewAdapter}
             .height=${240}
             @mouseenter=${this.handleMouseEnter}

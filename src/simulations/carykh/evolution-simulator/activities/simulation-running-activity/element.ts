@@ -1,4 +1,4 @@
-import '../../p5-utils/p5-controlled-client-view.element'
+import '../../p5-utils/p5-view-element'
 
 import {Store} from '@jneander/utils-state'
 import {html} from 'lit'
@@ -54,7 +54,7 @@ export class SimulationRunningActivityElement extends BaseElement {
     return html`
       <div>
         <div class=${styles.Container}>
-          <p5-controlled-client-view .clientViewAdapter=${this.clientViewAdapter} />
+          <p5-view .clientViewAdapter=${this.clientViewAdapter} />
         </div>
 
         <button @click=${this.handleSkipClick} type="button">Skip</button>

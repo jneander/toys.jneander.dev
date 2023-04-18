@@ -1,4 +1,4 @@
-import '../p5-utils/p5-controlled-client-view.element'
+import '../p5-utils/p5-view-element'
 
 import {html} from 'lit'
 
@@ -20,12 +20,12 @@ export class CreatureCollectionViewElement extends BaseElement {
   protected render() {
     return html`
       <div class="${styles.Container}">
-        <p5-controlled-client-view
+        <p5-view
           .clientViewAdapter=${this.adapter}
           height="${CREATURE_COLLECTION_VIEW_HEIGHT}"
           scale="1"
           width="${CREATURE_COLLECTION_VIEW_WIDTH}"
-        ></p5-controlled-client-view>
+        ></p5-view>
       </div>
     `
   }

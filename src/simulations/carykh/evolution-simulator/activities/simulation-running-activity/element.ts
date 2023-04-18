@@ -19,7 +19,7 @@ export class SimulationRunningActivityElement extends BaseElement {
 
   private activityController?: ActivityController
   private activityStore?: Store<ActivityState>
-  private clientViewAdapter?: SimulationRunningAdapter
+  private viewAdapter?: SimulationRunningAdapter
 
   static get properties() {
     return {
@@ -40,7 +40,7 @@ export class SimulationRunningActivityElement extends BaseElement {
       appStore: this.store,
     })
 
-    this.clientViewAdapter = new SimulationRunningAdapter({
+    this.viewAdapter = new SimulationRunningAdapter({
       activityController: this.activityController,
       appController: this.controller,
     })
@@ -54,7 +54,7 @@ export class SimulationRunningActivityElement extends BaseElement {
     return html`
       <div>
         <div class=${styles.Container}>
-          <p5-view .clientViewAdapter=${this.clientViewAdapter} />
+          <p5-view .adapter=${this.viewAdapter} />
         </div>
 
         <button @click=${this.handleSkipClick} type="button">Skip</button>

@@ -6,17 +6,17 @@ import type {P5ViewAdapter} from './types'
 
 let font: Font
 
-export interface P5ClientViewControllerConfig {
+export interface P5ViewControllerConfig {
   height: number
   scale: number
   width: number
 }
 
-export class P5ClientViewController {
-  private config: P5ClientViewControllerConfig
+export class P5ViewController {
+  private config: P5ViewControllerConfig
   private adapter: P5ViewAdapter | null
 
-  constructor(config: Partial<P5ClientViewControllerConfig> = {}) {
+  constructor(config: Partial<P5ViewControllerConfig> = {}) {
     const {height = 720, scale = 0.8, width = 1280} = config
     this.config = {height, scale, width}
 

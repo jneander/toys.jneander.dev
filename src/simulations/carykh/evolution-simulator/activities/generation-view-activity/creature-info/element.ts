@@ -17,7 +17,7 @@ export class CreatureInfoElement extends BaseElement {
   private declare simulationConfig: SimulationConfig
 
   private store: Store<CreatureInfoState>
-  private clientViewAdapter?: CreatureInfoAdapter
+  private viewAdapter?: CreatureInfoAdapter
 
   static get properties() {
     return {
@@ -37,7 +37,7 @@ export class CreatureInfoElement extends BaseElement {
 
   protected update(changedProperties: Map<PropertyKey, unknown>): void {
     if (changedProperties.has('creature')) {
-      this.clientViewAdapter = new CreatureInfoAdapter({
+      this.viewAdapter = new CreatureInfoAdapter({
         creature: this.creature,
         creatureInfoStore: this.store,
         simulationConfig: this.simulationConfig,
@@ -57,7 +57,7 @@ export class CreatureInfoElement extends BaseElement {
       <div class=${styles.Container}>
         <div class=${styles.CanvasContainer}>
           <p5-view
-            .clientViewAdapter=${this.clientViewAdapter}
+            .adapter=${this.viewAdapter}
             .height=${240}
             @mouseenter=${this.handleMouseEnter}
             @mouseleave=${this.handleMouseLeave}

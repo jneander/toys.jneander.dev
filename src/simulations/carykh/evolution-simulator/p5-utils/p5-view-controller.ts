@@ -8,7 +8,6 @@ let font: Font
 
 export interface P5ViewControllerConfig {
   height: number
-  scale: number
   width: number
 }
 
@@ -17,8 +16,8 @@ export class P5ViewController {
   private adapter: P5ViewAdapter | null
 
   constructor(config: Partial<P5ViewControllerConfig> = {}) {
-    const {height = 720, scale = 0.8, width = 1280} = config
-    this.config = {height, scale, width}
+    const {height = 576, width = 1024} = config
+    this.config = {height, width}
 
     this.adapter = null
 
@@ -57,13 +56,12 @@ export class P5ViewController {
     p5.setup = () => {
       p5.frameRate(FRAME_RATE)
 
-      const {height, scale, width} = this.config
+      const {height, width} = this.config
 
       p5Wrapper = new P5Wrapper({
         font,
         height,
         p5,
-        scale,
         width,
       })
     }

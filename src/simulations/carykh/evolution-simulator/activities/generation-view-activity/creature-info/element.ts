@@ -61,7 +61,6 @@ export class CreatureInfoElement extends BaseElement {
             .height=${240}
             @mouseenter=${this.handleMouseEnter}
             @mouseleave=${this.handleMouseLeave}
-            .scale=${1}
             .width=${240}
           />
         </div>

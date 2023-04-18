@@ -23,7 +23,6 @@ export class CreatureCollectionViewElement extends BaseElement {
         <p5-view
           .adapter=${this.adapter}
           height="${CREATURE_COLLECTION_VIEW_HEIGHT}"
-          scale="1"
           width="${CREATURE_COLLECTION_VIEW_WIDTH}"
         ></p5-view>
       </div>

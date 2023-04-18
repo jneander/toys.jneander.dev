@@ -30,14 +30,12 @@ export class P5ViewElement extends BaseElement {
   connectedCallback(): void {
     this.appendChild(this.container)
 
-    this.controller = new P5ViewController({
+    this.controller = new P5ViewController(this.adapter, {
       height: this.height,
       width: this.width,
     })
 
     this.instance = new p5(this.controller.sketch, this.container)
-
-    this.controller.setAdapter(this.adapter)
 
     super.connectedCallback()
   }
@@ -51,16 +49,16 @@ export class P5ViewElement extends BaseElement {
 
   protected update(changedProperties: Map<PropertyKey, unknown>): void {
     if (['height', 'width'].some(property => changedProperties.has(property))) {
-      this.controller = new P5ViewController({
+      this.controller = new P5ViewController(this.adapter, {
         height: this.height,
         width: this.width,
       })
 
       this.instance?.remove()
       this.instance = new p5(this.controller.sketch, this.container)
+    } else if (changedProperties.has('adapter')) {
+      this.controller?.setAdapter(this.adapter)
     }
-
-    this.controller?.setAdapter(this.adapter)
 
     super.update(changedProperties)
   }

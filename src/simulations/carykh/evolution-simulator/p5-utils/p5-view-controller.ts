@@ -13,19 +13,19 @@ export interface P5ViewControllerConfig {
 
 export class P5ViewController {
   private config: P5ViewControllerConfig
-  private adapter: P5ViewAdapter | null
+  private adapter: P5ViewAdapter
 
-  constructor(config: Partial<P5ViewControllerConfig> = {}) {
+  constructor(adapter: P5ViewAdapter, config: Partial<P5ViewControllerConfig> = {}) {
+    this.adapter = adapter
+
     const {height = 576, width = 1024} = config
     this.config = {height, width}
-
-    this.adapter = null
 
     this.sketch = this.sketch.bind(this)
   }
 
-  setAdapter(adapter: P5ViewAdapter | null): void {
-    this.adapter?.deinitialize()
+  setAdapter(adapter: P5ViewAdapter): void {
+    this.adapter.deinitialize()
     this.adapter = adapter
   }
 
@@ -71,10 +71,10 @@ export class P5ViewController {
 
       if (currentAdapter !== this.adapter) {
         currentAdapter = this.adapter
-        currentAdapter?.initialize(p5Wrapper)
+        currentAdapter.initialize(p5Wrapper)
       }
 
-      currentAdapter?.draw?.()
+      currentAdapter.draw?.()
     }
   }
 }

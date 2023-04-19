@@ -23,7 +23,8 @@ export class P5ViewElement extends BaseElement {
   connectedCallback(): void {
     this.appendChild(this.container)
 
-    this.controller = new P5ViewController(this.adapter, this.container)
+    this.controller = new P5ViewController(this.container)
+    this.controller.setAdapter(this.adapter)
     this.controller.initialize()
 
     super.connectedCallback()

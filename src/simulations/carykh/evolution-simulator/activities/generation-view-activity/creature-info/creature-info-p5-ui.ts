@@ -44,10 +44,10 @@ export class CreatureInfoP5Ui {
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.1,
-      canvas: p5,
       creatureDrawer: this.creatureDrawer,
       creatureSimulation: this.creatureSimulation,
       height: 480,
+      p5,
       postFont: font,
       showArrow: false,
       simulationConfig: this.simulationConfig,

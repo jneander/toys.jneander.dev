@@ -10,10 +10,10 @@ import type {SimulationCameraState} from '../types'
 
 export interface SimulationViewConfig {
   cameraSpeed: number
-  canvas: p5
   creatureDrawer: CreatureDrawer
   creatureSimulation: CreatureSimulation
   height: number
+  p5: p5
   postFont: Font
   scale?: number
   showArrow: boolean
@@ -42,11 +42,11 @@ export class SimulationView {
       zoom: 0.015,
     }
 
-    const {canvas, height, width} = this.config
+    const {height, p5, width} = this.config
 
-    this.graphics = canvas.createGraphics(width, height)
-    this.simulationGraphics = canvas.createGraphics(width, height)
-    this.statsGraphics = canvas.createGraphics(width, height)
+    this.graphics = p5.createGraphics(width, height)
+    this.simulationGraphics = p5.createGraphics(width, height)
+    this.statsGraphics = p5.createGraphics(width, height)
 
     this.scale = config.scale || 1
   }

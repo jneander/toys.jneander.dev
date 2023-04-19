@@ -1,7 +1,6 @@
 import type {AppController} from '../app-controller'
 import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
-import {CREATURE_COLLECTION_VIEW_HEIGHT, CREATURE_COLLECTION_VIEW_WIDTH} from './constants'
 import {CreatureGridP5Ui} from './creature-grid-p5-ui'
 import type {CreatureAndGridIndex} from './types'
 
@@ -25,8 +24,8 @@ export class CreatureGridAdapter implements P5ViewAdapter {
 
   get dimensions(): P5ViewDimensions {
     return {
-      height: CREATURE_COLLECTION_VIEW_HEIGHT,
-      width: CREATURE_COLLECTION_VIEW_WIDTH,
+      height: 664,
+      width: 1024,
     }
   }
 
@@ -34,6 +33,7 @@ export class CreatureGridAdapter implements P5ViewAdapter {
     this.creatureGridP5Ui = new CreatureGridP5Ui({
       appController: this.config.appController,
       appStore: this.config.appStore,
+      dimensions: this.dimensions,
       getCreatureAndGridIndexFn: this.config.getCreatureAndGridIndexFn,
       p5Wrapper,
       showsPopupSimulation: this.config.showsPopupSimulation,

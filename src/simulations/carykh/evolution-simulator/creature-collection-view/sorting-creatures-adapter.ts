@@ -1,6 +1,5 @@
 import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
-import {CREATURE_COLLECTION_VIEW_HEIGHT, CREATURE_COLLECTION_VIEW_WIDTH} from './constants'
 import {SortingCreaturesP5View} from './sorting-creatures-p5-view'
 
 export interface SortingCreaturesAdapterConfig {
@@ -21,8 +20,8 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
 
   get dimensions(): P5ViewDimensions {
     return {
-      height: CREATURE_COLLECTION_VIEW_HEIGHT,
-      width: CREATURE_COLLECTION_VIEW_WIDTH,
+      height: 664,
+      width: 1024,
     }
   }
 

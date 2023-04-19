@@ -7,12 +7,11 @@ import type {P5ViewAdapter} from './types'
 let font: Font
 
 export class P5ViewController {
-  private adapter: P5ViewAdapter
+  private adapter?: P5ViewAdapter
   private container: HTMLElement
   private instance?: p5
 
-  constructor(adapter: P5ViewAdapter, container: HTMLElement) {
-    this.adapter = adapter
+  constructor(container: HTMLElement) {
     this.container = container
   }
 
@@ -26,14 +25,14 @@ export class P5ViewController {
   }
 
   setAdapter(adapter: P5ViewAdapter): void {
-    this.adapter.deinitialize()
+    this.adapter?.deinitialize()
     this.adapter = adapter
   }
 
   private sketch(p5: p5): void {
     const FRAME_RATE = 60 // target frames per second
 
-    let currentAdapter: P5ViewAdapter | null
+    let currentAdapter: P5ViewAdapter | undefined
     let p5Wrapper: P5Wrapper
 
     p5.mousePressed = () => {
@@ -68,10 +67,10 @@ export class P5ViewController {
 
       if (currentAdapter !== this.adapter) {
         currentAdapter = this.adapter
-        currentAdapter.initialize(p5Wrapper)
+        currentAdapter?.initialize(p5Wrapper)
       }
 
-      currentAdapter.draw?.()
+      currentAdapter?.draw?.()
     }
   }
 }

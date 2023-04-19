@@ -3,10 +3,8 @@ import type {Graphics, Image} from 'p5'
 import {CREATURE_COUNT} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import type {Creature} from '../creatures'
-import type {P5Wrapper} from '../p5-utils'
+import type {P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import {
-  CREATURE_COLLECTION_VIEW_HEIGHT,
-  CREATURE_COLLECTION_VIEW_WIDTH,
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   GRID_AREA_HEIGHT,
@@ -18,6 +16,8 @@ import {getCachedCreatureImage, setCachedCreatureImage} from './creature-image-c
 import {gridIndexToRowAndColumn, rowAndColumnToGridIndex} from './helpers'
 
 export interface CreatureGridP5ViewConfig {
+  dimensions: P5ViewDimensions
+
   getCreatureAndGridIndexFn: (index: number) => {
     creature: Creature
     gridIndex: number
@@ -45,9 +45,7 @@ export class CreatureGridP5View {
       showLabels: false,
     })
 
-    const width = CREATURE_COLLECTION_VIEW_WIDTH
-    const height = CREATURE_COLLECTION_VIEW_HEIGHT
-
+    const {height, width} = config.dimensions
     const {p5} = config.p5Wrapper
 
     this.creatureGraphics = p5.createGraphics(

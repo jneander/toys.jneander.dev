@@ -1,5 +1,5 @@
 import type {AppController} from '../app-controller'
-import {P5Wrapper} from '../p5-utils'
+import {P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILE_HEIGHT,
@@ -14,6 +14,7 @@ import {PopupSimulationView, PopupSimulationViewAnchor} from './popup-simulation
 export interface CreatureGridP5UiConfig {
   appController: AppController
   appStore: AppStore
+  dimensions: P5ViewDimensions
   p5Wrapper: P5Wrapper
   getCreatureAndGridIndexFn: CreatureGridP5ViewConfig['getCreatureAndGridIndexFn']
   showsPopupSimulation: () => boolean
@@ -38,6 +39,7 @@ export class CreatureGridP5Ui {
     const {getCreatureAndGridIndexFn} = config
 
     this.creatureGridView = new CreatureGridP5View({
+      dimensions: config.dimensions,
       getCreatureAndGridIndexFn,
       p5Wrapper: this.p5Wrapper,
       showsHoverState: this.showsPopupSimulation,

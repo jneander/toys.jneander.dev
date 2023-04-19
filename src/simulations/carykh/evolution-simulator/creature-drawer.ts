@@ -30,7 +30,7 @@ export class CreatureDrawer {
   constructor(config: CreatureDrawerConfig) {
     const {p5Wrapper, scale = 1, showLabels = true} = config
 
-    this.axonColor = p5Wrapper.canvas.color(255, 255, 0)
+    this.axonColor = p5Wrapper.p5.color(255, 255, 0)
     this.axonFont = p5Wrapper.font
 
     this.scale = scale

@@ -50,13 +50,13 @@ export class CreatureGridP5Ui {
   }
 
   draw(): void {
-    const {canvas} = this.p5Wrapper
+    const {p5} = this.p5Wrapper
     const {creatureGridView} = this
 
-    canvas.clear(0, 0, 0, 0)
+    p5.clear(0, 0, 0, 0)
 
     creatureGridView.draw()
-    canvas.image(creatureGridView.graphics, 0, 0)
+    p5.image(creatureGridView.graphics, 0, 0)
 
     if (!this.showsPopupSimulation()) {
       return

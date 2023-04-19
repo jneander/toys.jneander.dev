@@ -56,11 +56,11 @@ export class PopupSimulationView {
     const scale = config.scale || 1
     this.showSimulationView = false
 
-    const {canvas, font} = this.p5Wrapper
+    const {font, p5} = this.p5Wrapper
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.1,
-      canvas,
+      canvas: p5,
 
       creatureDrawer: new CreatureDrawer({
         p5Wrapper: this.p5Wrapper,
@@ -129,32 +129,32 @@ export class PopupSimulationView {
     creature: Creature,
     rank: number,
   ): void {
-    const {canvas, font} = this.p5Wrapper
+    const {font, p5} = this.p5Wrapper
 
     const infoBoxCenterX = infoBoxStartX + INFO_BOX_WIDTH / 2
 
-    canvas.noStroke()
-    canvas.fill(255)
-    canvas.rect(infoBoxStartX, infoBoxStartY, INFO_BOX_WIDTH, INFO_BOX_HEIGHT)
-    canvas.fill(0)
-    canvas.textFont(font, 12)
-    canvas.textAlign(canvas.CENTER)
-    canvas.text('#' + rank, infoBoxCenterX, infoBoxStartY + 12)
-    canvas.text('ID: ' + creature.id, infoBoxCenterX, infoBoxStartY + 24)
-    canvas.text('Fitness: ' + canvas.nf(creature.fitness, 0, 3), infoBoxCenterX, infoBoxStartY + 36)
-    canvas.colorMode(canvas.HSB, 1)
+    p5.noStroke()
+    p5.fill(255)
+    p5.rect(infoBoxStartX, infoBoxStartY, INFO_BOX_WIDTH, INFO_BOX_HEIGHT)
+    p5.fill(0)
+    p5.textFont(font, 12)
+    p5.textAlign(p5.CENTER)
+    p5.text('#' + rank, infoBoxCenterX, infoBoxStartY + 12)
+    p5.text('ID: ' + creature.id, infoBoxCenterX, infoBoxStartY + 24)
+    p5.text('Fitness: ' + p5.nf(creature.fitness, 0, 3), infoBoxCenterX, infoBoxStartY + 36)
+    p5.colorMode(p5.HSB, 1)
 
     const speciesId = speciesIdForCreature(creature)
 
-    canvas.fill(getSpeciesColor(canvas, speciesId, true))
-    canvas.text(`Species: S${speciesIdForCreature(creature)}`, infoBoxCenterX, infoBoxStartY + 48)
+    p5.fill(getSpeciesColor(p5, speciesId, true))
+    p5.text(`Species: S${speciesIdForCreature(creature)}`, infoBoxCenterX, infoBoxStartY + 48)
 
-    canvas.colorMode(canvas.RGB, 255)
+    p5.colorMode(p5.RGB, 255)
   }
 
   private drawSimulationView(x: number, y: number): void {
     this.simulationView.draw()
-    this.p5Wrapper.canvas.image(
+    this.p5Wrapper.p5.image(
       this.simulationView.graphics,
       x,
       y,

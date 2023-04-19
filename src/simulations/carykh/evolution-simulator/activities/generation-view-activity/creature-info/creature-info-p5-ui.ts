@@ -40,11 +40,11 @@ export class CreatureInfoP5Ui {
 
     this.creatureSimulation = new CreatureSimulation(this.simulationConfig)
 
-    const {canvas, font} = this.p5Wrapper
+    const {font, p5} = this.p5Wrapper
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.1,
-      canvas,
+      canvas: p5,
       creatureDrawer: this.creatureDrawer,
       creatureSimulation: this.creatureSimulation,
       height: 480,
@@ -60,7 +60,7 @@ export class CreatureInfoP5Ui {
 
   draw(): void {
     const {creature, p5Wrapper, store} = this
-    const {canvas} = p5Wrapper
+    const {p5} = p5Wrapper
 
     const {showSimulation} = store.getState()
 
@@ -71,7 +71,7 @@ export class CreatureInfoP5Ui {
       }
 
       this.simulationView.draw()
-      canvas.image(this.simulationView.graphics, 0, 0, canvas.width, canvas.height)
+      p5.image(this.simulationView.graphics, 0, 0, p5.width, p5.height)
 
       this.creatureSimulation.advance()
       this.creatureDrawn = false
@@ -82,11 +82,11 @@ export class CreatureInfoP5Ui {
       }
 
       if (!this.creatureDrawn) {
-        canvas.background(220)
-        canvas.translate(canvas.width / 2, canvas.height / 2)
-        canvas.scale(80)
+        p5.background(220)
+        p5.translate(p5.width / 2, p5.height / 2)
+        p5.scale(80)
 
-        this.creatureDrawer.drawCreature(creature, 0, 0, canvas)
+        this.creatureDrawer.drawCreature(creature, 0, 0, p5)
         this.creatureDrawn = true
       }
     }

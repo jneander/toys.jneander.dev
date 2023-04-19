@@ -48,15 +48,15 @@ export class CreatureGridP5View {
     const width = CREATURE_COLLECTION_VIEW_WIDTH
     const height = CREATURE_COLLECTION_VIEW_HEIGHT
 
-    const {canvas} = config.p5Wrapper
+    const {p5} = config.p5Wrapper
 
-    this.creatureGraphics = canvas.createGraphics(
+    this.creatureGraphics = p5.createGraphics(
       CREATURE_GRID_TILE_WIDTH * 3,
       CREATURE_GRID_TILE_HEIGHT * 3,
     )
-    this.gridGraphics = canvas.createGraphics(width, height)
-    this.hoverGraphics = canvas.createGraphics(width, height)
-    this.graphics = canvas.createGraphics(width, height)
+    this.gridGraphics = p5.createGraphics(width, height)
+    this.hoverGraphics = p5.createGraphics(width, height)
+    this.graphics = p5.createGraphics(width, height)
   }
 
   initialize(): void {
@@ -188,7 +188,7 @@ export class CreatureGridP5View {
 
   private drawCreatureHoverState(): void {
     const {config, hoverGraphics} = this
-    const {canvas} = config.p5Wrapper
+    const {p5} = config.p5Wrapper
 
     hoverGraphics.clear(0, 0, 0, 0)
 
@@ -197,7 +197,7 @@ export class CreatureGridP5View {
     if (gridIndex != null) {
       hoverGraphics.push()
 
-      hoverGraphics.stroke(Math.abs((canvas.frameCount % 30) - 15) * 17) // oscillate between 0–255
+      hoverGraphics.stroke(Math.abs((p5.frameCount % 30) - 15) * 17) // oscillate between 0–255
       hoverGraphics.strokeWeight(2)
       hoverGraphics.noFill()
 

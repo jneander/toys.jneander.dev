@@ -44,7 +44,7 @@ export class SortingCreaturesP5View {
       p5Wrapper: this.p5Wrapper,
     })
 
-    this.creatureGraphics = this.p5Wrapper.canvas.createGraphics(
+    this.creatureGraphics = this.p5Wrapper.p5.createGraphics(
       CREATURE_GRID_TILE_WIDTH * 3,
       CREATURE_GRID_TILE_HEIGHT * 3,
     )
@@ -55,7 +55,7 @@ export class SortingCreaturesP5View {
 
   draw(): void {
     const {appStore, p5Wrapper} = this
-    const {canvas} = p5Wrapper
+    const {p5} = p5Wrapper
 
     let elapsedTimeMs = 0
     if (this.firstDrawTimestamp === 0) {
@@ -69,9 +69,9 @@ export class SortingCreaturesP5View {
 
     const scale = 10
 
-    canvas.clear(0, 0, 0, 0)
-    canvas.push()
-    canvas.scale(scale)
+    p5.clear(0, 0, 0, 0)
+    p5.push()
+    p5.scale(scale)
 
     const gridAreaScale = 0.1
 
@@ -104,7 +104,7 @@ export class SortingCreaturesP5View {
 
       const creatureImage = this.getCreatureImage(creature)
 
-      canvas.image(
+      p5.image(
         creatureImage,
         tileStartX - creatureImageOverdrawMarginX,
         tileStartY - creatureImageOverdrawMarginY,
@@ -113,7 +113,7 @@ export class SortingCreaturesP5View {
       )
     }
 
-    canvas.pop()
+    p5.pop()
 
     if (animationProgress >= 1) {
       this.onAnimationFinished()

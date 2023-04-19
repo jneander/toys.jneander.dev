@@ -26,14 +26,14 @@ export class SimulationRunningP5Ui {
     this.appController = config.appController
     this.p5Wrapper = config.p5Wrapper
 
-    const {canvas, font} = this.p5Wrapper
+    const {font, p5} = this.p5Wrapper
 
     this.activityController = config.activityController
     this.generationSimulation = this.activityController.getGenerationSimulation()
 
     this.simulationView = new SimulationView({
       cameraSpeed: 0.06,
-      canvas,
+      canvas: p5,
 
       creatureDrawer: new CreatureDrawer({
         p5Wrapper: this.p5Wrapper,
@@ -54,7 +54,7 @@ export class SimulationRunningP5Ui {
 
   draw(): void {
     const {activityController, p5Wrapper} = this
-    const {canvas, height, width} = p5Wrapper
+    const {height, p5, width} = p5Wrapper
 
     activityController.advanceActivity()
 
@@ -68,7 +68,7 @@ export class SimulationRunningP5Ui {
     }
 
     this.simulationView.draw()
-    canvas.image(this.simulationView.graphics, 0, 0, width, height)
+    p5.image(this.simulationView.graphics, 0, 0, width, height)
 
     if (timer >= FRAMES_FOR_CREATURE_FITNESS && speed < 30) {
       // When the simulation speed is slow enough, display the creature's fitness.
@@ -88,21 +88,21 @@ export class SimulationRunningP5Ui {
 
   private drawFinalFitness(): void {
     const {generationSimulation} = this
-    const {canvas, font, height, width} = this.p5Wrapper
+    const {font, height, p5, width} = this.p5Wrapper
 
     const {nodes} = generationSimulation.getCreatureSimulationState().creature
 
     const {averageX} = averagePositionOfNodes(nodes)
 
-    canvas.noStroke()
-    canvas.fill(0, 0, 0, 130)
-    canvas.rect(0, 0, width, height)
-    canvas.fill(0, 0, 0, 255)
-    canvas.rect(width / 2 - 500, 200, 1000, 240)
-    canvas.fill(255, 0, 0)
-    canvas.textAlign(canvas.CENTER)
-    canvas.textFont(font, 96)
-    canvas.text("Creature's " + FITNESS_LABEL + ':', width / 2, 300)
-    canvas.text(canvas.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL, width / 2, 400)
+    p5.noStroke()
+    p5.fill(0, 0, 0, 130)
+    p5.rect(0, 0, width, height)
+    p5.fill(0, 0, 0, 255)
+    p5.rect(width / 2 - 500, 200, 1000, 240)
+    p5.fill(255, 0, 0)
+    p5.textAlign(p5.CENTER)
+    p5.textFont(font, 96)
+    p5.text("Creature's " + FITNESS_LABEL + ':', width / 2, 300)
+    p5.text(p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL, width / 2, 400)
   }
 }

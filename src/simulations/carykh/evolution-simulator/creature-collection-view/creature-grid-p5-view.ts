@@ -36,6 +36,8 @@ export class CreatureGridP5View {
   private gridGraphics: Graphics
   private hoverGraphics: Graphics
 
+  private width: number
+
   constructor(config: CreatureGridP5ViewConfig) {
     this.config = config
 
@@ -45,6 +47,9 @@ export class CreatureGridP5View {
     })
 
     const {height, width} = config.dimensions
+
+    this.width = width
+
     const {p5} = config.p5Wrapper
 
     this.creatureGraphics = p5.createGraphics(
@@ -106,6 +111,16 @@ export class CreatureGridP5View {
     }
 
     return null
+  }
+
+  setDimensions(width: number, height: number): void {
+    this.width = width
+
+    this.graphics.resizeCanvas(width, height)
+    this.gridGraphics.resizeCanvas(width, height)
+    this.hoverGraphics.resizeCanvas(width, height)
+
+    this.drawCreatureGrid()
   }
 
   private drawCreatureGrid(): void {
@@ -229,7 +244,7 @@ export class CreatureGridP5View {
   }
 
   private getMaxCreatureTilesPerRow(): number {
-    const gridAreaWidth = this.config.dimensions.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+    const gridAreaWidth = this.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
     return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

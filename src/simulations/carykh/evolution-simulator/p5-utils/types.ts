@@ -14,6 +14,8 @@ export interface P5ViewAdapter {
   onMousePressed?: () => void
   onMouseReleased?: () => void
   onMouseWheel?: (event: WheelEvent) => void
+
+  onContainerWidthChanged?: (width: number) => void
 }
 
 export interface P5CanvasContainer {

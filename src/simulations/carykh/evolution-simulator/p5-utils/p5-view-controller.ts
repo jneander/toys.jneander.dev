@@ -57,13 +57,9 @@ export class P5ViewController {
     p5.setup = () => {
       p5.frameRate(FRAME_RATE)
 
-      const {height, width} = this.adapter.dimensions
-
       p5Wrapper = new P5Wrapper({
         font,
-        height,
         p5,
-        width,
       })
     }
 

@@ -7,8 +7,7 @@ import type {P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
-  GRID_AREA_HEIGHT,
-  GRID_AREA_WIDTH,
+  VIEW_PADDING_END_X,
   VIEW_PADDING_START_X,
   VIEW_PADDING_START_Y,
 } from './constants'
@@ -78,13 +77,18 @@ export class CreatureGridP5View {
   getGridIndexUnderCursor(): number | null {
     const {p5Wrapper} = this.config
 
+    const tilesPerRow = this.getMaxCreatureTilesPerRow()
+    const gridAreaWidth = tilesPerRow * CREATURE_GRID_TILE_WIDTH
+    const tilesPerColumn = Math.ceil(CREATURE_COUNT / tilesPerRow)
+    const gridAreaHeight = tilesPerColumn * CREATURE_GRID_TILE_HEIGHT
+
     if (
       p5Wrapper.rectIsUnderCursor(
         VIEW_PADDING_START_X,
         VIEW_PADDING_START_Y,
         // Subtract the trailing pixel from each dimension.
-        GRID_AREA_WIDTH - 1,
-        GRID_AREA_HEIGHT - 1,
+        gridAreaWidth - 1,
+        gridAreaHeight - 1,
       )
     ) {
       const {cursorX, cursorY} = p5Wrapper.getCursorPosition()
@@ -213,5 +217,10 @@ export class CreatureGridP5View {
 
       hoverGraphics.pop()
     }
+  }
+
+  private getMaxCreatureTilesPerRow(): number {
+    const gridAreaWidth = this.config.dimensions.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+    return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

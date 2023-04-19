@@ -6,27 +6,14 @@ import type {P5ViewAdapter} from './types'
 
 let font: Font
 
-export interface P5ViewControllerConfig {
-  height: number
-  width: number
-}
-
 export class P5ViewController {
   private adapter: P5ViewAdapter
-  private config: P5ViewControllerConfig
   private container: HTMLElement
   private instance?: p5
 
-  constructor(
-    adapter: P5ViewAdapter,
-    container: HTMLElement,
-    config: Partial<P5ViewControllerConfig> = {},
-  ) {
+  constructor(adapter: P5ViewAdapter, container: HTMLElement) {
     this.adapter = adapter
     this.container = container
-
-    const {height = 576, width = 1024} = config
-    this.config = {height, width}
   }
 
   initialize(): void {
@@ -70,7 +57,7 @@ export class P5ViewController {
     p5.setup = () => {
       p5.frameRate(FRAME_RATE)
 
-      const {height, width} = this.config
+      const {height, width} = this.adapter.dimensions
 
       p5Wrapper = new P5Wrapper({
         font,

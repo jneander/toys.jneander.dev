@@ -102,6 +102,12 @@ export class CreatureGridAdapter implements P5ViewAdapter {
     this.popupSimulationView?.dismissSimulationView()
   }
 
+  onContainerWidthChanged(width: number): void {
+    const {height} = this.getDimensionsFromWidth(width)
+    this.p5Wrapper?.updateCanvasSize(width, height)
+    this.creatureGridView?.setDimensions(width, height)
+  }
+
   private setPopupSimulationCreatureInfo(generationCreatureIndex: number): void {
     const creature =
       this.config.appStore.getState().creaturesInLatestGeneration[generationCreatureIndex]
@@ -132,8 +138,10 @@ export class CreatureGridAdapter implements P5ViewAdapter {
   }
 
   private getDimensions(container: P5CanvasContainer): P5ViewDimensions {
-    const width = container.getAvailableWidth()
+    return this.getDimensionsFromWidth(container.getAvailableWidth())
+  }
 
+  private getDimensionsFromWidth(width: number): P5ViewDimensions {
     const tilesPerRow = this.getMaxTilesPerRow(width)
 
     const maxRows = Math.ceil(CREATURE_COUNT / tilesPerRow)

@@ -100,6 +100,12 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
     }
   }
 
+  onContainerWidthChanged(width: number): void {
+    const {height} = this.getDimensionsFromWidth(width)
+    this.p5Wrapper?.updateCanvasSize(width, height)
+    this.simulationView?.setDimensions(width, height)
+  }
+
   private drawFinalFitness(): void {
     const {generationSimulation, p5Wrapper} = this
 
@@ -137,8 +143,10 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
   }
 
   private getDimensions(container: P5CanvasContainer): P5ViewDimensions {
-    const width = container.getAvailableWidth()
+    return this.getDimensionsFromWidth(container.getAvailableWidth())
+  }
 
+  private getDimensionsFromWidth(width: number): P5ViewDimensions {
     return {
       height: 576,
       width,

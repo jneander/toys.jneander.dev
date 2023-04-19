@@ -31,7 +31,9 @@ export class SimulationView {
   private simulationGraphics: Graphics
   private statsGraphics: Graphics
 
+  private height: number
   private scale: number
+  private width: number
 
   constructor(config: SimulationViewConfig) {
     this.config = config
@@ -48,7 +50,9 @@ export class SimulationView {
     this.simulationGraphics = p5.createGraphics(width, height)
     this.statsGraphics = p5.createGraphics(width, height)
 
+    this.height = height
     this.scale = config.scale || 1
+    this.width = width
   }
 
   draw(): void {
@@ -69,6 +73,15 @@ export class SimulationView {
 
   setCameraZoom(zoom: number): void {
     this.cameraState.zoom = Math.min(0.1, Math.max(0.002, zoom))
+  }
+
+  setDimensions(width: number, height: number): void {
+    this.width = width
+    this.height = height
+
+    this.graphics.resizeCanvas(width, height)
+    this.simulationGraphics.resizeCanvas(width, height)
+    this.statsGraphics.resizeCanvas(width, height)
   }
 
   zoomIn(): void {
@@ -114,8 +127,8 @@ export class SimulationView {
   }
 
   private drawGround(): void {
-    const {creatureSimulation, height, simulationConfig, width} = this.config
-    const {cameraState, simulationGraphics} = this
+    const {cameraState, height, simulationGraphics, width} = this
+    const {creatureSimulation, simulationConfig} = this.config
 
     const {nodes} = creatureSimulation.getState().creature
     const {averageX, averageY} = averagePositionOfNodes(nodes)
@@ -226,8 +239,8 @@ export class SimulationView {
   }
 
   private drawStats(): void {
-    const {creatureSimulation, statsFont, width} = this.config
-    const {statsGraphics} = this
+    const {statsGraphics, width} = this
+    const {creatureSimulation, statsFont} = this.config
 
     const simulationState = creatureSimulation.getState()
 

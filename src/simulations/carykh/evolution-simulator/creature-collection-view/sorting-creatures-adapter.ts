@@ -28,6 +28,7 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
   initialize(p5Wrapper: P5Wrapper): void {
     this.sortingCreaturesP5Ui = new SortingCreaturesP5View({
       appStore: this.config.appStore,
+      dimensions: this.dimensions,
       onAnimationFinished: this.config.onAnimationFinished,
       p5Wrapper,
     })

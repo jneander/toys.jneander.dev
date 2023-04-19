@@ -96,10 +96,13 @@ export class CreatureGridP5View {
       const gridCursorX = cursorX - VIEW_PADDING_START_X
       const gridCursorY = cursorY - VIEW_PADDING_START_Y
 
-      return rowAndColumnToGridIndex({
-        columnIndex: Math.floor(gridCursorX / CREATURE_GRID_TILE_WIDTH),
-        rowIndex: Math.floor(gridCursorY / CREATURE_GRID_TILE_HEIGHT),
-      })
+      return rowAndColumnToGridIndex(
+        {
+          columnIndex: Math.floor(gridCursorX / CREATURE_GRID_TILE_WIDTH),
+          rowIndex: Math.floor(gridCursorY / CREATURE_GRID_TILE_HEIGHT),
+        },
+        this.getMaxCreatureTilesPerRow(),
+      )
     }
 
     return null
@@ -128,7 +131,10 @@ export class CreatureGridP5View {
 
     for (let i = 0; i < CREATURE_COUNT; i++) {
       const {creature, gridIndex} = getCreatureAndGridIndexFn(i)
-      const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
+      const {columnIndex, rowIndex} = gridIndexToRowAndColumn(
+        gridIndex,
+        this.getMaxCreatureTilesPerRow(),
+      )
 
       const tileStartX = gridStartX + columnIndex * tileWidth
       const tileStartY = gridStartY + rowIndex * tileHeight
@@ -203,7 +209,10 @@ export class CreatureGridP5View {
       hoverGraphics.strokeWeight(2)
       hoverGraphics.noFill()
 
-      const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
+      const {columnIndex, rowIndex} = gridIndexToRowAndColumn(
+        gridIndex,
+        this.getMaxCreatureTilesPerRow(),
+      )
 
       const tileStartX = VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
       const tileStartY = VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT

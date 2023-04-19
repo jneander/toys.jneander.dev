@@ -22,14 +22,10 @@ export class CreatureGridAdapter implements P5ViewAdapter {
     this.creatureGridP5Ui = null
   }
 
-  get dimensions(): P5ViewDimensions {
-    return {
-      height: 664,
-      width: 1024,
-    }
-  }
-
   initialize(p5Wrapper: P5Wrapper): void {
+    const {height, width} = this.dimensions
+    p5Wrapper.updateCanvasSize(width, height)
+
     this.creatureGridP5Ui = new CreatureGridP5Ui({
       appController: this.config.appController,
       appStore: this.config.appStore,
@@ -52,5 +48,12 @@ export class CreatureGridAdapter implements P5ViewAdapter {
 
   onMouseReleased() {
     this.creatureGridP5Ui?.onMouseReleased()
+  }
+
+  private get dimensions(): P5ViewDimensions {
+    return {
+      height: 664,
+      width: 1024,
+    }
   }
 }

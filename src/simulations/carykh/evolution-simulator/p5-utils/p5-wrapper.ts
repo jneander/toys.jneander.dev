@@ -3,9 +3,7 @@ import type {Font} from 'p5'
 
 export interface P5WrapperConfig {
   font: Font
-  height: number
   p5: p5
-  width: number
 }
 
 export class P5Wrapper {
@@ -17,20 +15,26 @@ export class P5Wrapper {
   public font: Font
 
   constructor(config: P5WrapperConfig) {
-    const {font, height, p5, width} = config
+    const {font, p5} = config
 
-    this.height = height
+    this.height = 100
     this.scale = 1
-    this.width = width
+    this.width = 100
 
     this.font = font
     this.p5 = p5
 
-    p5.createCanvas(this.width * this.scale, this.height * this.scale)
+    p5.createCanvas(this.width, this.height)
 
     p5.ellipseMode(p5.CENTER)
     p5.textFont(config.font, 96)
     p5.textAlign(p5.CENTER)
+  }
+
+  updateCanvasSize(width: number, height: number): void {
+    this.width = width
+    this.height = height
+    this.p5.resizeCanvas(width, height)
   }
 
   getCursorPosition(): {cursorX: number; cursorY: number} {

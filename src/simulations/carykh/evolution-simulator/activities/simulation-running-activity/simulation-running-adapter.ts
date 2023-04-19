@@ -19,14 +19,10 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
     this.simulationRunningP5Ui = null
   }
 
-  get dimensions(): P5ViewDimensions {
-    return {
-      height: 576,
-      width: 1024,
-    }
-  }
-
   initialize(p5Wrapper: P5Wrapper): void {
+    const {height, width} = this.dimensions
+    p5Wrapper.updateCanvasSize(width, height)
+
     this.simulationRunningP5Ui = new SimulationRunningP5Ui({
       activityController: this.config.activityController,
       appController: this.config.appController,
@@ -44,5 +40,12 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
 
   onMouseWheel(event: WheelEvent): void {
     this.simulationRunningP5Ui?.onMouseWheel(event)
+  }
+
+  private get dimensions(): P5ViewDimensions {
+    return {
+      height: 576,
+      width: 1024,
+    }
   }
 }

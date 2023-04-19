@@ -21,14 +21,10 @@ export class CreatureInfoAdapter implements P5ViewAdapter {
     this.creatureInfoP5Ui = null
   }
 
-  get dimensions(): P5ViewDimensions {
-    return {
-      height: 240,
-      width: 240,
-    }
-  }
-
   initialize(p5Wrapper: P5Wrapper): void {
+    const {height, width} = this.dimensions
+    p5Wrapper.updateCanvasSize(width, height)
+
     this.creatureInfoP5Ui = new CreatureInfoP5Ui({
       creature: this.config.creature,
       p5Wrapper,
@@ -43,5 +39,12 @@ export class CreatureInfoAdapter implements P5ViewAdapter {
 
   draw(): void {
     this.creatureInfoP5Ui?.draw()
+  }
+
+  private get dimensions(): P5ViewDimensions {
+    return {
+      height: 240,
+      width: 240,
+    }
   }
 }

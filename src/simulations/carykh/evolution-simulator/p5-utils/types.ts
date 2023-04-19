@@ -9,8 +9,6 @@ export interface P5ViewAdapter {
   initialize(p5Wrapper: P5Wrapper): void
   deinitialize(): void
 
-  get dimensions(): P5ViewDimensions
-
   draw?: () => void
 
   onMousePressed?: () => void

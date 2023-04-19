@@ -1,5 +1,5 @@
 import type {AppController} from '../../app-controller'
-import type {P5ViewAdapter, P5Wrapper} from '../../p5-utils'
+import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../p5-utils'
 import type {ActivityController} from './activity-controller'
 import {SimulationRunningP5Ui} from './simulation-running-p5-ui'
 
@@ -17,6 +17,13 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
     this.config = config
 
     this.simulationRunningP5Ui = null
+  }
+
+  get dimensions(): P5ViewDimensions {
+    return {
+      height: 576,
+      width: 1024,
+    }
   }
 
   initialize(p5Wrapper: P5Wrapper): void {

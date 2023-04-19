@@ -4,8 +4,6 @@ import type {P5ViewAdapter} from './types'
 
 export class P5ViewElement extends BaseElement {
   private declare adapter: P5ViewAdapter
-  private declare height?: number
-  private declare width?: number
 
   private controller?: P5ViewController
   private container: HTMLDivElement
@@ -13,8 +11,6 @@ export class P5ViewElement extends BaseElement {
   static get properties() {
     return {
       adapter: {type: Object},
-      height: {type: Number},
-      width: {type: Number},
     }
   }
 
@@ -27,11 +23,7 @@ export class P5ViewElement extends BaseElement {
   connectedCallback(): void {
     this.appendChild(this.container)
 
-    this.controller = new P5ViewController(this.adapter, this.container, {
-      height: this.height,
-      width: this.width,
-    })
-
+    this.controller = new P5ViewController(this.adapter, this.container)
     this.controller.initialize()
 
     super.connectedCallback()
@@ -45,16 +37,7 @@ export class P5ViewElement extends BaseElement {
   }
 
   protected update(changedProperties: Map<PropertyKey, unknown>): void {
-    if (['height', 'width'].some(property => changedProperties.has(property))) {
-      this.controller?.deinitialize()
-
-      this.controller = new P5ViewController(this.adapter, this.container, {
-        height: this.height,
-        width: this.width,
-      })
-
-      this.controller.initialize()
-    } else if (changedProperties.has('adapter')) {
+    if (changedProperties.has('adapter')) {
       this.controller?.setAdapter(this.adapter)
     }
 

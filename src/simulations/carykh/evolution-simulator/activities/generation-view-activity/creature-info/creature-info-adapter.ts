@@ -1,5 +1,5 @@
 import {Creature} from '../../../creatures'
-import type {P5ViewAdapter, P5Wrapper} from '../../../p5-utils'
+import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../../p5-utils'
 import {SimulationConfig} from '../../../simulation'
 import {CreatureInfoP5Ui} from './creature-info-p5-ui'
 import type {CreatureInfoStore} from './types'
@@ -19,6 +19,13 @@ export class CreatureInfoAdapter implements P5ViewAdapter {
     this.config = config
 
     this.creatureInfoP5Ui = null
+  }
+
+  get dimensions(): P5ViewDimensions {
+    return {
+      height: 240,
+      width: 240,
+    }
   }
 
   initialize(p5Wrapper: P5Wrapper): void {

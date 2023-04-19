@@ -58,10 +58,8 @@ export class CreatureInfoElement extends BaseElement {
         <div class=${styles.CanvasContainer}>
           <p5-view
             .adapter=${this.viewAdapter}
-            .height=${240}
             @mouseenter=${this.handleMouseEnter}
             @mouseleave=${this.handleMouseLeave}
-            .width=${240}
           />
         </div>
 

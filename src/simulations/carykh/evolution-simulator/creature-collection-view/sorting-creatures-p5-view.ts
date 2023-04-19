@@ -3,11 +3,12 @@ import type {Graphics, Image} from 'p5'
 import {CREATURE_COUNT} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {Creature, creatureIdToIndex} from '../creatures'
-import {P5Wrapper} from '../p5-utils'
+import {P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
+  VIEW_PADDING_END_X,
   VIEW_PADDING_START_X,
   VIEW_PADDING_START_Y,
 } from './constants'
@@ -22,12 +23,14 @@ function easeInOutQuad(x: number): number {
 
 export interface SortingCreaturesP5ViewConfig {
   appStore: AppStore
+  dimensions: P5ViewDimensions
   onAnimationFinished: () => void
   p5Wrapper: P5Wrapper
 }
 
 export class SortingCreaturesP5View {
   private appStore: AppStore
+  private config: SortingCreaturesP5ViewConfig
   private p5Wrapper: P5Wrapper
   private creatureDrawer: CreatureDrawer
 
@@ -37,6 +40,8 @@ export class SortingCreaturesP5View {
   private firstDrawTimestamp: number
 
   constructor(config: SortingCreaturesP5ViewConfig) {
+    this.config = config
+
     this.appStore = config.appStore
     this.p5Wrapper = config.p5Wrapper
 
@@ -91,10 +96,14 @@ export class SortingCreaturesP5View {
       // gridIndex1 is the index of where the creature was
       const startGridIndex = creatureIdToIndex(creature.id)
 
-      const {columnIndex: startColumnIndex, rowIndex: startRowIndex} =
-        gridIndexToRowAndColumn(startGridIndex)
-      const {columnIndex: endColumnIndex, rowIndex: endRowIndex} =
-        gridIndexToRowAndColumn(endGridIndex)
+      const {columnIndex: startColumnIndex, rowIndex: startRowIndex} = gridIndexToRowAndColumn(
+        startGridIndex,
+        this.getMaxCreatureTilesPerRow(),
+      )
+      const {columnIndex: endColumnIndex, rowIndex: endRowIndex} = gridIndexToRowAndColumn(
+        endGridIndex,
+        this.getMaxCreatureTilesPerRow(),
+      )
 
       const columnIndex = this.interpolate(startColumnIndex, endColumnIndex, easedProgress)
       const rowIndex = this.interpolate(startRowIndex, endRowIndex, easedProgress)
@@ -157,5 +166,10 @@ export class SortingCreaturesP5View {
 
   private interpolate(a: number, b: number, offset: number): number {
     return a + (b - a) * offset
+  }
+
+  private getMaxCreatureTilesPerRow(): number {
+    const gridAreaWidth = this.config.dimensions.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+    return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

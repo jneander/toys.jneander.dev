@@ -4,6 +4,7 @@ import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
+  VIEW_PADDING_END_X,
   VIEW_PADDING_START_X,
   VIEW_PADDING_START_Y,
 } from './constants'
@@ -23,6 +24,7 @@ export interface CreatureGridP5UiConfig {
 export class CreatureGridP5Ui {
   private appController: AppController
   private appStore: AppStore
+  private config: CreatureGridP5UiConfig
   private p5Wrapper: P5Wrapper
   private creatureGridView: CreatureGridP5View
   private popupSimulationView: PopupSimulationView
@@ -30,6 +32,8 @@ export class CreatureGridP5Ui {
   private showsPopupSimulation: () => boolean
 
   constructor(config: CreatureGridP5UiConfig) {
+    this.config = config
+
     this.appController = config.appController
     this.appStore = config.appStore
     this.p5Wrapper = config.p5Wrapper
@@ -106,7 +110,10 @@ export class CreatureGridP5Ui {
   }
 
   private calculateAnchorForPopupSimulation(gridIndex: number): PopupSimulationViewAnchor {
-    const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex)
+    const {columnIndex, rowIndex} = gridIndexToRowAndColumn(
+      gridIndex,
+      this.getMaxCreatureTilesPerRow(),
+    )
 
     const tileStartX = VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
     const tileStartY = VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT
@@ -118,5 +125,10 @@ export class CreatureGridP5Ui {
       endPositionY: tileStartY + CREATURE_GRID_TILE_HEIGHT,
       margin: 5,
     }
+  }
+
+  private getMaxCreatureTilesPerRow(): number {
+    const gridAreaWidth = this.config.dimensions.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+    return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

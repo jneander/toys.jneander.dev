@@ -1,13 +1,10 @@
 import type p5 from 'p5'
 import type {Font} from 'p5'
 
-import type {Optional} from '../../../../shared/utils'
-
 export interface P5WrapperConfig {
   font: Font
   height: number
   p5: p5
-  scale: number
   width: number
 }
 
@@ -19,11 +16,11 @@ export class P5Wrapper {
   public p5: p5
   public font: Font
 
-  constructor(config: Optional<P5WrapperConfig, 'scale'>) {
-    const {font, height, p5, scale = 1, width} = config
+  constructor(config: P5WrapperConfig) {
+    const {font, height, p5, width} = config
 
     this.height = height
-    this.scale = scale
+    this.scale = 1
     this.width = width
 
     this.font = font

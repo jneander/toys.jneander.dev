@@ -1,5 +1,3 @@
-import p5 from 'p5'
-
 import {BaseElement, defineElement} from '../../../../shared/views'
 import {P5ViewController} from './p5-view-controller'
 import type {P5ViewAdapter} from './types'
@@ -11,7 +9,6 @@ export class P5ViewElement extends BaseElement {
 
   private controller?: P5ViewController
   private container: HTMLDivElement
-  private instance?: p5
 
   static get properties() {
     return {
@@ -30,32 +27,33 @@ export class P5ViewElement extends BaseElement {
   connectedCallback(): void {
     this.appendChild(this.container)
 
-    this.controller = new P5ViewController(this.adapter, {
+    this.controller = new P5ViewController(this.adapter, this.container, {
       height: this.height,
       width: this.width,
     })
 
-    this.instance = new p5(this.controller.sketch, this.container)
+    this.controller.initialize()
 
     super.connectedCallback()
   }
 
   disconnectedCallback(): void {
-    this.instance?.remove()
-    delete this.instance
+    this.controller?.deinitialize()
+    delete this.controller
 
     super.disconnectedCallback()
   }
 
   protected update(changedProperties: Map<PropertyKey, unknown>): void {
     if (['height', 'width'].some(property => changedProperties.has(property))) {
-      this.controller = new P5ViewController(this.adapter, {
+      this.controller?.deinitialize()
+
+      this.controller = new P5ViewController(this.adapter, this.container, {
         height: this.height,
         width: this.width,
       })
 
-      this.instance?.remove()
-      this.instance = new p5(this.controller.sketch, this.container)
+      this.controller.initialize()
     } else if (changedProperties.has('adapter')) {
       this.controller?.setAdapter(this.adapter)
     }

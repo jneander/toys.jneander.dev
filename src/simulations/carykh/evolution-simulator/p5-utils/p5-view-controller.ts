@@ -1,5 +1,5 @@
-import type p5 from 'p5'
 import type {Font} from 'p5'
+import p5 from 'p5'
 
 import {P5Wrapper} from './p5-wrapper'
 import type {P5ViewAdapter} from './types'
@@ -12,16 +12,30 @@ export interface P5ViewControllerConfig {
 }
 
 export class P5ViewController {
-  private config: P5ViewControllerConfig
   private adapter: P5ViewAdapter
+  private config: P5ViewControllerConfig
+  private container: HTMLElement
+  private instance?: p5
 
-  constructor(adapter: P5ViewAdapter, config: Partial<P5ViewControllerConfig> = {}) {
+  constructor(
+    adapter: P5ViewAdapter,
+    container: HTMLElement,
+    config: Partial<P5ViewControllerConfig> = {},
+  ) {
     this.adapter = adapter
+    this.container = container
 
     const {height = 576, width = 1024} = config
     this.config = {height, width}
+  }
 
-    this.sketch = this.sketch.bind(this)
+  initialize(): void {
+    this.instance?.remove()
+    this.instance = new p5(this.sketch.bind(this), this.container)
+  }
+
+  deinitialize(): void {
+    this.instance?.remove()
   }
 
   setAdapter(adapter: P5ViewAdapter): void {
@@ -29,7 +43,7 @@ export class P5ViewController {
     this.adapter = adapter
   }
 
-  sketch(p5: p5): void {
+  private sketch(p5: p5): void {
     const FRAME_RATE = 60 // target frames per second
 
     let currentAdapter: P5ViewAdapter | null

@@ -6,7 +6,7 @@ export type P5ViewDimensions = {
 }
 
 export interface P5ViewAdapter {
-  initialize(p5Wrapper: P5Wrapper): void
+  initialize(p5Wrapper: P5Wrapper, container: P5CanvasContainer): void
   deinitialize(): void
 
   draw?: () => void
@@ -14,4 +14,8 @@ export interface P5ViewAdapter {
   onMousePressed?: () => void
   onMouseReleased?: () => void
   onMouseWheel?: (event: WheelEvent) => void
+}
+
+export interface P5CanvasContainer {
+  getAvailableWidth(): number
 }

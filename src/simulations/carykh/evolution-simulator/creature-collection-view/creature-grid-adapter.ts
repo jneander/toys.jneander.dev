@@ -1,10 +1,12 @@
 import type {AppController} from '../app-controller'
-import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../p5-utils'
+import {CREATURE_COUNT} from '../constants'
+import type {P5CanvasContainer, P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   VIEW_PADDING_END_X,
+  VIEW_PADDING_END_Y,
   VIEW_PADDING_START_X,
   VIEW_PADDING_START_Y,
 } from './constants'
@@ -31,14 +33,14 @@ export class CreatureGridAdapter implements P5ViewAdapter {
     this.config = config
   }
 
-  initialize(p5Wrapper: P5Wrapper): void {
+  initialize(p5Wrapper: P5Wrapper, container: P5CanvasContainer): void {
     this.p5Wrapper = p5Wrapper
 
-    const {height, width} = this.dimensions
+    const {height, width} = this.getDimensions(container)
     p5Wrapper.updateCanvasSize(width, height)
 
     this.creatureGridView = new CreatureGridP5View({
-      dimensions: this.dimensions,
+      dimensions: {height, width},
       getCreatureAndGridIndexFn: this.config.getCreatureAndGridIndexFn,
       p5Wrapper,
       showsHoverState: this.config.showsPopupSimulation,
@@ -100,13 +102,6 @@ export class CreatureGridAdapter implements P5ViewAdapter {
     this.popupSimulationView?.dismissSimulationView()
   }
 
-  private get dimensions(): P5ViewDimensions {
-    return {
-      height: 664,
-      width: 1024,
-    }
-  }
-
   private setPopupSimulationCreatureInfo(generationCreatureIndex: number): void {
     const creature =
       this.config.appStore.getState().creaturesInLatestGeneration[generationCreatureIndex]
@@ -122,10 +117,7 @@ export class CreatureGridAdapter implements P5ViewAdapter {
   }
 
   private calculateAnchorForPopupSimulation(gridIndex: number): PopupSimulationViewAnchor {
-    const {columnIndex, rowIndex} = gridIndexToRowAndColumn(
-      gridIndex,
-      this.getMaxCreatureTilesPerRow(),
-    )
+    const {columnIndex, rowIndex} = gridIndexToRowAndColumn(gridIndex, this.getMaxTilesPerRow())
 
     const tileStartX = VIEW_PADDING_START_X + columnIndex * CREATURE_GRID_TILE_WIDTH
     const tileStartY = VIEW_PADDING_START_Y + rowIndex * CREATURE_GRID_TILE_HEIGHT
@@ -139,8 +131,29 @@ export class CreatureGridAdapter implements P5ViewAdapter {
     }
   }
 
-  private getMaxCreatureTilesPerRow(): number {
-    const gridAreaWidth = this.dimensions.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+  private getDimensions(container: P5CanvasContainer): P5ViewDimensions {
+    const width = container.getAvailableWidth()
+
+    const tilesPerRow = this.getMaxTilesPerRow(width)
+
+    const maxRows = Math.ceil(CREATURE_COUNT / tilesPerRow)
+    const gridAreaHeight = maxRows * CREATURE_GRID_TILE_HEIGHT
+    const height = gridAreaHeight + VIEW_PADDING_START_Y + VIEW_PADDING_END_Y
+
+    return {
+      height,
+      width,
+    }
+  }
+
+  private getMaxTilesPerRow(canvasWidth?: number): number {
+    const width = canvasWidth || this.p5Wrapper?.width
+
+    if (width == null) {
+      throw new Error('CreatureGridAdapter is not initialized')
+    }
+
+    const gridAreaWidth = width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
     return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

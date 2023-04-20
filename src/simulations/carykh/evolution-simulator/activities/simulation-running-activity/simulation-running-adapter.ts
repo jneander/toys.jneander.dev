@@ -1,7 +1,11 @@
 import type {AppController} from '../../app-controller'
+import {FITNESS_LABEL, FITNESS_UNIT_LABEL, FRAMES_FOR_CREATURE_FITNESS} from '../../constants'
+import {CreatureDrawer} from '../../creature-drawer'
+import {averagePositionOfNodes} from '../../creatures'
 import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../p5-utils'
+import {GenerationSimulation} from '../../simulation'
+import {SimulationView} from '../../views'
 import type {ActivityController} from './activity-controller'
-import {SimulationRunningP5Ui} from './simulation-running-p5-ui'
 
 export interface SimulationRunningAdapterConfig {
   activityController: ActivityController
@@ -11,35 +15,89 @@ export interface SimulationRunningAdapterConfig {
 export class SimulationRunningAdapter implements P5ViewAdapter {
   private config: SimulationRunningAdapterConfig
 
-  private simulationRunningP5Ui: SimulationRunningP5Ui | null
+  private p5Wrapper?: P5Wrapper
+  private simulationView?: SimulationView
+  private generationSimulation?: GenerationSimulation
 
   constructor(config: SimulationRunningAdapterConfig) {
     this.config = config
-
-    this.simulationRunningP5Ui = null
   }
 
   initialize(p5Wrapper: P5Wrapper): void {
+    this.p5Wrapper = p5Wrapper
+
     const {height, width} = this.dimensions
     p5Wrapper.updateCanvasSize(width, height)
 
-    this.simulationRunningP5Ui = new SimulationRunningP5Ui({
-      activityController: this.config.activityController,
-      appController: this.config.appController,
-      p5Wrapper,
+    const {font, p5} = this.p5Wrapper
+
+    this.generationSimulation = this.config.activityController.getGenerationSimulation()
+
+    this.simulationView = new SimulationView({
+      cameraSpeed: 0.06,
+
+      creatureDrawer: new CreatureDrawer({
+        p5Wrapper: this.p5Wrapper,
+      }),
+
+      creatureSimulation: this.generationSimulation.getCreatureSimulation(),
+      height: 900,
+      p5,
+      postFont: font,
+      showArrow: true,
+      simulationConfig: this.config.appController.getSimulationConfig(),
+      statsFont: font,
+      width: 1600,
     })
+
+    this.simulationView.setCameraZoom(0.01)
+    this.simulationView.setCameraPosition(0, 0)
   }
 
   deinitialize(): void {
-    this.simulationRunningP5Ui = null
+    delete this.generationSimulation
+    delete this.p5Wrapper
+    delete this.simulationView
   }
 
   draw(): void {
-    this.simulationRunningP5Ui?.draw()
+    const {p5Wrapper, simulationView} = this
+
+    if (!(p5Wrapper && simulationView)) {
+      return
+    }
+
+    const {activityController} = this.config
+    const {height, p5, width} = p5Wrapper
+
+    activityController.advanceActivity()
+
+    const speed = activityController.getSimulationSpeed()
+    const timer = activityController.getTimer()
+
+    if (timer === speed) {
+      // At the first render, reset the camera.
+      simulationView.setCameraZoom(0.01)
+      simulationView.setCameraPosition(0, 0)
+    }
+
+    simulationView.draw()
+    p5.image(simulationView.graphics, 0, 0, width, height)
+
+    if (timer >= FRAMES_FOR_CREATURE_FITNESS && speed < 30) {
+      // When the simulation speed is slow enough, display the creature's fitness.
+      this.drawFinalFitness()
+    }
   }
 
   onMouseWheel(event: WheelEvent): void {
-    this.simulationRunningP5Ui?.onMouseWheel(event)
+    const delta = event.deltaX
+
+    if (delta < 0) {
+      this.simulationView?.zoomIn()
+    } else if (delta > 0) {
+      this.simulationView?.zoomOut()
+    }
   }
 
   private get dimensions(): P5ViewDimensions {
@@ -47,5 +105,29 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
       height: 576,
       width: 1024,
     }
+  }
+
+  private drawFinalFitness(): void {
+    const {generationSimulation, p5Wrapper} = this
+
+    if (!(generationSimulation && p5Wrapper)) {
+      return
+    }
+
+    const {font, height, p5, width} = p5Wrapper
+
+    const {nodes} = generationSimulation.getCreatureSimulationState().creature
+    const {averageX} = averagePositionOfNodes(nodes)
+
+    p5.noStroke()
+    p5.fill(0, 0, 0, 130)
+    p5.rect(0, 0, width, height)
+    p5.fill(0, 0, 0, 255)
+    p5.rect(width / 2 - 500, 200, 1000, 240)
+    p5.fill(255, 0, 0)
+    p5.textAlign(p5.CENTER)
+    p5.textFont(font, 96)
+    p5.text("Creature's " + FITNESS_LABEL + ':', width / 2, 300)
+    p5.text(p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL, width / 2, 400)
   }
 }

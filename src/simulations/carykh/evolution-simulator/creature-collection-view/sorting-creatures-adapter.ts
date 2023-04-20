@@ -1,41 +1,150 @@
+import type {Graphics, Image} from 'p5'
+
+import {CREATURE_COUNT} from '../constants'
+import {CreatureDrawer} from '../creature-drawer'
+import {Creature, creatureIdToIndex} from '../creatures'
 import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
-import {SortingCreaturesP5View} from './sorting-creatures-p5-view'
+import {
+  CREATURE_GRID_TILE_HEIGHT,
+  CREATURE_GRID_TILE_WIDTH,
+  VIEW_PADDING_END_X,
+  VIEW_PADDING_START_X,
+  VIEW_PADDING_START_Y,
+} from './constants'
+import {getCachedCreatureImage, setCachedCreatureImage} from './creature-image-cache'
+import {gridIndexToRowAndColumn} from './helpers'
+
+const ANIMATION_DURATION_MS = 5000
 
 export interface SortingCreaturesAdapterConfig {
   appStore: AppStore
   onAnimationFinished: () => void
 }
 
+function easeInOutQuad(x: number): number {
+  return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2
+}
+
+function interpolate(a: number, b: number, offset: number): number {
+  return a + (b - a) * offset
+}
+
 export class SortingCreaturesAdapter implements P5ViewAdapter {
   private config: SortingCreaturesAdapterConfig
 
-  private sortingCreaturesP5Ui: SortingCreaturesP5View | null
+  private creatureDrawer?: CreatureDrawer
+  private creatureGraphics?: Graphics
+  private p5Wrapper?: P5Wrapper
+
+  private firstDrawTimestamp: number
 
   constructor(config: SortingCreaturesAdapterConfig) {
     this.config = config
 
-    this.sortingCreaturesP5Ui = null
+    this.firstDrawTimestamp = 0
   }
 
   initialize(p5Wrapper: P5Wrapper): void {
+    this.p5Wrapper = p5Wrapper
+
     const {height, width} = this.dimensions
     p5Wrapper.updateCanvasSize(width, height)
 
-    this.sortingCreaturesP5Ui = new SortingCreaturesP5View({
-      appStore: this.config.appStore,
-      dimensions: this.dimensions,
-      onAnimationFinished: this.config.onAnimationFinished,
-      p5Wrapper,
+    this.creatureDrawer = new CreatureDrawer({
+      p5Wrapper: this.p5Wrapper,
     })
+
+    this.creatureGraphics = this.p5Wrapper.p5.createGraphics(
+      CREATURE_GRID_TILE_WIDTH * 3,
+      CREATURE_GRID_TILE_HEIGHT * 3,
+    )
+
+    this.firstDrawTimestamp = 0
   }
 
   deinitialize(): void {
-    this.sortingCreaturesP5Ui = null
+    delete this.creatureDrawer
+    delete this.creatureGraphics
+    delete this.p5Wrapper
   }
 
   draw(): void {
-    this.sortingCreaturesP5Ui?.draw()
+    const {creatureDrawer, p5Wrapper} = this
+
+    if (!(creatureDrawer && p5Wrapper)) {
+      return
+    }
+
+    const {appStore} = this.config
+
+    const {p5} = p5Wrapper
+
+    let elapsedTimeMs = 0
+    if (this.firstDrawTimestamp === 0) {
+      this.firstDrawTimestamp = Date.now()
+    } else {
+      elapsedTimeMs = Date.now() - this.firstDrawTimestamp
+    }
+
+    const animationProgress = elapsedTimeMs / ANIMATION_DURATION_MS
+    const easedProgress = easeInOutQuad(animationProgress)
+
+    const scale = 10
+
+    p5.clear(0, 0, 0, 0)
+    p5.push()
+    p5.scale(scale)
+
+    const gridAreaScale = 0.1
+
+    const gridStartX = VIEW_PADDING_START_X * gridAreaScale
+    const gridStartY = VIEW_PADDING_START_Y * gridAreaScale
+
+    const tileWidth = CREATURE_GRID_TILE_WIDTH * gridAreaScale
+    const tileHeight = CREATURE_GRID_TILE_HEIGHT * gridAreaScale
+
+    const creatureImageOverdrawMarginX = tileWidth
+    const creatureImageOverdrawMarginY = tileHeight
+
+    for (let endGridIndex = 0; endGridIndex < CREATURE_COUNT; endGridIndex++) {
+      // gridIndex2 is the index of where the creature is now
+      const creature = appStore.getState().creaturesInLatestGeneration[endGridIndex]
+
+      // gridIndex1 is the index of where the creature was
+      const startGridIndex = creatureIdToIndex(creature.id)
+
+      const {columnIndex: startColumnIndex, rowIndex: startRowIndex} = gridIndexToRowAndColumn(
+        startGridIndex,
+        this.getMaxCreatureTilesPerRow(),
+      )
+      const {columnIndex: endColumnIndex, rowIndex: endRowIndex} = gridIndexToRowAndColumn(
+        endGridIndex,
+        this.getMaxCreatureTilesPerRow(),
+      )
+
+      const columnIndex = interpolate(startColumnIndex, endColumnIndex, easedProgress)
+      const rowIndex = interpolate(startRowIndex, endRowIndex, easedProgress)
+
+      const tileStartX = gridStartX + columnIndex * tileWidth
+      const tileStartY = gridStartY + rowIndex * tileHeight
+
+      const creatureImage = this.getCreatureImage(creature)
+
+      p5.image(
+        creatureImage,
+        tileStartX - creatureImageOverdrawMarginX,
+        tileStartY - creatureImageOverdrawMarginY,
+        tileWidth * 3,
+        tileHeight * 3,
+      )
+    }
+
+    p5.pop()
+
+    if (animationProgress >= 1) {
+      this.config.onAnimationFinished()
+    }
   }
 
   private get dimensions(): P5ViewDimensions {
@@ -43,5 +152,43 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
       height: 664,
       width: 1024,
     }
+  }
+
+  private getCreatureImage(creature: Creature): Image {
+    let image = getCachedCreatureImage(creature)
+
+    if (image != null) {
+      return image
+    }
+
+    const {creatureDrawer, creatureGraphics} = this
+
+    if (!(creatureDrawer && creatureGraphics)) {
+      throw new Error('SortingCreaturesAdapter has not been initialized')
+    }
+
+    creatureGraphics.clear(0, 0, 0, 0)
+
+    creatureGraphics.push()
+
+    // Translate to the center of where the creature is drawn.
+    creatureGraphics.translate(creatureGraphics.width / 2, creatureGraphics.height / 2)
+    // Scale to fit the creature in the center.
+    creatureGraphics.scale(10)
+
+    creatureDrawer.drawCreature(creature, 0, 0, creatureGraphics)
+
+    creatureGraphics.pop()
+
+    image = creatureGraphics.get(0, 0, creatureGraphics.width, creatureGraphics.height)
+
+    setCachedCreatureImage(creature, image)
+
+    return image
+  }
+
+  private getMaxCreatureTilesPerRow(): number {
+    const gridAreaWidth = this.dimensions.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+    return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

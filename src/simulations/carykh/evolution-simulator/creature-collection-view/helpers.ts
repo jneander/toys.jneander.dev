@@ -1,6 +1,7 @@
 import type p5 from 'p5'
 import type {Color} from 'p5'
 
+import {CREATURE_COUNT} from '../constants'
 import {getSpeciesColorHSB} from '../creatures'
 import type {RowAndColumn} from './types'
 
@@ -11,10 +12,15 @@ export function gridIndexToRowAndColumn(gridIndex: number, tilesPerRow: number):
   return {columnIndex, rowIndex}
 }
 
-export function rowAndColumnToGridIndex(rowAndColumn: RowAndColumn, tilesPerRow: number): number {
+export function rowAndColumnToGridIndex(
+  rowAndColumn: RowAndColumn,
+  tilesPerRow: number,
+): number | null {
   const {columnIndex, rowIndex} = rowAndColumn
 
-  return rowIndex * tilesPerRow + columnIndex
+  const gridIndex = rowIndex * tilesPerRow + columnIndex
+
+  return gridIndex >= CREATURE_COUNT ? null : gridIndex
 }
 
 export function getSpeciesColor(p5: p5, speciesId: number, adjust: boolean): Color {

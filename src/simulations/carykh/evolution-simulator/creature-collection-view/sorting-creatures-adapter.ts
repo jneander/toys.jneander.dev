@@ -3,12 +3,13 @@ import type {Graphics, Image} from 'p5'
 import {CREATURE_COUNT} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
 import {Creature, creatureIdToIndex} from '../creatures'
-import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../p5-utils'
+import type {P5CanvasContainer, P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
   CREATURE_GRID_TILE_HEIGHT,
   CREATURE_GRID_TILE_WIDTH,
   VIEW_PADDING_END_X,
+  VIEW_PADDING_END_Y,
   VIEW_PADDING_START_X,
   VIEW_PADDING_START_Y,
 } from './constants'
@@ -45,10 +46,10 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
     this.firstDrawTimestamp = 0
   }
 
-  initialize(p5Wrapper: P5Wrapper): void {
+  initialize(p5Wrapper: P5Wrapper, container: P5CanvasContainer): void {
     this.p5Wrapper = p5Wrapper
 
-    const {height, width} = this.dimensions
+    const {height, width} = this.getDimensions(container)
     p5Wrapper.updateCanvasSize(width, height)
 
     this.creatureDrawer = new CreatureDrawer({
@@ -113,14 +114,15 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
 
       // gridIndex1 is the index of where the creature was
       const startGridIndex = creatureIdToIndex(creature.id)
+      const tilesPerRow = this.getMaxTilesPerRow()
 
       const {columnIndex: startColumnIndex, rowIndex: startRowIndex} = gridIndexToRowAndColumn(
         startGridIndex,
-        this.getMaxCreatureTilesPerRow(),
+        tilesPerRow,
       )
       const {columnIndex: endColumnIndex, rowIndex: endRowIndex} = gridIndexToRowAndColumn(
         endGridIndex,
-        this.getMaxCreatureTilesPerRow(),
+        tilesPerRow,
       )
 
       const columnIndex = interpolate(startColumnIndex, endColumnIndex, easedProgress)
@@ -144,13 +146,6 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
 
     if (animationProgress >= 1) {
       this.config.onAnimationFinished()
-    }
-  }
-
-  private get dimensions(): P5ViewDimensions {
-    return {
-      height: 664,
-      width: 1024,
     }
   }
 
@@ -187,8 +182,29 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
     return image
   }
 
-  private getMaxCreatureTilesPerRow(): number {
-    const gridAreaWidth = this.dimensions.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+  private getDimensions(container: P5CanvasContainer): P5ViewDimensions {
+    const width = container.getAvailableWidth()
+
+    const tilesPerRow = this.getMaxTilesPerRow(width)
+
+    const maxRows = Math.ceil(CREATURE_COUNT / tilesPerRow)
+    const gridAreaHeight = maxRows * CREATURE_GRID_TILE_HEIGHT
+    const height = gridAreaHeight + VIEW_PADDING_START_Y + VIEW_PADDING_END_Y
+
+    return {
+      height,
+      width,
+    }
+  }
+
+  private getMaxTilesPerRow(canvasWidth?: number): number {
+    const width = canvasWidth || this.p5Wrapper?.width
+
+    if (width == null) {
+      throw new Error('CreatureGridAdapter is not initialized')
+    }
+
+    const gridAreaWidth = width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
     return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

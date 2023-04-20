@@ -2,7 +2,7 @@ import type {AppController} from '../../app-controller'
 import {FITNESS_LABEL, FITNESS_UNIT_LABEL, FRAMES_FOR_CREATURE_FITNESS} from '../../constants'
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
-import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../p5-utils'
+import type {P5CanvasContainer, P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../p5-utils'
 import {GenerationSimulation} from '../../simulation'
 import {SimulationView} from '../../views'
 import type {ActivityController} from './activity-controller'
@@ -23,10 +23,10 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
     this.config = config
   }
 
-  initialize(p5Wrapper: P5Wrapper): void {
+  initialize(p5Wrapper: P5Wrapper, container: P5CanvasContainer): void {
     this.p5Wrapper = p5Wrapper
 
-    const {height, width} = this.dimensions
+    const {height, width} = this.getDimensions(container)
     p5Wrapper.updateCanvasSize(width, height)
 
     const {font, p5} = this.p5Wrapper
@@ -41,13 +41,13 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
       }),
 
       creatureSimulation: this.generationSimulation.getCreatureSimulation(),
-      height: 900,
+      height,
       p5,
       postFont: font,
       showArrow: true,
       simulationConfig: this.config.appController.getSimulationConfig(),
       statsFont: font,
-      width: 1600,
+      width,
     })
 
     this.simulationView.setCameraZoom(0.01)
@@ -100,13 +100,6 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
     }
   }
 
-  private get dimensions(): P5ViewDimensions {
-    return {
-      height: 576,
-      width: 1024,
-    }
-  }
-
   private drawFinalFitness(): void {
     const {generationSimulation, p5Wrapper} = this
 
@@ -119,15 +112,36 @@ export class SimulationRunningAdapter implements P5ViewAdapter {
     const {nodes} = generationSimulation.getCreatureSimulationState().creature
     const {averageX} = averagePositionOfNodes(nodes)
 
+    const fontScale = width / 1600
+    const baseFontSize = 96 * fontScale
+    const textContainerHeight = baseFontSize * 2 + 20
+    const baselineHeightRatio = 0.2
+    const baselineOffset = baseFontSize * baselineHeightRatio
+
     p5.noStroke()
     p5.fill(0, 0, 0, 130)
     p5.rect(0, 0, width, height)
     p5.fill(0, 0, 0, 255)
-    p5.rect(width / 2 - 500, 200, 1000, 240)
+    p5.rect(width * 0.05, height / 2 - textContainerHeight / 2, width * 0.9, textContainerHeight)
     p5.fill(255, 0, 0)
     p5.textAlign(p5.CENTER)
-    p5.textFont(font, 96)
-    p5.text("Creature's " + FITNESS_LABEL + ':', width / 2, 300)
-    p5.text(p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL, width / 2, 400)
+    p5.textFont(font, baseFontSize)
+
+    p5.text("Creature's " + FITNESS_LABEL + ':', width / 2, height / 2 - baselineOffset)
+
+    p5.text(
+      p5.nf(averageX * 0.2, 0, 2) + ' ' + FITNESS_UNIT_LABEL,
+      width / 2,
+      height / 2 + baseFontSize - baselineOffset,
+    )
+  }
+
+  private getDimensions(container: P5CanvasContainer): P5ViewDimensions {
+    const width = container.getAvailableWidth()
+
+    return {
+      height: 576,
+      width,
+    }
   }
 }

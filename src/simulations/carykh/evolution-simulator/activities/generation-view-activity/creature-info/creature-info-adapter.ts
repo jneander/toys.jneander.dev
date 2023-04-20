@@ -1,6 +1,6 @@
 import {CreatureDrawer} from '../../../creature-drawer'
 import type {Creature} from '../../../creatures'
-import type {P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../../p5-utils'
+import type {P5CanvasContainer, P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../../p5-utils'
 import {CreatureSimulation, SimulationConfig} from '../../../simulation'
 import {SimulationView} from '../../../views'
 import type {CreatureInfoStore} from './types'
@@ -29,7 +29,7 @@ export class CreatureInfoAdapter implements P5ViewAdapter {
     this.simulationStarted = false
   }
 
-  initialize(p5Wrapper: P5Wrapper): void {
+  initialize(p5Wrapper: P5Wrapper, _container: P5CanvasContainer): void {
     this.p5Wrapper = p5Wrapper
 
     const {height, width} = this.dimensions

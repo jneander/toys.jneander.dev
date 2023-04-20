@@ -2,17 +2,22 @@ import type {Font} from 'p5'
 import p5 from 'p5'
 
 import {P5Wrapper} from './p5-wrapper'
-import type {P5ViewAdapter} from './types'
+import type {P5CanvasContainer, P5ViewAdapter} from './types'
 
 let font: Font
 
-export class P5ViewController {
+export class P5ViewController implements P5CanvasContainer {
   private adapter?: P5ViewAdapter
   private container: HTMLElement
   private instance?: p5
+  private measurer: HTMLElement
 
   constructor(container: HTMLElement) {
     this.container = container
+
+    this.measurer = this.container.appendChild(document.createElement('div'))
+    this.measurer.setAttribute('data-id', 'measuring')
+    this.measurer.style.maxWidth = '100%'
   }
 
   initialize(): void {
@@ -22,6 +27,10 @@ export class P5ViewController {
 
   deinitialize(): void {
     this.instance?.remove()
+  }
+
+  getAvailableWidth(): number {
+    return this.measurer.clientWidth
   }
 
   setAdapter(adapter: P5ViewAdapter): void {
@@ -67,7 +76,7 @@ export class P5ViewController {
 
       if (currentAdapter !== this.adapter) {
         currentAdapter = this.adapter
-        currentAdapter?.initialize(p5Wrapper)
+        currentAdapter?.initialize(p5Wrapper, this)
       }
 
       currentAdapter?.draw?.()

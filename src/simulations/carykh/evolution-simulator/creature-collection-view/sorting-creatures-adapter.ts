@@ -149,8 +149,8 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
     }
   }
 
-  onContainerWidthChanged(width: number): void {
-    const {height} = this.getDimensionsFromWidth(width)
+  onContainerWidthChanged(containerWidth: number): void {
+    const {height, width} = this.getDimensionsFromWidth(containerWidth)
     this.p5Wrapper?.updateCanvasSize(width, height)
   }
 
@@ -200,7 +200,7 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
 
     return {
       height,
-      width,
+      width: tilesPerRow * CREATURE_GRID_TILE_WIDTH + VIEW_PADDING_START_X + VIEW_PADDING_END_X,
     }
   }
 

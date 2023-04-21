@@ -3,7 +3,6 @@ import {Creature, speciesIdForCreature} from '../creatures'
 import {P5Wrapper} from '../p5-utils'
 import {CreatureSimulation, SimulationConfig} from '../simulation'
 import {SimulationView} from '../views/simulation-view'
-import {CREATURE_GRID_TILE_WIDTH} from '.'
 import {getSpeciesColor} from './helpers'
 
 export interface PopupSimulationViewConfig {
@@ -89,16 +88,12 @@ export class PopupSimulationView {
 
     const {creature, rank} = creatureInfo
 
-    const {infoBoxStartX, infoBoxStartY} = this.getInfoBoxStartPosition()
+    const {infoBoxStartX, infoBoxStartY, simulationViewStartX, simulationViewStartY} =
+      this.getPopupStartPositions()
 
     this.drawInfoBox(infoBoxStartX, infoBoxStartY, creature, rank)
 
     if (showSimulationView) {
-      const {simulationViewStartX, simulationViewStartY} = this.getSimulationViewStartPosition(
-        infoBoxStartX,
-        infoBoxStartY,
-      )
-
       this.drawSimulationView(simulationViewStartX, simulationViewStartY)
     }
   }
@@ -165,19 +160,27 @@ export class PopupSimulationView {
     this.creatureSimulation.advance()
   }
 
-  private getInfoBoxStartPosition(): {
+  private getPopupStartPositions(): {
     infoBoxStartX: number
     infoBoxStartY: number
+    simulationViewStartX: number
+    simulationViewStartY: number
   } {
     const anchor = this.anchor
-    if (!anchor) {
-      return {infoBoxStartX: 0, infoBoxStartY: 0}
+
+    const positions = {
+      infoBoxStartX: 0,
+      infoBoxStartY: 0,
+      simulationViewStartX: 0,
+      simulationViewStartY: INFO_BOX_HEIGHT + INFO_BOX_MARGIN,
     }
 
-    let infoBoxStartX
+    if (!anchor) {
+      return positions
+    }
 
     // Align the top edge of the info box to the top edge of the anchor.
-    const infoBoxStartY = anchor.startPositionY
+    positions.infoBoxStartY = anchor.startPositionY
 
     /*
      * Position the info box to the right of the anchor. If there is not
@@ -187,58 +190,84 @@ export class PopupSimulationView {
      */
 
     const spaceToRightOfAnchor = this.p5Wrapper.width - (anchor.endPositionX + anchor.margin)
+
     const spaceNeededForInfoBox = INFO_BOX_WIDTH + INFO_BOX_MARGIN
 
     if (spaceToRightOfAnchor >= spaceNeededForInfoBox) {
-      infoBoxStartX = anchor.endPositionX + anchor.margin
+      positions.infoBoxStartX = anchor.endPositionX + anchor.margin
     } else {
-      infoBoxStartX = anchor.startPositionX - anchor.margin - INFO_BOX_WIDTH
+      positions.infoBoxStartX = anchor.startPositionX - anchor.margin - INFO_BOX_WIDTH
     }
 
-    return {infoBoxStartX, infoBoxStartY}
-  }
-
-  private getSimulationViewStartPosition(
-    infoBoxStartX: number,
-    infoBoxStartY: number,
-  ): {
-    simulationViewStartX: number
-    simulationViewStartY: number
-  } {
-    const {p5Wrapper} = this
-
-    let simulationViewStartX, simulationViewStartY
-
-    /*
-     * Align the left edge of the simulation view with the left edge of the
-     * anchor. Adjust to the left as needed to ensure that the right edge of the
-     * simulation view is within its margin for the right edge of the canvas.
-     */
-
-    const simulationViewMaxStartX = p5Wrapper.width - SIMULATION_VIEW_MARGIN - SIMULATION_VIEW_WIDTH
-
-    simulationViewStartX = infoBoxStartX - INFO_BOX_MARGIN - CREATURE_GRID_TILE_WIDTH
-    simulationViewStartX = Math.min(
-      Math.max(simulationViewStartX, SIMULATION_VIEW_MARGIN),
-      simulationViewMaxStartX,
-    )
-
-    /*
-     * Position the simulation view below the info box. If there is not enought
-     * vertical space between the info box and the bottom edge of the canvas
-     * (with margins), position the simulation view above the info box instead.
-     */
-
-    const spaceBelowInfoBox = p5Wrapper.height - (infoBoxStartY + INFO_BOX_HEIGHT)
-    const spaceNeededForSimulationView =
-      INFO_BOX_MARGIN + SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
-
-    if (spaceBelowInfoBox >= spaceNeededForSimulationView) {
-      simulationViewStartY = infoBoxStartY + INFO_BOX_HEIGHT + INFO_BOX_MARGIN
-    } else {
-      simulationViewStartY = infoBoxStartY - INFO_BOX_MARGIN - SIMULATION_VIEW_HEIGHT
+    if (!this.showSimulationView) {
+      // Only the info box is visible, and it is positioned
+      return positions
     }
 
-    return {simulationViewStartX, simulationViewStartY}
+    const {infoBoxStartX, infoBoxStartY} = positions
+
+    // First, try to fit everything to the right.
+    if (spaceToRightOfAnchor >= SIMULATION_VIEW_WIDTH + SIMULATION_VIEW_MARGIN) {
+      // Position the simulation view below the info box.
+      positions.simulationViewStartX = infoBoxStartX
+      positions.simulationViewStartY = infoBoxStartY + INFO_BOX_HEIGHT + INFO_BOX_MARGIN
+
+      // Adjust for any overflow at the bottom.
+      const overallEndY =
+        positions.simulationViewStartY + SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
+      const offsetY = Math.max(0, overallEndY - this.p5Wrapper.height)
+
+      positions.infoBoxStartY -= offsetY
+      positions.simulationViewStartY -= offsetY
+
+      return positions
+    }
+
+    // Next, try to fit the simulation view below.
+    const belowEndY =
+      infoBoxStartY +
+      INFO_BOX_HEIGHT +
+      INFO_BOX_MARGIN +
+      SIMULATION_VIEW_HEIGHT +
+      SIMULATION_VIEW_MARGIN
+
+    if (belowEndY <= this.p5Wrapper.height) {
+      positions.simulationViewStartX =
+        this.p5Wrapper.width - SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
+      // Keep the simulation view from overflowing the left edge of the canvas
+      positions.simulationViewStartX = Math.max(0, positions.simulationViewStartX)
+      positions.simulationViewStartY = infoBoxStartY + INFO_BOX_HEIGHT + INFO_BOX_MARGIN
+
+      return positions
+    }
+
+    const spaceToLeftOfAnchor = anchor.startPositionX - anchor.margin
+
+    // Next, try to fit everything to the left.
+    if (spaceToLeftOfAnchor >= SIMULATION_VIEW_WIDTH + SIMULATION_VIEW_MARGIN) {
+      positions.infoBoxStartX = anchor.startPositionX - anchor.margin - INFO_BOX_WIDTH
+      positions.simulationViewStartX = anchor.startPositionX - anchor.margin - SIMULATION_VIEW_WIDTH
+      // Position the simulation view below the info box.
+      positions.simulationViewStartY = infoBoxStartY + INFO_BOX_HEIGHT + INFO_BOX_MARGIN
+
+      // Adjust for any overflow at the bottom.
+      const overallEndY =
+        positions.simulationViewStartY + SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
+      const offsetY = Math.max(0, overallEndY - this.p5Wrapper.height)
+
+      positions.infoBoxStartY -= offsetY
+      positions.simulationViewStartY -= offsetY
+
+      return positions
+    }
+
+    // The last option is above.
+    positions.simulationViewStartX =
+      this.p5Wrapper.width - SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
+    // Keep the simulation view from overflowing the left edge of the canvas
+    positions.simulationViewStartX = Math.max(0, positions.simulationViewStartX)
+    positions.simulationViewStartY = anchor.startPositionY - anchor.margin - SIMULATION_VIEW_HEIGHT
+
+    return positions
   }
 }

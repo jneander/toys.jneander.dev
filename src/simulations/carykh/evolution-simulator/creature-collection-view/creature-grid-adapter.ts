@@ -102,8 +102,8 @@ export class CreatureGridAdapter implements P5ViewAdapter {
     this.popupSimulationView?.dismissSimulationView()
   }
 
-  onContainerWidthChanged(width: number): void {
-    const {height} = this.getDimensionsFromWidth(width)
+  onContainerWidthChanged(containerWidth: number): void {
+    const {height, width} = this.getDimensionsFromWidth(containerWidth)
     this.p5Wrapper?.updateCanvasSize(width, height)
     this.creatureGridView?.setDimensions(width, height)
   }
@@ -150,7 +150,7 @@ export class CreatureGridAdapter implements P5ViewAdapter {
 
     return {
       height,
-      width,
+      width: tilesPerRow * CREATURE_GRID_TILE_WIDTH + VIEW_PADDING_START_X + VIEW_PADDING_END_X,
     }
   }
 

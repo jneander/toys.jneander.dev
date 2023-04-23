@@ -10,6 +10,10 @@ two groups such that the sum of one group is 36 and the product of the second gr
 I'm unsure where this originated. I suspect it came from a puzzle book, but I haven't been able to
 find the source or even identify this puzzle or the type of puzzle.
 
-<div class="interactive-region">
-  <card-splitting></card-splitting>
-</div>
+{% renderTemplate "webc" %}
+
+<interactive-embed src="/genetic-algorithms/card-splitting-fullscreen" title="Card Splitting">
+  [View Card Splitting on its own page.](/genetic-algorithms/card-splitting-fullscreen)
+</interactive-embed>
+
+{% endrenderTemplate %}

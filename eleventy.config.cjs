@@ -1,14 +1,27 @@
 const {readFile} = require('node:fs/promises')
+const {join} = require('node:path')
 
+const {EleventyRenderPlugin} = require('@11ty/eleventy')
 const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight')
+const webc = require('@11ty/eleventy-plugin-webc')
 const autoprefixer = require('autoprefixer')
 const eleventySass = require('eleventy-sass')
 const postcss = require('postcss')
 
 module.exports = function (config) {
+  config.addPlugin(EleventyRenderPlugin, {
+    tagName: 'renderTemplate',
+    tagNameFile: 'renderFile',
+  })
+
   config.addPlugin(eleventySass, {
     postcss: postcss([autoprefixer]),
   })
+
+  config.addPlugin(webc, {
+    components: join(__dirname, 'eleventy/_components/**/*.webc'),
+  })
+
   config.addPlugin(syntaxHighlight)
 
   config.setUseGitIgnore(false)

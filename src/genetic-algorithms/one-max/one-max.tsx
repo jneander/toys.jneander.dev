@@ -4,6 +4,8 @@ import type {Store} from '@jneander/utils-state'
 import {useStore} from '../../shared/state'
 import {ChromosomeTable, ControlsState, ExampleControls, State} from '../shared'
 
+import styles from './styles.module.scss'
+
 interface OneMaxProps {
   controlsStore: Store<ControlsState>
   eventBus: EventBus
@@ -16,7 +18,7 @@ export function OneMax(props: OneMaxProps) {
   const state = useStore(store)
 
   return (
-    <>
+    <div className={`${styles.Container} flow`}>
       <div>
         <ChromosomeTable
           best={state.best}
@@ -28,6 +30,6 @@ export function OneMax(props: OneMaxProps) {
       </div>
 
       <ExampleControls eventBus={eventBus} store={controlsStore} />
-    </>
+    </div>
   )
 }

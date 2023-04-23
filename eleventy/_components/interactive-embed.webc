@@ -1,0 +1,7 @@
+<div class="interactive-embed">
+  <iframe allowtransparency frameBorder="0" loading="lazy" :src="src" :title="title"></iframe>
+
+  <div class="description flow">
+    <slot></slot>
+  </div>
+</div>

@@ -6,6 +6,8 @@ import {ControlsState, ExampleControls, Metrics, State} from '../shared'
 import {Cards} from './cards'
 import type {CardSplittingFitnessValue} from './types'
 
+import styles from './styles.module.scss'
+
 interface CardSplittingProps {
   controlsStore: Store<ControlsState>
   eventBus: EventBus
@@ -18,7 +20,7 @@ export function CardSplitting(props: CardSplittingProps) {
   const state = useStore(store)
 
   return (
-    <>
+    <div className={`${styles.Container} flow`}>
       {state.best && <Cards label="Best" record={state.best} />}
 
       {state.current && <Cards label="Current" record={state.current} />}
@@ -26,6 +28,6 @@ export function CardSplitting(props: CardSplittingProps) {
       <Metrics iteration={state.current?.iteration ?? 0} />
 
       <ExampleControls eventBus={eventBus} store={controlsStore} />
-    </>
+    </div>
   )
 }

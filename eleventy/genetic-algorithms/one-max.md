@@ -8,6 +8,10 @@ This exercise mutates a string of zeroes and ones until it matches a target stri
 numerical fitness value based on the quantity of characters that are equal between the given
 chromosome and the target.
 
-<div class="interactive-region">
-  <one-max></one-max>
-</div>
+{% renderTemplate "webc" %}
+
+<interactive-embed src="/genetic-algorithms/one-max-fullscreen" title="One Max">
+  [View One Max on its own page.](/genetic-algorithms/one-max-fullscreen)
+</interactive-embed>
+
+{% endrenderTemplate %}

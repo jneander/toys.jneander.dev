@@ -5,6 +5,8 @@ import type {Store} from '@jneander/utils-state'
 import {useStore} from '../../shared/state'
 import {ChromosomeTable, ControlsState, ExampleControls, State} from '../shared'
 
+import styles from './styles.module.scss'
+
 interface SortingNumbersProps {
   controlsStore: Store<ControlsState>
   eventBus: EventBus
@@ -17,7 +19,7 @@ export function SortingNumbers(props: SortingNumbersProps) {
   const state = useStore(store)
 
   return (
-    <>
+    <div className={`${styles.Container} flow`}>
       <div>
         <ChromosomeTable
           best={state.best}
@@ -30,6 +32,6 @@ export function SortingNumbers(props: SortingNumbersProps) {
       </div>
 
       <ExampleControls eventBus={eventBus} store={controlsStore} />
-    </>
+    </div>
   )
 }

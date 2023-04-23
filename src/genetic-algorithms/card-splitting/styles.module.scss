@@ -1,3 +1,9 @@
+@use '../../../styles/properties';
+
+.Container {
+  padding: properties.get-value('base', 'spacing', 'm', 'px');
+}
+
 .Card {
   background-color: white;
   border: 1px solid currentColor;

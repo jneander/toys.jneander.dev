@@ -13,6 +13,10 @@ positions). The fitness value has two parts:
 2. gap: the sum of the difference between adjacent numbers that are incorrectly ordered (lower is
    more fit; zero is best)
 
-<div class="interactive-region">
-  <sorting-numbers></sorting-numbers>
-</div>
+{% renderTemplate "webc" %}
+
+<interactive-embed src="/genetic-algorithms/sorting-numbers-fullscreen" title="Sorting Numbers">
+  [View Sorting Numbers on its own page.](/genetic-algorithms/sorting-numbers-fullscreen)
+</interactive-embed>
+
+{% endrenderTemplate %}

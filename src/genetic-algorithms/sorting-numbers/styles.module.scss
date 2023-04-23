@@ -1,0 +1,5 @@
+@use '../../../styles/properties';
+
+.Container {
+  padding: properties.get-value('base', 'spacing', 'm', 'px');
+}

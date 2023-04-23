@@ -14,6 +14,8 @@ import {ActivityId} from './constants'
 import type {SimulationConfig} from './simulation'
 import type {AppState} from './types'
 
+import styles from './styles.module.scss'
+
 export class CarykhEvolutionSimulatorElement extends BaseElement {
   private controller?: AppController
   private store: Store<AppState>
@@ -64,35 +66,41 @@ export class CarykhEvolutionSimulatorElement extends BaseElement {
   render() {
     const {currentActivityId} = this.store.getState()
 
+    let activityContent
+
     if (currentActivityId === ActivityId.GenerateCreatures) {
-      return html`<generate-creatures-activity
+      activityContent = html`<generate-creatures-activity
         .controller=${this.controller}
         .store=${this.store}
       ></generate-creatures-activity>`
     }
 
     if (currentActivityId === ActivityId.GenerationView) {
-      return html`<generation-view-activity
+      activityContent = html`<generation-view-activity
         .controller=${this.controller}
         .store=${this.store}
       ></generation-view-activity>`
     }
 
     if (currentActivityId === ActivityId.SimulationRunning) {
-      return html`<simulation-running-activity
+      activityContent = html`<simulation-running-activity
         .controller=${this.controller}
         .store=${this.store}
       ></simulation-running-activity>`
     }
 
     if (currentActivityId === ActivityId.PostSimulation) {
-      return html`<post-simulation-activity
+      activityContent = html`<post-simulation-activity
         .controller=${this.controller}
         .store=${this.store}
       ></post-simulation-activity>`
     }
 
-    return html`<start-activity .controller=${this.controller}></start-activity>`
+    if (currentActivityId === ActivityId.Start) {
+      activityContent = html`<start-activity .controller=${this.controller}></start-activity>`
+    }
+
+    return html`<div class=${styles.Container}>${activityContent}</div>`
   }
 
   private handleStoreUpdate() {

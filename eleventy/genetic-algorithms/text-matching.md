@@ -8,6 +8,10 @@ This exercise demonstrates an algorithm mutating a string of characters until it
 string. It uses a simple numerical fitness value based on the quantity of characters that are equal
 between the given chromosome and the target.
 
-<div class="interactive-region">
-  <text-matching></text-matching>
-</div>
+{% renderTemplate "webc" %}
+
+<interactive-embed src="/genetic-algorithms/text-matching-fullscreen" title="Text Matching">
+  [View Text Matching on its own page.](/genetic-algorithms/text-matching-fullscreen)
+</interactive-embed>
+
+{% endrenderTemplate %}

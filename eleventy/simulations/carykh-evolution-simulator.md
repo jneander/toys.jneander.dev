@@ -22,11 +22,15 @@ He also open-sourced the simulator on [OpenProcessing](https://openprocessing.or
 [Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)](https://creativecommons.org/licenses/by-sa/3.0/)
 license, I ported and refactored his implementation into that which is presented here.
 
+{% renderTemplate "webc" %}
+
 <div class="full-bleed">
-  <div class="interactive-region">
-    <carykh-evolution-simulator>Loading...</carykh-evolution-simulator>
-  </div>
+  <interactive-embed src="/simulations/carykh-evolution-simulator-fullscreen" title="Carykh's Evolution Simulator">
+    [View Carykh's Evolution Simulator on its own page.](/simulations/carykh-evolution-simulator-fullscreen)
+  </interactive-embed>
 </div>
+
+{% endrenderTemplate %}
 
 You can learn more about Cary through his
 [carykh YouTube Channel](https://www.youtube.com/channel/UC9z7EZAbkphEMg0SP7rw44A) and the various

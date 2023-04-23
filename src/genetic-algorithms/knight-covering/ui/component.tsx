@@ -7,6 +7,8 @@ import type {Controller} from '../controller'
 import type {KnightCoveringState} from '../types'
 import {Configuration} from './configuration'
 
+import styles from '../styles.module.scss'
+
 interface KnightCoveringProps {
   controller: Controller
   controlsStore: Store<ControlsState>
@@ -25,7 +27,7 @@ export function KnightCovering(props: KnightCoveringProps) {
   }
 
   return (
-    <>
+    <div className={`${styles.Container} flow`}>
       <Configuration
         boardSize={boardSize}
         disabled={isRunning}
@@ -39,6 +41,6 @@ export function KnightCovering(props: KnightCoveringProps) {
       <Metrics iteration={current ? current.iteration : 0} />
 
       <ExampleControls eventBus={eventBus} store={controlsStore} />
-    </>
+    </div>
   )
 }

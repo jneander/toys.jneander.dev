@@ -15,14 +15,6 @@ module.exports = {
     ],
 
     ['@babel/preset-typescript', {allowDeclareFields: true}],
-
-    [
-      '@babel/preset-react',
-
-      {
-        runtime: 'automatic',
-      },
-    ],
   ],
 
   plugins: [],

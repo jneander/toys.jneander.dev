@@ -3,7 +3,6 @@
     "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx",
     "lib": ["ES2022", "DOM"],
     "module": "ES2020",
     "moduleResolution": "node",
@@ -15,5 +14,5 @@
     "target": "ES2022"
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts"]
 }

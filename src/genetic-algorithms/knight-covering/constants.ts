@@ -21,3 +21,5 @@ export const minimumKnightsByBoardSize: {[key: number]: number} = {
   19: 68,
   20: 77,
 }
+
+export const KNIGHT_CHARACTER = '♞'

@@ -1,6 +1,7 @@
 import {MathRandomNumberGenerator} from '@jneander/utils-random'
 
-import {ChessBoardPosition, EMPTY_PIECE, KNIGHT_UNICODE} from '../shared'
+import type {ChessBoardPosition} from '../shared'
+import {KNIGHT_CHARACTER} from './constants'
 import type {KnightCoveringGene} from './types'
 
 const rng = new MathRandomNumberGenerator()
@@ -14,7 +15,7 @@ export function listAttacks(position: ChessBoardPosition, boardSize: number): Ch
       const attackPosition: ChessBoardPosition = {
         row: position.row + movements[row],
         col: position.col + movements[col],
-        piece: KNIGHT_UNICODE,
+        piece: KNIGHT_CHARACTER,
       }
 
       if (
@@ -36,7 +37,7 @@ export function positionHash(row: number, col: number): number {
   return (row + 1) * 1000 + col + 1
 }
 
-export function positionFromHash(hash: number, piece: string = EMPTY_PIECE): ChessBoardPosition {
+export function positionFromHash(hash: number, piece = ' '): ChessBoardPosition {
   const col = (hash % 1000) - 1
   const row = (hash - col - 1) / 1000 - 1
 
@@ -47,6 +48,6 @@ export function randomPosition(boardSize: number): KnightCoveringGene {
   return {
     row: rng.nextInt32(0, boardSize),
     col: rng.nextInt32(0, boardSize),
-    piece: KNIGHT_UNICODE,
+    piece: KNIGHT_CHARACTER,
   }
 }

@@ -10,11 +10,10 @@ import {
   ControlsEvent,
   ControlsState,
   GeneticAlgorithmController,
-  KNIGHT_UNICODE,
   PropagationTarget,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
-import {minimumKnightsByBoardSize} from './constants'
+import {KNIGHT_CHARACTER, minimumKnightsByBoardSize} from './constants'
 import {listAttacks, positionFromHash, positionHash, randomPosition} from './helpers'
 import type {KnightCoveringFitnessValueType, KnightCoveringGene, KnightCoveringState} from './types'
 
@@ -39,7 +38,7 @@ export class Controller extends GeneticAlgorithmController<
     super(dependencies)
 
     this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
-    this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
+    this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_CHARACTER)
   }
 
   initialize(): void {
@@ -58,7 +57,7 @@ export class Controller extends GeneticAlgorithmController<
 
   setBoardSize(boardSize: number): void {
     this.store.setState({boardSize})
-    this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
+    this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_CHARACTER)
     this.fitnessMethod = new FewestAttacks({boardSize: this.boardSize})
     this.randomizeTarget()
   }
@@ -82,7 +81,7 @@ export class Controller extends GeneticAlgorithmController<
 
   private get allBoardPositions(): KnightCoveringGene[] {
     if (this._allBoardPositions == null) {
-      this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_UNICODE)
+      this._allBoardPositions = allPositionsForBoard(this.boardSize, KNIGHT_CHARACTER)
     }
 
     return this._allBoardPositions

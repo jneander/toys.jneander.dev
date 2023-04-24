@@ -8,7 +8,6 @@ import {
   ControlsState,
   GeneticAlgorithmController,
   PropagationTarget,
-  QUEEN_UNICODE,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import type {QueensChromosome, QueensFitnessValueType, QueensGene, QueensState} from './types'
@@ -51,7 +50,7 @@ export class Controller extends GeneticAlgorithmController<QueensGene, QueensFit
   }
 
   protected geneSet(): QueensGene[] {
-    return allPositionsForBoard(this.boardSize, QUEEN_UNICODE)
+    return allPositionsForBoard(this.boardSize, '♛')
   }
 
   protected propogationOptions() {

@@ -12,7 +12,6 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    'plugin:react/recommended',
   ],
 
   globals: {},
@@ -39,15 +38,7 @@ module.exports = {
     sourceType: 'module',
   },
 
-  plugins: [
-    'import',
-    'prettier',
-    'promise',
-    'simple-import-sort',
-    'jsx-a11y',
-    'react',
-    'react-hooks',
-  ],
+  plugins: ['import', 'prettier', 'promise', 'simple-import-sort', 'jsx-a11y'],
 
   root: true,
 
@@ -56,7 +47,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     'arrow-body-style': 'off',
     'eslint-comments/no-unused-disable': 'error',
-    'import/extensions': ['error', 'ignorePackages', {js: 'never', ts: 'never', tsx: 'never'}],
+    'import/extensions': ['error', 'ignorePackages', {js: 'never', ts: 'never'}],
     'import/no-extraneous-dependencies': ['error', {devDependencies: true}],
     'no-empty': ['error', {allowEmptyCatch: true}],
     'no-unused-vars': 'off',
@@ -64,12 +55,6 @@ module.exports = {
     'prefer-arrow-callback': 'off',
     'prettier/prettier': 'error',
     'promise/always-return': 'off',
-    'react-hooks/exhaustive-deps': 'warn',
-    'react-hooks/rules-of-hooks': 'error',
-    'react/jsx-filename-extension': ['error', {extensions: ['.ts', '.tsx']}],
-    'react/jsx-uses-react': 'off',
-    'react/prop-types': 'off',
-    'react/react-in-jsx-scope': 'off',
 
     'simple-import-sort/imports': [
       'warn',
@@ -107,15 +92,11 @@ module.exports = {
 
   settings: {
     'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx'],
+      '@typescript-eslint/parser': ['.ts'],
     },
 
     'import/resolver': {
       typescript: {},
-    },
-
-    react: {
-      version: 'detect',
     },
   },
 }

@@ -36,7 +36,7 @@ module.exports = function () {
       rules: [
         {
           exclude: /node_modules/,
-          test: /\.(js|ts|tsx)$/,
+          test: /\.(js|ts)$/,
           use: [
             {
               loader: 'babel-loader',
@@ -108,11 +108,7 @@ module.exports = function () {
     ],
 
     resolve: {
-      alias: {
-        React: 'react',
-      },
-
-      extensions: ['.js', '.ts', '.tsx'],
+      extensions: ['.js', '.ts'],
       modules: [srcPath, 'node_modules'],
     },
 

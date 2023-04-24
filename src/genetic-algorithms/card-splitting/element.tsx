@@ -1,40 +1,79 @@
-import {EventBus} from '@jneander/event-bus'
-import {createRoot, Root} from 'react-dom/client'
+import '../shared/example-controls/element'
+import './cards-group'
 
+import {EventBus} from '@jneander/event-bus'
+import {html} from 'lit'
+
+import {BaseElement} from '../../shared/views'
 import {createControlsStore} from '../shared'
-import {CardSplitting} from './card-splitting'
 import {Controller} from './controller'
 import {createStore} from './state'
 
-export class CardSplittingElement extends HTMLElement {
+import styles from './styles.module.scss'
+
+export class CardSplittingElement extends BaseElement {
   private controller?: Controller
-  private root?: Root
+  private controlsStore?: ReturnType<typeof createControlsStore>
+  private eventBus?: EventBus
+  private store?: ReturnType<typeof createStore>
+  private storeListeners: (() => void)[] = []
 
   connectedCallback() {
-    const controlsStore = createControlsStore()
-    const eventBus = new EventBus()
-    const store = createStore()
+    this.controlsStore = createControlsStore()
+    this.eventBus = new EventBus()
+    this.store = createStore()
 
     this.controller = new Controller({
-      controlsStore,
-      eventBus,
-      store,
+      controlsStore: this.controlsStore,
+      eventBus: this.eventBus,
+      store: this.store,
     })
 
-    const container = document.createElement('div')
-    container.classList.add('flow')
-    this.appendChild(container)
+    this.storeListeners.push(
+      this.controlsStore.subscribe(() => {
+        this.requestUpdate()
+      }),
 
-    this.root = createRoot(container)
-    this.root.render(
-      <CardSplitting controlsStore={controlsStore} eventBus={eventBus} store={store} />,
+      this.store.subscribe(() => {
+        this.requestUpdate()
+      }),
     )
 
     this.controller.initialize()
+
+    super.connectedCallback()
   }
 
   disconnectedCallback() {
+    this.storeListeners.forEach(fn => {
+      fn()
+    })
+    this.storeListeners.length = 0
+
     this.controller?.deinitialize()
-    this.root?.unmount()
+
+    super.disconnectedCallback()
+  }
+
+  protected render() {
+    if (this.store == null) {
+      return
+    }
+
+    const {best, current} = this.store.getState()
+
+    return html`
+      <div class="${styles.Container} flow">
+        ${best ? html`<cards-group label="Best" .record=${best}></cards-group>` : null}
+        ${current ? html`<cards-group label="Current" .record=${current}></cards-group>` : null}
+
+        <div>Iteration: ${current?.iteration ?? 0}</div>
+
+        <example-controls
+          .eventBus=${this.eventBus}
+          .store=${this.controlsStore}
+        ></example-controls>
+      </div>
+    `
   }
 }

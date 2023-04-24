@@ -1,5 +1,4 @@
 export * from './chess-board'
-export * from './chromosome-table'
 export * from './controller'
 export * from './example-controls'
 export * from './metrics'

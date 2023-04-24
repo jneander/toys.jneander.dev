@@ -1,5 +1,13 @@
 @use '../../../../styles/properties';
 
+:global {
+  checkbox-input-field,
+  number-input-field,
+  range-input-field {
+    display: block;
+  }
+}
+
 .InputContainer {
   display: block;
 }
@@ -15,6 +23,6 @@
 
 .CheckboxInputField {
   align-items: center;
-  display: flex;
+  display: inline-flex;
   gap: properties.get-value('base', 'spacing', 'xxs', 'rem');
 }

@@ -1,5 +1,12 @@
 @use '../../../styles/properties';
 
+:global {
+  chromosome-table,
+  example-controls {
+    display: block;
+  }
+}
+
 .ExampleControlsRow {
   display: flex;
   align-items: center;

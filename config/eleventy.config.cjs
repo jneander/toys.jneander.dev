@@ -19,7 +19,7 @@ module.exports = function (config) {
   })
 
   config.addPlugin(webc, {
-    components: join(__dirname, 'eleventy/_components/**/*.webc'),
+    components: join(__dirname, '..', 'eleventy/_components/**/*.webc'),
   })
 
   config.addPlugin(syntaxHighlight)

@@ -4,7 +4,7 @@
     "build": "npm-run-all clean build:prod:*",
     "build:dev": "npm-run-all clean build:dev:*",
     "build:dev:webpack": "webpack build --config ./config/webpack.development.js",
-    "build:prod:11ty": "eleventy --quiet",
+    "build:prod:11ty": "eleventy --config=./config/eleventy.config.cjs --quiet",
     "build:prod:webpack": "webpack build --config ./config/webpack.production.js",
     "clean": "rimraf ./dist",
     "lint:eslint": "eslint .",
@@ -12,7 +12,7 @@
     "lint:prettier": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
     "start": "npm-run-all clean build:dev -p start:*",
-    "start:11ty": "eleventy --serve --quiet --watch",
+    "start:11ty": "eleventy --config=./config/eleventy.config.cjs --serve --quiet --watch",
     "start:webpack": "webpack --watch --config ./config/webpack.development.js",
     "test:types": "tsc --noEmit",
     "test:types:watch": "tsc --noEmit --watch"

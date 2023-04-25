@@ -1,5 +1,5 @@
 {
-  "name": "cs.jneander.dev",
+  "name": "toys.jneander.dev",
   "scripts": {
     "build": "npm-run-all clean build:prod:*",
     "build:dev": "npm-run-all clean build:dev:*",

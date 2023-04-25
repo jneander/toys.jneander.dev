@@ -1,6 +1,6 @@
 ---
 layout: content-index
-title: Learning Some CS Topics
+title: Breakable Toys
 ---
 
 I've long been fascinated by the idea of replicating the mechanics of life in a simulated

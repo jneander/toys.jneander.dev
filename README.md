@@ -19,4 +19,4 @@ on which ports are available, the port might be different. Refer to console outp
 [![License: MIT][license-badge]][license-url]
 
 [license-badge]: https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square
-[license-url]: https://github.com/jneander/cs.jneander.dev/blob/master/LICENSE
+[license-url]: https://github.com/jneander/toys.jneander.dev/blob/master/LICENSE

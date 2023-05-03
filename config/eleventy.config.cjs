@@ -32,6 +32,7 @@ module.exports = function (config) {
   config.addPassthroughCopy({'./dist/webpack/styles': '/styles'})
   config.addPassthroughCopy({'./public/*.*': '/'})
   config.addPassthroughCopy({'./public/fonts': '/fonts'})
+  config.addPassthroughCopy({'./public/images': '/images'})
 
   config.addAsyncShortcode('assets', async function () {
     let manifest = {entrypoints: {}}

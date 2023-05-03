@@ -5,7 +5,9 @@ title: The Queens Puzzle
 ---
 
 This exercise uses a genetic algorithm to place queen pieces on a chess board in such a way that no
-one queen is able to attack any of the others.
+one queen is able to attack any of the others. The original puzzle is for a standard 8x8 chess
+board. Here it can be based on a board sized from a minimum of 4x4 up to an arbitrary limit of
+20x20. Each variation uses a number of queens equal to the count of squares in one row on the board.
 
 {% renderTemplate "webc" %}
 
@@ -14,3 +16,8 @@ one queen is able to attack any of the others.
 </interactive-embed>
 
 {% endrenderTemplate %}
+
+This exercise came from Chapter 4 of
+[Genetic Algorithms with Python](https://github.com/handcraftsman/GeneticAlgorithmsWithPython#description)
+by [Clinton Sheppard](https://www.cs.unm.edu/~sheppard/). In the book, it is referred to as "The 8
+Queens Puzzle."

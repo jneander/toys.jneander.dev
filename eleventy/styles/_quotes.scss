@@ -1,0 +1,19 @@
+@use '../../styles/properties';
+
+$padding: properties.get-value('base', 'spacing', 'l', 'rem');
+$border-width: 1px;
+
+figure.quote {
+  & > blockquote {
+    border: $border-width solid currentColor;
+    padding: $padding;
+    margin-inline: calc(0px - #{$padding} - #{$border-width});
+    background: properties.get-value('base', 'color', 'white');
+    position: relative;
+  }
+
+  & > figcaption {
+    margin-block-start: properties.get-value('base', 'spacing', 'xs', 'rem');
+    text-align: end;
+  }
+}

@@ -20,3 +20,8 @@ positions). The fitness value has two parts:
 </interactive-embed>
 
 {% endrenderTemplate %}
+
+This exercise came from Chapter 3 of
+[Genetic Algorithms with Python](https://github.com/handcraftsman/GeneticAlgorithmsWithPython#description)
+by [Clinton Sheppard](https://www.cs.unm.edu/~sheppard/). In the book, it is referred to as "Sorted
+Numbers."

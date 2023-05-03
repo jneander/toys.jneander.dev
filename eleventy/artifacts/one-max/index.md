@@ -15,3 +15,7 @@ chromosome and the target.
 </interactive-embed>
 
 {% endrenderTemplate %}
+
+This exercise came from Chapter 2 of
+[Genetic Algorithms with Python](https://github.com/handcraftsman/GeneticAlgorithmsWithPython#description)
+by [Clinton Sheppard](https://www.cs.unm.edu/~sheppard/).

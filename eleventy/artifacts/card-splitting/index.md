@@ -17,3 +17,7 @@ find the source or even identify this puzzle or the type of puzzle.
 </interactive-embed>
 
 {% endrenderTemplate %}
+
+This exercise came from Chapter 6 of
+[Genetic Algorithms with Python](https://github.com/handcraftsman/GeneticAlgorithmsWithPython#description)
+by [Clinton Sheppard](https://www.cs.unm.edu/~sheppard/).

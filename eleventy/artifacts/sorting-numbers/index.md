@@ -15,8 +15,8 @@ positions). The fitness value has two parts:
 
 {% renderTemplate "webc" %}
 
-<interactive-embed src="/genetic-algorithms/sorting-numbers-fullscreen" title="Sorting Numbers">
-  [View Sorting Numbers on its own page.](/genetic-algorithms/sorting-numbers-fullscreen)
+<interactive-embed src="/artifacts/sorting-numbers/fullscreen" title="Sorting Numbers">
+  [View Sorting Numbers on its own page.](/artifacts/sorting-numbers/fullscreen)
 </interactive-embed>
 
 {% endrenderTemplate %}

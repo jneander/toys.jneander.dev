@@ -1,7 +1,7 @@
 ---
 layout: content-page
 entrypoint: queens
-title: Queens
+title: The Queens Puzzle
 ---
 
 This exercise uses a genetic algorithm to place queen pieces on a chess board in such a way that no
@@ -9,8 +9,8 @@ one queen is able to attack any of the others.
 
 {% renderTemplate "webc" %}
 
-<interactive-embed src="/genetic-algorithms/queens-fullscreen" title="Queens">
-  [View Queens on its own page.](/genetic-algorithms/queens-fullscreen)
+<interactive-embed src="/artifacts/chess-queens/fullscreen" title="The Queens Puzzle">
+  [View the Queens Puzzle on its own page.](/artifacts/chess-queens/fullscreen)
 </interactive-embed>
 
 {% endrenderTemplate %}

@@ -11,5 +11,5 @@ for the The Lord of the Rings trilogy. While the purpose of that software was mo
 of fascimile rather than simulation, I leaned into an understanding of crowd mechanics and favored
 the pursuit of life simulations.
 
-- [Genetic Algorithms](/genetic-algorithms)
-- [Simulations](/simulations)
+- [Genetic Algorithms](/artifacts/genetic-algorithms)
+- [Simulations](/artifacts/simulations)

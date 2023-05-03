@@ -1,7 +1,7 @@
 ---
 layout: content-page
 entrypoint: card-splitting
-title: Card Splitting
+title: The Card Problem
 ---
 
 This algorithm splits a group of playing cards, faces of ace through ten (values 1 through 10), into
@@ -12,8 +12,8 @@ find the source or even identify this puzzle or the type of puzzle.
 
 {% renderTemplate "webc" %}
 
-<interactive-embed src="/genetic-algorithms/card-splitting-fullscreen" title="Card Splitting">
-  [View Card Splitting on its own page.](/genetic-algorithms/card-splitting-fullscreen)
+<interactive-embed src="/artifacts/card-splitting/fullscreen" title="The Card Problem">
+  [View the Card Problem on its own page.](/artifacts/card-splitting/fullscreen)
 </interactive-embed>
 
 {% endrenderTemplate %}

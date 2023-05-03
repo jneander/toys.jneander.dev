@@ -10,8 +10,8 @@ between the given chromosome and the target.
 
 {% renderTemplate "webc" %}
 
-<interactive-embed src="/genetic-algorithms/text-matching-fullscreen" title="Text Matching">
-  [View Text Matching on its own page.](/genetic-algorithms/text-matching-fullscreen)
+<interactive-embed src="/artifacts/text-matching/fullscreen" title="Text Matching">
+  [View Text Matching on its own page.](/artifacts/text-matching/fullscreen)
 </interactive-embed>
 
 {% endrenderTemplate %}

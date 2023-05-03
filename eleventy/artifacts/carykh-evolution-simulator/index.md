@@ -25,8 +25,8 @@ license, I ported and refactored his implementation into that which is presented
 {% renderTemplate "webc" %}
 
 <div class="full-bleed">
-  <interactive-embed src="/simulations/carykh-evolution-simulator-fullscreen" title="Carykh's Evolution Simulator">
-    [View Carykh's Evolution Simulator on its own page.](/simulations/carykh-evolution-simulator-fullscreen)
+  <interactive-embed src="/artifacts/carykh-evolution-simulator/fullscreen" title="Carykh's Evolution Simulator">
+    [View Carykh's Evolution Simulator on its own page.](/artifacts/carykh-evolution-simulator/fullscreen)
   </interactive-embed>
 </div>
 

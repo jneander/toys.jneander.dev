@@ -1,7 +1,7 @@
 ---
 layout: content-page
 entrypoint: one-max
-title: One Max
+title: The One Max Problem
 ---
 
 This exercise mutates a string of zeroes and ones until it matches a target string. It uses a simple
@@ -10,8 +10,8 @@ chromosome and the target.
 
 {% renderTemplate "webc" %}
 
-<interactive-embed src="/genetic-algorithms/one-max-fullscreen" title="One Max">
-  [View One Max on its own page.](/genetic-algorithms/one-max-fullscreen)
+<interactive-embed src="/artifacts/one-max/fullscreen" title="The One Max Problem">
+  [View the One Max Problem on its own page.](/artifacts/one-max/fullscreen)
 </interactive-embed>
 
 {% endrenderTemplate %}

@@ -10,7 +10,7 @@ import {BaseElement, defineElement} from '../../../shared/views'
 import {ControlsEvent} from '../constants'
 import type {ControlsState} from '../types'
 
-import styles from '../styles.module.scss'
+import styles from './styles.module.scss'
 
 export class ExampleControlsElement extends BaseElement {
   private declare eventBus: IEventBus
@@ -48,7 +48,7 @@ export class ExampleControlsElement extends BaseElement {
     } = this.store.getState()
 
     return html`
-      <div class="flow">
+      <div class="${styles.Container} flow">
         <checkbox-input-field
           ?checked=${maxPropagationSpeed}
           labelText="Max Speed"

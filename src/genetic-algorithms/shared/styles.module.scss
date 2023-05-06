@@ -1,16 +1,9 @@
 @use '../../../styles/properties';
 
 :global {
-  chromosome-table,
-  example-controls {
+  chromosome-table {
     display: block;
   }
-}
-
-.ExampleControlsRow {
-  display: flex;
-  align-items: center;
-  gap: properties.get-value('base', 'spacing', 'm', 'em');
 }
 
 .ChromosomeTable {

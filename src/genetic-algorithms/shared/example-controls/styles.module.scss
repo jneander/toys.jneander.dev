@@ -1,0 +1,13 @@
+@use '../../../../styles/properties';
+
+:global {
+  example-controls {
+    display: block;
+  }
+}
+
+.ExampleControlsRow {
+  display: flex;
+  align-items: center;
+  gap: properties.get-value('base', 'spacing', 'm', 'em');
+}

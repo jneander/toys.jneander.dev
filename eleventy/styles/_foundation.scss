@@ -18,7 +18,6 @@ html {
   box-sizing: border-box;
   font-size: 1rem;
   height: 100%;
-  word-break: break-word;
 
   @include media.motion-allowed {
     &:focus-within {
@@ -114,4 +113,14 @@ dd,
 ol:not([class]),
 ul:not([class]) {
   max-inline-size: properties.get-value('element', 'text', 'maxInlineSize');
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  word-break: break-word;
 }

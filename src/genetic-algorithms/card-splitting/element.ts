@@ -1,3 +1,4 @@
+import '../shared/example-config/element'
 import '../shared/example-controls/element'
 import './cards-group'
 
@@ -63,6 +64,8 @@ export class CardSplittingElement extends BaseElement {
     const {best, current} = this.store.getState()
 
     return html`
+      <example-config .eventBus=${this.eventBus} .store=${this.controlsStore}></example-config>
+
       <div class="${styles.Container} flow">
         ${best ? html`<cards-group label="Best" .record=${best}></cards-group>` : null}
         ${current ? html`<cards-group label="Current" .record=${current}></cards-group>` : null}

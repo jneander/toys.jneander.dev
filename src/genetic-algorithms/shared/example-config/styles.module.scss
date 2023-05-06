@@ -1,0 +1,15 @@
+@use '../../../../styles/properties';
+
+:global {
+  example-config {
+    display: block;
+    border-block-end: 1px solid properties.get-value('base', 'color', 'grey', 950);
+  }
+}
+
+.Container {
+  display: flex;
+  justify-content: flex-end;
+  background-color: properties.get-value('base', 'color', 'grey', 50);
+  padding: properties.get-value('base', 'spacing', 'm', 'px');
+}

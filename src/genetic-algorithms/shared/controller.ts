@@ -2,7 +2,7 @@ import type {EventHandler, EventUnsubscribeFn, IEventBus} from '@jneander/event-
 import type {Chromosome, Fitness} from '@jneander/genetics'
 import type {Store} from '@jneander/utils-state'
 
-import {ControlsEvent, ControlsState} from './example-controls'
+import {ControlsEvent} from './constants'
 import {
   ControlledPropagation,
   ControlledPropagationConfig,
@@ -13,7 +13,7 @@ import {
   PropagationRecording,
   RunState,
 } from './propagation'
-import {State} from './types'
+import type {ControlsState, State} from './types'
 
 interface GeneticAlgorithmControllerDependencies<GeneType, FitnessValueType> {
   controlsStore: Store<ControlsState>

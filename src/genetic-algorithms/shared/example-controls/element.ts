@@ -7,8 +7,8 @@ import type {Store} from '@jneander/utils-state'
 import {html} from 'lit'
 
 import {BaseElement, defineElement} from '../../../shared/views'
-import {ControlsEvent} from './constants'
-import type {ControlsState} from './types'
+import {ControlsEvent} from '../constants'
+import type {ControlsState} from '../types'
 
 import styles from '../styles.module.scss'
 

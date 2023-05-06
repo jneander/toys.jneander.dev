@@ -11,3 +11,12 @@ export type State<GeneType, FitnessValueType> = {
   first: PropagationRecord<GeneType, FitnessValueType> | null
   target: PropagationTarget<GeneType, FitnessValueType> | null
 }
+
+export type ControlsState = {
+  allIterations: boolean
+  isRunning: boolean
+  iterationCount: number
+  maxPropagationSpeed: boolean
+  playbackPosition: number
+  propagationSpeed: number
+}

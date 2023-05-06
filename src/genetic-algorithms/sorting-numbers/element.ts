@@ -1,4 +1,5 @@
 import '../shared/chromosome-table.element'
+import '../shared/example-config/element'
 import '../shared/example-controls/element'
 
 import {EventBus} from '@jneander/event-bus'
@@ -64,6 +65,8 @@ export class SortingNumbersElement extends BaseElement {
     const state = this.store.getState()
 
     return html`
+      <example-config .eventBus=${this.eventBus} .store=${this.controlsStore}></example-config>
+
       <div class="${styles.Container} flow">
         <chromosome-table
           .best=${state.best}

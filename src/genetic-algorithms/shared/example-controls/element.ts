@@ -82,8 +82,6 @@ export class ExampleControlsElement extends BaseElement {
         ></range-input-field>
 
         <div class=${styles.ExampleControlsRow}>
-          <button @click=${this.handleRandomize}>Refresh</button>
-
           <button ?disabled=${isRunning} @click=${this.handleIterate}>Iterate</button>
 
           ${isRunning
@@ -120,10 +118,6 @@ export class ExampleControlsElement extends BaseElement {
       ControlsEvent.SET_RECORD_ALL_ITERATIONS,
       (event.target as HTMLInputElement).checked,
     )
-  }
-
-  private handleRandomize() {
-    this.eventBus.publish(ControlsEvent.RANDOMIZE)
   }
 
   private handleStart() {

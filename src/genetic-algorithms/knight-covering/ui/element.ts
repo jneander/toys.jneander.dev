@@ -1,4 +1,5 @@
 import '../../shared/chess-board/chess-board-element'
+import '../../shared/example-config/element'
 import '../../shared/example-controls/element'
 import './configuration-element'
 
@@ -69,6 +70,8 @@ export class KnightCoveringElement extends BaseElement {
     }
 
     return html`
+      <example-config .eventBus=${this.eventBus} .store=${this.controlsStore}></example-config>
+
       <div class="${styles.Container} flow">
         <knight-covering-configuration
           boardSize=${boardSize}

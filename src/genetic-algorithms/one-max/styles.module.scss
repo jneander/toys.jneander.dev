@@ -1,5 +1,12 @@
 @use '../../../styles/properties';
 
+:global {
+  one-max {
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+}
+
 .Container {
   padding: properties.get-value('base', 'spacing', 'm', 'px');
 }

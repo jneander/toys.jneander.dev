@@ -71,12 +71,9 @@ export class OneMaxElement extends BaseElement {
           .formatGenes=${(genes: string[]) => genes.join('')}
           .target=${state.target}
         ></chromosome-table>
-
-        <example-controls
-          .eventBus=${this.eventBus}
-          .store=${this.controlsStore}
-        ></example-controls>
       </div>
+
+      <example-controls .eventBus=${this.eventBus} .store=${this.controlsStore}></example-controls>
     `
   }
 }

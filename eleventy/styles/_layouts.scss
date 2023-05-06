@@ -1,11 +1,13 @@
 @use '../../styles/properties/base';
 
-body {
+/* BASE */
+
+body.base {
   display: grid;
   grid-template-rows: auto 1fr auto;
 }
 
-body > header {
+body.base > header {
   --wrapper-max-inline-size: 48rem;
 
   background-color: base.get-value('color', 'primary');
@@ -43,12 +45,12 @@ body > header {
   }
 }
 
-body > :not(header):not(footer) {
+body.base > :not(header):not(footer) {
   grid-row: 2;
   align-self: self-start;
 }
 
-body > footer {
+body.base > footer {
   grid-row: 3;
 
   background-color: base.get-value('color', 'grey', 100);
@@ -97,4 +99,11 @@ body > footer {
       }
     }
   }
+}
+
+/* FULLSCREEN */
+
+body.fullscreen {
+  display: grid;
+  grid-template-rows: auto;
 }

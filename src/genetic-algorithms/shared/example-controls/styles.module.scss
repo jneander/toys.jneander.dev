@@ -3,7 +3,17 @@
 :global {
   example-controls {
     display: block;
+
+    position: sticky;
+    bottom: 0;
+
+    border-block-start: 1px solid properties.get-value('base', 'color', 'grey', 950);
   }
+}
+
+.Container {
+  background-color: properties.get-value('base', 'color', 'grey', 50);
+  padding: properties.get-value('base', 'spacing', 'm', 'px');
 }
 
 .ExampleControlsRow {

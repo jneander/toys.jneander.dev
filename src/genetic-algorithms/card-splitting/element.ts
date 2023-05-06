@@ -68,12 +68,9 @@ export class CardSplittingElement extends BaseElement {
         ${current ? html`<cards-group label="Current" .record=${current}></cards-group>` : null}
 
         <div>Iteration: ${current?.iteration ?? 0}</div>
-
-        <example-controls
-          .eventBus=${this.eventBus}
-          .store=${this.controlsStore}
-        ></example-controls>
       </div>
+
+      <example-controls .eventBus=${this.eventBus} .store=${this.controlsStore}></example-controls>
     `
   }
 }

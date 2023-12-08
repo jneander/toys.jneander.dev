@@ -1,13 +1,13 @@
 import type {IEventBus} from '@jneander/event-bus'
-import {Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
+import {Chromosome, type Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 import type {Store} from '@jneander/utils-state'
 
 import {
   allPositionsForBoard,
   ControlsEvent,
-  ControlsState,
+  type ControlsState,
   GeneticAlgorithmController,
-  PropagationTarget,
+  type PropagationTarget,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import type {QueensChromosome, QueensFitnessValueType, QueensGene, QueensState} from './types'

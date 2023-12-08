@@ -12,7 +12,7 @@ import {
 } from './constants'
 import {CreatureGridP5View} from './creature-grid-p5-view'
 import {gridIndexToRowAndColumn} from './helpers'
-import {PopupSimulationView, PopupSimulationViewAnchor} from './popup-simulation-view'
+import {PopupSimulationView, type PopupSimulationViewAnchor} from './popup-simulation-view'
 import type {CreatureAndGridIndex} from './types'
 
 export interface CreatureGridAdapterConfig {

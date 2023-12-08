@@ -1,7 +1,7 @@
 import {CreatureDrawer} from '../creature-drawer'
 import {Creature, speciesIdForCreature} from '../creatures'
 import {P5Wrapper} from '../p5-utils'
-import {CreatureSimulation, SimulationConfig} from '../simulation'
+import {CreatureSimulation, type SimulationConfig} from '../simulation'
 import {SimulationView} from '../views/simulation-view'
 import {getSpeciesColor} from './helpers'
 

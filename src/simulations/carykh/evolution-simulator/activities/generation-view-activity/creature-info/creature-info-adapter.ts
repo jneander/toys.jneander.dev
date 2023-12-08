@@ -1,7 +1,7 @@
 import {CreatureDrawer} from '../../../creature-drawer'
 import type {Creature} from '../../../creatures'
 import type {P5CanvasContainer, P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../../p5-utils'
-import {CreatureSimulation, SimulationConfig} from '../../../simulation'
+import {CreatureSimulation, type SimulationConfig} from '../../../simulation'
 import {SimulationView} from '../../../views'
 import type {CreatureInfoStore} from './types'
 

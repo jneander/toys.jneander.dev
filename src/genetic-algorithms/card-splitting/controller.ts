@@ -1,14 +1,14 @@
 import type {IEventBus} from '@jneander/event-bus'
-import {Fitness, randomChromosome, replaceOneGene, swapTwoGenes} from '@jneander/genetics'
+import {type Fitness, randomChromosome, replaceOneGene, swapTwoGenes} from '@jneander/genetics'
 import {MathRandomNumberGenerator} from '@jneander/utils-random'
 import type {Store} from '@jneander/utils-state'
 
 import {
   ControlsEvent,
-  ControlsState,
+  type ControlsState,
   GeneticAlgorithmController,
-  PropagationTarget,
-  State,
+  type PropagationTarget,
+  type State,
 } from '../shared'
 import {SumProductMatch} from './sum-product-match'
 import type {CardSplittingChromosome, CardSplittingFitnessValue} from './types'

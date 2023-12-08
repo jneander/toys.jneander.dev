@@ -1,4 +1,4 @@
-import {PropagationRecord} from '@jneander/genetics'
+import type {PropagationRecord} from '@jneander/genetics'
 
 export type PropagationRecordingConfig = {
   allIterations?: boolean

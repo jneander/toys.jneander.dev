@@ -5,13 +5,13 @@ import type {Store} from '@jneander/utils-state'
 import {ControlsEvent} from './constants'
 import {
   ControlledPropagation,
-  ControlledPropagationConfig,
+  type ControlledPropagationConfig,
   PROPAGATION_FINISHED,
   PROPAGATION_RUNNING,
   PROPAGATION_STOPPED,
   PropagationListener,
   PropagationRecording,
-  RunState,
+  type RunState,
 } from './propagation'
 import type {ControlsState, State} from './types'
 

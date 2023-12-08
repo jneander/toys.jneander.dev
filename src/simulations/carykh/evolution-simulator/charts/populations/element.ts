@@ -1,4 +1,4 @@
-import {ActiveDataPoint, Chart} from 'chart.js'
+import {type ActiveDataPoint, Chart} from 'chart.js'
 import {html} from 'lit'
 
 import {BaseElement, defineElement} from '../../../../../shared/views'

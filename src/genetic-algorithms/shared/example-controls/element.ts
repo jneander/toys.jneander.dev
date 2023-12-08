@@ -82,6 +82,8 @@ export class ExampleControlsElement extends BaseElement {
         ></range-input-field>
 
         <div class=${styles.ExampleControlsRow}>
+          <button ?disabled=${isRunning} @click=${this.handleReset}>Reset</button>
+
           <button ?disabled=${isRunning} @click=${this.handleIterate}>Iterate</button>
 
           ${isRunning
@@ -94,6 +96,10 @@ export class ExampleControlsElement extends BaseElement {
 
   private handleIterate() {
     this.eventBus.publish(ControlsEvent.ITERATE)
+  }
+
+  private handleReset() {
+    this.eventBus.publish(ControlsEvent.RESET)
   }
 
   private handleRangeChange(event: Event) {

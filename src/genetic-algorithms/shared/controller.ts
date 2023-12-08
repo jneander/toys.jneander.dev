@@ -76,6 +76,13 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
       this.updateView()
     })
 
+    this.subscribeEvent(ControlsEvent.RESET, () => {
+      this.propagation = this.buildPropagation()
+      this.recording.reset()
+      this.propagation.iterate()
+      this.updateView()
+    })
+
     this.subscribeEvent(ControlsEvent.START, () => {
       if (this.propagation?.runState === PROPAGATION_RUNNING) {
         return

@@ -8,6 +8,9 @@ const autoprefixer = require('autoprefixer')
 const eleventySass = require('eleventy-sass')
 const postcss = require('postcss')
 
+/**
+ * @param {import("@11ty/eleventy/src/UserConfig")} config
+ */
 module.exports = function (config) {
   config.addPlugin(EleventyRenderPlugin, {
     tagName: 'renderTemplate',

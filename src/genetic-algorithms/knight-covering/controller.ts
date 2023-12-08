@@ -1,16 +1,16 @@
 import type {IEventBus} from '@jneander/event-bus'
-import {Chromosome, Fitness} from '@jneander/genetics'
+import {Chromosome, type Fitness} from '@jneander/genetics'
 import {rangeInts} from '@jneander/utils-arrays'
 import {MathRandomNumberGenerator, randomArrayValue} from '@jneander/utils-random'
 import type {Store} from '@jneander/utils-state'
 
 import {
   allPositionsForBoard,
-  ChessBoardPosition,
+  type ChessBoardPosition,
   ControlsEvent,
-  ControlsState,
+  type ControlsState,
   GeneticAlgorithmController,
-  PropagationTarget,
+  type PropagationTarget,
 } from '../shared'
 import {FewestAttacks} from './algorithms'
 import {KNIGHT_CHARACTER, minimumKnightsByBoardSize} from './constants'

@@ -1,6 +1,6 @@
 import {Chromosome} from '@jneander/genetics'
 
-import {ChessBoardPosition, State} from '../shared'
+import type {ChessBoardPosition, State} from '../shared'
 
 export type KnightCoveringGene = ChessBoardPosition
 export type KnightCoveringChromosome = Chromosome<KnightCoveringGene>

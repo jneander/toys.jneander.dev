@@ -1,4 +1,4 @@
-import {Fitness, NumberFitness} from '@jneander/genetics'
+import {type Fitness, NumberFitness} from '@jneander/genetics'
 
 import {listAttacks, positionHash} from './helpers'
 import type {KnightCoveringChromosome} from './types'

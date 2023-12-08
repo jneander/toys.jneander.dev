@@ -1,14 +1,20 @@
 import type {IEventBus} from '@jneander/event-bus'
-import {ArrayMatch, Chromosome, Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
+import {
+  ArrayMatch,
+  Chromosome,
+  type Fitness,
+  randomChromosome,
+  replaceOneGene,
+} from '@jneander/genetics'
 import {sampleArrayValues} from '@jneander/utils-random'
 import type {Store} from '@jneander/utils-state'
 
 import {
   ControlsEvent,
-  ControlsState,
+  type ControlsState,
   GeneticAlgorithmController,
-  PropagationTarget,
-  State,
+  type PropagationTarget,
+  type State,
 } from '../shared'
 
 const defaultLength = 50

@@ -1,4 +1,4 @@
-import {RunState} from './types'
+import type {RunState} from './types'
 
 export const PROPAGATION_FINISHED: RunState = 'finished'
 export const PROPAGATION_RUNNING: RunState = 'running'

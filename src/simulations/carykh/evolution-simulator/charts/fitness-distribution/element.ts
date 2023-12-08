@@ -1,4 +1,5 @@
-import {Chart, ChartType, ChartTypeRegistry, ScaleOptionsByType} from 'chart.js'
+import type {ChartType, ChartTypeRegistry, ScaleOptionsByType} from 'chart.js'
+import {Chart} from 'chart.js'
 import {html} from 'lit'
 
 import {BaseElement, defineElement} from '../../../../../shared/views'

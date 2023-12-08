@@ -1,4 +1,4 @@
-import {ChessBoardPosition, ChessBoardTable} from './types'
+import type {ChessBoardPosition, ChessBoardTable} from './types'
 
 function buildScaledBoard(size: number): ChessBoardTable {
   const board: string[][] = []
@@ -37,7 +37,7 @@ export function buildPopulatedBoard(size: number, positions?: ChessBoardPosition
   return populateBoard(board, positions)
 }
 
-export function allPositionsForBoard(boardSize: number, piece: string = ' '): ChessBoardPosition[] {
+export function allPositionsForBoard(boardSize: number, piece = ' '): ChessBoardPosition[] {
   const positions = []
 
   for (let row = 0; row < boardSize; row++) {

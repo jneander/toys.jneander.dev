@@ -1,6 +1,6 @@
 import './controller'
 
-import {ChartConfiguration, ChartData} from 'chart.js'
+import type {ChartConfiguration, ChartData} from 'chart.js'
 
 import {getSpeciesColorHslString, speciesIdFromNodesAndMuscles} from '../../creatures'
 

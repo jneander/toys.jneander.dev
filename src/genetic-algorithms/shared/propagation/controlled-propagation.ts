@@ -1,8 +1,8 @@
-import {Propagation, PropagationConfig, PropagationRecord} from '@jneander/genetics'
+import {Propagation, type PropagationConfig, type PropagationRecord} from '@jneander/genetics'
 import {ControlledLoopSync, TimerSync} from '@jneander/utils-async'
 
 import {PROPAGATION_FINISHED, PROPAGATION_RUNNING, PROPAGATION_STOPPED} from './constants'
-import {RunState} from './types'
+import type {RunState} from './types'
 
 export type ControlledPropagationConfig<GeneType, FitnessValueType> = PropagationConfig<
   GeneType,

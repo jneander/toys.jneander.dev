@@ -7,7 +7,7 @@ import {
   HISTOGRAM_BAR_SPAN,
 } from './constants'
 import {CreatureManipulator, fitnessToHistogramBarIndex, speciesIdForCreature} from './creatures'
-import {SimulationConfig} from './simulation'
+import type {SimulationConfig} from './simulation'
 import type {AppStore, GenerationHistoryEntry, SpeciesCount} from './types'
 
 const lastCreatureIndex = CREATURE_COUNT - 1

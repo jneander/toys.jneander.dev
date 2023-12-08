@@ -1,4 +1,4 @@
-import {Chromosome, Fitness, PropagationRecord} from '@jneander/genetics'
+import {Chromosome, type Fitness, type PropagationRecord} from '@jneander/genetics'
 
 export type PropagationTarget<GeneType, FitnessValueType> = {
   chromosome?: Chromosome<GeneType>

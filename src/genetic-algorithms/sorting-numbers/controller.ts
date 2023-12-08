@@ -1,9 +1,9 @@
 import type {IEventBus} from '@jneander/event-bus'
 import {
   ArrayOrder,
-  ArrayOrderFitnessValue,
+  type ArrayOrderFitnessValue,
   Chromosome,
-  Fitness,
+  type Fitness,
   swapTwoGenes,
 } from '@jneander/genetics'
 import {rangeInts} from '@jneander/utils-arrays'
@@ -12,10 +12,10 @@ import type {Store} from '@jneander/utils-state'
 
 import {
   ControlsEvent,
-  ControlsState,
+  type ControlsState,
   GeneticAlgorithmController,
-  PropagationTarget,
-  State,
+  type PropagationTarget,
+  type State,
 } from '../shared'
 
 const defaultLength = 50

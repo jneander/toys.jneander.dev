@@ -1,4 +1,4 @@
-import {Chromosome, Fitness} from '@jneander/genetics'
+import {Chromosome, type Fitness} from '@jneander/genetics'
 
 import {product, sum} from '../../shared/utils'
 import type {CardSplittingFitnessValue} from './types'

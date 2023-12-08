@@ -1,6 +1,6 @@
 import './controller'
 
-import {ChartConfiguration, ChartData} from 'chart.js'
+import type {ChartConfiguration, ChartData} from 'chart.js'
 
 import {FITNESS_PERCENTILE_CREATURE_INDICES} from '../../constants'
 

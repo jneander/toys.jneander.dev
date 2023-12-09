@@ -1,0 +1,16 @@
+---
+import FullscreenLayout from '../../../layouts/fullscreen-layout.astro'
+---
+
+<FullscreenLayout title="Card Splitting">
+  <noscript>JavaScript must be enabled to use this page.</noscript>
+
+  <card-splitting></card-splitting>
+</FullscreenLayout>
+
+<script>
+  import {CardSplittingElement} from '../../../../src/genetic-algorithms'
+  import {defineElement} from '../../../../src/shared/views'
+
+  defineElement('card-splitting', CardSplittingElement)
+</script>

@@ -1,0 +1,27 @@
+@use '../../styles/properties';
+@use '../../styles/shared/a11y';
+@use '../../styles/shared/theme';
+
+a {
+  color: properties.get-value('element', 'a', 'color');
+
+  outline-color: transparent;
+  outline-offset: properties.get-value('element', 'focusIndicator', 'outline-offset');
+  outline-style: properties.get-value('element', 'focusIndicator', 'outline-style');
+  outline-width: properties.get-value('element', 'focusIndicator', 'outline-width');
+
+  text-underline-offset: properties.get-value('element', 'a', 'textUnderlineOffset');
+
+  @include a11y.focus-visible {
+    outline-color: properties.get-value('element', 'focusIndicator', 'outline-color');
+    text-decoration-color: transparent;
+  }
+
+  @include theme.transition((color, outline-color, text-decoration-color));
+
+  &.icon {
+    display: inline-block;
+    line-height: 0;
+    text-decoration: none;
+  }
+}

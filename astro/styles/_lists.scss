@@ -1,0 +1,7 @@
+@use '../../styles/properties';
+
+ul.plain {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

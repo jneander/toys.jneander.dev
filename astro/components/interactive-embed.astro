@@ -1,0 +1,16 @@
+---
+interface Props {
+  src: string
+  title: string
+}
+
+const {src, title} = Astro.props
+---
+
+<div class="interactive-embed">
+  <iframe allowtransparency loading="lazy" src={src} title={title}></iframe>
+
+  <div class="description flow">
+    <slot />
+  </div>
+</div>

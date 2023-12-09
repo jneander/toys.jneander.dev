@@ -1,0 +1,16 @@
+---
+import FullscreenLayout from '../../../layouts/fullscreen-layout.astro'
+---
+
+<FullscreenLayout title="The Queens Puzzle">
+  <noscript>JavaScript must be enabled to use this page.</noscript>
+
+  <ga-queens></ga-queens>
+</FullscreenLayout>
+
+<script>
+  import {QueensElement} from '../../../../src/genetic-algorithms'
+  import {defineElement} from '../../../../src/shared/views'
+
+  defineElement('ga-queens', QueensElement)
+</script>

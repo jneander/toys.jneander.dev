@@ -1,0 +1,21 @@
+---
+import BaseLayout from './base-layout.astro'
+
+interface Props {
+  title: string
+  frontmatter?: {
+    title: string
+  }
+}
+
+// TODO: validate presence of title
+const {frontmatter, title = frontmatter?.title ?? 'No Title'} = Astro.props
+---
+
+<BaseLayout title={title}>
+  <main class="wrapper prose flow">
+    <h1>{title}</h1>
+
+    <slot />
+  </main>
+</BaseLayout>

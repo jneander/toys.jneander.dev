@@ -1,0 +1,16 @@
+@use 'foundation';
+
+@use 'headings';
+@use 'images';
+@use 'layouts';
+@use 'links';
+@use 'lists';
+@use 'quotes';
+@use 'utilities';
+
+@use 'regions/code';
+@use 'regions/interactive';
+
+.no-transition * {
+  transition: none !important;
+}

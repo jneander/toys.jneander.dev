@@ -5,11 +5,15 @@
 /.pnp
 .pnp.js
 
+# generated types
+.astro/
+
 # testing
 /coverage
 
 # build output
 /dist/
+.netlify/
 
 # production
 /build

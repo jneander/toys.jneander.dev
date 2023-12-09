@@ -1,0 +1,16 @@
+---
+import FullscreenLayout from '../../../layouts/fullscreen-layout.astro'
+---
+
+<FullscreenLayout title="Carykh's Evolution Simulator">
+  <noscript>JavaScript must be enabled to use this page.</noscript>
+
+  <carykh-evolution-simulator></carykh-evolution-simulator>
+</FullscreenLayout>
+
+<script>
+  import {CarykhEvolutionSimulatorElement} from '../../../../src/simulations'
+  import {defineElement} from '../../../../src/shared/views'
+
+  defineElement('carykh-evolution-simulator', CarykhEvolutionSimulatorElement)
+</script>

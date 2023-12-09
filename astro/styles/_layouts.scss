@@ -1,0 +1,109 @@
+@use '../../styles/properties/base';
+
+/* BASE */
+
+body.base {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+body.base > header {
+  --wrapper-max-inline-size: 48rem;
+
+  background-color: base.get-value('color', 'primary');
+
+  font-family: base.get-value('fontFamily', 'secondary');
+
+  padding-block: base.get-value('spacing', 'm', 'px');
+  margin-block-end: base.get-value('spacing', 'xxxl', 'px');
+
+  & > .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: base.get-value('spacing', 'm', 'px');
+  }
+
+  a {
+    color: base.get-value('color', 'secondary');
+  }
+
+  a[aria-current='page'] {
+    text-decoration-style: dashed;
+  }
+
+  nav {
+    // Eliminate space characters in HTML.
+    display: inline-flex;
+
+    margin-inline-start: auto;
+
+    a:not(:last-child) {
+      margin-inline-end: base.get-value('spacing', 'xl', 'px');
+    }
+  }
+}
+
+body.base > :not(header):not(footer) {
+  grid-row: 2;
+  align-self: self-start;
+}
+
+body.base > footer {
+  grid-row: 3;
+
+  background-color: base.get-value('color', 'grey', 100);
+
+  margin-block-start: base.get-value('spacing', 'xxxl', 'px');
+  padding-block: base.get-value('spacing', 'm', 'px');
+
+  & > .wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: base.get-value('spacing', 'm', 'em');
+
+    text-align: center;
+
+    [data-section$='links'] > p:first-of-type {
+      margin-block-end: base.get-value('spacing', 'xxs', 'em');
+    }
+
+    @media (min-width: 22rem) {
+      grid-template-columns: 1fr 1fr;
+
+      [data-section='site-links'] {
+        text-align: start;
+      }
+
+      [data-section='social-links'] {
+        text-align: end;
+      }
+
+      [data-section='legal'] {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (min-width: 38rem) {
+      grid-template-columns: 1fr auto 1fr;
+
+      [data-section='social-links'] > * {
+        text-align: center;
+        margin: auto;
+      }
+
+      [data-section='legal'] {
+        text-align: end;
+        grid-column: unset;
+      }
+    }
+  }
+}
+
+/* FULLSCREEN */
+
+body.fullscreen {
+  display: grid;
+  grid-template-rows: auto;
+}

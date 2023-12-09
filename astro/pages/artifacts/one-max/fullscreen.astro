@@ -1,0 +1,16 @@
+---
+import FullscreenLayout from '../../../layouts/fullscreen-layout.astro'
+---
+
+<FullscreenLayout title="The One Max Problem">
+  <noscript>JavaScript must be enabled to use this page.</noscript>
+
+  <one-max></one-max>
+</FullscreenLayout>
+
+<script>
+  import {OneMaxElement} from '../../../../src/genetic-algorithms'
+  import {defineElement} from '../../../../src/shared/views'
+
+  defineElement('one-max', OneMaxElement)
+</script>

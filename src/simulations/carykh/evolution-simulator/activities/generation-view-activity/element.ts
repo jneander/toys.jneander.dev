@@ -55,6 +55,7 @@ export class GenerationViewActivityElement extends BaseElement {
     this.storeListeners.forEach(fn => {
       fn()
     })
+
     this.storeListeners.length = 0
 
     super.disconnectedCallback()
@@ -66,11 +67,13 @@ export class GenerationViewActivityElement extends BaseElement {
       this.activityStore?.getState() ?? {}
 
     let displayedPendingGenerationCount = pendingGenerationCount ?? 0
+
     if (pendingGenerationCount === 0 && currentGenerationSimulation) {
       displayedPendingGenerationCount = 1
     }
 
     let postGenerationContent: ReturnType<typeof html> | undefined
+
     if (displayedPendingGenerationCount === 1) {
       postGenerationContent = html` — <span>Simulating next generation...</span>`
     } else if (displayedPendingGenerationCount > 1) {

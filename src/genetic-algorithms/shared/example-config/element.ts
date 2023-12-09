@@ -28,6 +28,7 @@ export class ExampleConfig extends BaseElement {
     this.storeListeners.forEach(fn => {
       fn()
     })
+
     this.storeListeners.length = 0
 
     super.disconnectedCallback()

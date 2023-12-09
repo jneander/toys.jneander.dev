@@ -30,6 +30,7 @@ export class PercentilesChartElement extends BaseElement {
     const canvas: HTMLCanvasElement = this.querySelector('canvas') as HTMLCanvasElement
 
     const ctx = canvas?.getContext('2d')
+
     if (!ctx) {
       return
     }

@@ -27,8 +27,10 @@ export class P5ViewController implements P5CanvasContainer {
     this.instance = new p5(this.sketch.bind(this), this.container)
 
     let lastContainerWidth: number
+
     this.resizeObserver = new ResizeObserver(entries => {
       const containerWidth = entries.at(0)?.borderBoxSize?.at(0)?.inlineSize
+
       if (containerWidth == null) {
         return
       }

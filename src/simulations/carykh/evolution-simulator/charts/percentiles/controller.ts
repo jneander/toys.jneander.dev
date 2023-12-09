@@ -16,6 +16,7 @@ class PercentilesController extends LineController {
     super.draw(...args)
 
     const activeElements = this.chart.getActiveElements()
+
     if (activeElements.length === 0) {
       return
     }

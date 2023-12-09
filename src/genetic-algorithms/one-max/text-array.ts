@@ -22,6 +22,7 @@ export class TextArray {
 
   generateTargetWithLength(length: number): Chromosome<string> {
     const targetArray = createPhraseArray(length, this.geneSet)
+
     return new Chromosome<string>(targetArray)
   }
 }

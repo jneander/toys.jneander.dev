@@ -1,7 +1,7 @@
 import type {IEventBus} from '@jneander/event-bus'
 import {
   ArrayMatch,
-  Chromosome,
+  type Chromosome,
   type Fitness,
   randomChromosome,
   replaceOneGene,

@@ -1,4 +1,4 @@
-import {Chromosome} from '@jneander/genetics'
+import type {Chromosome} from '@jneander/genetics'
 
 import type {ChessBoardPosition, State} from '../shared'
 

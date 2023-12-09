@@ -2,8 +2,8 @@ import {FRICTION, GRAVITY, PRESSURE_UNIT, SIMULATION_SPEED_INITIAL} from '../con
 import {
   applyForcesToNode,
   applyForceToMuscle,
-  Creature,
-  Node,
+  type Creature,
+  type Node,
   NodeOperationId,
   positionNodesForStartOfSimulation,
 } from '../creatures'
@@ -188,11 +188,13 @@ export class CreatureSimulation {
 
     if (node.velocityX > 0) {
       node.velocityX -= node.friction * dif * FRICTION
+
       if (node.velocityX < 0) {
         node.velocityX = 0
       }
     } else {
       node.velocityX += node.friction * dif * FRICTION
+
       if (node.velocityX > 0) {
         node.velocityX = 0
       }

@@ -100,6 +100,7 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
       }
 
       this.iterator?.stop()
+
       this.iterator = new ControlledLoopSync({
         loopFn: this.iterate.bind(this),
       })
@@ -113,6 +114,7 @@ export class ControlledPropagation<GeneType, FitnessValueType> {
       this.iterator.setTargetTickIntervalMs(targetTickIntervalMs)
     } else {
       this.iterator?.stop()
+
       this.iterator = new TimerSync({
         onTick: this.iterate.bind(this),
         targetTickIntervalMs,

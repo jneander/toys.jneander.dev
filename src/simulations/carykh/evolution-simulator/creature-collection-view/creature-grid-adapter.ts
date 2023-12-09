@@ -162,6 +162,7 @@ export class CreatureGridAdapter implements P5ViewAdapter {
     }
 
     const gridAreaWidth = width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+
     return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

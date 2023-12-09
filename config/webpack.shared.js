@@ -18,6 +18,7 @@ module.exports = function () {
     const entries = {}
 
     const globs = FastGlob.sync('**/*.entry.*', {cwd: srcPath})
+
     globs.forEach(filePath => {
       const fileName = path.basename(filePath)
       const [entryName] = fileName.split('.entry.')
@@ -88,6 +89,7 @@ module.exports = function () {
             .reduceRight(part => part)
 
           const allChunksNames = chunks.map(chunk => chunk.name).join('~')
+
           return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`
         },
       },

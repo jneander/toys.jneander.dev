@@ -3,9 +3,9 @@ import type {Color, Font} from 'p5'
 
 import {
   AXON_COUNT_BY_NODE_OPERATION_ID,
-  Creature,
-  Muscle,
-  Node,
+  type Creature,
+  type Muscle,
+  type Node,
   NODE_OPERATION_LABELS_BY_ID,
 } from './creatures'
 import {toInt} from './math'
@@ -72,6 +72,7 @@ export class CreatureDrawer {
 
     graphics.fill(color)
     graphics.noStroke()
+
     graphics.ellipse(
       (node.positionX + x) * this.scale,
       (node.positionY + y) * this.scale,
@@ -91,11 +92,13 @@ export class CreatureDrawer {
 
     graphics.textAlign(graphics.CENTER)
     graphics.textFont(this.axonFont, 0.4 * node.mass * this.scale)
+
     graphics.text(
       graphics.nf(node.value, 0, 2),
       (node.positionX + x) * this.scale,
       (node.positionY + node.mass * NODE_TEXT_LINE_MULTIPLIER_Y2 + y) * this.scale,
     )
+
     graphics.text(
       NODE_OPERATION_LABELS_BY_ID[node.operation],
       (node.positionX + x) * this.scale,
@@ -140,18 +143,21 @@ export class CreatureDrawer {
     graphics.stroke(this.axonColor)
     graphics.strokeWeight(0.03 * this.scale)
     graphics.line(x1 * this.scale, y1 * this.scale, x2 * this.scale, y2 * this.scale)
+
     graphics.line(
       x1 * this.scale,
       y1 * this.scale,
       (x1 + Math.cos(angle + Math.PI * 0.25) * arrowHeadSize) * this.scale,
       (y1 + Math.sin(angle + Math.PI * 0.25) * arrowHeadSize) * this.scale,
     )
+
     graphics.line(
       x1 * this.scale,
       y1 * this.scale,
       (x1 + Math.cos(angle + Math.PI * 1.75) * arrowHeadSize) * this.scale,
       (y1 + Math.sin(angle + Math.PI * 1.75) * arrowHeadSize) * this.scale,
     )
+
     graphics.noStroke()
   }
 
@@ -167,6 +173,7 @@ export class CreatureDrawer {
 
     graphics.strokeWeight(w * this.scale)
     graphics.stroke(70, 35, 0, muscle.rigidity * 3000)
+
     graphics.line(
       (ni1.positionX + x) * this.scale,
       (ni1.positionY + y) * this.scale,
@@ -201,6 +208,7 @@ export class CreatureDrawer {
       graphics.fill(this.axonColor)
       graphics.textAlign(graphics.CENTER)
       graphics.textFont(this.axonFont, 0.4 * averageMass * this.scale)
+
       graphics.text(
         graphics.nf(nodes[muscle.axon].getClampedValue(), 0, 2),
         muscleMidX * this.scale,

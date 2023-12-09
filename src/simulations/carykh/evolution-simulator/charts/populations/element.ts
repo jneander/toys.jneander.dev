@@ -30,6 +30,7 @@ export class PopulationsChartElement extends BaseElement {
     const canvas = this.querySelector('canvas') as HTMLCanvasElement
 
     const ctx = canvas?.getContext('2d')
+
     if (!ctx) {
       return
     }

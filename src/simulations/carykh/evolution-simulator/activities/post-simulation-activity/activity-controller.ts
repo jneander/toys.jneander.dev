@@ -28,6 +28,7 @@ export class ActivityController {
     let gridIndex = index
 
     const {currentActivityStep} = this.activityStore.getState()
+
     if (currentActivityStep === ActivityStep.SimulationFinished) {
       gridIndex = creatureIdToIndex(creature.id)
     }
@@ -37,6 +38,7 @@ export class ActivityController {
 
   currentStepShowsPopupSimulation(): boolean {
     const {currentActivityStep} = this.activityStore.getState()
+
     return currentActivityStep !== ActivityStep.PropagateCreatures
   }
 

@@ -1,5 +1,5 @@
 import type {IEventBus} from '@jneander/event-bus'
-import {Chromosome, type Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
+import {type Chromosome, type Fitness, randomChromosome, replaceOneGene} from '@jneander/genetics'
 import type {Store} from '@jneander/utils-state'
 
 import {

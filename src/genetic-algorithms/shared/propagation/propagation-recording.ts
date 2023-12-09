@@ -33,6 +33,7 @@ export class PropagationRecording<GeneType, FitnessValueType> {
     if (this.config.allIterations && this._playbackPosition === this._iterations.length) {
       this._playbackPosition++
     }
+
     if (this.config.allIterations || this._iterations.length === 0) {
       this._iterations.push(record)
     } else if (this._iterations.length > 0) {

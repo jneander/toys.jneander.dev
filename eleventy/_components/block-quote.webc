@@ -1,7 +1,0 @@
-<figure class="quote">
-  <blockquote>
-    <slot></slot>
-  </blockquote>
-
-  <figcaption>&mdash; <slot name="attribution"></slot></figcaption>
-</figure>

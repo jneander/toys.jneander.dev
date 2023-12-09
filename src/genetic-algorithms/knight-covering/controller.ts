@@ -118,6 +118,7 @@ export class Controller extends GeneticAlgorithmController<
       count--
 
       const positionToKnightIndexes = new Map()
+
       for (let row = 0; row < this.boardSize; row++) {
         for (let col = 0; col < this.boardSize; col++) {
           positionToKnightIndexes.set(positionHash(row, col), [])
@@ -126,6 +127,7 @@ export class Controller extends GeneticAlgorithmController<
 
       for (let i = 0; i < genes.length; i++) {
         const attacks = listAttacks(genes[i], this.boardSize)
+
         for (let j = 0; j < attacks.length; j++) {
           const {row, col} = attacks[j]
           positionToKnightIndexes.get(positionHash(row, col)).push(i)
@@ -136,21 +138,27 @@ export class Controller extends GeneticAlgorithmController<
       const unattacked: ChessBoardPosition[] = []
 
       const positionToKnightIndexArray = Array.from(positionToKnightIndexes)
+
       for (let i = 0; i < positionToKnightIndexArray.length; i++) {
         const [positionHash, knightIndexesAtPosition] = positionToKnightIndexArray[i]
+
         if (knightIndexesAtPosition.length > 1) {
           continue
         }
+
         if (knightIndexesAtPosition.length === 0) {
           unattacked.push(positionFromHash(positionHash))
+
           continue
         }
+
         for (let j = 0; j < knightIndexesAtPosition.length; j++) {
           knightIndexes.delete(knightIndexesAtPosition[j])
         }
       }
 
       let potentialKnightPositions: KnightCoveringGene[] = []
+
       if (unattacked.length) {
         for (let i = 0; i < unattacked.length; i++) {
           const positionsWhichCanAttackThisPosition: ChessBoardPosition[] = listAttacks(
@@ -168,6 +176,7 @@ export class Controller extends GeneticAlgorithmController<
       }
 
       let indexOfGeneToReplace
+
       if (knightIndexes.size) {
         indexOfGeneToReplace = randomArrayValue(Array.from(knightIndexes))
       } else {

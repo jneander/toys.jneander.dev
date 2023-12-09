@@ -172,6 +172,7 @@ export abstract class GeneticAlgorithmController<GeneType, FitnessValueType> {
 
   private get propagationSpeed(): number {
     const {maxPropagationSpeed, propagationSpeed} = this.controlsStore.getState()
+
     return maxPropagationSpeed ? 0 : propagationSpeed
   }
 }

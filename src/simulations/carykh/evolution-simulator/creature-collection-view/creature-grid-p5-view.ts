@@ -56,6 +56,7 @@ export class CreatureGridP5View {
       CREATURE_GRID_TILE_WIDTH * 3,
       CREATURE_GRID_TILE_HEIGHT * 3,
     )
+
     this.gridGraphics = p5.createGraphics(width, height)
     this.hoverGraphics = p5.createGraphics(width, height)
     this.graphics = p5.createGraphics(width, height)
@@ -190,6 +191,7 @@ export class CreatureGridP5View {
       this.creatureGraphics.width / 2,
       this.creatureGraphics.height / 2,
     )
+
     // Scale to fit the creature in the center.
     this.creatureGraphics.scale(10)
 
@@ -245,6 +247,7 @@ export class CreatureGridP5View {
 
   private getMaxCreatureTilesPerRow(): number {
     const gridAreaWidth = this.width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+
     return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

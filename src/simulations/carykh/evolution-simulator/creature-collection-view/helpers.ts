@@ -27,5 +27,6 @@ export function getSpeciesColor(p5: p5, speciesId: number, adjust: boolean): Col
   const [h, s, b] = getSpeciesColorHSB(speciesId, adjust)
 
   p5.colorMode(p5.HSB, 1.0)
+
   return p5.color(h, s, b)
 }

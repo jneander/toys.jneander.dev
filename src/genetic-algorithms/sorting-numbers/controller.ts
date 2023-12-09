@@ -83,6 +83,7 @@ export class Controller extends GeneticAlgorithmController<number, ArrayOrderFit
 
   private generateParent(): Chromosome<number> {
     const genes = shuffleArray(this.target().chromosome?.genes ?? [])
+
     return new Chromosome<number>(genes)
   }
 

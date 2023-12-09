@@ -146,11 +146,13 @@ export function getSpeciesColorHslString(speciesId: number, adjust: boolean): st
 
 export function getSpeciesColorHSB(speciesId: number, adjust: boolean): HSB {
   let hue = (speciesId * 1.618034) % 1
+
   if (speciesId == 46) {
     hue = 0.083333
   }
 
   let brightness = 1.0
+
   if (Math.abs(hue - 0.333) <= 0.18 && adjust) {
     brightness = 0.7
   }

@@ -1,4 +1,4 @@
-import {P5Wrapper} from './p5-wrapper'
+import type {P5Wrapper} from './p5-wrapper'
 
 export type P5ViewDimensions = {
   height: number

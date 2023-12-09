@@ -1,7 +1,7 @@
 import type {RandomNumberGenerator} from '@jneander/utils-random'
 
 import {
-  ActivityId,
+  type ActivityId,
   CREATURE_COUNT,
   FITNESS_PERCENTILE_CREATURE_INDICES,
   HISTOGRAM_BAR_SPAN,
@@ -69,6 +69,7 @@ export class AppController {
     const nextGeneration = appState.generationCount + 1
 
     const fitnessPercentiles = new Array<number>(FITNESS_PERCENTILE_CREATURE_INDICES.length)
+
     for (let i = 0; i < FITNESS_PERCENTILE_CREATURE_INDICES.length; i++) {
       fitnessPercentiles[i] =
         appState.creaturesInLatestGeneration[FITNESS_PERCENTILE_CREATURE_INDICES[i]].fitness
@@ -180,6 +181,7 @@ export class AppController {
       creaturesInLatestGeneration[survivingCreatureIndex] = survivingCreature.clone(
         survivingCreature.id + CREATURE_COUNT,
       )
+
       creaturesInLatestGeneration[culledCreatureIndex] = this.creatureManipulator.modifyCreature(
         survivingCreature,
         culledCreature.id + CREATURE_COUNT,

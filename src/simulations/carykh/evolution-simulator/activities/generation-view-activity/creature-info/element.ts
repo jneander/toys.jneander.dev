@@ -4,7 +4,7 @@ import {Store} from '@jneander/utils-state'
 import {html} from 'lit'
 
 import {BaseElement, defineElement} from '../../../../../../shared/views'
-import {Creature, getSpeciesColorHslString, speciesIdForCreature} from '../../../creatures'
+import {type Creature, getSpeciesColorHslString, speciesIdForCreature} from '../../../creatures'
 import type {SimulationConfig} from '../../../simulation'
 import {CreatureInfoAdapter} from './creature-info-adapter'
 import type {CreatureInfoState} from './types'

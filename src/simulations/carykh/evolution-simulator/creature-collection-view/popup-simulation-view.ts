@@ -1,6 +1,6 @@
 import {CreatureDrawer} from '../creature-drawer'
-import {Creature, speciesIdForCreature} from '../creatures'
-import {P5Wrapper} from '../p5-utils'
+import {type Creature, speciesIdForCreature} from '../creatures'
+import type {P5Wrapper} from '../p5-utils'
 import {CreatureSimulation, type SimulationConfig} from '../simulation'
 import {SimulationView} from '../views/simulation-view'
 import {getSpeciesColor} from './helpers'
@@ -149,6 +149,7 @@ export class PopupSimulationView {
 
   private drawSimulationView(x: number, y: number): void {
     this.simulationView.draw()
+
     this.p5Wrapper.p5.image(
       this.simulationView.graphics,
       x,
@@ -215,6 +216,7 @@ export class PopupSimulationView {
       // Adjust for any overflow at the bottom.
       const overallEndY =
         positions.simulationViewStartY + SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
+
       const offsetY = Math.max(0, overallEndY - this.p5Wrapper.height)
 
       positions.infoBoxStartY -= offsetY
@@ -234,6 +236,7 @@ export class PopupSimulationView {
     if (belowEndY <= this.p5Wrapper.height) {
       positions.simulationViewStartX =
         this.p5Wrapper.width - SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
+
       // Keep the simulation view from overflowing the left edge of the canvas
       positions.simulationViewStartX = Math.max(0, positions.simulationViewStartX)
       positions.simulationViewStartY = infoBoxStartY + INFO_BOX_HEIGHT + INFO_BOX_MARGIN
@@ -253,6 +256,7 @@ export class PopupSimulationView {
       // Adjust for any overflow at the bottom.
       const overallEndY =
         positions.simulationViewStartY + SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
+
       const offsetY = Math.max(0, overallEndY - this.p5Wrapper.height)
 
       positions.infoBoxStartY -= offsetY
@@ -264,6 +268,7 @@ export class PopupSimulationView {
     // The last option is above.
     positions.simulationViewStartX =
       this.p5Wrapper.width - SIMULATION_VIEW_HEIGHT + SIMULATION_VIEW_MARGIN
+
     // Keep the simulation view from overflowing the left edge of the canvas
     positions.simulationViewStartX = Math.max(0, positions.simulationViewStartX)
     positions.simulationViewStartY = anchor.startPositionY - anchor.margin - SIMULATION_VIEW_HEIGHT

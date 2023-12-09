@@ -1,6 +1,6 @@
 import type {Store} from '@jneander/utils-state'
 
-import {ActivityStep} from './constants'
+import type {ActivityStep} from './constants'
 
 export type ActivityState = {
   currentActivityStep: ActivityStep

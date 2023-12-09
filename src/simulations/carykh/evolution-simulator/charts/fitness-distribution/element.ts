@@ -33,6 +33,7 @@ export class FitnessDistributionChartElement extends BaseElement {
     const canvas: HTMLCanvasElement = this.querySelector('canvas') as HTMLCanvasElement
 
     const ctx = canvas?.getContext('2d')
+
     if (!ctx) {
       return
     }
@@ -75,6 +76,7 @@ export class FitnessDistributionChartElement extends BaseElement {
            * scale's tick callback.
            */
           let yAxisTickModulo = 100
+
           if (maxCount < 50) {
             yAxisTickModulo = 10
           } else if (maxCount < 100) {

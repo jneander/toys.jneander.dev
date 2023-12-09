@@ -2,7 +2,7 @@ import type {Graphics, Image} from 'p5'
 
 import {CREATURE_COUNT} from '../constants'
 import {CreatureDrawer} from '../creature-drawer'
-import {Creature, creatureIdToIndex} from '../creatures'
+import {type Creature, creatureIdToIndex} from '../creatures'
 import type {P5CanvasContainer, P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../p5-utils'
 import type {AppStore} from '../types'
 import {
@@ -82,6 +82,7 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
     const {p5} = p5Wrapper
 
     let elapsedTimeMs = 0
+
     if (this.firstDrawTimestamp === 0) {
       this.firstDrawTimestamp = Date.now()
     } else {
@@ -120,6 +121,7 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
         startGridIndex,
         tilesPerRow,
       )
+
       const {columnIndex: endColumnIndex, rowIndex: endRowIndex} = gridIndexToRowAndColumn(
         endGridIndex,
         tilesPerRow,
@@ -212,6 +214,7 @@ export class SortingCreaturesAdapter implements P5ViewAdapter {
     }
 
     const gridAreaWidth = width - VIEW_PADDING_START_X - VIEW_PADDING_END_X
+
     return Math.floor(gridAreaWidth / CREATURE_GRID_TILE_WIDTH)
   }
 }

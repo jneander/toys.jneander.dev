@@ -5,6 +5,7 @@ function buildScaledBoard(size: number): ChessBoardTable {
 
   for (let row = 0; row < size; row++) {
     board[row] = []
+
     for (let col = 0; col < size; col++) {
       board[row].push(' ')
     }

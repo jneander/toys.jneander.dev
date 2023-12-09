@@ -112,6 +112,7 @@ export class CreatureManipulator {
         creature.nodes.length,
         creature.mutability,
       )
+
       modifiedCreature.muscles.push(muscle)
     }
 
@@ -176,6 +177,7 @@ export class CreatureManipulator {
       Math.max(muscle.rigidity * (1 + this.reducedRandomForMutation() * 0.9 * mutability), 0.01),
       0.08,
     )
+
     const newLen = Math.min(
       Math.max(muscle.length + this.reducedRandomForMutation() * mutability, 0.4),
       1.25,
@@ -196,9 +198,11 @@ export class CreatureManipulator {
     if (this.randomFract(0, 1) < BIG_MUTATION_CHANCE * mutability) {
       newOperation = this.randomArrayValue(NODE_OPERATION_IDS)
     }
+
     if (this.randomFract(0, 1) < BIG_MUTATION_CHANCE * mutability) {
       newAxon1 = this.randomUint32(0, nodeNum)
     }
+
     if (this.randomFract(0, 1) < BIG_MUTATION_CHANCE * mutability) {
       newAxon2 = this.randomUint32(0, nodeNum)
     }

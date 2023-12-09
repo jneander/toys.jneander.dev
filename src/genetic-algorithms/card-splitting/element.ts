@@ -49,6 +49,7 @@ export class CardSplittingElement extends BaseElement {
     this.storeListeners.forEach(fn => {
       fn()
     })
+
     this.storeListeners.length = 0
 
     this.controller?.deinitialize()

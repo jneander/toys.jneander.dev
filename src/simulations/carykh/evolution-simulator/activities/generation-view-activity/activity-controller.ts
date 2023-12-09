@@ -39,6 +39,7 @@ export class ActivityController {
       generationSimulationMode: GenerationSimulationMode.StepByStep,
       pendingGenerationCount: 0,
     })
+
     this.appController.setActivityId(ActivityId.SimulationRunning)
   }
 
@@ -171,6 +172,7 @@ export class ActivityController {
       const loopFn = () => {
         if (!generationSimulation.isFinished()) {
           generationSimulation.performCreatureSimulation()
+
           return
         }
 

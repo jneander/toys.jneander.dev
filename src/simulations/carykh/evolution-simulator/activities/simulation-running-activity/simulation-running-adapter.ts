@@ -3,7 +3,7 @@ import {FITNESS_LABEL, FITNESS_UNIT_LABEL, FRAMES_FOR_CREATURE_FITNESS} from '..
 import {CreatureDrawer} from '../../creature-drawer'
 import {averagePositionOfNodes} from '../../creatures'
 import type {P5CanvasContainer, P5ViewAdapter, P5ViewDimensions, P5Wrapper} from '../../p5-utils'
-import {GenerationSimulation} from '../../simulation'
+import type {GenerationSimulation} from '../../simulation'
 import {SimulationView} from '../../views'
 import type {ActivityController} from './activity-controller'
 

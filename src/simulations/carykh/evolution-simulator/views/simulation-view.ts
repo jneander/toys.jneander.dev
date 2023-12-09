@@ -107,18 +107,21 @@ export class SimulationView {
     simulationGraphics.textFont(postFont, POST_FONT_SIZE * this.scale)
     simulationGraphics.noStroke()
     simulationGraphics.fill(120, 0, 255)
+
     simulationGraphics.rect(
       (averageX - 1.7) * this.scale,
       -4.8 * this.scale,
       3.4 * this.scale,
       1.1 * this.scale,
     )
+
     simulationGraphics.beginShape()
     simulationGraphics.vertex(averageX * this.scale, -3.2 * this.scale)
     simulationGraphics.vertex((averageX - 0.5) * this.scale, -3.7 * this.scale)
     simulationGraphics.vertex((averageX + 0.5) * this.scale, -3.7 * this.scale)
     simulationGraphics.endShape(simulationGraphics.CLOSE)
     simulationGraphics.fill(255)
+
     simulationGraphics.text(
       Math.round(averageX * 2) / 10 + ' m',
       averageX * this.scale,
@@ -148,13 +151,16 @@ export class SimulationView {
     if (simulationConfig.hazelStairs > 0) {
       for (let i = stairDrawStart; i < stairDrawStart + 20; i++) {
         simulationGraphics.fill(255, 255, 255, 128)
+
         simulationGraphics.rect(
           (averageX - 20) * this.scale,
           -simulationConfig.hazelStairs * i * this.scale,
           40 * this.scale,
           simulationConfig.hazelStairs * 0.3 * this.scale,
         )
+
         simulationGraphics.fill(255, 255, 255, 255)
+
         simulationGraphics.rect(
           (averageX - 20) * this.scale,
           -simulationConfig.hazelStairs * i * this.scale,
@@ -184,18 +190,21 @@ export class SimulationView {
     for (let postY = startPostY; postY <= startPostY + 8; postY += 4) {
       for (let i = toInt(averageX / 5 - 5); i <= toInt(averageX / 5 + 5); i++) {
         simulationGraphics.fill(255)
+
         simulationGraphics.rect(
           (i * 5 - 0.1) * this.scale,
           (-3.0 + postY) * this.scale,
           0.2 * this.scale,
           3 * this.scale,
         )
+
         simulationGraphics.rect(
           (i * 5 - 1) * this.scale,
           (-3.0 + postY) * this.scale,
           2 * this.scale,
           1 * this.scale,
         )
+
         simulationGraphics.fill(120)
         simulationGraphics.text(i + ' m', i * 5 * this.scale, (-2.17 + postY) * this.scale)
       }

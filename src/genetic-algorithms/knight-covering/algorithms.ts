@@ -19,6 +19,7 @@ export class FewestAttacks {
 
     for (let i = 0; i < current.genes.length; i++) {
       const attacks = listAttacks(current.genes[i], this.boardSize)
+
       for (let j = 0; j < attacks.length; j++) {
         attackHashSet.add(positionHash(attacks[j].row, attacks[j].col))
       }
